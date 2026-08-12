@@ -1,0 +1,599 @@
+/* ==========================================================================
+   Juma-Agro USA — protótipo de copy
+   Paleta e direção visual conforme Editorial.pdf (Moodboard 01)
+   Estrutura de seções conforme Wireframes v1.svg
+   ========================================================================== */
+
+:root {
+  /* Paleta oficial ------------------------------------------------------ */
+  --verde: #004C26;      /* base institucional */
+  --carvao: #2A2A2A;     /* texto e superfícies escuras */
+  --carvao-rgb: 42, 42, 42;
+  --oliva: #3A6023;      /* apoio */
+  --lima: #B7C73E;       /* foco e ação — usar com parcimônia */
+  --areia: #CCC29D;      /* respiro */
+  --offwhite: #F6FFEE;   /* respiro */
+  --branco: #FFFFFF;
+
+  --linha: rgba(var(--carvao-rgb), .14);
+  --linha-clara: rgba(255, 255, 255, .18);
+  --texto-suave: rgba(var(--carvao-rgb), .68);
+  --texto-claro: rgba(255, 255, 255, .78);
+
+  /* Tipografia ---------------------------------------------------------- */
+  --display: "Space Grotesk", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --corpo: "Montserrat", "Segoe UI", system-ui, -apple-system, sans-serif;
+  /* A mono marca tudo que é verificável: fonte de ensaio, dose, unidade,
+     estágio, número de registro. É a assinatura tipográfica da credibilidade. */
+  --mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+
+  /* Ritmo modular ------------------------------------------------------- */
+  --max: 1280px;
+  --gut: clamp(20px, 4vw, 64px);
+  --sec: clamp(64px, 9vw, 128px);
+  --r: 4px;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  font-family: var(--corpo);
+  font-size: 16px;
+  line-height: 1.62;
+  color: var(--carvao);
+  background: var(--branco);
+  -webkit-font-smoothing: antialiased;
+}
+
+img { max-width: 100%; display: block; }
+a { color: inherit; }
+
+/* --------------------------------------------------------------- idiomas */
+/* A copy vive duas vezes no HTML: [data-en] e [data-pt].
+   O atributo lang no <html> decide qual aparece. Sem JS, o site fica em EN. */
+html[lang="en"] [data-pt],
+html[lang="pt"] [data-en] { display: none !important; }
+
+/* ------------------------------------------------------------ tipografia */
+h1, h2, h3, h4 {
+  font-family: var(--display);
+  font-weight: 700;
+  line-height: 1.06;
+  letter-spacing: -.02em;
+  margin: 0;
+}
+
+.h-xl { font-size: clamp(40px, 6.4vw, 82px); }
+.h-lg { font-size: clamp(30px, 3.9vw, 52px); }
+.h-md { font-size: clamp(22px, 2.3vw, 30px); }
+.h-sm { font-size: clamp(17px, 1.5vw, 21px); line-height: 1.22; }
+
+.eyebrow {
+  font-family: var(--corpo);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--oliva);
+  margin: 0 0 14px;
+}
+.eyebrow--claro { color: var(--lima); }
+
+.lead { font-size: clamp(16px, 1.35vw, 19px); line-height: 1.6; }
+.corpo { font-size: 15.5px; color: var(--texto-suave); }
+.mini { font-size: 12.5px; line-height: 1.5; color: var(--texto-suave); }
+
+.num {
+  font-family: var(--display);
+  font-weight: 700;
+  letter-spacing: -.03em;
+  line-height: 1;
+  font-size: clamp(34px, 4.2vw, 56px);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Dado conferível: fonte de ensaio, dose, unidade, estágio, registro.
+   Quando o leitor vê mono, sabe que aquilo é auditável. */
+.dado {
+  font-family: var(--mono);
+  font-size: .92em;
+  letter-spacing: .01em;
+  font-variant-numeric: tabular-nums;
+}
+.fonte {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  color: var(--texto-suave);
+  line-height: 1.6;
+  margin: 0;
+}
+.sec--verde .fonte, .sec--carvao .fonte { color: var(--texto-claro); }
+
+/* ---------------------------------------------------------------- layout */
+.wrap { max-width: var(--max); margin: 0 auto; padding: 0 var(--gut); }
+/* header e barra de cultura são sticky: compensa para a âncora não ficar atrás deles */
+[id] { scroll-margin-top: 130px; }
+.sec { padding: var(--sec) 0; }
+.sec--areia { background: var(--offwhite); }
+.sec--cinza { background: #F0F1EC; }
+.sec--verde { background: var(--verde); color: var(--branco); }
+.sec--verde .corpo,
+.sec--verde .mini { color: var(--texto-claro); }
+/* Fundo carvão: usado só no slot editorial de cada LP — a seção que conta
+   história em vez de vender. Uma por página, no máximo. */
+.sec--carvao { background: var(--carvao); color: var(--branco); }
+.sec--carvao .corpo,
+.sec--carvao .mini { color: var(--texto-claro); }
+.sec--carvao .eyebrow { color: var(--lima); }
+.sec--carvao .card { background: rgba(255, 255, 255, .05); border-color: var(--linha-clara); }
+.sec--carvao .card .corpo { color: var(--texto-claro); }
+.sec--carvao .btn--linha { border-color: var(--linha-clara); color: var(--branco); }
+.sec--carvao .btn--linha:hover { border-color: var(--lima); color: var(--lima); }
+.sec--carvao .chip { background: transparent; border-color: var(--linha-clara); color: var(--branco); }
+
+/* Cabeçalho de seção: título à esquerda, apoio à direita (padrão do wireframe) */
+.sec-head {
+  display: grid;
+  grid-template-columns: 1.35fr 1fr;
+  gap: clamp(24px, 4vw, 72px);
+  align-items: end;
+  margin-bottom: clamp(34px, 4.5vw, 60px);
+}
+.sec-head > p { margin: 0; }
+
+.grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: clamp(18px, 2vw, 28px); }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(18px, 2vw, 28px); }
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: clamp(18px, 2vw, 28px); }
+.split  { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(24px, 3.4vw, 56px); align-items: start; }
+/* Proporções como classe, nunca em style inline: estilo inline vence a media
+   query e impede o empilhamento no mobile. */
+.split--img  { grid-template-columns: 1.05fr .95fr; }
+.split--form { grid-template-columns: 1.45fr .55fr; }
+.split--mapa { grid-template-columns: .85fr 1.15fr; }
+.split--faq  { grid-template-columns: .8fr 1.2fr; }
+
+/* Item de grid tem min-width auto por padrão: uma tabela larga dentro dele
+   empurra a coluna e estoura a página. Zerar isso deixa o .tabwrap rolar. */
+.grid-2 > *, .grid-3 > *, .grid-4 > *, .split > *, .sec-head > * { min-width: 0; }
+.card, .tabwrap { min-width: 0; max-width: 100%; }
+
+/* ---------------------------------------------------------------- botões */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--corpo);
+  font-size: 13.5px;
+  font-weight: 700;
+  letter-spacing: .01em;
+  padding: 15px 26px;
+  border: 1px solid transparent;
+  border-radius: var(--r);
+  background: var(--verde);
+  color: var(--branco);
+  text-decoration: none;
+  cursor: pointer;
+  max-width: 100%;
+  transition: background .18s ease, transform .18s ease, color .18s ease;
+}
+.btn:hover { background: var(--oliva); transform: translateY(-1px); }
+.btn--lima { background: var(--lima); color: var(--carvao); }
+.btn--lima:hover { background: #c8d854; }
+.btn--linha {
+  background: transparent;
+  border-color: var(--linha);
+  color: var(--carvao);
+}
+.btn--linha:hover { background: transparent; border-color: var(--verde); color: var(--verde); }
+.sec--verde .btn--linha { border-color: var(--linha-clara); color: var(--branco); }
+.sec--verde .btn--linha:hover { border-color: var(--lima); color: var(--lima); }
+.btn-row { display: flex; flex-wrap: wrap; gap: 12px; }
+
+/* ----------------------------------------------------------------- cards */
+.card {
+  background: var(--branco);
+  border: 1px solid var(--linha);
+  border-radius: var(--r);
+  padding: clamp(22px, 2.4vw, 34px);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.card--verde { background: var(--verde); color: var(--branco); border-color: transparent; }
+.card--verde .corpo, .card--verde .mini { color: var(--texto-claro); }
+.card--areia { background: var(--areia); border-color: transparent; }
+
+/* Card claro dentro de seção escura herda o texto branco da seção e some.
+   Precisa recuperar a cor — vale para .card, .card--areia e a tabela de prova. */
+.sec--verde .card,
+.sec--carvao .card--areia { color: var(--carvao); }
+.sec--verde .card .corpo,  .sec--verde .card .mini,  .sec--verde .card .fonte,
+.sec--carvao .card--areia .corpo, .sec--carvao .card--areia .mini { color: var(--texto-suave); }
+.sec--verde .card .eyebrow { color: var(--oliva); }
+.sec--verde .card .chip { background: var(--branco); border-color: var(--linha); color: var(--carvao); }
+/* exceção: o card verde sobre fundo verde continua claro */
+.sec--verde .card--verde { color: var(--branco); }
+.sec--verde .card--verde .corpo, .sec--verde .card--verde .mini { color: var(--texto-claro); }
+.card__top { border-top: 3px solid var(--lima); margin: -1px 0 6px; padding-top: 18px; }
+
+/* chips (culturas, fontes, estágios) */
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip {
+  font-size: 12.5px;
+  font-weight: 600;
+  padding: 7px 13px;
+  border: 1px solid var(--linha);
+  border-radius: 999px;
+  background: var(--branco);
+  cursor: default;
+}
+.chip--reg { border-style: dashed; color: var(--texto-suave); }
+.sec--verde .chip { background: transparent; border-color: var(--linha-clara); color: var(--branco); }
+
+/* lista de pares label/valor (dados técnicos, resultados) */
+.pares { list-style: none; margin: 0; padding: 0; }
+.pares li {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 13px 0;
+  border-bottom: 1px solid var(--linha);
+  font-size: 14px;
+}
+.pares li:last-child { border-bottom: 0; }
+.pares b { font-weight: 700; }
+.pares .pend { color: #9B6A00; font-weight: 700; }
+
+/* ------------------------------------------------ placeholders de asset */
+.ph {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  text-align: center;
+  min-height: 220px;
+  padding: 26px;
+  border: 1px dashed rgba(var(--carvao-rgb), .32);
+  border-radius: var(--r);
+  background: repeating-linear-gradient(
+    135deg, #E6E7E0, #E6E7E0 12px, #EDEEE8 12px, #EDEEE8 24px);
+  color: var(--texto-suave);
+}
+.ph__tag {
+  font-family: var(--corpo);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--oliva);
+}
+.ph__desc { font-size: 13px; max-width: 40ch; }
+.ph--alto { min-height: 420px; }
+.ph--anim { background: repeating-linear-gradient(
+    135deg, #E9EEDF, #E9EEDF 12px, #F1F5E9 12px, #F1F5E9 24px); }
+.ph--sobre { position: absolute; inset: auto auto 22px 22px; }
+
+/* ---------------------------------------------------------------- header */
+.hd {
+  position: sticky;
+  top: 0;
+  z-index: 60;
+  background: var(--branco);
+  border-bottom: 1px solid var(--linha);
+}
+.hd__in {
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 0 var(--gut);
+  height: 72px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+.hd__logo {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 17px;
+  letter-spacing: -.01em;
+  text-decoration: none;
+  color: var(--verde);
+  white-space: nowrap;
+}
+.hd__logo span { color: var(--carvao); font-weight: 500; }
+.hd__nav { display: flex; gap: 26px; margin-left: auto; }
+.hd__nav a {
+  font-size: 13.5px;
+  font-weight: 600;
+  text-decoration: none;
+  color: var(--carvao);
+  padding: 6px 0;
+  border-bottom: 2px solid transparent;
+}
+.hd__nav a:hover, .hd__nav a[aria-current="page"] { border-bottom-color: var(--lima); }
+.hd__acoes { display: flex; align-items: center; gap: 12px; margin-left: auto; }
+.hd__nav + .hd__acoes { margin-left: 0; }
+
+/* seletor de idioma */
+.lang {
+  display: inline-flex;
+  border: 1px solid var(--linha);
+  border-radius: 999px;
+  overflow: hidden;
+  background: var(--branco);
+}
+.lang button {
+  font-family: var(--corpo);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  padding: 8px 14px;
+  border: 0;
+  background: transparent;
+  color: var(--texto-suave);
+  cursor: pointer;
+  transition: background .16s ease, color .16s ease;
+}
+.lang button[aria-pressed="true"] { background: var(--verde); color: var(--branco); }
+.lang button:hover:not([aria-pressed="true"]) { background: var(--offwhite); color: var(--verde); }
+
+.hd__btn { padding: 12px 20px; font-size: 12.5px; }
+/* CTA que só existe dentro do menu mobile */
+.hd__btn-mob { display: none; }
+
+.burger { display: none; border: 1px solid var(--linha); background: none;
+  border-radius: var(--r); padding: 9px 12px; cursor: pointer; font-size: 15px; }
+
+/* ------------------------------------------------------------------ hero */
+.hero { background: var(--offwhite); padding: clamp(48px, 6vw, 84px) 0 0; }
+.hero__grid {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: clamp(24px, 4vw, 64px);
+  align-items: end;
+}
+.hero__apoio { display: flex; flex-direction: column; gap: 22px; padding-bottom: 8px; }
+.hero__media { margin-top: clamp(38px, 4.5vw, 62px); position: relative; }
+.hero__card {
+  position: absolute;
+  left: clamp(16px, 2vw, 30px);
+  bottom: clamp(16px, 2vw, 30px);
+  max-width: 340px;
+  background: var(--verde);
+  color: var(--branco);
+  border-radius: var(--r);
+  padding: 20px 22px;
+}
+.hero__card .mini { color: var(--texto-claro); }
+
+/* hero de produto: texto à esquerda, mídia + stats à direita */
+.hero--prod .hero__grid { grid-template-columns: 1fr 1fr; align-items: center; }
+.stats-card {
+  background: var(--verde);
+  color: var(--branco);
+  border-radius: var(--r);
+  padding: 22px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-top: 14px;
+}
+.stats-card .num { font-size: clamp(20px, 2vw, 26px); }
+.stats-card .mini { color: var(--texto-claro); }
+
+/* -------------------------------------------------------- barra de prova */
+.prova { border-bottom: 1px solid var(--linha); }
+.prova__item { display: flex; flex-direction: column; gap: 8px; }
+.prova__item .num { font-size: clamp(24px, 2.4vw, 34px); }
+.prova__vazio { opacity: .55; }
+
+/* ------------------------------------------------------- seletor cultura */
+.cropbar { background: var(--carvao); color: var(--branco); position: sticky; top: 72px; z-index: 50; }
+.cropbar__in {
+  max-width: var(--max); margin: 0 auto; padding: 12px var(--gut);
+  display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+}
+.cropbar__lbl { font-size: 11px; font-weight: 700; letter-spacing: .12em;
+  text-transform: uppercase; color: rgba(255,255,255,.6); }
+.cropbar__opts { display: flex; gap: 8px; flex-wrap: wrap; }
+.cropbar button {
+  font-family: var(--corpo); font-size: 12.5px; font-weight: 700;
+  padding: 8px 15px; border: 1px solid rgba(255,255,255,.22);
+  border-radius: 999px; background: transparent; color: var(--branco); cursor: pointer;
+}
+.cropbar button[aria-pressed="true"] { background: var(--lima); color: var(--carvao); border-color: var(--lima); }
+
+/* --------------------------------------------------------- bloco de prova
+   O componente de assinatura do site. Três regras inegociáveis:
+   1. sempre tem a testemunha ao lado do número;
+   2. sempre tem a fonte impressa embaixo, em mono, com local e ano;
+   3. dado brasileiro é identificado como brasileiro.
+   Nível 1 = os números (.ba). Nível 2 = a tabela completa, em card claro. */
+.ba { display: grid; grid-template-columns: 1fr .68fr 1fr; gap: 2px;
+  background: rgba(255,255,255,.16); border-radius: var(--r); overflow: hidden; }
+.ba__lado { background: #003A1D; padding: clamp(26px, 3.2vw, 48px); }
+.ba__lado--trat { background: var(--oliva); }
+.ba p { margin: 0; }
+.ba__rot { font-family: var(--mono); font-size: 11px; font-weight: 500; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--texto-claro); margin-bottom: 14px; }
+.ba__num { font-family: var(--display); font-weight: 700; letter-spacing: -.03em;
+  font-size: clamp(34px, 5vw, 64px); line-height: 1; font-variant-numeric: tabular-nums; }
+.ba__un { font-size: .4em; font-weight: 600; letter-spacing: 0; margin-left: 6px; }
+/* a diferença fica entre os dois lados: é ela que o produtor lê primeiro */
+.ba__dif { background: var(--lima); color: var(--carvao);
+  padding: clamp(26px, 3.2vw, 48px) clamp(16px, 2vw, 26px);
+  display: flex; flex-direction: column; justify-content: center; }
+.ba__dif .ba__rot { color: rgba(var(--carvao-rgb), .7); }
+.ba__dif .ba__num { font-size: clamp(28px, 3.6vw, 46px); }
+/* nível 2: a tabela do ensaio, em documento, logo abaixo dos números */
+.prova-tab { background: var(--branco); color: var(--carvao);
+  border-radius: var(--r); padding: clamp(20px, 2.4vw, 30px); margin-top: 2px; }
+.prova-tab .corpo, .prova-tab .mini, .prova-tab .fonte { color: var(--texto-suave); }
+
+/* --------------------------------------------------------------- tabelas */
+.tab { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+.tab th {
+  text-align: left; font-family: var(--corpo); font-size: 11px; font-weight: 700;
+  letter-spacing: .1em; text-transform: uppercase; color: var(--texto-suave);
+  padding: 0 14px 12px 0; border-bottom: 1px solid var(--linha);
+}
+.tab td { padding: 15px 14px 15px 0; border-bottom: 1px solid var(--linha); }
+.tab tr:last-child td { border-bottom: 0; }
+.tab .forte { font-weight: 700; }
+.tabwrap { overflow-x: auto; }
+
+/* ------------------------------------------------------------------- faq */
+.faq { border-top: 1px solid var(--linha); }
+.faq details { border-bottom: 1px solid var(--linha); }
+.faq summary {
+  display: flex; justify-content: space-between; gap: 20px; align-items: center;
+  padding: 22px 0; cursor: pointer; list-style: none;
+  font-family: var(--display); font-weight: 700; font-size: clamp(15px, 1.35vw, 18px);
+}
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after { content: "+"; font-size: 22px; font-weight: 400; color: var(--oliva); }
+.faq details[open] summary::after { content: "–"; }
+.faq details > div { padding: 0 0 24px; max-width: 74ch; }
+
+/* -------------------------------------------------------------- formulário */
+.form { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+.form label { display: flex; flex-direction: column; gap: 7px; font-size: 12.5px; font-weight: 700; }
+.form .full { grid-column: 1 / -1; }
+.form input, .form select, .form textarea {
+  font-family: var(--corpo); font-size: 14px; padding: 13px 14px;
+  border: 1px solid var(--linha); border-radius: var(--r);
+  background: var(--branco); color: var(--carvao);
+}
+.form textarea { min-height: 96px; resize: vertical; }
+.form .check { flex-direction: row; align-items: center; gap: 10px; font-weight: 600; }
+
+/* ----------------------------------------------------------------- footer */
+.ft { background: var(--carvao); color: var(--branco); padding: clamp(48px, 6vw, 76px) 0 34px; }
+.ft__grid { display: grid; grid-template-columns: 1.6fr repeat(3, 1fr); gap: clamp(24px, 3vw, 48px); }
+.ft__col h4 { font-size: 12px; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--lima); margin-bottom: 14px; font-family: var(--corpo); }
+.ft__col ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 9px; }
+.ft__col a { font-size: 13.5px; color: var(--texto-claro); text-decoration: none; }
+.ft__col a:hover { color: var(--lima); }
+.ft__base { margin-top: 44px; padding-top: 22px; border-top: 1px solid var(--linha-clara);
+  display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+
+/* =================================================== modo anotação (notas)
+   Etiquetas que ligam cada seção ao documento de copy. Desligado por padrão. */
+.note { display: none; }
+html[data-notes="on"] .note {
+  display: block;
+  background: #FFF9E3;
+  border-left: 4px solid #C8A33A;
+  border-radius: 0 var(--r) var(--r) 0;
+  padding: 12px 16px;
+  margin: 0 0 20px;
+  font-family: var(--corpo);
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: #4A3C10;
+}
+html[data-notes="on"] .note b { color: var(--carvao); }
+.note__id {
+  display: inline-block; font-weight: 700; letter-spacing: .06em;
+  background: var(--carvao); color: var(--lima);
+  padding: 2px 8px; border-radius: 3px; margin-right: 8px; font-size: 11px;
+}
+.note__selo {
+  display: inline-block; font-size: 10.5px; font-weight: 700; letter-spacing: .07em;
+  text-transform: uppercase; padding: 2px 8px; border-radius: 3px; margin-left: 6px;
+}
+.selo-ok   { background: #DCEFE2; color: #16603A; }
+.selo-hold { background: #F7DCDC; color: #8E2226; }
+.selo-pend { background: #FBEFCF; color: #7A5A05; }
+.selo-rev  { background: #DDE8F3; color: #1F4E79; }
+
+html[data-notes="on"] .sec { outline: 1px dashed rgba(var(--carvao-rgb), .16); outline-offset: -1px; }
+
+/* trilha B do KMEP: só aparece com o modo trilha ligado */
+[data-trilha="b"] { display: none; }
+html[data-track="b"] [data-trilha="b"] { display: block; }
+html[data-track="b"] [data-trilha="a"] { display: none; }
+.hold-mark {
+  border: 2px solid #9B2226;
+  border-radius: var(--r);
+  padding: 18px;
+  background: #FDF4F4;
+}
+.hold-mark::before {
+  content: "HOLD — AGUARDA REGULATÓRIO (P2)";
+  display: block; font-size: 10.5px; font-weight: 700; letter-spacing: .09em;
+  color: #9B2226; margin-bottom: 10px;
+}
+
+/* barra de ferramentas do protótipo */
+.tools {
+  position: fixed; right: 16px; bottom: 16px; z-index: 90;
+  display: flex; flex-direction: column; gap: 8px; align-items: flex-end;
+}
+.tools button {
+  font-family: var(--corpo); font-size: 11.5px; font-weight: 700;
+  letter-spacing: .04em; padding: 10px 14px; border-radius: 999px;
+  border: 1px solid var(--linha); background: var(--branco); color: var(--carvao);
+  cursor: pointer; box-shadow: 0 6px 20px rgba(0,0,0,.10);
+}
+.tools button[aria-pressed="true"] { background: var(--carvao); color: var(--lima); border-color: var(--carvao); }
+
+/* ------------------------------------------------------------ responsivo */
+@media (max-width: 980px) {
+  .sec-head { grid-template-columns: 1fr; align-items: start; }
+  .hero__grid, .hero--prod .hero__grid { grid-template-columns: 1fr; }
+  .split, .split--img, .split--form, .split--mapa, .split--faq { grid-template-columns: 1fr; }
+  .grid-3, .grid-4 { grid-template-columns: repeat(2, 1fr); }
+  .ft__grid { grid-template-columns: 1fr 1fr; }
+  .hd__nav { display: none; }
+  .hd__nav.aberto {
+    display: flex; position: absolute; top: 72px; left: 0; right: 0;
+    flex-direction: column; gap: 0; background: var(--branco);
+    border-bottom: 1px solid var(--linha); padding: 8px var(--gut) 18px;
+  }
+  .hd__nav.aberto a { padding: 12px 0; border-bottom: 1px solid var(--linha); }
+  /* precisa vencer a especificidade de `.hd__nav.aberto a` acima */
+  .hd__nav.aberto .hd__btn-mob {
+    display: inline-flex; justify-content: center;
+    padding: 15px 26px; margin-top: 16px; border-bottom: 0; color: var(--branco);
+  }
+  .burger { display: block; }
+  .hd__acoes { margin-left: auto; gap: 8px; }
+  /* O CTA cheio não cabe ao lado do seletor e do burger — vai para dentro do menu. */
+  .hd__btn { display: none; }
+  .hd__logo { font-size: 15px; }
+  .cropbar { position: static; }
+}
+
+@media (max-width: 860px) {
+  /* os três blocos do bloco de prova não cabem lado a lado: empilha, mas
+     mantém a ordem testemunha → diferença → tratado */
+  .ba { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 640px) {
+  .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+  .form { grid-template-columns: 1fr; }
+  .ft__grid { grid-template-columns: 1fr; }
+  .stats-card { grid-template-columns: 1fr; gap: 12px; }
+  .hero__card { position: static; max-width: none; margin-top: 12px; }
+}
+
+@media (max-width: 420px) {
+  /* Em telas estreitas o nome completo da LLC não cabe ao lado dos controles. */
+  .hd__logo span { display: none; }
+  .hd__in { gap: 8px; }
+  .lang button { padding: 8px 11px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  * { transition: none !important; animation: none !important; }
+}

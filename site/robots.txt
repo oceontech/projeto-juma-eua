@@ -1,0 +1,5 @@
+# Protótipo interno de alinhamento de copy — não indexar.
+# Contém notas de trabalho e a Trilha B do KMEP Ultra, que está sob HOLD
+# regulatório (P2) e não pode circular como material promocional.
+User-agent: *
+Disallow: /

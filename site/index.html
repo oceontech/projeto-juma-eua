@@ -1,0 +1,628 @@
+<!doctype html>
+<html lang="en" data-notes="off">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Juma-Agro Fertilizer LLC — Home (protótipo de copy)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Montserrat:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/styles.css?v=3">
+</head>
+<body>
+
+<!-- ====================================================== [S0] HEADER ==== -->
+<header class="hd">
+  <div class="hd__in">
+    <a class="hd__logo" href="index.html">JUMA-AGRO <span>Fertilizer LLC</span></a>
+
+    <nav class="hd__nav">
+      <a href="index.html" aria-current="page"><span data-en>Products</span><span data-pt>Produtos</span></a>
+      <a href="#culturas"><span data-en>Crops</span><span data-pt>Culturas</span></a>
+      <a href="#metodo"><span data-en>Trials</span><span data-pt>Ensaios</span></a>
+      <a href="#brasil"><span data-en>About</span><span data-pt>Sobre</span></a>
+      <a href="#faixa"><span data-en>Contact</span><span data-pt>Contato</span></a>
+      <a class="btn hd__btn-mob" href="#faixa"><span data-en>Run a trial strip</span><span data-pt>Faça uma faixa de teste</span></a>
+    </nav>
+
+    <div class="hd__acoes">
+      <!-- Seletor de idioma. EN é o original; PT existe para o time entender. -->
+      <div class="lang" role="group" aria-label="Idioma / Language">
+        <button type="button" data-set-lang="en" aria-pressed="true">EN</button>
+        <button type="button" data-set-lang="pt" aria-pressed="false">PT</button>
+      </div>
+      <!-- Degrau 1 da escada de CTA. Ver documento de estrutura, seção 1.4. -->
+      <a class="btn hd__btn" href="#faixa">
+        <span data-en>Run a trial strip</span><span data-pt>Faça uma faixa de teste</span>
+      </a>
+      <button class="burger" type="button" data-burger aria-label="Menu">☰</button>
+    </div>
+  </div>
+</header>
+
+<!-- ======================================================== [S1] HERO ==== -->
+<section class="hero">
+  <div class="wrap">
+    <p class="note"><span class="note__id">S1</span><b>Hero.</b>
+      Dez segundos para dizer quem somos, onde estamos e por que o Brasil importa.
+      <span class="note__selo selo-ok">Pode publicar</span><br>
+      <b>Fundo:</b> off-white. <b>Asset:</b> foto de lavoura americana em plano aberto — pendência P13.
+      <b>Animação:</b> fade-up curto, nada acima da dobra. <b>CTA:</b> degrau 1 da escada — a faixa
+      de teste vem antes da conversa, e o segundo botão leva ao dado.</p>
+
+    <p class="eyebrow">JUMA-AGRO FERTILIZER LLC · LAKELAND, FLORIDA</p>
+
+    <div class="hero__grid">
+      <h1 class="h-xl">
+        <span data-en>Proven where the growing season never stops.</span>
+        <span data-pt>Comprovado onde a safra nunca para.</span>
+      </h1>
+
+      <div class="hero__apoio">
+        <p class="lead" style="margin:0">
+          <span data-en>In Brazil, growers take two and three crops off the same ground every year.
+            There is no winter to reset the field. Our foliar nutrition has been tested in that for
+            38 years — trial after trial, with the untreated check beside it.</span>
+          <span data-pt>No Brasil, o produtor tira duas e três safras do mesmo talhão por ano. Não
+            existe inverno para zerar a lavoura. Nossa nutrição foliar foi testada nisso por 38 anos
+            — ensaio após ensaio, com a testemunha ao lado.</span>
+        </p>
+        <div class="btn-row">
+          <a class="btn" href="#faixa"><span data-en>Run a trial strip</span><span data-pt>Faça uma faixa de teste</span></a>
+          <a class="btn btn--linha" href="#metodo"><span data-en>See the trial data</span><span data-pt>Ver os dados de ensaio</span></a>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero__media">
+      <div class="ph ph--alto">
+        <span class="ph__tag">Asset · P13</span>
+        <span class="ph__desc" data-en>Wide shot of a U.S. field, golden hour, no branded machinery.
+          Fallback: licensed stock until the real photo arrives.</span>
+        <span class="ph__desc" data-pt>Foto de lavoura americana em plano aberto, hora dourada, sem
+          maquinário de marca identificável. Fallback: banco de imagens licenciado.</span>
+      </div>
+      <!-- Bloco de prova ancorado no hero: o cético encontra o dado sem rolar.
+           Número + testemunha + fonte em mono. Nunca aparece sem os três. -->
+      <div class="hero__card">
+        <p class="eyebrow eyebrow--claro" style="margin-bottom:8px">
+          <span data-en>Treated vs untreated check</span><span data-pt>Tratado vs testemunha</span>
+        </p>
+        <p class="h-sm dado" style="margin:0">221.3 vs 212.3 bu/ac</p>
+        <p class="fonte" style="margin:8px 0 0;color:var(--texto-claro)">
+          <span data-en>Corn · Rehagro trial, Brazil</span><span data-pt>Milho · Ensaio Rehagro, Brasil</span>
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================== [S2] BARRA DE PROVA ==== -->
+<section class="sec prova" style="padding-top:clamp(36px,4vw,56px);padding-bottom:clamp(36px,4vw,56px)">
+  <div class="wrap">
+    <p class="note"><span class="note__id">S2</span><b>Barra de prova.</b>
+      Três a quatro números com a testemunha ao lado e a fonte embaixo. É onde o cético decide se
+      continua rolando. <span class="note__selo selo-pend">Aguarda dado da Juma</span><br>
+      <b>As três regras do bloco de prova:</b> (1) sempre tem a testemunha ao lado do número;
+      (2) sempre tem a fonte impressa embaixo, em mono, com local e ano; (3) dado brasileiro é
+      identificado como brasileiro. O quarto slot fica vazio até P9. Três números sólidos valem mais
+      que quatro com um frágil.</p>
+
+    <div class="grid-4">
+      <div class="prova__item">
+        <span class="num">221.3<span style="font-size:.5em;font-weight:500;color:var(--texto-suave)"> vs 212.3</span></span>
+        <span class="mini"><span data-en>bu/ac — corn, treated vs untreated check</span>
+          <span data-pt>bu/ac — milho, tratado vs testemunha</span></span>
+        <span class="fonte">Rehagro · Brazil · <span class="pend">[P21]</span></span>
+      </div>
+      <div class="prova__item">
+        <span class="num">38</span>
+        <span class="mini"><span data-en>Years of field trials, every one with a named source</span>
+          <span data-pt>Anos de ensaios de campo, todos com fonte nomeada</span></span>
+        <span class="fonte">DETEC · Rehagro · NITEC/UNESP · JP Agrícola</span>
+      </div>
+      <div class="prova__item">
+        <span class="num">1988</span>
+        <span class="mini"><span data-en>In-house lab since day one. Every batch tested before it ships</span>
+          <span data-pt>Laboratório próprio desde o primeiro dia. Todo lote testado antes de sair</span></span>
+        <span class="fonte">Mogi Guaçu · São Paulo · Brazil</span>
+      </div>
+      <div class="prova__item prova__vazio">
+        <span class="num" style="font-size:clamp(18px,1.8vw,24px)">—</span>
+        <span class="mini"><span data-en>[Aminosan soybean trial — releases when the untreated check yield arrives]</span>
+          <span data-pt>[Ensaio de soja com Aminosan — libera quando chegar a produtividade da testemunha]</span></span>
+        <span class="fonte"><span class="pend">[P9]</span></span>
+      </div>
+    </div>
+
+    <p class="mini" style="margin-top:28px">
+      <span data-en>Results from field trials conducted in Brazil. Field performance varies with climate, soil and management.</span>
+      <span data-pt>Resultados de ensaios de campo conduzidos no Brasil. O desempenho em campo varia com clima, solo e manejo.</span>
+    </p>
+  </div>
+</section>
+
+<!-- ==================================================== [S3] PROBLEMA ==== -->
+<section class="sec">
+  <div class="wrap">
+    <p class="note"><span class="note__id">S3</span><b>O problema.</b>
+      Nomear a dor antes de apresentar produto. Se o visitante não se reconhecer aqui, o resto da
+      página é catálogo. <span class="note__selo selo-ok">Pode publicar</span><br>
+      <b>Fundo:</b> branco. <b>Asset:</b> opcional, detalhe macro — folha, grão na mão, tela do
+      monitor de produtividade.</p>
+
+    <div class="sec-head">
+      <h2 class="h-lg">
+        <span data-en>The yield you lost isn't on the soil test.</span>
+        <span data-pt>A produtividade que você perdeu não está na análise de solo.</span>
+      </h2>
+      <p class="corpo">
+        <span data-en>You corrected fertility. You followed the program. The stand looked like it
+          could carry more than the monitor showed at harvest. What sits between the two is timing —
+          whether the plant had what it needed during the two or three weeks that set the yield, not
+          across the season average.</span>
+        <span data-pt>Você corrigiu a fertilidade. Seguiu o programa. O estande parecia capaz de
+          carregar mais do que o monitor mostrou na colheita. Entre uma coisa e outra está o momento
+          — se a planta teve o que precisava nas duas ou três semanas que definem a produtividade, e
+          não na média da safra.</span>
+      </p>
+    </div>
+
+    <p class="h-md" style="max-width:24ch">
+      <span data-en>That window is where both of our products work.</span>
+      <span data-pt>Essa janela é onde os nossos dois produtos atuam.</span>
+    </p>
+  </div>
+</section>
+
+<!-- ==================================================== [S4] PRODUTOS ==== -->
+<section class="sec sec--areia" id="produtos">
+  <div class="wrap">
+    <p class="note"><span class="note__id">S4</span><b>Produtos.</b>
+      Dois cards. Cada um entrega o benefício central e leva para a LP. Não é catálogo — é bifurcação.
+      <span class="note__selo selo-ok">Pode publicar</span>
+      <span class="note__selo selo-rev">KMEP: aguarda P31</span><br>
+      <b>Asset:</b> foto do produto com <b>rótulo americano</b> — pendência P12. Frasco com rótulo em
+      português entrega o site na primeira olhada; sem o rótulo americano, preferir tipografia.<br>
+      <b>Decisão de posicionamento do KMEP:</b> o card abre pelo eixo <b>adjuvante de calda</b>, com o
+      potássio embutido. O eixo puramente nutricional recebia a objeção "qual a diferença para um
+      0-0-25 barato?" na primeira leitura de um agrônomo de retail. A afirmação de deposição depende
+      de <b>P31</b> — dado de cobertura, deposição ou tensão superficial.<br>
+      <b>Restrição:</b> uma linha por produto. Listar benefícios no card reduz o clique para a LP,
+      que é onde a venda acontece.</p>
+
+    <div class="sec-head">
+      <h2 class="h-lg"><span data-en>Two products. One job each.</span><span data-pt>Dois produtos. Uma função cada.</span></h2>
+      <p class="corpo">
+        <span data-en>A company with thirteen products bringing two to the U.S. is making a choice.
+          Here is what each one is for.</span>
+        <span data-pt>Uma empresa com treze produtos que leva dois para os EUA está fazendo uma
+          escolha. Aqui está para que serve cada um.</span>
+      </p>
+    </div>
+
+    <div class="grid-2">
+      <article class="card">
+        <div class="ph" style="min-height:260px">
+          <span class="ph__tag">Asset · P12</span>
+          <span class="ph__desc" data-en>KMEP Ultra® jug, U.S. label</span>
+          <span class="ph__desc" data-pt>Galão do KMEP Ultra®, rótulo americano</span>
+        </div>
+        <p class="eyebrow" style="margin:18px 0 4px"><span data-en>SPRAY ADJUVANT · FOLIAR POTASSIUM</span><span data-pt>ADJUVANTE DE CALDA · POTÁSSIO FOLIAR</span></p>
+        <h3 class="h-md">KMEP Ultra®</h3>
+        <p class="corpo" style="margin:0">
+          <span data-en>More of the spray lands where you aimed it — and it carries foliar potassium in the same pass.</span>
+          <span data-pt>Mais da calda pousa onde você mirou — e ela leva potássio foliar na mesma aplicação.</span>
+        </p>
+        <div><a class="btn" href="kmep-ultra.html"><span data-en>How it works</span><span data-pt>Como funciona</span></a></div>
+      </article>
+
+      <article class="card">
+        <div class="ph" style="min-height:260px">
+          <span class="ph__tag">Asset · P12</span>
+          <span class="ph__desc" data-en>Aminosan® jug, U.S. label</span>
+          <span class="ph__desc" data-pt>Galão do Aminosan®, rótulo americano</span>
+        </div>
+        <p class="eyebrow" style="margin:18px 0 4px"><span data-en>FREE AMINO ACIDS</span><span data-pt>AMINOÁCIDOS LIVRES</span></p>
+        <h3 class="h-md">Aminosan®</h3>
+        <p class="corpo" style="margin:0">
+          <span data-en>The building blocks, delivered ready to use. In the field for 40 years.</span>
+          <span data-pt>Os blocos de construção, entregues prontos para uso. Em campo há 40 anos.</span>
+        </p>
+        <div><a class="btn" href="aminosan.html"><span data-en>How it works</span><span data-pt>Como funciona</span></a></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================ [S5] CULTURAS + MAPA ==== -->
+<section class="sec" id="culturas">
+  <div class="wrap">
+    <p class="note"><span class="note__id">S5</span><b>Culturas + mapa.</b>
+      Personalização por geolocalização de IP. Todas as culturas sempre aparecem; só a ordem muda.
+      <span class="note__selo selo-pend">Aguarda dado da Juma</span><br>
+      <b>Bloqueio:</b> a lista abaixo é provisória. O Anexo A do PRD foi montado sobre as 10 culturas
+      brasileiras — faltam amêndoa, morango, uva, folhosas e amendoim; sobram café, cana e pastagem.
+      Pendência <b>P6</b>. <b>Animação:</b> AN-06.</p>
+
+    <div class="sec-head">
+      <h2 class="h-lg"><span data-en>Find your acres.</span><span data-pt>Encontre os seus acres.</span></h2>
+      <p class="corpo">
+        <span data-en>Where these programs fit, ordered for your state.</span>
+        <span data-pt>Onde estes programas se encaixam, ordenados para o seu estado.</span>
+      </p>
+    </div>
+
+    <div class="split split--mapa">
+      <div>
+        <p class="mini" style="margin:0 0 10px">
+          <span data-en>Showing crops for <b>Iowa</b>. Not in Iowa? <a href="#culturas">Change</a></span>
+          <span data-pt>Mostrando culturas para <b>Iowa</b>. Não está em Iowa? <a href="#culturas">Trocar</a></span>
+        </p>
+        <div class="chips" style="margin-bottom:26px">
+          <span class="chip">Corn</span>
+          <span class="chip">Soybeans</span>
+          <span class="chip">Cotton</span>
+          <span class="chip">Potato</span>
+          <span class="chip">Tomato</span>
+          <span class="chip chip--reg">Citrus · <span data-en>Regional</span><span data-pt>Regional</span></span>
+          <span class="chip chip--reg">Dry beans · <span data-en>Regional</span><span data-pt>Regional</span></span>
+        </div>
+
+        <p class="eyebrow" style="margin-bottom:8px">
+          <span data-en>UNDER TECHNICAL REVIEW · P6</span><span data-pt>EM REVISÃO TÉCNICA · P6</span>
+        </p>
+        <div class="chips" style="margin-bottom:26px">
+          <span class="chip chip--reg">Almonds</span>
+          <span class="chip chip--reg">Strawberry</span>
+          <span class="chip chip--reg">Grapes</span>
+          <span class="chip chip--reg">Leafy greens</span>
+          <span class="chip chip--reg">Peanuts</span>
+        </div>
+
+        <p class="corpo" style="margin:0 0 18px">
+          <span data-en>Don't see your crop? Tell us what you grow and we'll come back with what we
+            have — trials, label and rates.</span>
+          <span data-pt>Não encontrou sua cultura? Conte o que você planta e retornamos com o que
+            temos — ensaios, rótulo e doses.</span>
+        </p>
+        <a class="btn" href="#faixa"><span data-en>Tell us your crop</span><span data-pt>Conte a sua cultura</span></a>
+      </div>
+
+      <div class="ph ph--alto">
+        <span class="ph__tag">Asset · <span data-en>build</span><span data-pt>produzir</span></span>
+        <span class="ph__desc" data-en>U.S. map, SVG inline by state. Detected state filled in lime.
+          No map library — it would cost weight and LCP.</span>
+        <span class="ph__desc" data-pt>Mapa dos EUA em SVG inline por estado. Estado detectado
+          preenchido em lima. Sem biblioteca de mapas — custaria peso e LCP.</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================ [S6] BRAZIL STORY ==== -->
+<section class="sec sec--cinza" id="brasil">
+  <div class="wrap">
+    <p class="note"><span class="note__id">S6</span><b>Brazil story.</b>
+      A seção que transforma a origem de ressalva em credencial. É o coração do posicionamento.
+      <span class="note__selo selo-rev">Revisar com o regulatório</span><br>
+      <b>Atenção:</b> confirmar a cronologia antes de publicar — fundação em 1988 e "mais de 40 anos
+      de Aminosan" não fecham entre si (tensão 8 do documento mestre).</p>
+
+    <div class="sec-head">
+      <h2 class="h-lg">
+        <span data-en>Brazil is the credential, not the caveat.</span>
+        <span data-pt>O Brasil é a credencial, não a ressalva.</span>
+      </h2>
+      <p class="corpo">
+        <span data-en>Brazil grows more soybeans than the United States, and it's the only major
+          producer taking two and three crops off the same ground in a single year. A product that
+          holds up there has been tested under severity the Corn Belt doesn't impose.</span>
+        <span data-pt>O Brasil produz mais soja que os Estados Unidos e é o único grande produtor que
+          tira duas e três safras do mesmo talhão no mesmo ano. Um produto que aguenta ali foi
+          testado sob severidade que o Corn Belt não impõe.</span>
+      </p>
+    </div>
+
+    <div class="grid-3">
+      <article class="card">
+        <div class="card__top"></div>
+        <span class="num">1988</span>
+        <h3 class="h-sm">
+          <span data-en>The product came first</span><span data-pt>O produto veio primeiro</span>
+        </h3>
+        <p class="corpo" style="margin:0">
+          <span data-en>Julio Matino formulated Aminosan before there was a company to sell it.
+            Growers in São Paulo bought it because it worked, and the demand built the business.</span>
+          <span data-pt>Julio Matino formulou o Aminosan antes de existir empresa para vendê-lo.
+            Produtores de São Paulo compraram porque funcionava, e a demanda construiu o negócio.</span>
+        </p>
+      </article>
+
+      <article class="card">
+        <div class="card__top"></div>
+        <span class="num">12</span>
+        <h3 class="h-sm">
+          <span data-en>Months of pressure a year</span><span data-pt>Meses de pressão por ano</span>
+        </h3>
+        <p class="corpo" style="margin:0">
+          <span data-en>No winter to reset the field. Heat stress as routine, and a dry spell that
+            lands in the middle of grain fill.</span>
+          <span data-pt>Nenhum inverno para zerar a lavoura. Estresse térmico como rotina e um
+            veranico que chega no meio do enchimento de grãos.</span>
+        </p>
+      </article>
+
+      <article class="card">
+        <div class="card__top"></div>
+        <span class="num">40</span>
+        <h3 class="h-sm">
+          <span data-en>Years on tropical agriculture</span><span data-pt>Anos sobre agricultura tropical</span>
+        </h3>
+        <p class="corpo" style="margin:0">
+          <span data-en>An asset no U.S. biostimulant company has. We're not asking you to overlook
+            where this came from. We're asking you to look at it.</span>
+          <span data-pt>Um ativo que nenhuma empresa americana de biostimulante tem. Não estamos
+            pedindo que você ignore de onde isso veio. Estamos pedindo que você olhe.</span>
+        </p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================ [S7] PROVA / O MÉTODO ==== -->
+<section class="sec" id="metodo">
+  <div class="wrap">
+    <p class="note"><span class="note__id">S7</span><b>Prova institucional — o método.</b>
+      Sustenta todos os números do site. <span class="note__selo selo-pend">Aguarda dado da Juma</span><br>
+      <b>Bloqueio:</b> citar as seis instituições pelo nome depende de autorização — pendência
+      <b>P19</b>. <b>Asset:</b> foto do laboratório próprio em operação, que prova a frase sobre
+      controle lote a lote.</p>
+
+    <div class="split split--img">
+      <div class="ph ph--alto">
+        <span class="ph__tag">Asset · P26</span>
+        <span class="ph__desc" data-en>In-house quality lab in operation, or archive photo of the
+          plant in Mogi Guaçu. A real 1988 photo beats any stock image.</span>
+        <span class="ph__desc" data-pt>Laboratório próprio de controle de qualidade em operação, ou
+          foto de arquivo da fábrica em Mogi Guaçu. Uma foto real de 1988 vale mais que qualquer
+          imagem de banco.</span>
+      </div>
+
+      <div>
+        <p class="eyebrow"><span data-en>THE METHOD</span><span data-pt>O MÉTODO</span></p>
+        <h2 class="h-lg" style="margin-bottom:20px">
+          <span data-en>Every number here names its check.</span>
+          <span data-pt>Todo número aqui nomeia a sua testemunha.</span>
+        </h2>
+        <p class="lead" style="margin:0 0 24px">
+          <span data-en>A yield claim without the untreated plot beside it is advertising. We publish
+            the treated number, the untreated number, where the trial ran and who ran it. Look them up.</span>
+          <span data-pt>Um número de produtividade sem a parcela testemunha ao lado é propaganda. Nós
+            publicamos o número tratado, o número da testemunha, onde o ensaio foi feito e quem fez.
+            Pode conferir.</span>
+        </p>
+
+        <p class="eyebrow" style="margin-bottom:10px">
+          <span data-en>NAMED SOURCES · PENDING AUTHORIZATION (P19)</span>
+          <span data-pt>FONTES NOMEADAS · AGUARDA AUTORIZAÇÃO (P19)</span>
+        </p>
+        <div class="chips" style="margin-bottom:28px">
+          <span class="chip">DETEC</span>
+          <span class="chip">Rehagro</span>
+          <span class="chip">NITEC/UNESP</span>
+          <span class="chip">JP Agrícola</span>
+          <span class="chip">Terras Gerais</span>
+          <span class="chip">UENP</span>
+        </div>
+
+        <a class="btn" href="#faixa"><span data-en>Request the trial reports</span><span data-pt>Peça os relatórios de ensaio</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================== [S8] A FAIXA DE TESTE ==== -->
+<section class="sec sec--verde" id="faixa">
+  <div class="wrap">
+    <p class="note" style="background:#123f28;color:#dff0e5;border-color:var(--lima)">
+      <span class="note__id">S8</span><b>A faixa de teste.</b> <i>(era "Contato")</i>
+      Conversão. A oferta mudou: em vez de "fale conosco", uma faixa de teste na lavoura do próprio
+      visitante. <span class="note__selo selo-pend">Aguarda decisão comercial</span><br>
+      <b>Por quê:</b> o estudo do eFields (Ohio State, <i>Agronomy Journal</i>) mostra que o produtor
+      que conduz o próprio ensaio adota mais do que o que apenas recebe o dado. A faixa resolve quatro
+      problemas de uma vez: é a resposta honesta para "nenhum dado americano", funciona com qualquer
+      modelo de canal, é de baixo risco e mensurável por ele mesmo, e não depende de nenhuma pendência
+      regulatória — oferecer produto para teste não é claim.<br>
+      <b>Confirmar antes de desenhar:</b> a LLC banca o produto da faixa? Quantos acres, quantos
+      produtores por safra, quem acompanha a colheita? Se a resposta for não, a headline recua para
+      <i>Tell us what you're growing</i> e o formulário fica idêntico — um bloco de texto, nenhum
+      redesenho.<br>
+      <b>Outros bloqueios:</b> P11 (quem atende e SLA), P18 (privacidade / CCPA), P27 (CRM). Nove
+      campos é o teto — cada campo a mais derruba a conversão, e a meta do PRD é 2,5%.</p>
+
+    <div class="sec-head">
+      <h2 class="h-lg">
+        <span data-en>Run a trial strip on your own acres. We supply the product.</span>
+        <span data-pt>Faça uma faixa de teste na sua lavoura. O produto é por nossa conta.</span>
+      </h2>
+      <p class="corpo">
+        <span data-en>Pick a field. Leave an untreated check strip beside it. We bring the product and
+          come back at harvest with you. Your result, on your acres, against your own check.</span>
+        <span data-pt>Escolha o talhão. Deixe uma faixa testemunha ao lado. Levamos o produto e
+          voltamos na colheita com você. Seu resultado, nos seus acres, contra a sua testemunha.</span>
+      </p>
+    </div>
+
+    <!-- Três passos: o método da faixa é o mesmo método dos ensaios da casa.
+         Dizer isso em voz alta é o que torna a oferta crível. -->
+    <div class="grid-3" style="margin-bottom:clamp(34px,4.5vw,56px)">
+      <article class="card">
+        <div class="card__top"></div>
+        <p class="fonte" style="margin:0">01</p>
+        <h3 class="h-sm"><span data-en>Pick the field</span><span data-pt>Escolha o talhão</span></h3>
+        <p class="corpo" style="margin:0">
+          <span data-en>One field, one pass, the crop you already planned. Nothing changes in your program.</span>
+          <span data-pt>Um talhão, uma aplicação, a cultura que você já planejou. Nada muda no seu programa.</span>
+        </p>
+      </article>
+      <article class="card">
+        <div class="card__top"></div>
+        <p class="fonte" style="margin:0">02</p>
+        <h3 class="h-sm"><span data-en>Leave the check</span><span data-pt>Deixe a testemunha</span></h3>
+        <p class="corpo" style="margin:0">
+          <span data-en>An untreated strip beside it. That is the whole method — the same one behind
+            every number on this site.</span>
+          <span data-pt>Uma faixa não tratada ao lado. É o método inteiro — o mesmo que está por trás
+            de todo número deste site.</span>
+        </p>
+      </article>
+      <article class="card">
+        <div class="card__top"></div>
+        <p class="fonte" style="margin:0">03</p>
+        <h3 class="h-sm"><span data-en>Read it at harvest</span><span data-pt>Leia na colheita</span></h3>
+        <p class="corpo" style="margin:0">
+          <span data-en>Yield monitor data, side by side. The number is yours either way — including
+            if it doesn't separate.</span>
+          <span data-pt>Dado do monitor de produtividade, lado a lado. O número é seu de todo jeito —
+            inclusive se não separar.</span>
+        </p>
+      </article>
+    </div>
+
+    <div class="split split--form">
+      <form class="form">
+        <label><span data-en>Full name</span><span data-pt>Nome completo</span>
+          <input type="text" required></label>
+        <label><span data-en>Farm or company</span><span data-pt>Fazenda ou empresa</span>
+          <input type="text"></label>
+        <label><span data-en>State</span><span data-pt>Estado</span>
+          <select><option>Iowa</option><option>Illinois</option><option>Nebraska</option>
+            <option>Florida</option><option>California</option><option>Texas</option></select></label>
+        <label><span data-en>Primary crop</span><span data-pt>Cultura principal</span>
+          <select><option>Corn</option><option>Soybeans</option><option>Cotton</option>
+            <option>Specialty crops</option></select></label>
+        <label><span data-en>Acres</span><span data-pt>Acres</span>
+          <select><option>&lt;500</option><option>500–2,000</option><option>2,000–10,000</option>
+            <option>10,000+</option></select></label>
+        <label>Email <input type="email" required></label>
+        <label class="full"><span data-en>What are you trying to solve?</span><span data-pt>O que você quer resolver?</span>
+          <textarea></textarea></label>
+        <label class="full check">
+          <input type="checkbox">
+          <span data-en>I'd like a call from an agronomist</span><span data-pt>Quero uma ligação de um agrônomo</span>
+        </label>
+        <div class="full">
+          <button class="btn btn--lima" type="submit"><span data-en>Send</span><span data-pt>Enviar</span></button>
+          <p class="mini" data-form-msg hidden style="margin-top:12px;color:var(--lima)">
+            <span data-en>Prototype only — nothing was sent.</span>
+            <span data-pt>Apenas protótipo — nada foi enviado.</span>
+          </p>
+          <p class="mini" style="margin-top:14px">
+            <span data-en>By sending this, you agree to our Privacy Policy. We use your information
+              to answer this request and nothing else.</span>
+            <span data-pt>Ao enviar, você concorda com nossa Política de Privacidade. Usamos suas
+              informações para responder a esta solicitação e nada além disso.</span>
+          </p>
+        </div>
+      </form>
+
+      <div>
+        <p class="eyebrow eyebrow--claro"><span data-en>U.S. OPERATION</span><span data-pt>OPERAÇÃO AMERICANA</span></p>
+        <p class="h-sm" style="margin-bottom:10px">Juma-Agro Fertilizer LLC</p>
+        <p class="corpo" style="margin:0 0 18px">3928 Anchuca Drive, Suite 11<br>Lakeland, FL 33811</p>
+        <p class="mini" style="margin-bottom:28px">
+          <span data-en>Product, agronomic support and orders for the U.S. market. Contact name,
+            phone and hours pending P11.</span>
+          <span data-pt>Produto, suporte agronômico e pedidos para o mercado americano. Nome de
+            contato, telefone e horário pendentes de P11.</span>
+        </p>
+
+        <!-- Degraus 2 e 3 da escada de CTA. Quem não está pronto para a faixa
+             ainda tem duas portas, e as duas alimentam o mesmo formulário. -->
+        <p class="eyebrow eyebrow--claro" style="margin-bottom:10px">
+          <span data-en>NOT READY FOR A STRIP?</span><span data-pt>AINDA NÃO É HORA DA FAIXA?</span>
+        </p>
+        <div class="btn-row" style="flex-direction:column;align-items:flex-start">
+          <a class="btn btn--linha" href="#produtos">
+            <span data-en>Get the label and rate sheet</span><span data-pt>Receba o rótulo e a tabela de doses</span>
+          </a>
+          <a class="btn btn--linha" href="#metodo">
+            <span data-en>Talk to an agronomist</span><span data-pt>Fale com um agrônomo</span>
+          </a>
+        </div>
+        <p class="mini" style="margin-top:12px">
+          <span data-en>The second option only goes live if the U.S. team includes an agronomist — P11.</span>
+          <span data-pt>O segundo botão só vai ao ar se o time americano tiver agrônomo de fato — P11.</span>
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====================================================== [S9] FOOTER ==== -->
+<footer class="ft">
+  <div class="wrap">
+    <p class="note" style="background:#4a4a3a;color:#f3f0dd;border-color:var(--lima)">
+      <span class="note__id">S9</span><b>Footer.</b>
+      Endereço americano, navegação, jurídico e o vínculo com a matriz.
+      <span class="note__selo selo-pend">Aguarda dado da Juma</span>
+      P16, P17, P18 e P26. Decisão pendente: o <b>/en</b> do site brasileiro precisa receber canonical
+      apontando para cá ou ser despublicado.</p>
+
+    <div class="ft__grid">
+      <div>
+        <p class="hd__logo" style="color:#fff;display:block;margin-bottom:12px">JUMA-AGRO <span style="color:rgba(255,255,255,.7)">Fertilizer LLC</span></p>
+        <p class="mini" style="color:var(--texto-claro);margin:0 0 10px">
+          3928 Anchuca Drive, Suite 11 · Lakeland, FL 33811
+        </p>
+        <p class="mini" style="color:var(--texto-claro);margin:0">
+          <span data-en>A subsidiary of Juma Agro — family-run in Mogi Guaçu, Brazil, since 1988.</span>
+          <span data-pt>Uma subsidiária da Juma Agro — empresa familiar em Mogi Guaçu, Brasil, desde 1988.</span>
+        </p>
+      </div>
+
+      <div class="ft__col">
+        <h4><span data-en>Products</span><span data-pt>Produtos</span></h4>
+        <ul><li><a href="kmep-ultra.html">KMEP Ultra®</a></li><li><a href="aminosan.html">Aminosan®</a></li></ul>
+      </div>
+      <div class="ft__col">
+        <h4><span data-en>Company</span><span data-pt>Empresa</span></h4>
+        <ul>
+          <li><a href="#brasil"><span data-en>About</span><span data-pt>Sobre</span></a></li>
+          <li><a href="#metodo"><span data-en>Trials</span><span data-pt>Ensaios</span></a></li>
+          <li><a href="#faixa"><span data-en>Contact</span><span data-pt>Contato</span></a></li>
+        </ul>
+      </div>
+      <div class="ft__col">
+        <h4><span data-en>Legal</span><span data-pt>Jurídico</span></h4>
+        <ul>
+          <li><a href="#"><span data-en>Privacy Policy</span><span data-pt>Política de Privacidade</span></a></li>
+          <li><a href="#"><span data-en>Terms of Use</span><span data-pt>Termos de Uso</span></a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="ft__base">
+      <p class="mini" style="color:var(--texto-claro);margin:0;max-width:70ch">
+        <span data-en>Trial results shown on this site come from field trials conducted in Brazil.
+          Field performance varies with climate, soil and management. Always read and follow the label.</span>
+        <span data-pt>Os resultados de ensaio mostrados neste site vêm de ensaios de campo conduzidos
+          no Brasil. O desempenho em campo varia com clima, solo e manejo. Sempre leia e siga o rótulo.</span>
+      </p>
+      <p class="mini" style="color:var(--texto-claro);margin:0">© 2026 Juma-Agro Fertilizer LLC.</p>
+    </div>
+  </div>
+</footer>
+
+<!-- ============================================ ferramentas do protótipo -->
+<div class="tools">
+  <button type="button" data-toggle-notes aria-pressed="false">
+    <span data-en>Section notes</span><span data-pt>Notas de seção</span>
+  </button>
+</div>
+
+<script src="assets/js/app.js?v=3"></script>
+</body>
+</html>

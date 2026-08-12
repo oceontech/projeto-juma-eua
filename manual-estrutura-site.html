@@ -1,0 +1,1189 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Estrutura do site — Juma-Agro EUA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Montserrat:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* Paleta oficial ---------------------------------------------------- */
+  --verde:#004C26;
+  --carvao:#2A2A2A;
+  --oliva:#3A6023;
+  --lima:#B7C73E;
+  --areia:#CCC29D;
+  --offwhite:#F6FFEE;
+
+  --dust:#A3A597;
+  --linha:rgba(246,255,238,.15);
+  --linha-forte:rgba(246,255,238,.28);
+
+  --disp:"Space Grotesk","Segoe UI",system-ui,sans-serif;
+  --body:"Montserrat","Segoe UI",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;background:var(--carvao);color:var(--offwhite);
+  font-family:var(--body);font-size:16px;line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1060px;margin:0 auto;padding:0 28px}
+h1,h2,h3,h4{font-family:var(--disp);font-weight:700;line-height:1.04;margin:0;letter-spacing:-.02em}
+h1{font-size:clamp(40px,7vw,84px);letter-spacing:-.03em}
+h2{font-size:clamp(28px,4.2vw,46px)}
+h3{font-size:clamp(19px,2.4vw,25px)}
+h4{font-size:16px;letter-spacing:0}
+p{margin:0 0 16px}
+a{color:var(--lima)}
+strong{font-weight:700}
+.meta{font-family:var(--mono);font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:var(--dust)}
+
+/* ---- capa ---- */
+.cover{padding:84px 0 60px;border-bottom:1px solid var(--linha)}
+.cover .meta{margin-bottom:26px}
+.cover h1{margin-bottom:22px;max-width:15ch}
+.cover .lede{font-size:19px;max-width:58ch;color:#DDE4D4}
+.rule{width:60px;height:5px;background:var(--lima);margin:28px 0}
+.cover .nav{display:flex;flex-wrap:wrap;gap:8px;margin-top:34px}
+.cover .nav a{
+  font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--dust);border:1px solid var(--linha);padding:7px 12px;text-decoration:none;
+}
+.cover .nav a:hover{color:var(--lima);border-color:var(--lima)}
+
+/* ---- seções ---- */
+section{padding:64px 0;border-bottom:1px solid var(--linha)}
+.snum{font-family:var(--mono);font-size:12px;letter-spacing:.2em;color:var(--lima);display:block;margin-bottom:12px}
+.shead{margin-bottom:14px}
+.sdek{color:var(--dust);max-width:64ch;margin-bottom:34px}
+
+/* ---- card claro: o elemento de assinatura ---- */
+.spec{
+  background:var(--offwhite);color:#22261E;border-radius:3px;
+  padding:26px 26px 20px;margin:22px 0;border-top:5px solid var(--lima);
+}
+.spec h3,.spec h4{color:#161A12}
+.spec p{color:#3A4034}
+.spec .src{
+  font-family:var(--mono);font-size:11px;color:#6B7062;
+  border-top:1px solid rgba(34,38,30,.16);padding-top:10px;margin-top:16px;letter-spacing:.03em;
+}
+.spec--areia{background:var(--areia);border-top-color:var(--verde)}
+.spec--areia p{color:#3A382C}
+.spec--verde{background:var(--verde);color:var(--offwhite);border-top-color:var(--lima)}
+.spec--verde h3,.spec--verde h4{color:var(--offwhite)}
+.spec--verde p{color:#D6E3D6}
+
+/* ---- linhas de fato: afirmação | consequência ---- */
+.fact{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--linha)}
+.fact:last-of-type{border-bottom:1px solid var(--linha)}
+.fact>div{padding:20px 22px 20px 0}
+.fact>div+div{padding-left:22px;border-left:1px solid var(--linha)}
+.fact strong{display:block;font-family:var(--disp);font-size:19px;margin-bottom:6px;letter-spacing:-.01em}
+.fact .imp{color:var(--lima);font-family:var(--mono);font-size:10px;letter-spacing:.16em;
+  text-transform:uppercase;display:block;margin-bottom:8px}
+.fact p{margin:0;color:var(--dust)}
+.fact p+p{margin-top:10px}
+
+/* ---- paleta ---- */
+.pal{display:grid;grid-template-columns:repeat(auto-fit,minmax(148px,1fr));gap:12px;margin:22px 0}
+.sw{border:1px solid var(--linha);border-radius:3px;overflow:hidden}
+.sw .chip{height:88px}
+.sw .lab{padding:10px 12px;font-family:var(--mono);font-size:11px;line-height:1.55}
+.sw .lab b{display:block;font-size:11.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--offwhite)}
+.sw .lab span{color:var(--dust)}
+
+/* ---- espécime tipográfico ---- */
+.type{border:1px solid var(--linha);padding:22px;margin:18px 0}
+.type .d{font-family:var(--disp);font-size:clamp(30px,5.4vw,54px);line-height:1;font-weight:700;letter-spacing:-.03em}
+.type .b{font-family:var(--body);font-size:16px;margin-top:14px;color:#DDE4D4;max-width:62ch}
+.type .m{font-family:var(--mono);font-size:12px;margin-top:14px;color:var(--dust);letter-spacing:.06em}
+
+/* ---- faz / não faz ---- */
+.dd{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:22px 0}
+.dd>div{border:1px solid var(--linha);padding:18px 20px}
+.dd .yes{border-color:rgba(183,199,62,.5)}
+.dd h4{margin-bottom:12px}
+.dd .yes h4{color:var(--lima)}
+.dd .no h4{color:var(--dust)}
+.dd ul{margin:0;padding-left:18px}
+.dd li{margin-bottom:7px;font-size:15px;color:#DDE4D4}
+.dd li::marker{color:var(--dust)}
+
+/* ---- wireframe ---- */
+.wf{font-family:var(--mono);font-size:12px;line-height:1.7;background:#1F1F1F;
+  border:1px solid var(--linha);padding:20px;overflow-x:auto;white-space:pre;color:#CDD3C3}
+.wf b{color:var(--lima);font-weight:500}
+
+/* ---- blocos de seção do site ---- */
+.blk{display:grid;grid-template-columns:112px 1fr;gap:0 24px;
+  padding:22px 0;border-top:1px solid rgba(246,255,238,.09)}
+.blk:first-of-type{border-top:1px solid var(--linha)}
+.blk .rail{display:flex;flex-direction:column;gap:8px;align-items:flex-start}
+.blk .id{font-family:var(--mono);font-size:12.5px;font-weight:500;letter-spacing:.05em;
+  background:var(--lima);color:var(--carvao);padding:3px 9px;border-radius:2px}
+.blk .bg{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--dust);line-height:1.5}
+.blk h4{margin-bottom:6px;font-size:18px;font-family:var(--disp)}
+.blk .fn{color:var(--lima);font-size:13.5px;margin-bottom:12px;font-style:italic}
+.blk p{color:#DDE4D4;font-size:15px;margin-bottom:10px}
+.blk p:last-child{margin-bottom:0}
+.blk .obs{color:var(--dust);font-size:14px;border-left:2px solid var(--linha-forte);padding-left:14px}
+.blk .obs b{color:var(--offwhite)}
+
+/* ---- selos ---- */
+.selo{display:inline-block;font-family:var(--mono);font-size:10px;letter-spacing:.1em;
+  text-transform:uppercase;padding:2px 8px;border-radius:2px;line-height:1.7}
+.s-ok{background:rgba(183,199,62,.18);color:var(--lima)}
+.s-esp{background:rgba(204,194,157,.18);color:var(--areia)}
+.s-hold{background:rgba(214,110,90,.18);color:#E39C88}
+.s-rev{background:rgba(120,170,220,.16);color:#96BEE0}
+
+/* ---- ato ---- */
+.ato{display:flex;align-items:baseline;gap:14px;margin:44px 0 6px;padding-bottom:10px;
+  border-bottom:1px solid var(--linha-forte)}
+.ato .r{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--lima)}
+.ato h3{font-size:20px}
+.ato .w{margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--dust)}
+
+/* ---- tabela ---- */
+.tw{overflow-x:auto;margin:20px 0}
+table{width:100%;border-collapse:collapse;font-size:14.5px;min-width:520px}
+th,td{text-align:left;padding:12px 14px 12px 0;border-bottom:1px solid var(--linha);vertical-align:top}
+th{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--dust);font-weight:500;white-space:nowrap}
+td{color:#DDE4D4}
+td.ban{color:#E39C88}
+td.ok{color:var(--lima)}
+tr.hi td{background:rgba(183,199,62,.07)}
+.mono{font-family:var(--mono);font-size:12.5px;letter-spacing:.01em}
+
+/* ---- checklist ---- */
+.check{list-style:none;padding:0;margin:0}
+.check li{padding:12px 0 12px 34px;border-bottom:1px solid var(--linha);position:relative;font-size:15px;color:#DDE4D4}
+.check li::before{content:"";position:absolute;left:0;top:16px;width:14px;height:14px;border:1px solid var(--lima)}
+
+footer{padding:46px 0 76px;color:var(--dust);font-size:13.5px}
+footer p{max-width:74ch}
+
+@media(max-width:760px){
+  .fact,.dd{grid-template-columns:1fr}
+  .fact>div+div{padding-left:0;border-left:none;border-top:1px solid var(--linha)}
+  .blk{grid-template-columns:1fr;gap:12px}
+  .blk .rail{flex-direction:row;flex-wrap:wrap;align-items:center}
+  .ato{flex-wrap:wrap}
+  .ato .w{margin-left:0;flex-basis:100%}
+  .wrap{padding:0 20px}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+<!-- ============================================================== CAPA ==== -->
+<header class="cover">
+  <div class="meta">Manual de estrutura · Site Juma-Agro EUA · v1 · ago/2026 · Oceon</div>
+  <h1>Como o site<br>é montado</h1>
+  <div class="rule"></div>
+  <p class="lede">As três páginas, seção por seção: o que cada bloco diz, por que ele está nessa
+    ordem e o que acontece com ele se a informação que o alimenta não chegar. Este documento é a
+    planta baixa — a copy inteira está no documento de estrutura e copy.</p>
+  <nav class="nav">
+    <a href="#sistema">01 · O sistema</a>
+    <a href="#decisoes">02 · As decisões</a>
+    <a href="#visual">03 · Direção visual</a>
+    <a href="#home">04 · Home</a>
+    <a href="#template">05 · Template de produto</a>
+    <a href="#kmep">06 · KMEP Ultra</a>
+    <a href="#aminosan">07 · Aminosan</a>
+    <a href="#trava">08 · O que trava o quê</a>
+    <a href="#checklist">09 · Checklist</a>
+  </nav>
+</header>
+
+<!-- ========================================================== 01 SISTEMA ==== -->
+<section id="sistema">
+  <span class="snum">01 — O sistema</span>
+  <h2 class="shead">Três páginas,<br>uma gramática</h2>
+  <p class="sdek">Antes das seções, o que precisa estar claro para todo mundo que abre o Figma ou o
+    código: como as páginas são identificadas, como elas se dividem e o que significa cada selo.</p>
+
+  <div class="fact">
+    <div>
+      <strong>Os identificadores</strong>
+      <p>Cada seção tem um código fixo, usado no Figma, no código e nas conversas do time:
+        <span class="mono">S0–S9</span> na Home, <span class="mono">K1–K12</span> no KMEP Ultra,
+        <span class="mono">A1–A12</span> no Aminosan.</p>
+    </div>
+    <div>
+      <span class="imp">Por que importa</span>
+      <p>Nenhuma seção foi renumerada nesta versão. Quatro mudaram de conteúdo e estão marcadas com o
+        de/para. Isso mantém a rastreabilidade com o protótipo e com o documento de copy — quando
+        alguém disser "arruma o K6", todo mundo abre a mesma coisa.</p>
+    </div>
+  </div>
+
+  <div class="fact">
+    <div>
+      <strong>Os quatro atos</strong>
+      <p>As páginas de produto são lidas em quatro movimentos: reconhecimento, mecanismo, prova,
+        operação e decisão.</p>
+    </div>
+    <div>
+      <span class="imp">A lógica</span>
+      <p>O visitante precisa <strong>se reconhecer</strong> antes de entender, <strong>entender</strong>
+        antes de acreditar, e <strong>acreditar</strong> antes de conseguir operar. Uma seção fora do
+        seu ato quebra a leitura mesmo estando bem escrita.</p>
+    </div>
+  </div>
+
+  <div class="fact">
+    <div>
+      <strong>O site precisa funcionar em qualquer ordem de leitura</strong>
+      <p>O funil não é linear neste mercado. O visitante entra pelo meio, sai, volta por outro link,
+        e às vezes quem lê é o revendedor, em voz alta, dentro da caminhonete.</p>
+    </div>
+    <div>
+      <span class="imp">Consequência</span>
+      <p>Toda seção precisa fazer sentido sozinha. Nenhuma pode depender da anterior para ser
+        entendida — e todo bloco com número carrega a própria fonte, sem exigir que o leitor tenha
+        passado por outra seção.</p>
+    </div>
+  </div>
+
+  <h3 style="margin:38px 0 8px">Os quatro selos</h3>
+  <p class="meta">Aparecem no protótipo, no modo "notas de seção", e devem aparecer no Figma.</p>
+  <div class="tw">
+    <table>
+      <thead><tr><th style="width:24%">Selo</th><th>Significa</th><th style="width:26%">Quem destrava</th></tr></thead>
+      <tbody>
+        <tr><td><span class="selo s-ok">Pode publicar</span></td>
+          <td>Copy nutricional, operacional ou institucional. Sem claim de mecanismo sobre praga ou crescimento.</td>
+          <td>Ninguém — já está livre</td></tr>
+        <tr><td><span class="selo s-esp">Aguarda dado</span></td>
+          <td>A estrutura está pronta, falta o número: preço, dose, testemunha, declaração de garantia.</td>
+          <td>Técnico e comercial da Juma</td></tr>
+        <tr><td><span class="selo s-rev">Revisar</span></td>
+          <td>Provavelmente seguro, mas está perto da linha. Vale uma leitura antes de publicar.</td>
+          <td>Regulatório da LLC</td></tr>
+        <tr><td><span class="selo s-hold">HOLD</span></td>
+          <td>Contém claim que pode enquadrar o produto como pesticida ou regulador de crescimento sob a FIFRA.</td>
+          <td>Regulatório da LLC, por escrito</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="spec">
+    <h4>A regra que não se negocia</h4>
+    <p>Nenhuma linha marcada HOLD vai ao ar sem aprovação por escrito de quem responde pelo
+      regulatório da Juma-Agro Fertilizer LLC. Não é conservadorismo: o precedente é uma multa de
+      <strong>US$ 437 mil</strong> aplicada pela EPA a um fabricante de biostimulante por frases de
+      rótulo — não por composição de produto.</p>
+    <div class="src">EPA · draft guidance para claims de regulador de crescimento (2020, política vigente) · não constitui parecer jurídico</div>
+  </div>
+</section>
+
+<!-- ========================================================= 02 DECISÕES ==== -->
+<section id="decisoes">
+  <span class="snum">02 — As decisões</span>
+  <h2 class="shead">Cinco escolhas que<br>a estrutura assume</h2>
+  <p class="sdek">Os documentos do projeto foram escritos em dias diferentes e discordavam em quatro
+    pontos que atingem o desenho. Aqui estão resolvidos, com o motivo de cada um.</p>
+
+  <div class="fact">
+    <div>
+      <strong>1 · Ritmo: escuro documental × claro de dado</strong>
+      <p>Fundo padrão claro. O verde profundo marca os momentos de autoridade institucional. O bloco
+        de prova é sempre um card claro sobre fundo escuro, ou um bloco escuro sobre fundo claro.</p>
+    </div>
+    <div>
+      <span class="imp">A regra prática</span>
+      <p>A inversão é o que comunica "aqui vem número". <strong>No máximo três inversões por
+        página</strong> — mais que isso vira listra e o sinal perde força.</p>
+    </div>
+  </div>
+
+  <div class="fact">
+    <div>
+      <strong>2 · Paleta: a da marca, sem acrescentar acento novo</strong>
+      <p>Verde profundo como base institucional, off-white como fundo padrão, lima como acento único,
+        areia como respiro, carvão para o slot editorial.</p>
+    </div>
+    <div>
+      <span class="imp">A regra do acento</span>
+      <p>O lima existe para marcar <strong>número, CTA e estado ativo</strong>. Se ele aparecer em
+        mais de três lugares numa tela, está errado.</p>
+    </div>
+  </div>
+
+  <div class="fact">
+    <div>
+      <strong>3 · Tipografia: a dupla da marca, mais uma mono</strong>
+      <p>Space Grotesk no display, Montserrat no corpo — e uma terceira família, mono, exclusiva para
+        o que é verificável: fonte de ensaio, dose, unidade, estágio, número de registro.</p>
+    </div>
+    <div>
+      <span class="imp">Por que a terceira</span>
+      <p>A mono não é decoração: é a assinatura tipográfica da credibilidade. Quando o leitor vê mono,
+        aprende que aquilo é conferível. Custa nada e organiza a página inteira.</p>
+    </div>
+  </div>
+
+  <div class="fact">
+    <div>
+      <strong>4 · CTA: a faixa de teste vem antes da conversa</strong>
+      <p>Uma escada de três degraus, com <em>"Run a trial strip — we supply the product"</em> no
+        topo, o rótulo e a tabela de doses no meio, e a conversa com agrônomo embaixo.</p>
+    </div>
+    <div>
+      <span class="imp">Base da decisão</span>
+      <p>Estudo do programa eFields (Ohio State, <em>Agronomy Journal</em>): produtores que conduziram
+        o próprio ensaio adotaram mais do que os que apenas receberam o dado. É o preditor de adoção
+        mais forte identificado na pesquisa.</p>
+    </div>
+  </div>
+
+  <div class="fact">
+    <div>
+      <strong>5 · KMEP Ultra: eixo adjuvante, com o potássio embutido</strong>
+      <p>Três posicionamentos eram possíveis. A página está escrita no eixo do adjuvante de calda —
+        deposição e cobertura — com o potássio foliar como benefício da mesma gota.</p>
+    </div>
+    <div>
+      <span class="imp">O que isso resolve</span>
+      <p>O eixo puramente nutricional não tinha resposta para <em>"qual a diferença para um 0-0-25
+        barato?"</em>, que é a primeira objeção de um agrônomo de retail. O eixo adjuvante tem, porque
+        tira a conversa da comparação entre duas fontes de potássio.</p>
+    </div>
+  </div>
+
+  <div class="spec">
+    <h3>A escada de CTA, em três degraus</h3>
+    <p><strong>1 · Primário —</strong> <em>Run a trial strip on your own acres. We supply the
+      product.</em> Escolha um talhão, deixe uma faixa testemunha ao lado, levamos o produto e
+      voltamos na colheita.</p>
+    <p><strong>2 · Secundário —</strong> <em>Get the label and rate sheet.</em> Para quem quer avaliar
+      antes de falar com alguém.</p>
+    <p><strong>3 · Terciário —</strong> <em>Talk to an agronomist.</em> Só entra se o time americano
+      tiver agrônomo de fato.</p>
+    <p style="margin-top:18px"><strong>Por que a faixa resolve mais de um problema de uma vez:</strong>
+      é a resposta honesta para "quarenta anos e nenhum dado americano" — em vez de desviar, começa a
+      produzir o dado; funciona com qualquer modelo de canal, porque produtor, revenda e retail todos
+      aceitam uma faixa com testemunha ao lado; é de baixo risco e mensurável por quem decide; e não
+      depende de nenhuma pendência regulatória, porque oferecer produto para teste não é claim.</p>
+    <div class="src">Confirmar com a Juma antes de desenhar: a LLC banca o produto da faixa? Quantos acres, quantos produtores por safra, quem acompanha a colheita? Se a resposta for não, a headline recua e o formulário fica idêntico — nenhum redesenho.</div>
+  </div>
+
+  <h3 style="margin:38px 0 10px">Os três eixos do KMEP Ultra, lado a lado</h3>
+  <div class="tw">
+    <table>
+      <thead><tr><th style="width:20%"></th><th>Eixo A · potássio foliar</th><th>Eixo B · adjuvante de calda</th><th>Eixo C · desalojante</th></tr></thead>
+      <tbody>
+        <tr><td><strong>O que o produto é</strong></td>
+          <td>Fonte de potássio aplicada junto</td>
+          <td>Parceiro de tanque que melhora deposição e cobertura</td>
+          <td>Produto que altera onde o inseto está</td></tr>
+        <tr><td><strong>Risco FIFRA</strong></td>
+          <td class="ok">Nenhum</td>
+          <td class="ok">Baixo — é a categoria em que Helena e WinField operam</td>
+          <td class="ban">Alto — precedente de US$ 437 mil</td></tr>
+        <tr><td><strong>Substanciação exigida</strong></td>
+          <td>Declaração de garantia</td>
+          <td><strong>Dado de deposição ou tensão superficial</strong></td>
+          <td>Registro na EPA</td></tr>
+        <tr class="hi"><td><strong>Força comercial</strong></td>
+          <td>Fraca — compete com 0-0-25 e KTS, que são baratos</td>
+          <td><strong>Forte</strong> — categoria reconhecida, sem disputa de preço de commodity</td>
+          <td>Máxima, indisponível</td></tr>
+        <tr><td><strong>Status</strong></td>
+          <td><span class="selo s-ok">Pode publicar</span></td>
+          <td><span class="selo s-rev">Aguarda P31</span></td>
+          <td><span class="selo s-hold">HOLD</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="spec spec--areia">
+    <h4>O pedido novo que decide o posicionamento — P31</h4>
+    <p>Existe ensaio de <strong>deposição, cobertura, espectro de gotas ou tensão superficial</strong>
+      do KMEP Ultra? Cartão hidrossensível serve. <strong>A Juma provavelmente já tem:</strong> o
+      NITEC/UNESP fez túnel de vento para a Linha Redutan, e o Projeto DESATA com a UENP é justamente
+      tecnologia de aplicação. Se existir o equivalente para o KMEP, o eixo B nasce ancorado em
+      universidade pública — que é a moeda de credibilidade mais forte do mercado americano.</p>
+    <p style="margin-bottom:0">Se P31 voltar vazio, a página publica no eixo A e o slot editorial
+      <span class="mono">K8</span> troca de conteúdo. Nenhum bloco é redesenhado.</p>
+  </div>
+</section>
+
+<!-- =========================================================== 03 VISUAL ==== -->
+<section id="visual">
+  <span class="snum">03 — Direção visual</span>
+  <h2 class="shead">O que o desenho<br>precisa comunicar</h2>
+  <p class="sdek">Não é um manual de marca — é o conjunto mínimo de regras que faz o site parecer
+    documento técnico e não campanha. Tudo aqui deriva de um princípio: neste mercado o produtor não
+    compra entusiasmo, compra evidência.</p>
+
+  <h3 style="margin-bottom:6px">3.1 — Paleta</h3>
+  <p class="meta">Um acento só. Verde para autoridade, areia e off-white para respiro, carvão para o bloco editorial.</p>
+  <div class="pal">
+    <div class="sw"><div class="chip" style="background:#004C26"></div><div class="lab"><b>Verde</b><span>#004C26 · base institucional</span></div></div>
+    <div class="sw"><div class="chip" style="background:#2A2A2A"></div><div class="lab"><b>Carvão</b><span>#2A2A2A · texto e slot editorial</span></div></div>
+    <div class="sw"><div class="chip" style="background:#3A6023"></div><div class="lab"><b>Oliva</b><span>#3A6023 · apoio e hover</span></div></div>
+    <div class="sw"><div class="chip" style="background:#B7C73E"></div><div class="lab"><b>Lima</b><span>#B7C73E · acento único</span></div></div>
+    <div class="sw"><div class="chip" style="background:#CCC29D"></div><div class="lab"><b>Areia</b><span>#CCC29D · respiro</span></div></div>
+    <div class="sw"><div class="chip" style="background:#F6FFEE"></div><div class="lab"><b>Off-white</b><span>#F6FFEE · fundo claro</span></div></div>
+  </div>
+  <p><strong>Regra do acento:</strong> o lima existe para marcar número, CTA e estado ativo. Se
+    aparecer em mais de três lugares numa tela, está errado.</p>
+
+  <h3 style="margin:36px 0 6px">3.2 — Tipografia</h3>
+  <p class="meta">Display para título e número. Corpo para leitura. Mono para o que é conferível.</p>
+  <div class="type">
+    <div class="d">Every number here<br>names its check</div>
+    <div class="b">Space Grotesk 700 no display, Montserrat 400/600 no corpo. Título em caixa alta e
+      baixa, tracking apertado, quebra de linha manual. Nunca script, arredondada ou serifa decorativa.</div>
+    <div class="m">IBM PLEX MONO · REHAGRO TRIAL · BRAZIL · 221.3 vs 212.3 bu/ac · V4–V6 · fl oz/ac</div>
+  </div>
+  <p>A mono marca tudo que é verificável — fonte de ensaio, dose, unidade, estágio fenológico, número
+    de registro. É a assinatura tipográfica da credibilidade e o detalhe que mais barato constrói
+    autoridade neste público.</p>
+
+  <h3 style="margin:36px 0 6px">3.3 — O bloco de prova</h3>
+  <p class="meta">Elemento de assinatura. Aparece sempre que houver número — e nunca aparece incompleto.</p>
+  <div class="spec">
+    <div style="font-family:var(--disp);font-size:clamp(30px,6vw,54px);line-height:1;color:#161A12;letter-spacing:-.03em">
+      212.3 &nbsp;→&nbsp; +8.9 &nbsp;→&nbsp; 221.3
+    </div>
+    <p style="margin-top:12px"><strong>Testemunha · diferença · tratado.</strong> Milho, manejo com
+      KMEP Ultra. A testemunha vem primeiro, à esquerda: é ela que dá sentido ao número da direita.</p>
+    <div class="src">CORN · REHAGRO TRIAL · BRAZIL · ORIGINAIS 231,45 vs 222,12 sc/ha · ANO [PENDENTE]</div>
+  </div>
+  <div class="dd">
+    <div class="yes">
+      <h4>As três regras inegociáveis</h4>
+      <ul>
+        <li>Sempre tem a testemunha ao lado do número — <span class="mono">221.3 vs 212.3</span>, nunca <span class="mono">+8.9</span> sozinho</li>
+        <li>Sempre tem a fonte impressa embaixo, em mono, com local e ano</li>
+        <li>Dado brasileiro é identificado como brasileiro</li>
+      </ul>
+    </div>
+    <div class="no">
+      <h4>Por que a terceira é a mais contraintuitiva</h4>
+      <ul>
+        <li>Esconder a origem destrói mais credibilidade do que a origem custa</li>
+        <li>A testemunha do ensaio brasileiro (212,3 bu/ac em milho) coincide quase exatamente com a média nacional americana</li>
+        <li>Isso torna os ensaios diretamente comparáveis ao benchmark do visitante — é ativo, não ressalva</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3 style="margin:36px 0 6px">3.4 — Fotografia</h3>
+  <p class="meta">Documental, nunca publicitária. Nenhuma foto de banco de imagens em depoimento.</p>
+  <div class="dd">
+    <div class="yes">
+      <h4>Produzir estas</h4>
+      <ul>
+        <li>Dossel fechado <em>visto de dentro</em>, olhando para o baixeiro</li>
+        <li>Cartão hidrossensível na mão, testemunha ao lado</li>
+        <li>Bico e gota em macro, contra a folha</li>
+        <li>Autopropelido em barra, luz baixa, poeira visível</li>
+        <li>Grão em enchimento, tela do monitor de produtividade</li>
+        <li>Bota, terra, jaleco sujo — trabalho, não pose</li>
+      </ul>
+    </div>
+    <div class="no">
+      <h4>Evitar</h4>
+      <ul>
+        <li>Foto de lavoura brasileira num site americano — solo, terreno e maquinário denunciam</li>
+        <li>Mãos segurando muda, gotinha estilizada, raio de sol</li>
+        <li>Céu azul saturado e lavoura perfeita — lê como catálogo</li>
+        <li>Retrato de banco de imagens em depoimento</li>
+        <li>Ilustração vetorial de planta</li>
+      </ul>
+    </div>
+  </div>
+  <p><strong>Enquanto não houver foto americana:</strong> usar macro — folha, gota, cartão
+    hidrossensível, grão na mão, bico em close. <strong>Macro não tem sotaque. Paisagem aberta tem.</strong></p>
+
+  <h3 style="margin:36px 0 6px">3.5 — O que nunca aparece</h3>
+  <p>Gradiente decorativo · sombra dura · raio de borda em card (o sistema é raio 0) · ponto de
+    exclamação · superlativo sem número ao lado · ícone genérico dentro de card de benefício ·
+    <strong>duas plantas lado a lado com portes diferentes</strong>.</p>
+  <div class="spec spec--verde">
+    <h4>A última é regulatória, não estética</h4>
+    <p style="margin-bottom:0">Imagem de planta tratada visivelmente maior é a representação visual de
+      <em>plant growth regulator</em>, e carrega o mesmo risco que a frase equivalente — a EPA avalia
+      rótulo e material promocional como um conjunto. O antes/depois do site é sempre de
+      <strong>grão colhido e número medido</strong>, nunca de porte de planta.</p>
+  </div>
+</section>
+
+<!-- ============================================================= 04 HOME ==== -->
+<section id="home">
+  <span class="snum">04 — Página 1</span>
+  <h2 class="shead">Home</h2>
+  <p class="sdek">Oito seções em quatro atos, mais header e footer. A tarefa da Home é dupla: em dez
+    segundos, tirar da cabeça do visitante a ideia de que ele está num site brasileiro traduzido;
+    depois, distribuir para as duas páginas de produto e capturar o lead.</p>
+
+  <div class="spec spec--areia">
+    <h4>A estratégia que resolve a primeira tarefa</h4>
+    <p style="margin-bottom:0">É contraintuitiva: <strong>não esconder o Brasil — usá-lo no primeiro
+      parágrafo</strong>, como credencial técnica verificável. Quem esconde parece traduzido; quem
+      explica parece deliberado.</p>
+  </div>
+
+  <div class="wf">┌──────────────────────────────────────────────────────────┐
+│  <b>S0  HEADER</b>            fixo · CTA faixa de teste        │
+├──────────────────────────────────────────────────────────┤
+│  <b>S1  HERO</b>              escuro · quem, onde, por quê     │
+│  <b>S2  BARRA DE PROVA</b>    VERDE · 3 números + fonte        │
+├──────────────────────────────────────────────────────────┤
+│  <b>S3  O PROBLEMA</b>        claro · a dor, sem produto       │
+│  <b>S4  PRODUTOS</b>          areia · bifurcação, 2 cards      │
+├──────────────────────────────────────────────────────────┤
+│  <b>S5  CULTURAS + MAPA</b>   claro · isso serve pra você?     │
+│  <b>S6  BRAZIL</b>            VERDE · a objeção respondida     │
+│  <b>S7  O MÉTODO</b>          claro · por que acreditar        │
+├──────────────────────────────────────────────────────────┤
+│  <b>S8  A FAIXA DE TESTE</b>  VERDE · oferta + formulário      │
+│  <b>S9  FOOTER</b>            carvão · legal e endereço        │
+└──────────────────────────────────────────────────────────┘</div>
+
+  <div class="ato"><span class="r">Ato I</span><h3>Quem somos e por que acreditar</h3><span class="w">S1 · S2</span></div>
+
+  <div class="blk">
+    <div class="rail"><span class="id">S1</span><span class="bg">Escuro ou foto escurecida</span><span class="selo s-ok">Pode publicar</span></div>
+    <div>
+      <h4>Hero</h4>
+      <p class="fn">Dez segundos para dizer quem somos, onde estamos e por que o Brasil importa.</p>
+      <p>Abre com o <strong>endereço americano acima da headline</strong> — é a resposta mais rápida à
+        pergunta "isso é um site estrangeiro?" e custa uma linha. Headline:
+        <em>Proven where the growing season never stops.</em> O apoio explica o fato agronômico: no
+        Brasil se tiram duas e três safras do mesmo talhão, não há inverno para zerar a lavoura, e a
+        nutrição foliar da casa foi testada nisso por 38 anos, ensaio após ensaio, com a testemunha ao
+        lado.</p>
+      <p>Dois botões: a faixa de teste e o dado. Um card de prova ancorado na imagem traz o número com
+        a testemunha e a fonte — o cético encontra o dado sem rolar.</p>
+      <p class="obs"><b>Asset:</b> foto de lavoura americana em plano aberto. Sem ela, composição
+        tipográfica com bloco de cor — melhor que banco de imagens genérico. <b>Sem vídeo em loop:</b>
+        custa o LCP, que está nos critérios de aceite.</p>
+    </div>
+  </div>
+
+  <div class="blk">
+    <div class="rail"><span class="id">S2</span><span class="bg">Verde · tipografia pura</span><span class="selo s-esp">Aguarda dado</span></div>
+    <div>
+      <h4>Barra de prova</h4>
+      <p class="fn">É onde o cético decide se continua rolando.</p>
+      <p>Três números, cada um com a testemunha ao lado e a fonte embaixo em mono:
+        <span class="mono">221.3 vs 212.3 bu/ac</span> em milho, ensaio Rehagro;
+        <span class="mono">38 anos</span> de ensaios de campo, todos com fonte nomeada;
+        <span class="mono">laboratório próprio desde 1988</span>, todo lote testado antes de sair.
+        Um quarto slot fica reservado para o ensaio de soja do Aminosan.</p>
+      <p class="obs"><b>Se travar:</b> publica com três. Três números sólidos valem mais que quatro
+        com um frágil. <b>Sem ícone</b> — esta seção é tipografia, e ícone ao lado de número enfraquece.</p>
+    </div>
+  </div>
+
+  <div class="ato"><span class="r">Ato II</span><h3>A dor e a bifurcação</h3><span class="w">S3 · S4</span></div>
+
+  <div class="blk">
+    <div class="rail"><span class="id">S3</span><span class="bg">Claro · muito respiro</span><span class="selo s-ok">Pode publicar</span></div>
+    <div>
+      <h4>O problema</h4>
+      <p class="fn">Nomear a dor antes de mostrar produto. Se o visitante não se reconhecer aqui, o resto é catálogo.</p>
+      <p><em>The yield you lost isn't on the soil test.</em> Você corrigiu a fertilidade, seguiu o
+        programa, e o estande parecia carregar mais do que o monitor mostrou na colheita. O que fica
+        no meio é o momento — se a planta teve o que precisava nas duas ou três semanas que definem a
+        produtividade, e não na média da safra. Fecha ligando à oferta:
+        <strong>essa janela é onde os dois produtos atuam</strong>.</p>
+      <p class="obs">A frase foi construída para o agrônomo, não para o leigo: ele sabe que a análise
+        de solo mede disponibilidade, não absorção. Reconhecer isso estabelece autoridade antes de
+        qualquer promessa.</p>
+    </div>
+  </div>
+
+  <div class="blk">
+    <div class="rail"><span class="id">S4</span><span class="bg">Areia · cards claros · raio 0</span><span class="selo s-esp">Aguarda P12 · P31</span></div>
+    <div>
+      <h4>Produtos</h4>
+      <p class="fn">Bifurcação, não catálogo. Uma linha por produto, um clique.</p>
+      <p><em>Two products. One job each.</em> Uma empresa com treze produtos que leva dois para os EUA
+        está fazendo uma escolha — dizer isso em voz alta soa mais confiante do que esconder o
+        catálogo. <strong>KMEP Ultra:</strong> mais da calda pousa onde você mirou, e ela leva potássio
+        foliar na mesma aplicação. <strong>Aminosan:</strong> os blocos de construção, entregues
+        prontos, em campo há 40 anos.</p>
+      <p class="obs"><b>Restrição:</b> resistir a listar benefícios no card. Uma linha por produto
+        força a escolha e aumenta o clique para a página de produto, que é onde a venda acontece.
+        <b>Asset:</b> embalagem com rótulo americano — sem ele, tipografia, nunca o frasco brasileiro.</p>
+    </div>
+  </div>
+
+  <div class="ato"><span class="r">Ato III</span><h3>Relevância e credibilidade</h3><span class="w">S5 · S6 · S7</span></div>
+
+  <div class="blk">
+    <div class="rail"><span class="id">S5</span><span class="bg">Claro · mapa em traço fino</span><span class="selo s-esp">Aguarda P6</span></div>
+    <div>
+      <h4>Culturas + mapa</h4>
+      <p class="fn">Responder "isso serve para os meus acres?" antes de pedir qualquer coisa.</p>
+      <p><em>Find your acres.</em> Mapa dos EUA com o estado detectado por IP em destaque e o grid de
+        culturas reordenado para aquele estado. <strong>Todas as culturas sempre aparecem — só a ordem
+        muda.</strong> Um controle visível permite corrigir a detecção, porque Starlink, VPN e IP
+        móvel erram estado com frequência em área rural.</p>
+      <p class="obs"><b>Bloqueio de conteúdo:</b> a lista provisória foi montada sobre as dez culturas
+        brasileiras. Café e cana quase não existem nos EUA, o pecuarista americano não usa foliar, e
+        faltam amêndoa, morango, uva, folhosas e amendoim — que é onde o foliar de alto valor se
+        vende. <b>A pergunta certa não é quais das dez levar, e sim em quais culturas americanas cada
+        produto tem eficácia confirmada.</b></p>
+      <p class="obs"><b>Técnico:</b> SVG inline por estado, sem biblioteca. O HTML precisa ser idêntico
+        em todos os estados — só a ordem muda. É o que mantém a seção fora de qualquer suspeita de
+        cloaking.</p>
+    </div>
+  </div>
+
+  <div class="blk">
+    <div class="rail"><span class="id">S6</span><span class="bg">Verde · coluna estreita</span><span class="selo s-rev">Revisar</span></div>
+    <div>
+      <h4>Brazil is the credential</h4>
+      <p class="fn">Transformar a origem de ressalva em credencial. É o coração do posicionamento.</p>
+      <p><strong>Três movimentos.</strong> Primeiro, 1988 em Mogi Guaçu: Julio Matino via produtores
+        gastando mais com adubo e colhendo menos, criou o Aminosan para resolver, e
+        <em>a empresa veio depois do produto</em>. Segundo, por que a severidade tropical importa: o
+        Brasil produz mais soja que os EUA e é o único grande produtor que tira duas e três safras do
+        mesmo talhão no ano — doze meses de pressão, estresse térmico como rotina, veranico no meio do
+        enchimento. Terceiro, o fecho: <em>não estamos pedindo que você ignore de onde isso veio;
+        estamos pedindo que você olhe</em>.</p>
+      <p class="obs"><b>Confirmar antes de publicar qualquer data:</b> a cronologia não fecha nos
+        documentos — fundação em 1988 e "mais de 40 anos de Aminosan". <b>Asset:</b> foto de arquivo do
+        fundador ou da fábrica. Uma foto real de 1988, mesmo tecnicamente imperfeita, vale mais que
+        qualquer banco de imagens: a imperfeição é prova de autenticidade.</p>
+    </div>
+  </div>
+
+  <div class="blk">
+    <div class="rail"><span class="id">S7</span><span class="bg">Claro · parece documento · sem animação</span><span class="selo s-esp">Aguarda P19</span></div>
+    <div>
+      <h4>O método</h4>
+      <p class="fn">Sustentar todos os números do site. É a seção que separa esta página de um site genérico de biostimulante.</p>
+      <p><em>Every number here names its check.</em> Um número de produtividade sem a parcela
+        testemunha ao lado é propaganda. Publicamos o número tratado, o número da testemunha, onde o
+        ensaio rodou e quem o conduziu — <strong>look them up</strong>. Uma faixa com as fontes em
+        tipografia, e o bloco da operação americana com razão social e endereço de Lakeland.</p>
+      <p class="obs"><b>Se travar:</b> sem autorização para nomear as instituições, a seção continua de
+        pé com as que puderem, ou recua para "field trial, Brazil" com a fonte oferecida por e-mail.
+        Perde muita força — é justamente a nomeação que faz o argumento.
+        <b>Sem animação:</b> seção de credibilidade não deve chamar atenção para si.</p>
+    </div>
+  </div>
+
+  <div class="ato"><span class="r">Ato IV</span><h3>Conversão</h3><span class="w">S8 · S9</span></div>
+
+  <div class="blk">
+    <div class="rail"><span class="id">S8</span><span class="bg">Verde · form em card claro</span><span class="selo s-esp">Aguarda decisão</span></div>
+    <div>
+      <h4>A faixa de teste <span style="color:var(--dust);font-weight:400;font-size:14px;font-family:var(--body)">— era "Contato"</span></h4>
+      <p class="fn">Converter. A oferta mudou: em vez de "fale conosco", uma faixa de teste na lavoura do próprio visitante.</p>
+      <p><em>Run a trial strip on your own acres. We supply the product.</em> Escolha um talhão, deixe
+        uma faixa testemunha ao lado, levamos o produto e voltamos na colheita com você.
+        <strong>Seu resultado, nos seus acres, contra a sua testemunha.</strong></p>
+      <p>Três passos explicam o método em voz alta — escolher o talhão, deixar a testemunha, ler na
+        colheita — e o terceiro assume que o número é do produtor <em>de todo jeito, inclusive se não
+        separar</em>. Depois vem o formulário de nove campos, o endereço americano e os dois degraus
+        secundários da escada de CTA.</p>
+      <p class="obs"><b>Nove campos é o teto</b> — cada campo a mais derruba a conversão, e a meta é
+        2,5%. <b>Mensagem de erro sempre com caminho alternativo:</b> erro sem saída perde o lead.
+        <b>Se travar:</b> a headline recua para <em>Tell us what you're growing</em> e o formulário
+        fica idêntico. Um bloco de texto, nenhum redesenho.</p>
+    </div>
+  </div>
+
+  <div class="blk">
+    <div class="rail"><span class="id">S9</span><span class="bg">Carvão</span><span class="selo s-esp">Aguarda P26</span></div>
+    <div>
+      <h4>Footer</h4>
+      <p class="fn">Fecha as três páginas.</p>
+      <p>Endereço americano em destaque tipográfico maior que os links — é ele que prova a operação
+        americana. Vínculo com a matriz, quatro colunas de navegação, disclaimer global de ensaio,
+        <em>always read and follow the label</em> e copyright.</p>
+      <p class="obs"><b>Ícone de rede social só se houver conta americana.</b> Apontar para o Instagram
+        brasileiro em português contradiz a página inteira.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ========================================================= 05 TEMPLATE ==== -->
+<section id="template">
+  <span class="snum">05 — Páginas 2 e 3</span>
+  <h2 class="shead">Template<br>de produto</h2>
+  <p class="sdek">Doze seções em quatro atos, iguais nas duas páginas. Os dois produtos futuros entram
+    sem redesenho — só trocam o conteúdo.</p>
+
+  <div class="wf">┌──────────────────────────────────────────────────────────┐
+│  <b>_1  HERO</b>              claro · promessa + prova ancorada│
+│  <b>_2  SELETOR DE CULTURA</b> barra fina fixa                 │
+│  <b>_3  O PROBLEMA</b>        claro · a dor, sem card          │
+├──────────────────────────────────────────────────────────┤
+│  <b>_4  COMO FUNCIONA</b>     areia · mecanismo + animação     │
+│  <b>_5  O QUE MUDA</b>        claro · 4 cards                  │
+├──────────────────────────────────────────────────────────┤
+│  <b>_6  A PROVA</b>           VERDE · número + tabela          │
+│  <b>_7  A CONTA POR ACRE</b>  cinza · ganho × custo            │
+│  <b>_8  SLOT EDITORIAL</b>    CARVÃO · a credencial da casa    │
+├──────────────────────────────────────────────────────────┤
+│  <b>_9  QUANDO ENTRA</b>      claro · janela e dose            │
+│  <b>_10 FICHA TÉCNICA</b>     cinza · o que o dealer procura   │
+│  <b>_11 OBJEÇÕES</b>          claro · acordeão                 │
+│  <b>_12 CTA FINAL</b>         VERDE · faixa de teste           │
+└──────────────────────────────────────────────────────────┘</div>
+
+  <h3 style="margin:34px 0 10px">O que mudou em relação à versão anterior</h3>
+  <div class="tw">
+    <table>
+      <thead><tr><th style="width:26%">Agora</th><th style="width:24%">Antes</th><th>Por quê</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">_5 O que muda na prática</td><td class="mono">K6 Benefícios</td>
+          <td>Subiu no template: promessa antes da prova. O leitor precisa saber o que ganha antes de auditar o número</td></tr>
+        <tr class="hi"><td class="mono">_6 A prova</td><td class="mono">K5 antes/depois <em>+</em> K7 tabela</td>
+          <td><strong>Fundidos.</strong> Número grande e tabela completa são a mesma coisa em duas escalas de leitura: quem passa os olhos pega o número, quem audita desce na tabela</td></tr>
+        <tr><td class="mono">_8 Slot editorial</td><td class="mono">A5 Quarenta anos</td>
+          <td>Virou slot. Cada produto preenche com a credencial própria — e desceu, porque a credencial vem depois da prova, não antes</td></tr>
+        <tr><td class="mono">dentro de _4</td><td class="mono">A9 Não é tudo a mesma coisa</td>
+          <td>Absorvido. A diferenciação frente aos hidrolisados não é seção à parte: é a segunda metade do mecanismo</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="ato"><span class="r">Ato I</span><h3>Reconhecimento</h3><span class="w">1 · 2 · 3</span></div>
+
+  <div class="blk">
+    <div class="rail"><span class="id">_1</span><span class="bg">Claro · texto esq. · produto dir.</span></div>
+    <div>
+      <h4>Hero</h4>
+      <p class="fn">Promessa central, CTA e uma linha de prova ancorada logo abaixo.</p>
+      <p>Eyebrow com a categoria e a compatibilidade de tanque, headline de promessa, apoio com o
+        argumento econômico. Menos alto que o hero da Home: numa página de produto o visitante já
+        decidiu clicar, então o conteúdo começa antes.</p>
+      <p class="obs"><b>Acrescentado ao template:</b> o card de prova com o número, a testemunha e a
+        fonte, dentro do próprio hero. O cético encontra o dado sem rolar.</p>
+    </div>
+  </div>
+
+  <div class="blk">
+    <div class="rail"><span class="id">_2</span><span class="bg">Barra fina fixa · aba ativa em lima</span></div>
+    <div>
+      <h4>Seletor de cultura</h4>
+      <p class="fn">Troca resultado, janela de aplicação, dose, ROI e imagem ao longo da página inteira.</p>
+      <p>O estado padrão assume o motivo em voz alta: <em>Corn — the crop with the trial data we can
+        show you.</em> Transformar a limitação em sinal de honestidade custa uma linha.</p>
+      <p class="obs"><b>Técnico:</b> altura fixa reservada nos blocos que mudam, senão a página pula e
+        prejudica o CLS. <b>Quando o mercado-alvo for decidido:</b> o componente sai e a página abre
+        direto na cultura certa. Nenhum outro bloco muda.</p>
+    </div>
+  </div>
+
+  <div class="blk">
+    <div class="rail"><span class="id">_3</span><span class="bg">Claro · uma coluna · sem card</span></div>
+    <div>
+      <h4>O problema</h4>
+      <p class="fn">A dor específica, reconhecível em uma leitura.</p>
+      <p>Precisa parecer conversa técnica, não caixa de marketing — por isso sem card e sem borda.
+        Descreve a lavoura e a fisiologia, nunca o produto: nenhum efeito é atribuído aqui.</p>
+      <p class="obs"><b>Asset:</b> macro. Evitar imagem de planta doente ou murcha, que sugere claim de
+        proteção.</p>
+    </div>
+  </div>
+
+  <div class="ato"><span class="r">Ato II</span><h3>Mecanismo</h3><span class="w">4 · 5</span></div>
+
+  <div class="blk">
+    <div class="rail"><span class="id">_4</span><span class="bg">Areia · animação em 60%</span></div>
+    <div>
+      <h4>Como funciona</h4>
+      <p class="fn">O mecanismo. É aqui que a animação principal da página trabalha.</p>
+      <p>Animação de um lado, texto em coluna lateral. Em mobile, animação acima e texto abaixo —
+        nunca sobrepostos.</p>
+      <p class="obs"><b>Regra de redundância:</b> tudo que a animação transmite precisa existir também
+        em texto na mesma seção. Não é só acessibilidade — parte do tráfego rural americano navega em
+        conexão instável, e a seção precisa fazer sentido se a peça não carregar.</p>
+    </div>
+  </div>
+
+  <div class="blk">
+    <div class="rail"><span class="id">_5</span><span class="bg">Claro · 4 cards · filete lima no topo</span></div>
+    <div>
+      <h4>O que muda na prática</h4>
+      <p class="fn">Quatro cards curtos, cada um respondendo a uma pergunta prática do produtor.</p>
+      <p>Não a um atributo do produto — a uma pergunta. O quarto card é sempre o número, com a fonte,
+        e funciona como CTA disfarçado.</p>
+      <p class="obs"><b>Sem ícone.</b> O briefing pede para evitar cards pequenos competindo entre si,
+        e ícone genérico é exatamente o que faz um card virar ruído.</p>
+    </div>
+  </div>
+
+  <div class="ato"><span class="r">Ato III</span><h3>Prova</h3><span class="w">6 · 7 · 8</span></div>
+
+  <div class="blk">
+    <div class="rail"><span class="id">_6</span><span class="bg">Verde · o clímax visual</span></div>
+    <div>
+      <h4>A prova</h4>
+      <p class="fn">Dois níveis de leitura no mesmo bloco.</p>
+      <p><strong>Nível 1 — o número.</strong> Testemunha à esquerda, diferença no centro em lima,
+        tratado à direita. A testemunha vem primeiro porque é ela que dá sentido ao resto.
+        <strong>Nível 2 — a tabela.</strong> Logo abaixo, em card claro: cultura, local, tratado,
+        testemunha, diferença, fonte e ano, com a unidade americana primeiro e a brasileira ao lado.</p>
+      <p class="obs"><b>Publicar a unidade brasileira não é excesso de zelo:</b> prova que o número
+        não foi construído para o site, e um agrônomo cético consegue refazer a conversão.</p>
+      <p class="obs"><b>Restrição de arte inegociável:</b> nunca duas plantas de portes diferentes. O
+        antes/depois desta seção é de grão colhido e número medido. Sem foto real de ensaio,
+        tipografia pura funciona melhor que banco de imagens — inventar a imagem do ensaio contradiz a
+        seção inteira.</p>
+    </div>
+  </div>
+
+  <div class="blk">
+    <div class="rail"><span class="id">_7</span><span class="bg">Cinza · cenário central elevado</span><span class="selo s-esp">Aguarda P8</span></div>
+    <div>
+      <h4>A conta por acre</h4>
+      <p class="fn">O ganho e o custo, lado a lado, em três cenários de preço da commodity.</p>
+      <p>Publicar o próprio custo ao lado do ganho é incomum na categoria e é exatamente por isso que
+        funciona neste público — mas exige que o número aguente a conta.</p>
+      <p class="obs"><b>Condição de publicação:</b> sem preço e custo por acre, <b>remover a seção
+        inteira</b>. Publicar o ganho sem o investimento é o formato de propaganda que o resto do site
+        rejeita. Meia conta é pior que nenhuma.</p>
+    </div>
+  </div>
+
+  <div class="blk">
+    <div class="rail"><span class="id">_8</span><span class="bg">Carvão · tratamento editorial</span></div>
+    <div>
+      <h4>Slot editorial</h4>
+      <p class="fn">O bloco em que cada produto conta a credencial da casa. É história, não venda.</p>
+      <p>É a única seção da página com tratamento visual distinto, e é deliberado: o leitor precisa
+        perceber que mudou o registro. <strong>KMEP Ultra:</strong> tecnologia de aplicação — o
+        Projeto DESATA com a UENP e o NITEC/UNESP. <strong>Aminosan:</strong> a herança — o produto é
+        mais velho que a empresa que o fabrica.</p>
+    </div>
+  </div>
+
+  <div class="ato"><span class="r">Ato IV</span><h3>Operação e decisão</h3><span class="w">9 · 10 · 11 · 12</span></div>
+
+  <div class="blk">
+    <div class="rail"><span class="id">_9</span><span class="bg">Claro · linha do tempo horizontal</span><span class="selo s-esp">Aguarda P4</span></div>
+    <div>
+      <h4>Quando entra</h4>
+      <p class="fn">Janela de aplicação e dose, na linguagem de quem aplica.</p>
+      <p>Estágios em nomenclatura americana — <span class="mono">V4–V6</span>,
+        <span class="mono">VT</span>, <span class="mono">R1</span>, <span class="mono">R3</span> — e
+        dose em <span class="mono">fl oz/acre</span>. Publicar estágio em nomenclatura brasileira numa
+        página em inglês denuncia a tradução na primeira leitura técnica.</p>
+      <p class="obs"><b>Se travar:</b> publica só com os estágios, sem dose, e o CTA da seção vira
+        "peça a tabela de doses". <b>Modo specialty:</b> enquanto o posicionamento não voltar,
+        transformar a ausência em captura de lead qualificado é melhor que inventar recomendação.</p>
+    </div>
+  </div>
+
+  <div class="blk">
+    <div class="rail"><span class="id">_10</span><span class="bg">Cinza · tabela + downloads</span><span class="selo s-esp">Aguarda P1 · P3</span></div>
+    <div>
+      <h4>Ficha técnica</h4>
+      <p class="fn">É o bloco que um dealer procura primeiro. Sem ele, a página não passa no crivo.</p>
+      <p>Declaração de garantia, <em>derived from</em>, densidade, pH, embalagens, registros estaduais,
+        compatibilidade e ordem de mistura, SDS e rótulo em PDF.</p>
+      <p class="obs"><b>Armadilha de localização:</b> embalagem não pode aparecer em litros.
+        <span class="mono">10L/20L</span> são as embalagens brasileiras. Nos EUA é
+        <span class="mono">2.5 gal case</span>, <span class="mono">30 gal drum</span>,
+        <span class="mono">275 gal tote</span> — ou o que a LLC realmente comercializa. Manter o
+        formato métrico sinaliza produto importado sem operação local.</p>
+    </div>
+  </div>
+
+  <div class="blk">
+    <div class="rail"><span class="id">_11</span><span class="bg">Claro · acordeão · primeira aberta</span></div>
+    <div>
+      <h4>Objeções</h4>
+      <p class="fn">Perguntas frequentes escritas como antecipação de objeção.</p>
+      <p>Cinco a sete itens, sempre incluindo: compatibilidade e ordem de mistura; registro no estado
+        do visitante; <strong>a diferença para o produto barato equivalente</strong> — a primeira
+        objeção de um agrônomo de retail, e resposta vaga custa a venda; a origem brasileira; e a
+        pergunta sobre dado americano, que se responde com a faixa de teste em vez de evasiva.</p>
+      <div class="spec spec--verde" style="margin-top:16px">
+        <h4>A resposta que vale a página</h4>
+        <p style="margin-bottom:0">A testemunha do ensaio brasileiro — 212,3 bu/ac em milho — coincide
+          quase exatamente com a média nacional americana. Os ensaios são diretamente comparáveis ao
+          benchmark do visitante, e o ensaio não rodou em condição mais fácil que a dele:
+          <strong>rodou em condição mais difícil</strong>. Isso precisa ser dito em voz alta, não
+          deixado implícito.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="blk">
+    <div class="rail"><span class="id">_12</span><span class="bg">Verde · form reduzido · 4 campos</span></div>
+    <div>
+      <h4>CTA final</h4>
+      <p class="fn">Repete a oferta da faixa de teste com mais contexto e menos atrito.</p>
+      <p>Quatro campos: cultura, estado, e-mail, nome. Enumerar o que chega no e-mail — rótulo, doses
+        em <span class="mono">fl oz/acre</span>, relatório do ensaio — é mais concreto que "fale
+        conosco" e define expectativa clara.</p>
+      <p class="obs">Usar o <b>mesmo componente de formulário da Home</b>, em variante reduzida. Não
+        construir dois.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================= 06 KMEP ==== -->
+<section id="kmep">
+  <span class="snum">06 — Página 2</span>
+  <h2 class="shead">KMEP Ultra®</h2>
+  <p class="sdek">O produto mais difícil de escrever do portfólio e o de maior oportunidade aberta —
+    os dois fatos vêm da mesma origem. Escrito no eixo do adjuvante de calda, com o potássio embutido.
+    Cultura padrão do seletor: milho, que é onde está o ensaio.</p>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th style="width:9%">#</th><th style="width:22%">Seção</th><th>O que esta página diz aqui</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">K1</td><td><strong>Hero</strong></td>
+          <td><em>Coverage is the whole job.</em> Parceiro de tanque que reduz a tensão superficial e melhora a deposição, para que mais da calda que você já pagou chegue ao baixeiro — e leve potássio foliar na mesma gota. Sem viagem extra, sem nova janela de clima</td></tr>
+        <tr><td class="mono">K2</td><td>Seletor</td><td>Corn · Soybeans · Cotton · Specialty</td></tr>
+        <tr><td class="mono">K3</td><td>O problema</td>
+          <td>Dois movimentos. <strong>A cobertura:</strong> quando o dossel fecha, o terço inferior vira outra lavoura — a gota escorre na folha cerosa, quica, ou nunca passa do terço superior. <strong>O potássio:</strong> a demanda tem pico no enchimento, exatamente quando o veranico ou a raiz rasa limitam o que o solo entrega</td></tr>
+        <tr><td class="mono">K4</td><td>Como funciona</td>
+          <td>Três passos no vocabulário da categoria: <span class="mono">surface tension → deposition → canopy penetration</span>. Nenhum menciona praga nem eficácia do defensivo. A quarta linha fecha com o potássio na mesma gota. Animação: gota em folha cerosa com e sem adjuvante, fechando em dois cartões hidrossensíveis</td></tr>
+        <tr><td class="mono">K5</td><td>O que muda</td>
+          <td>Entra no tanque que você já está enchendo · mais do tanque termina na planta · potássio foliar na mesma aplicação · um número que você pode conferir</td></tr>
+        <tr class="hi"><td class="mono">K6</td><td><strong>A prova</strong></td>
+          <td><span class="mono">212.3 → +8.9 → 221.3 bu/ac</span> · milho · ensaio Rehagro, Brasil · originais <span class="mono">231,45 vs 222,12 sc/ha</span>. Abaixo, a tabela completa. <strong>Falta o ano do ensaio</strong></td></tr>
+        <tr><td class="mono">K7</td><td>A conta por acre</td>
+          <td>A US$ 4,30/bu, 8,9 bu/ac valem US$ 38,27/acre. Custo na dose de rótulo: pendente. A diferença entre os dois números é a decisão inteira — por isso publicamos os dois</td></tr>
+        <tr><td class="mono">K8</td><td>Slot editorial</td>
+          <td><em>Application technology is a research program here, not a tagline.</em> Desde 2021, o Projeto DESATA com a UENP e o NITEC/UNESP — túnel de vento, espectro de gotas, deriva e deposição. É a disciplina por trás do produto</td></tr>
+        <tr><td class="mono">K9</td><td>Quando entra</td>
+          <td>Milho: <span class="mono">V4–V6</span> e novamente na aplicação anterior ao enchimento. Soja: <span class="mono">R1–R3</span></td></tr>
+        <tr><td class="mono">K10</td><td>Ficha técnica</td><td>Declaração de garantia · fração adjuvante · embalagens em galão · registros estaduais · SDS</td></tr>
+        <tr><td class="mono">K11</td><td>Objeções</td>
+          <td>Ensaios do Brasil, e daí? · <strong>diferença para um 0-0-25 ou KTS</strong> · posso misturar? · faz espuma ou entope filtro? · registrado no meu estado? · têm dado americano?</td></tr>
+        <tr><td class="mono">K12</td><td>CTA final</td><td><em>Run a trial strip. We supply the product.</em> + rótulo, doses e o ensaio</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="spec">
+    <h3>A objeção que o eixo escolhido resolve</h3>
+    <p>No eixo puramente nutricional, <em>"qual a diferença para um 0-0-25 comum?"</em> não tinha
+      resposta — as duas coisas eram fontes de potássio, e a mais barata ganhava. No eixo adjuvante a
+      resposta existe: <strong>um 0-0-25 é uma fonte de potássio; isto é um adjuvante de calda que
+      também carrega potássio.</strong> A pergunta não é só o que tem no galão, é o que a calda faz
+      antes de secar.</p>
+    <div class="src">A versão honesta desta resposta precisa da declaração de garantia [P3] e do dado de deposição [P31]</div>
+  </div>
+
+  <div class="spec spec--verde">
+    <h4>O que fica engavetado — e por quê</h4>
+    <p>A trilha com claim de praga está escrita e marcada HOLD. Três blocos trocam de conteúdo se a
+      liberação escrita vier: <span class="mono">K1</span>, <span class="mono">K3</span> e
+      <span class="mono">K4</span>. O layout já está desenhado, então nada é redesenhado.</p>
+    <p>A estatística do corn leafhopper — 185 condados em 16 estados na safra 2025 — é <strong>dado
+      público e pode ser citada</strong>. O que está sob HOLD é vincular o produto ao controle da
+      praga, não a estatística.</p>
+    <p style="margin-bottom:0"><strong>A animação de desalojamento não deve ser produzida</strong>
+      antes da liberação. Produzir o ativo aumenta a chance de ele chegar à produção por engano.</p>
+  </div>
+</section>
+
+<!-- ========================================================= 07 AMINOSAN ==== -->
+<section id="aminosan">
+  <span class="snum">07 — Página 3</span>
+  <h2 class="shead">Aminosan®</h2>
+  <p class="sdek">Carro-chefe, produto de origem e o mais provado da casa — e também o de comunicação
+    mais exposta. Cultura padrão do seletor: soja, que é onde estão os dois ensaios.</p>
+
+  <div class="spec">
+    <h3>O princípio de redação desta página</h3>
+    <p style="font-family:var(--disp);font-size:24px;line-height:1.2;margin:12px 0 14px;letter-spacing:-.02em">
+      Descrever o que o produto <em>entrega</em>, nunca o que ele <em>provoca</em> na planta.</p>
+    <p>Composição é fato de rótulo, é verificável e pode ser publicada. O que a planta faz com ela
+      depois é fisiologia — e é ali que a linha da FIFRA passa. As frases hoje no ar na versão em
+      inglês do site brasileiro caem do lado errado dessa linha.</p>
+    <div class="src">EPA · draft guidance de claims de regulador de crescimento · multa de US$ 437 mil por frases de rótulo (2022)</div>
+  </div>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th style="width:32%">Frase hoje no ar</th><th style="width:30%">Por que é problema</th><th>Reformulação usada na página</th></tr></thead>
+      <tbody>
+        <tr><td class="ban">Faster recovery — the plant grows again after stress</td>
+          <td>Claim de aceleração de crescimento e de resposta a estresse</td>
+          <td class="ok">Free amino acids, delivered through the leaf — descreve a entrega, não o desfecho</td></tr>
+        <tr><td class="ban">Aceleram a fotossíntese, a absorção e a atividade enzimática</td>
+          <td>Três claims de aceleração metabólica numa frase só</td>
+          <td class="ok">The building blocks the plant would otherwise assemble from nitrate — descreve o que o nutriente é</td></tr>
+        <tr><td class="ban">Melhor pegamento na fase reprodutiva</td>
+          <td>Claim de efeito reprodutivo, próximo de regulador de crescimento</td>
+          <td class="ok">Substituída por dado de ensaio com testemunha. Sem o número, não entra</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th style="width:9%">#</th><th style="width:22%">Seção</th><th>O que esta página diz aqui</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">A1</td><td><strong>Hero</strong></td>
+          <td><em>The plant can build amino acids. Or you can hand it the finished ones.</em> Fertilizante foliar de aminoácidos livres de origem vegetal com N, P e K, por fermentação enzimática — <em>em campo há mais tempo que a empresa que o fabrica</em></td></tr>
+        <tr><td class="mono">A2</td><td>Seletor</td><td>Soybeans · Corn · Cotton · Specialty</td></tr>
+        <tr><td class="mono">A3</td><td>O problema</td>
+          <td><em>Nitrogen is not an amino acid.</em> Nitrato é matéria-prima, não produto acabado. Antes de virar proteína, a planta precisa reduzir, aminar e montar — uma cadeia que consome carbono e energia produzidos para outra coisa. Numa safra com folga é assim que funciona; nas semanas que definem a produtividade, é um custo</td></tr>
+        <tr class="hi"><td class="mono">A4</td><td><strong>Como funciona</strong></td>
+          <td><em>Five steps, or one.</em> A cadeia <span class="mono">NO₃⁻ → NO₂⁻ → NH₄⁺ → glutamato → aminoácido</span> contra a entrega foliar direta. <strong>Absorve a antiga A9:</strong> a tabela de origem, processo e forma — vegetal × hidrolisado animal, fermentação enzimática × hidrólise ácida, aminoácidos livres × cadeias peptídicas</td></tr>
+        <tr><td class="mono">A5</td><td>O que muda</td>
+          <td>Quatro cards de entrega, nunca de efeito: vai junto com a aplicação que você já faz · aminoácidos livres, não cadeias peptídicas · origem vegetal por fermentação enzimática · quarenta anos de ensaios com fonte nomeada</td></tr>
+        <tr><td class="mono">A6</td><td>A prova</td>
+          <td><strong>Bloqueada.</strong> O bloco verde não carrega um número — carrega a regra que impede o número de ser publicado: <em>não vamos publicar até poder colocar a testemunha ao lado, porque essa é a regra para todo número deste site</em></td></tr>
+        <tr><td class="mono">A7</td><td>A conta por acre</td><td>Bloqueada dos dois lados: falta o custo e falta o ganho. Se não vierem, remover a seção</td></tr>
+        <tr><td class="mono">A8</td><td>Slot editorial</td>
+          <td><em>Older than the company that makes it.</em> Julio Matino formulou o Aminosan antes de existir empresa para vendê-lo; produtores de São Paulo compraram porque funcionava, e a demanda construiu o negócio</td></tr>
+        <tr><td class="mono">A9</td><td>Quando entra</td>
+          <td>Soja: de <span class="mono">V2–V3</span> aos estágios reprodutivos. Milho: <span class="mono">V2–V8</span>. Specialty: quatro décadas em frutíferas, hortaliças e perenes no Brasil, com o posicionamento americano em confirmação</td></tr>
+        <tr><td class="mono">A10</td><td>Ficha técnica</td>
+          <td>O <strong>percentual de aminoácidos livres</strong> é o número mais importante da tabela: sustenta a comparação de A4 e é o que um comprador técnico usa entre marcas. Sem ele, a tabela comparativa sai</td></tr>
+        <tr><td class="mono">A11</td><td>Objeções</td>
+          <td>Diferença para um hidrolisado? · quarenta anos e nenhum dado americano? · posso misturar? · é OMRI listed? · <strong>o que ele faz pela minha lavoura?</strong></td></tr>
+        <tr><td class="mono">A12</td><td>CTA final</td><td><em>Forty years of trials. Now run one of your own.</em></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="spec spec--areia">
+    <h4>Por que o bloco de prova bloqueado é uma boa decisão</h4>
+    <p>Os dois resultados publicados aparecem sem a testemunha. Se a base for equivalente à dos outros
+      ensaios da casa, representam de +19% a +24% — faixa que, sem o controle ao lado, um agrônomo
+      americano lê como exagero. <strong>O número mais forte da empresa é hoje o mais frágil do
+      site.</strong></p>
+    <p style="margin-bottom:0">A saída é contraintuitiva e provavelmente mais eficaz que publicar o
+      número frágil: <strong>aplicar a própria regra em público, mesmo quando ela custa caro.</strong>
+      É a prova mais forte de que a regra é real — e ainda gera lead qualificado. Quando a testemunha
+      chegar, o bloco vira a mesma tabela do KMEP, sem redesenho.</p>
+  </div>
+
+  <div class="spec spec--verde">
+    <h4>Três condições antes de publicar a tabela comparativa</h4>
+    <p>Sob a FTC, comparação exige substanciação tão rigorosa quanto claim de rendimento.
+      <strong>(1)</strong> Confirmar com a Juma que as três linhas descrevem o Aminosan corretamente.
+      <strong>(2)</strong> Manter a coluna da direita genérica — nunca nomear concorrente.
+      <strong>(3)</strong> Preferir <em>often</em> a <em>always</em>.</p>
+    <p style="margin-bottom:0">Se a Juma não puder sustentar as três afirmações, <strong>cortar a
+      tabela</strong> em vez de suavizá-la. A seção continua de pé sem ela. E sem ícone de check e X:
+      sinaliza propaganda comparativa e aumenta a exposição.</p>
+  </div>
+</section>
+
+<!-- ============================================================ 08 TRAVA ==== -->
+<section id="trava">
+  <span class="snum">08 — Pendências</span>
+  <h2 class="shead">O que trava o quê</h2>
+  <p class="sdek">Todas as pendências têm saída. <strong>Nenhuma justifica atrasar a entrega.</strong>
+    A coluna da direita diz o que a seção faz se a informação não chegar.</p>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th style="width:8%">ID</th><th style="width:26%">Pendência</th><th style="width:22%">Trava</th><th>Estado degradado</th></tr></thead>
+      <tbody>
+        <tr class="hi"><td class="mono"><strong>P31</strong></td>
+          <td><strong>Dado de deposição ou cobertura do KMEP</strong></td>
+          <td>O eixo de posicionamento da página inteira</td>
+          <td>Publica no eixo do potássio e o slot editorial troca de conteúdo</td></tr>
+        <tr><td class="mono">P2</td><td>Validação regulatória dos claims</td>
+          <td><span class="mono">K1 K3 K4</span> na trilha de praga</td>
+          <td>Publica no eixo adjuvante. A página funciona inteira; perde a cunha da cigarrinha</td></tr>
+        <tr><td class="mono">P1 · P3</td><td>Rótulo americano e declaração de garantia</td>
+          <td><span class="mono">K10 A10</span> e a tabela comparativa de <span class="mono">A4</span></td>
+          <td>Ficha técnica sai da v1 e entra por deploy posterior</td></tr>
+        <tr><td class="mono">P4</td><td>Dose em <span class="mono">fl oz/acre</span></td>
+          <td><span class="mono">K9 A9</span></td>
+          <td>Publica só com estágios; o CTA vira "peça a tabela de doses"</td></tr>
+        <tr><td class="mono">P6</td><td>Culturas americanas por produto</td>
+          <td><span class="mono">S5 K2 A2 K9 A9</span></td>
+          <td>Abre com milho e soja; specialty vira captura de lead</td></tr>
+        <tr><td class="mono">P8</td><td>Preço e custo por acre</td>
+          <td><span class="mono">K7 A7</span></td>
+          <td><strong>Remover as duas seções de ROI.</strong> Meia conta é pior que nenhuma</td></tr>
+        <tr><td class="mono">P9</td><td>Testemunha dos ensaios de Aminosan</td>
+          <td><span class="mono">S2</span> · <span class="mono">A6 A7</span></td>
+          <td><span class="mono">A6</span> publica no estado provisório, que aplica a regra da casa em público</td></tr>
+        <tr><td class="mono">P10</td><td>Registros estaduais</td>
+          <td><span class="mono">K10 A10 K11 A11</span></td>
+          <td>Convidar o visitante a perguntar pelo estado dele</td></tr>
+        <tr><td class="mono">P11</td><td>Quem atende o lead, e se é agronômico</td>
+          <td><span class="mono">S0 S7 S8 K12 A12</span></td>
+          <td>O terceiro degrau da escada de CTA sai; os outros dois seguem</td></tr>
+        <tr><td class="mono">P12</td><td>Foto de produto com rótulo americano</td>
+          <td><span class="mono">S4 K1 A1 K10 A10</span></td>
+          <td>Composição tipográfica do nome. <strong>Nunca o frasco brasileiro</strong></td></tr>
+        <tr><td class="mono">P13</td><td>Fotos de campo americano</td>
+          <td><span class="mono">S1 S3 K3 A3</span></td>
+          <td>Macro licenciado, com curadoria rigorosa</td></tr>
+        <tr><td class="mono">P19</td><td>Autorização para citar as fontes</td>
+          <td><span class="mono">S7 K5 K6 A6 K8</span></td>
+          <td>Recuar para "field trial, Brazil" e oferecer a fonte por e-mail. Enfraquece muito</td></tr>
+        <tr><td class="mono">P20</td><td>Existe ensaio nos EUA?</td>
+          <td><span class="mono">K11 A11</span></td>
+          <td>Responder "não, ainda" com a oferta de faixa de teste</td></tr>
+        <tr><td class="mono">P26</td><td>Logo da LLC, foto histórica, razão social</td>
+          <td><span class="mono">S0 S6 S9 A8</span></td>
+          <td>Seções funcionam só com tipografia</td></tr>
+        <tr><td class="mono">—</td><td><strong>Ano do ensaio Rehagro</strong></td>
+          <td><span class="mono">S2 K6</span></td>
+          <td>Não consta em nenhum documento auditado. Tabela sem ano levanta suspeita imediata</td></tr>
+        <tr><td class="mono">—</td><td><strong>A Juma banca o produto da faixa de teste?</strong></td>
+          <td><span class="mono">S8 K12 A12</span></td>
+          <td>A escada de CTA sobe um degrau. Troca de texto, sem redesenho</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ======================================================== 09 CHECKLIST ==== -->
+<section id="checklist">
+  <span class="snum">09 — Antes de publicar</span>
+  <h2 class="shead">Checklist</h2>
+  <p class="sdek">Vale para as três páginas, e vale inclusive para as seções marcadas como livres.</p>
+  <ul class="check">
+    <li>Consultoria regulatória revisou toda a copy em inglês, inclusive o que está marcado "pode publicar"</li>
+    <li>Nenhuma frase de estimulação de crescimento ou de controle de praga na versão em inglês</li>
+    <li>Nenhuma animação termina com planta maior, mais verde ou mais vigorosa que a testemunha</li>
+    <li>Todo número tem a testemunha ao lado e a fonte impressa embaixo, em mono</li>
+    <li>Todo dado brasileiro está identificado como brasileiro</li>
+    <li>Doses convertidas para <span class="mono">fl oz/acre</span>; estágios em nomenclatura americana</li>
+    <li>Embalagens em galão, drum ou tote — nenhuma menção a litro</li>
+    <li>Declaração de garantia e SDS em inglês disponíveis para download</li>
+    <li>Disclaimer de ensaio em todo bloco de resultado, sem exceção</li>
+    <li>Nenhum depoimento com foto de banco de imagens</li>
+    <li>Nenhuma foto de lavoura brasileira na versão americana</li>
+    <li>Nome padronizado (KMEP, não Kamep) em todo o site</li>
+    <li>O acento lima aparece no máximo três vezes por tela</li>
+    <li>No máximo três inversões de fundo por página</li>
+    <li>O programa de faixa de teste tem dono, orçamento e formulário funcionando</li>
+    <li>Decisão tomada sobre a versão em inglês do site brasileiro: canonical ou despublicar</li>
+  </ul>
+</section>
+
+<footer>
+  <p><strong>Manual de estrutura do site Juma-Agro EUA · v1 · agosto de 2026 · Oceon Desenvolvimento Digital</strong></p>
+  <p>As observações regulatórias baseiam-se em orientação pública da EPA e não constituem parecer
+    jurídico. A marcação dos selos é análise da Oceon a partir de pesquisa pública — quem decide onde
+    fica a linha é o responsável regulatório da Juma-Agro Fertilizer LLC. Números entre colchetes
+    exigem verificação interna antes de qualquer publicação.</p>
+</footer>
+
+</div>
+</body>
+</html>

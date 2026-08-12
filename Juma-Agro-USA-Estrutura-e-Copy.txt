@@ -1,0 +1,1868 @@
+
+
+
+
+
+OCEON DESENVOLVIMENTO DIGITAL  ·  JUMA-AGRO FERTILIZER LLC
+Estrutura e copy
+As três páginas, seção por seção
+
+Copy em inglês americano com tradução comentada, recomendação de fundo e asset para cada seção, e a biblioteca de animações a gerar com IA. As recomendações visuais são direção, não especificação — o desenho fica com o time.
+Campo
+Valor
+Escopo
+3 páginas — Home USA · LP KMEP Ultra · LP Aminosan
+Idioma de publicação
+Inglês americano (en-US). Espanhol fora da v1
+Base
+Juma-Agro-USA-Documento-Mestre.docx — Partes I a V
+Direção de mercado
+Dupla trilha: Home neutra, cada LP com seletor de cultura (row crop · specialty)
+Direção regulatória
+KMEP Ultra escrito em duas trilhas: A nutricional (publicável) e B com claim de praga (HOLD)
+Seções especificadas
+9 na Home · 12 na LP KMEP · 12 na LP Aminosan · 2 componentes globais
+Animações
+8 peças, com roteiro, formato, direção de prompt e fallback estático
+Versão
+1.0 — 10/08/2026
+
+
+Antes de ler
+Este documento é executável: o Pedro consegue desenhar a partir dele e o Davi consegue montar o conteúdo em arquivos TypeScript sem esperar mais nada da copy. Mas ele foi escrito sobre duas informações que a Juma ainda não respondeu, e isso muda como você deve lê-lo.
+As duas trilhas — e por que existem
+O painel de pendências do documento mestre lista dois bloqueios que atingem a copy antes de qualquer outro: P5 (mercado-alvo: row crop ou specialty crop) e P2 (validação regulatória dos claims, dos dois produtos). Nenhum dos dois voltou. Em vez de parar, a copy foi escrita para resolver os dois cenários com o mesmo desenho.
+Eixo
+Como está resolvido
+O que muda quando a resposta chegar
+Mercado (P5)
+Home neutra, que fala nos dois níveis sem escolher. Cada LP abre com um seletor de cultura que troca resultado, janela de aplicação, ROI e imagem — o resto da página é o mesmo.
+Some o seletor e a LP passa a abrir direto na cultura escolhida. Nenhum bloco é redesenhado.
+Regulatório (P2)
+A LP do KMEP Ultra tem duas versões dos blocos de mecanismo: Trilha A, nutricional, que pode ir ao ar sem esperar ninguém, e Trilha B, com o claim de praga, escrita e marcada HOLD.
+Se a liberação vier, troca-se o conteúdo de três blocos (hero, problema, como funciona). Se não vier, a página já está pronta como está.
+
+Regra que não se negocia
+Nenhuma linha marcada HOLD pode ir ao ar sem aprovação por escrito de quem responde pelo regulatório da Juma-Agro Fertilizer LLC. Não é conservadorismo: o precedente citado no documento mestre é uma multa de US$ 437.000 aplicada pela EPA a um fabricante de biostimulante por frases de rótulo — não por composição do produto.
+Como ler cada seção
+Toda seção deste documento segue a mesma estrutura:
+Elemento
+O que é
+[S1] Nome da seção
+Identificador usado no Figma, no código e nas conversas do time
+Linha em itálico logo abaixo
+A função da seção: o que ela precisa fazer com o visitante
+Blocos de copy
+Rótulo do elemento (H1, SUB, CTA…), o texto em inglês, a tradução em português e, quando a tradução não é literal, a nota explicando a decisão
+Alternativas para testar
+Variações de headline para o time escolher ou testar
+Tabela de recomendação
+Fundo, asset, animação e layout sugeridos. É direção, não especificação — o desenho é de vocês
+Selo colorido
+Status da copy: pode publicar, aguarda regulatório, aguarda dado da Juma, ou revisar
+
+Os quatro selos
+Selo
+Significa
+Quem destrava
+PODE PUBLICAR
+Copy nutricional ou institucional, sem claim de mecanismo sobre praga ou crescimento. Vai ao ar como está.
+Ninguém — já está livre
+HOLD — AGUARDA REGULATÓRIO
+Contém claim que pode enquadrar o produto como pesticida ou regulador de crescimento sob FIFRA.
+Regulatório da LLC (P2)
+AGUARDA DADO DA JUMA
+A estrutura está pronta, falta o número: preço, dose, testemunha, Guaranteed Analysis.
+Técnico e comercial (P3, P4, P8, P9)
+REVISAR COM O REGULATÓRIO
+Provavelmente seguro, mas está perto da linha. Vale uma leitura antes de publicar.
+Regulatório da LLC
+
+Sumário
+Campo automático do Word, já preenchido. Se você editar o documento, selecione tudo (Ctrl+A) e pressione F9 para recalcular os números de página.
+TOC \o "1-3" \h \z \uAntes de ler	 PAGEREF _Toc237264293 \h 2
+As duas trilhas — e por que existem	 PAGEREF _Toc237264294 \h 2
+Como ler cada seção	 PAGEREF _Toc237264295 \h 2
+Os quatro selos	 PAGEREF _Toc237264296 \h 3
+Sumário	 PAGEREF _Toc237264297 \h 3
+O sistema de copy	 PAGEREF _Toc237264298 \h 6
+A quem esta copy fala	 PAGEREF _Toc237264299 \h 6
+Voz	 PAGEREF _Toc237264300 \h 6
+Doze regras de escrita	 PAGEREF _Toc237264301 \h 6
+Vocabulário: usar e evitar	 PAGEREF _Toc237264302 \h 7
+Sobre a tradução para o português	 PAGEREF _Toc237264303 \h 7
+O filtro FIFRA aplicado à copy	 PAGEREF _Toc237264304 \h 7
+O que a lei alcança	 PAGEREF _Toc237264305 \h 8
+Tabela de decisão para quem escreve	 PAGEREF _Toc237264306 \h 8
+O caso específico do "antes e depois"	 PAGEREF _Toc237264307 \h 8
+Home USA	 PAGEREF _Toc237264308 \h 10
+[S0]  Header — componente global	 PAGEREF _Toc237264309 \h 11
+[S1]  Hero	 PAGEREF _Toc237264310 \h 11
+[S2]  Barra de prova	 PAGEREF _Toc237264311 \h 13
+[S3]  O problema	 PAGEREF _Toc237264312 \h 14
+[S4]  Produtos	 PAGEREF _Toc237264313 \h 14
+[S5]  Culturas + mapa	 PAGEREF _Toc237264314 \h 16
+[S6]  Brazil story	 PAGEREF _Toc237264315 \h 17
+[S7]  Prova institucional — o método	 PAGEREF _Toc237264316 \h 18
+[S8]  Contato	 PAGEREF _Toc237264317 \h 19
+[S9]  Footer — componente global	 PAGEREF _Toc237264318 \h 21
+LP KMEP Ultra®	 PAGEREF _Toc237264319 \h 23
+A situação deste produto	 PAGEREF _Toc237264320 \h 24
+[K1]  Hero	 PAGEREF _Toc237264321 \h 24
+[K2]  Seletor de cultura	 PAGEREF _Toc237264322 \h 26
+[K3]  O problema	 PAGEREF _Toc237264323 \h 27
+[K4]  Como funciona	 PAGEREF _Toc237264324 \h 28
+[K5]  O que muda — antes e depois	 PAGEREF _Toc237264325 \h 29
+[K6]  Benefícios	 PAGEREF _Toc237264326 \h 30
+[K7]  Resultados	 PAGEREF _Toc237264327 \h 31
+[K8]  Economia por acre	 PAGEREF _Toc237264328 \h 32
+[K9]  Culturas e janela de aplicação	 PAGEREF _Toc237264329 \h 33
+[K10]  Dados técnicos	 PAGEREF _Toc237264330 \h 34
+[K11]  Objeções	 PAGEREF _Toc237264331 \h 35
+[K12]  CTA final	 PAGEREF _Toc237264332 \h 37
+LP Aminosan®	 PAGEREF _Toc237264333 \h 38
+A situação deste produto	 PAGEREF _Toc237264334 \h 39
+[A1]  Hero	 PAGEREF _Toc237264335 \h 39
+[A2]  Seletor de cultura	 PAGEREF _Toc237264336 \h 40
+[A3]  O problema	 PAGEREF _Toc237264337 \h 41
+[A4]  Como funciona	 PAGEREF _Toc237264338 \h 42
+[A5]  Quarenta anos	 PAGEREF _Toc237264339 \h 42
+[A6]  Resultados	 PAGEREF _Toc237264340 \h 43
+[A7]  Economia por acre	 PAGEREF _Toc237264341 \h 44
+[A8]  Culturas e janela de aplicação	 PAGEREF _Toc237264342 \h 45
+[A9]  Não é tudo a mesma coisa	 PAGEREF _Toc237264343 \h 46
+[A10]  Dados técnicos	 PAGEREF _Toc237264344 \h 47
+[A11]  Objeções	 PAGEREF _Toc237264345 \h 48
+[A12]  CTA final	 PAGEREF _Toc237264346 \h 49
+Animações, assets e pendências	 PAGEREF _Toc237264347 \h 51
+A. Biblioteca de animações	 PAGEREF _Toc237264348 \h 52
+As três regras que valem para todas	 PAGEREF _Toc237264349 \h 52
+As oito peças	 PAGEREF _Toc237264350 \h 52
+AN-01 · Entrada de produto	 PAGEREF _Toc237264351 \h 52
+AN-02 · Duas rotas, dois relógios · LP KMEP [K4]	 PAGEREF _Toc237264352 \h 52
+AN-03 · O contador da diferença · LP KMEP [K5]	 PAGEREF _Toc237264353 \h 53
+AN-04 · A conta por acre · LP KMEP [K8] e LP Aminosan [A7]	 PAGEREF _Toc237264354 \h 53
+AN-05 · Cinco etapas, ou uma · LP Aminosan [A4]	 PAGEREF _Toc237264355 \h 53
+AN-06 · Mapa e culturas · Home [S5]	 PAGEREF _Toc237264356 \h 54
+AN-07 · Janela de aplicação · [K9] e [A8]	 PAGEREF _Toc237264357 \h 54
+AN-08 · Desalojamento · LP KMEP, Trilha B — HOLD	 PAGEREF _Toc237264358 \h 54
+Regras técnicas de implementação	 PAGEREF _Toc237264359 \h 55
+B. Matriz de assets	 PAGEREF _Toc237264360 \h 55
+C. O que ainda trava a copy	 PAGEREF _Toc237264361 \h 56
+Sequência recomendada de produção	 PAGEREF _Toc237264362 \h 57
+
+
+O sistema de copy
+A quem esta copy fala
+Não é ao consumidor. É a alguém que compra insumo com margem apertada, já ouviu toda promessa que existe e decide por número. Pode ser o produtor de milho de Iowa, o agrônomo de retail que monta o catálogo, ou o PCA licenciado que recomenda em specialty na Califórnia. Os três têm em comum a mesma reação a texto de marketing: desconfiança imediata.
+O ativo da Juma nessa conversa não é o produto — é o método. A regra da casa desde 1988 é publicar número com fonte, local e testemunha ao lado. Isso é exatamente o que o público americano respeita e o que a maioria dos concorrentes de biostimulante não faz. A copy inteira se apoia nisso.
+Voz
+A copy é
+A copy não é
+Direta. Sujeito, verbo, objeto.
+Rebuscada ou publicitária.
+Concreta: bushel, acre, estágio, data.
+Abstrata: performance, potential, solutions.
+Confiante pelo dado.
+Confiante pelo adjetivo.
+Honesta sobre limite: "ensaio no Brasil".
+Evasiva sobre origem.
+Técnica quando precisa ser.
+Técnica para impressionar.
+Curta. Frase média de 12 a 18 palavras.
+Parágrafo de sete linhas.
+
+Doze regras de escrita
+1.	Número antes de adjetivo. +8.9 bu/ac over the untreated check vence outstanding yield response em qualquer teste.
+2.	Todo número anda com a testemunha. Sem o valor do controle ao lado, o número não entra na página. É a regra da Juma e é o que sustenta a credibilidade do site inteiro.
+3.	Unidade americana primeiro, brasileira entre parênteses. 221.3 bu/ac (231.45 sc/ha). Ponto decimal, não vírgula.
+4.	Nunca traduzir "potencializador de inseticida" literalmente. Insecticide potentiator não existe em inglês agronômico americano e soa a produto não registrado. O vocabulário correto é spray adjuvant, tank-mix partner ou foliar potassium source, conforme a trilha.
+5.	Escrever para quem vai rolar a página, não ler. Headline e primeiro parágrafo precisam funcionar sozinhos; o resto aprofunda.
+6.	Evitar superlativo sem fonte. The most advanced, revolutionary, breakthrough queimam credibilidade nesse público e atraem escrutínio da FTC.
+7.	Nomear a fonte no corpo, não no rodapé. Rehagro trial, Brazil dentro da frase vale mais que um asterisco no fim da página.
+8.	Não esconder que os ensaios são brasileiros. Assumir e explicar por que isso é uma vantagem é a tese do posicionamento inteiro.
+9.	CTA que descreve o que acontece depois. Get the label and rate sheet é melhor que Learn more, porque o visitante sabe o que recebe.
+10.	Nada de exclamação. Nenhuma. Em nenhuma seção.
+11.	Frase de mecanismo passa pelo filtro FIFRA antes de entrar no Figma, não depois.
+12.	Nenhum depoimento entra sem nome real, autorização escrita e — de preferência — produtor americano. O documento mestre registra que nenhum depoimento real foi fornecido até aqui.
+Vocabulário: usar e evitar
+Contexto
+Usar
+Evitar
+Público
+grower, farmer, agronomist, retailer, PCA
+client, customer, user, partner (em copy de produto)
+Aplicação
+tank mix, pass, application window, foliar application, in-furrow
+spraying session, treatment moment
+Produto (Trilha A)
+foliar potassium source, tank-mix partner, foliar fertilizer
+insecticide potentiator, enhancer, booster
+Resultado
+yield response, bu/ac over the untreated check, trial, check plot
+productivity gain, incredible results, proven success
+Estágio
+V4–V6, VT, R1, R3, pre-bloom, grain fill
+vegetative phase (genérico), reproductive moment
+Origem
+field-tested in Brazil, trial conducted in Brazil
+international technology, global standard
+Empresa
+family-run since 1988, in-house lab, named-source trials
+market leader, world-class, industry reference
+
+Sobre a tradução para o português
+As traduções deste documento existem para o time entender o que a copy diz — não para virar a versão brasileira do site. Onde a tradução literal perderia o sentido ou soaria errada em um dos dois idiomas, há uma nota em âmbar explicando a decisão. Três casos se repetem:
+Expressões idiomáticas de campo. The growing season never stops não é "a estação de cultivo nunca para"; carrega a ideia específica de que não há inverno interrompendo o ciclo.
+Termos regulatórios sem equivalente. Untreated check é "testemunha"; guaranteed analysis é a declaração de garantia do rótulo americano, que não tem correspondente exato no rótulo brasileiro.
+Densidade. O inglês agronômico americano é mais curto. Uma headline de 7 palavras em inglês costuma virar 11 em português — e a tradução longa não indica que a headline em inglês está ruim.
+O filtro FIFRA aplicado à copy
+Esta é a seção que o time de copy consulta antes de escrever qualquer frase de mecanismo. Ela traduz o Achado 1 do documento mestre em regra prática de redação.
+O que a lei alcança
+A FIFRA §2(v) define plant regulator como qualquer substância destinada a "acelerar ou retardar a taxa de crescimento ou de maturação, ou de outro modo alterar o comportamento das plantas". A draft guidance da EPA de 2020 — ainda a política vigente — traça a linha entre claim nutricional e claim de estimulação. E a EPA já aplicou: US$ 437.000 de multa à Douglas Plant Health em 2022, por frases de rótulo como root stimulation e accelerated growth.
+O ponto que muda o projeto: a exposição não é só do KMEP Ultra. As frases hoje publicadas do Aminosan em juma-agro.com.br/en caem do lado errado da mesma linha.
+Tabela de decisão para quem escreve
+Categoria
+Exemplos a evitar
+Reformulação segura
+Controle de praga
+dislodges the pest · exposes hidden insects · improves insecticide performance · increases control · repels
+Nenhuma. Toda essa categoria é Trilha B e depende de liberação escrita. Sem ela, o produto é comunicado só pelo eixo nutricional.
+Estimulação de crescimento
+root stimulator · shoot stimulator · accelerates growth · speeds up recovery · makes the plant grow again
+supplies · delivers · provides · is a source of · improves nutrient conditions for
+Fisiologia acelerada
+accelerates photosynthesis · boosts enzymatic activity · speeds up protein synthesis
+Descrever o que o produto contém e entrega, não o que ele faz com o metabolismo: free amino acids the plant would otherwise assemble from nitrate
+Resposta a estresse
+faster recovery after stress · stress protection · drought tolerance
+Falar de demanda nutricional na janela, não de proteção: potassium demand peaks during grain fill
+Rendimento
+increases yield (solto, sem base)
+Permitido com substanciação: número tratado, número da testemunha, local, fonte e ano. É exigência da FTC, e a prática da Juma já atende.
+
+A distinção que destrava tudo
+Claim de rendimento e claim de mecanismo são coisas diferentes sob a lei americana. Dizer +8.9 bu/ac over the untreated check, Rehagro trial é permitido e desejável — precisa apenas de substanciação, que a Juma tem. Dizer dislodges the hidden pest é claim de mecanismo pesticida e pode exigir registro na EPA. A copy deste documento explora o primeiro ao máximo e evita o segundo por completo na Trilha A.
+O caso específico do "antes e depois"
+Você pediu animações de antes e depois. É o formato certo para o objetivo — mas há três tipos possíveis, e eles têm riscos muito diferentes. Vale escolher conscientemente.
+Tipo
+O que mostra
+Risco
+Veredito
+1. Antes/depois de planta
+Duas plantas lado a lado, a tratada visivelmente maior, mais verde, com mais raiz.
+Alto. É a representação visual literal de plant growth regulator. Uma imagem pode sustentar um claim tão bem quanto uma frase, e a EPA analisa o rótulo e o material promocional como um conjunto.
+Não usar enquanto P2 não voltar.
+2. Antes/depois de resultado medido
+Testemunha e tratado com o número do ensaio embaixo de cada um: 212.3 vs 221.3 bu/ac, fonte, local e ano.
+Baixo. É claim de rendimento com substanciação — a categoria que a FTC regula e que a Juma já documenta.
+Usar. É a animação mais forte do site.
+3. Antes/depois de processo
+O percurso do nutriente, não a planta: rota longa pelo solo × rota curta pela folha; ou a cadeia bioquímica que o aminoácido pronto encurta.
+Baixo, desde que o desfecho mostrado seja nutricional (o nutriente chegou) e não fisiológico (a planta cresceu mais).
+Usar. É a peça que mais ensina.
+
+PODE PUBLICAR   As animações especificadas na biblioteca deste documento usam apenas os tipos 2 e 3. O tipo 1 aparece uma única vez, na Trilha B do KMEP, e está marcado HOLD.
+
+
+
+
+PÁGINA 1
+Home USA
+Nove seções. Apresenta a operação americana, prova o método, distribui para as duas LPs e captura o lead. Neutra quanto a mercado: fala para row crop e specialty sem escolher.
+Origem: Arquitetura base: PRD §6.1 (8 seções), acrescida do header e do footer como componentes globais. Ordem e função preservadas; copy nova.
+
+A Home tem uma tarefa e meia. A tarefa é converter — formulário preenchido por alguém que planta. A meia tarefa é mais difícil: em menos de dez segundos, tirar da cabeça do visitante a ideia de que ele está num site brasileiro traduzido. O briefing pediu isso explicitamente, e hoje existe um /en no ar que faz exatamente o contrário.
+A estratégia da copy para resolver isso é contraintuitiva: não esconder o Brasil — usá-lo logo no primeiro parágrafo, como credencial técnica verificável. Quem esconde parece traduzido; quem explica parece deliberado.
+[S0]  Header — componente global
+Presente nas três páginas. Fixo no scroll, com fundo sólido a partir de 80px.
+LOGO (ALT TEXT)
+Juma-Agro Fertilizer LLC — foliar nutrition, Lakeland, Florida
+PT · Juma-Agro Fertilizer LLC — nutrição foliar, Lakeland, Flórida
+NAVEGAÇÃO
+Products  ·  Crops  ·  Trials  ·  About  ·  Contact
+PT · Produtos · Culturas · Ensaios · Sobre · Contato
+↳ Trials em vez de Results é deliberado: sinaliza método, não promessa. Um agrônomo americano clica em Trials; em Results ele desconfia.
+CTA DO HEADER
+Talk to an agronomist
+PT · Fale com um agrônomo
+↳ Só pode ir ao ar se o time americano tiver agrônomo de fato — pendência P11 do painel. Se o time for apenas comercial, o CTA honesto é Request product info ou Get in touch.
+Recomendação
+Direção sugerida — não prescritiva
+Layout
+Logo à esquerda, navegação centralizada, CTA pill à direita. Mobile: logo + hambúrguer, CTA fixo no rodapé da viewport.
+Fundo
+Transparente sobre o hero, sólido no branco ao rolar. Sem sombra dura — uma linha de 1px no verde profundo a 12% de opacidade resolve.
+Asset
+Logo da LLC — pendência P26. Se houver variação americana, ela manda.
+Observação
+O CTA do header é o único elemento com o amarelo-lima acima da dobra. Guardar essa cor para ação faz o olho aprender onde clicar.
+
+AGUARDA DADO DA JUMA   CTA depende de P11 (quem atende o lead e se é agronômico).
+[S1]  Hero
+Dez segundos para dizer quem somos, por que o Brasil importa e o que fazer em seguida.
+EYEBROW
+JUMA-AGRO FERTILIZER LLC · LAKELAND, FLORIDA
+PT · JUMA-AGRO FERTILIZER LLC · LAKELAND, FLÓRIDA
+↳ O endereço americano acima da headline é a resposta mais rápida à pergunta "isso é um site estrangeiro?". Custa uma linha.
+HEADLINE (H1)
+Proven where the growing season never stops.
+PT · Comprovado onde a safra nunca para.
+↳ Tradução não literal por decisão. The growing season never stops carrega, para o americano, a ideia específica de que não há inverno para interromper o ciclo — um fato agronômico do Brasil, não uma figura de linguagem. Em português, "a safra nunca para" entrega o mesmo em menos palavras. A tradução literal ("onde a estação de cultivo nunca cessa") soaria empolada nos dois idiomas.
+SUBHEADLINE
+In Brazil, growers take two and three crops off the same ground every year. There is no winter to reset the field. Our foliar nutrition has been tested in that for 38 years — trial after trial, with the untreated check beside it. It's now available to U.S. growers.
+PT · No Brasil, o produtor tira duas e três safras do mesmo talhão por ano. Não existe inverno para zerar a lavoura. Nossa nutrição foliar foi testada nisso por 38 anos — ensaio após ensaio, com a testemunha ao lado. Agora está disponível para o produtor americano.
+↳ reset the field em vez de break the pest cycle: diz a mesma coisa agronomicamente, sem colocar a palavra praga a três linhas de um nome de produto. Decisão de filtro FIFRA, não de estilo.
+CTA PRIMÁRIO
+Talk to an agronomist
+PT · Fale com um agrônomo
+CTA SECUNDÁRIO
+See the trial data
+PT · Ver os dados de ensaio
+ALTERNATIVAS PARA TESTAR
+○  Thirty-eight years of trials. Not one of them had a winter.
+Trinta e oito anos de ensaios. Nenhum deles teve inverno.
+○  Tested against twelve months of pressure a year.
+Testado contra doze meses de pressão por ano.
+○  If it holds up in Brazil, it holds up here.
+Se aguenta no Brasil, aguenta aqui.
+Recomendação
+Direção sugerida — não prescritiva
+Layout
+Uma coluna, texto alinhado à esquerda, ocupando no máximo 60% da largura em desktop. Headline em escala grande de verdade — o briefing pede títulos pesados. Muito respiro abaixo do CTA.
+Fundo
+Foto de campo americano em plano aberto, escurecida o suficiente para o texto passar em contraste AA. Alternativa mais forte e mais segura: fundo branco com a foto em bloco à direita, sem texto sobre imagem.
+Asset
+Pendência P13. Foto de lavoura americana em alta, hora dourada, sem maquinário de marca identificável. Fallback: banco de imagens licenciado — funciona, mas trocar assim que a foto real chegar.
+Animação
+Entrada curta: headline em fade-up de 400ms, subheadline com 120ms de atraso, CTAs com 240ms. Nada além disso acima da dobra — o LCP precisa ficar abaixo de 2,5s em 4G.
+Observação
+Não usar vídeo em loop no hero. Custa o LCP e a métrica está nos critérios de aceite.
+
+PODE PUBLICAR   Copy nutricional e institucional. Nenhum claim de mecanismo.
+[S2]  Barra de prova
+Três a quatro números com fonte ao lado, logo abaixo do hero. É onde o cético decide se continua rolando.
+NÚMERO 1
+221.3 vs 212.3 bu/ac — Corn, treated vs untreated check. Rehagro trial, Brazil.
+PT · 221,3 vs 212,3 bu/ac — Milho, tratado vs testemunha. Ensaio Rehagro, Brasil.
+↳ Publicar os dois números juntos, não a diferença isolada. O +8.9 sozinho é propaganda; 221.3 vs 212.3 é auditável. A diferença aparece depois, na LP.
+NÚMERO 2
+38 years — Of field trials, every one with a named source.
+PT · 38 anos — De ensaios de campo, todos com fonte nomeada.
+NÚMERO 3
+In-house lab since 1988 — Every batch tested before it ships.
+PT · Laboratório próprio desde 1988 — Todo lote testado antes de sair.
+NÚMERO 4 — SLOT RESERVADO
+[Aminosan soybean trial — releases when the untreated check yield arrives]
+PT · [Ensaio de soja com Aminosan — libera quando chegar a produtividade da testemunha]
+↳ Este slot fica vazio até P9. Não publicar +10 sc/ha sem a base: sem testemunha, o americano lê como +20% a +24% e desconfia do site inteiro. Com três números a barra funciona bem; melhor três sólidos que quatro com um frágil.
+DISCLAIMER DA BARRA
+Results from field trials conducted in Brazil. Field performance varies with climate, soil and management.
+PT · Resultados de ensaios de campo conduzidos no Brasil. O desempenho em campo varia com clima, solo e manejo.
+↳ Texto obrigatório, definido no PRD §9.3. Acompanha todo bloco de resultado do site, sem exceção.
+Recomendação
+Direção sugerida — não prescritiva
+Layout
+Faixa horizontal de largura total, três ou quatro colunas divididas por linha fina vertical. Número grande, fonte em corpo pequeno logo abaixo. Mobile: carrossel horizontal com snap, ou empilhamento simples.
+Fundo
+Verde profundo #004C26 sólido, números em branco. Corta a página logo depois do hero e sinaliza mudança de registro: aqui começa a prova.
+Asset
+Nenhum. Esta seção é tipografia. Ícone ao lado de número enfraquece.
+Animação
+Contagem crescente ao entrar na viewport, 800ms, uma única vez. Respeitar prefers-reduced-motion mostrando o valor final direto.
+
+AGUARDA DADO DA JUMA   Slot 4 aguarda P9. Ano do ensaio Rehagro também não consta no material — incluir na mesma cobrança.
+[S3]  O problema
+Nomear a dor antes de apresentar produto. Se o visitante não se reconhecer aqui, o resto da página é catálogo.
+HEADLINE (H2)
+The yield you lost isn't on the soil test.
+PT · A produtividade que você perdeu não está na análise de solo.
+↳ Frase construída para o agrônomo, não para o leigo: ele sabe que a análise de solo mede disponibilidade, não absorção. A headline reconhece isso e sinaliza que quem escreveu entende do assunto.
+CORPO
+You corrected fertility. You followed the program. The stand looked like it could carry more than the monitor showed at harvest. What sits between the two is timing — whether the plant had what it needed during the two or three weeks that set the yield, not across the season average.
+PT · Você corrigiu a fertilidade. Seguiu o programa. O estande parecia capaz de carregar mais do que o monitor mostrou na colheita. Entre uma coisa e outra está o momento — se a planta teve o que precisava nas duas ou três semanas que definem a produtividade, e não na média da safra.
+↳ the monitor é o monitor de produtividade da colhedora. É vocabulário de quem colhe, não de quem vende — o tipo de detalhe que compra atenção nesse público.
+FECHO
+That window is where both of our products work.
+PT · Essa janela é onde os nossos dois produtos atuam.
+Recomendação
+Direção sugerida — não prescritiva
+Layout
+Duas colunas assimétricas: headline grande à esquerda ocupando um terço, corpo à direita. Bastante espaço em branco — a seção precisa respirar depois da barra verde.
+Fundo
+Branco. Depois do verde sólido de S2, o branco funciona como pausa.
+Asset
+Opcional e sutil: fotografia em detalhe — folha, grão na mão, tela do monitor de produtividade. Evitar a foto genérica de campo, que já foi usada no hero.
+Animação
+Nenhuma além do fade-up padrão de entrada de seção.
+
+PODE PUBLICAR   Descreve demanda nutricional e janela fisiológica sem atribuir efeito ao produto.
+[S4]  Produtos
+Dois cards. Cada um entrega o benefício central e leva para a LP. Não é catálogo — é bifurcação.
+HEADLINE DA SEÇÃO
+Two products. One job each.
+PT · Dois produtos. Uma função cada.
+↳ A frase sinaliza foco. Uma empresa com 13 produtos que leva dois para os EUA está fazendo uma escolha — dizer isso em voz alta soa mais confiante que esconder o catálogo.
+CARD 1  Card KMEP Ultra®
+Trilha A, nutricional — versão publicável.
+KICKER
+FOLIAR POTASSIUM
+PT · POTÁSSIO FOLIAR
+TÍTULO
+KMEP Ultra®
+PT · KMEP Ultra®
+LINHA DE BENEFÍCIO
+Potassium the leaf can use, in a pass you're already making.
+PT · O potássio que a folha consegue usar, na aplicação que você já faz.
+↳ in a pass you're already making é o argumento econômico inteiro em sete palavras: sem operação extra, sem diesel a mais, sem nova janela de clima.
+CTA DO CARD
+How it works
+PT · Como funciona
+CARD 2  Card Aminosan®
+Trilha única.
+KICKER
+FREE AMINO ACIDS
+PT · AMINOÁCIDOS LIVRES
+TÍTULO
+Aminosan®
+PT · Aminosan®
+LINHA DE BENEFÍCIO
+The building blocks, delivered ready to use. In the field for 40 years.
+PT · Os blocos de construção, entregues prontos para uso. Em campo há 40 anos.
+↳ building blocks é o termo que um agrônomo americano usa para aminoácido em conversa. ready to use descreve a forma do nutriente — não promete resposta da planta, o que mantém a frase do lado seguro da linha FIFRA.
+CTA DO CARD
+How it works
+PT · Como funciona
+Recomendação
+Direção sugerida — não prescritiva
+Layout
+Dois cards de largura igual, lado a lado, sem sombra e sem borda arredondada — o design system define cards com raio 0. Mobile: empilhados, altura igual.
+Fundo
+Cinza muito claro para a seção, cards em branco. Ou o inverso. O contraste entre os dois é o que separa os cards do fundo sem precisar de sombra.
+Asset
+Foto do produto com rótulo americano — pendência P12. Frasco com rótulo em português aqui entrega o site na primeira olhada. Se o rótulo americano não existir até o deploy, preferir renderização tipográfica do nome a foto do frasco brasileiro.
+Animação
+Hover: elevação sutil e a seta do CTA deslocando 4px à direita. Nada mais.
+Observação
+Resistir à tentação de listar benefícios no card. Uma linha por produto força a escolha e aumenta o clique para a LP, que é onde a venda acontece.
+
+PODE PUBLICAR   Ambas as linhas descrevem composição e logística de aplicação.
+[S5]  Culturas + mapa
+Personalização por geolocalização de IP. Todas as culturas sempre aparecem; só a ordem muda conforme o estado detectado.
+HEADLINE (H2)
+Find your acres.
+PT · Encontre os seus acres.
+↳ Duas palavras, possessivo direto. Evitamos Crops we serve, que é linguagem de catálogo e coloca a empresa no centro da frase em vez do visitante.
+SUBHEADLINE
+Where these programs fit, ordered for your state.
+PT · Onde estes programas se encaixam, ordenados para o seu estado.
+MICROCOPY DE DETECÇÃO
+Showing crops for Iowa. Not in Iowa? Change
+PT · Mostrando culturas para Iowa. Não está em Iowa? Trocar
+↳ O controle de troca precisa estar visível, não escondido. Starlink, VPN e IP móvel erram estado com frequência em área rural — o PRD §7.3 trata isso como risco de alta probabilidade.
+FALLBACK FORA DOS EUA
+Showing the national list.
+PT · Mostrando a lista nacional.
+RÓTULO DE CULTURA REGIONAL
+Regional
+PT · Regional
+↳ Selo discreto para culturas que só existem em alguns estados. Evita que um produtor de Iowa veja um item irrelevante e conclua que o site não é para ele.
+Bloqueio de conteúdo desta seção
+A lista de culturas desta seção não pode ser publicada como está no Anexo A do PRD. Ela foi montada sobre as 10 culturas brasileiras. Café e cana praticamente não existem nos EUA; pastagem existe em área imensa, mas o pecuarista americano não usa foliar. Ao mesmo tempo faltam amêndoa, morango, uva, folhosas e amendoim — que é onde o foliar de alto valor se vende. Pendência P6: a pergunta certa não é quais das dez culturas levar, e sim em quais culturas americanas cada produto tem eficácia confirmada.
+Recomendação
+Direção sugerida — não prescritiva
+Layout
+Mapa dos EUA à esquerda com o estado detectado em destaque, grid de culturas à direita reordenado. Mobile: mapa acima, grid abaixo em duas colunas.
+Fundo
+Branco, com o mapa desenhado em traço fino no verde profundo e o estado ativo preenchido em amarelo-lima. Evitar mapa fotográfico ou com relevo.
+Asset
+Mapa SVG dos EUA por estado, inline no bundle — sem biblioteca de mapas, que custaria peso e LCP. Ícone ou miniatura por cultura, em estilo único.
+Animação
+Transição de 200ms na reordenação dos itens do grid quando o visitante troca de estado. Sem animar o mapa na entrada.
+Observação
+O conteúdo HTML precisa ser idêntico em todos os estados — só a ordem muda. É o que mantém a seção fora de qualquer suspeita de cloaking (PRD §7.3).
+
+AGUARDA DADO DA JUMA   Estrutura pronta; lista de culturas aguarda P6.
+[S6]  Brazil story
+A seção que transforma a origem de ressalva em credencial. É o coração do posicionamento.
+HEADLINE (H2)
+Brazil is the credential, not the caveat.
+PT · O Brasil é a credencial, não a ressalva.
+↳ caveat é palavra de agrônomo e de advogado — funciona bem no registro. A construção assume a objeção que o visitante já formulou sozinho e a responde de frente, que é mais forte do que evitá-la.
+PARÁGRAFO 1
+In 1988, in Mogi Guaçu, São Paulo, Julio Matino kept seeing the same thing: growers spending more on fertilizer and harvesting less than the field could carry. He argued the problem often wasn't in the soil — it was in the plant's metabolism, and nobody was treating that. He built Aminosan to address it. The company came after the product.
+PT · Em 1988, em Mogi Guaçu, São Paulo, Julio Matino via sempre a mesma coisa: produtores gastando mais com adubo e colhendo menos do que a lavoura podia dar. Ele defendia que o problema muitas vezes não estava no solo — estava no metabolismo da planta, e ninguém tratava disso. Criou o Aminosan para resolver. A empresa veio depois do produto.
+↳ The company came after the product é o fato mais forte da história e por isso fecha o parágrafo. Vale confirmar a cronologia antes de publicar: o material registra fundação em 1988 e mais de 40 anos de Aminosan, e as duas datas não fecham (tensão 8 do documento mestre).
+PARÁGRAFO 2
+Brazil grows more soybeans than the United States, and it's the only major producer taking two and three crops off the same ground in a single year. For an agronomist, that means something concrete: twelve months of pressure, heat stress as routine, and a dry spell that lands in the middle of grain fill. A product that holds up there has been tested under severity the Corn Belt doesn't impose.
+PT · O Brasil produz mais soja que os Estados Unidos e é o único grande produtor que tira duas e três safras do mesmo talhão no mesmo ano. Para um agrônomo, isso significa algo concreto: doze meses de pressão, estresse térmico como rotina e um veranico que chega no meio do enchimento de grãos. Um produto que aguenta ali foi testado sob severidade que o Corn Belt não impõe.
+↳ the Corn Belt doesn't impose é comparação direta com o território do leitor. Arriscado se soasse arrogante — funciona porque é factual e verificável.
+PARÁGRAFO 3
+Forty years of Aminosan on tropical agriculture is an asset no U.S. biostimulant company has. We're not asking you to overlook where this came from. We're asking you to look at it.
+PT · Quarenta anos de Aminosan sobre agricultura tropical é um ativo que nenhuma empresa americana de biostimulante tem. Não estamos pedindo que você ignore de onde isso veio. Estamos pedindo que você olhe.
+↳ A antítese final (overlook / look at) não tem equivalente elegante em português — a tradução perde o jogo sonoro, mas mantém o sentido. Em inglês é o fecho da seção e provavelmente a frase mais memorável da página.
+CITAÇÃO INSTITUCIONAL
+Together we feed the world.
+PT · Juntos alimentamos o mundo.
+↳ Propósito oficial da empresa, já em uso. Vale como assinatura da seção, atribuída, não como headline solta.
+Recomendação
+Direção sugerida — não prescritiva
+Layout
+Coluna de texto estreita, no máximo 65 caracteres por linha — é a seção mais longa da página e precisa ser confortável de ler. Imagem em bleed lateral, não centralizada.
+Fundo
+Verde profundo com texto claro, ou branco com um bloco de imagem grande. A troca de registro visual aqui ajuda: esta seção conta história, não vende.
+Asset
+Foto de arquivo da fábrica ou do fundador, se existir — pendência P26. Uma foto real de 1988 vale mais que qualquer imagem de banco. Segunda opção: laboratório próprio em operação, que prova a frase sobre controle lote a lote.
+Animação
+Revelação por parágrafo no scroll, deslocamento curto. Se houver foto histórica, um leve parallax funciona — mas com moderação, o briefing pede minimalismo.
+
+REVISAR COM O REGULATÓRIO   Institucional, sem claim de produto. Vale a leitura do regulatório na frase sobre metabolismo da planta no parágrafo 1: está no contexto histórico e não atribui efeito ao produto, mas fica perto da linha.
+[S7]  Prova institucional — o método
+A seção que sustenta todos os números do site. Fontes nomeadas, laboratório próprio, operação americana.
+HEADLINE (H2)
+Every number here names its check.
+PT · Todo número aqui nomeia a sua testemunha.
+↳ check é untreated check — a testemunha, no jargão de ensaio americano. A palavra sozinha já comunica método para quem é do ramo, e é curta o bastante para virar headline.
+CORPO
+A yield claim without the untreated plot beside it is advertising. We publish the treated number, the untreated number, where the trial ran and who ran it. Look them up.
+PT · Um número de produtividade sem a parcela testemunha ao lado é propaganda. Nós publicamos o número tratado, o número da testemunha, onde o ensaio foi feito e quem fez. Pode conferir.
+↳ Look them up é convite direto à verificação — postura que só quem tem o dado assume. Em português, "pode conferir" carrega o mesmo desafio implícito.
+LISTA DE FONTES
+DETEC  ·  Rehagro  ·  NITEC/UNESP  ·  JP Agrícola  ·  Terras Gerais  ·  UENP
+PT · DETEC · Rehagro · NITEC/UNESP · JP Agrícola · Terras Gerais · UENP
+BLOCO DA OPERAÇÃO AMERICANA
+Juma-Agro Fertilizer LLC — 3928 Anchuca Drive, Suite 11, Lakeland, FL 33811. Product, agronomic support and orders for the U.S. market.
+PT · Juma-Agro Fertilizer LLC — 3928 Anchuca Drive, Suite 11, Lakeland, FL 33811. Produto, suporte agronômico e pedidos para o mercado americano.
+↳ A frase sobre suporte agronômico só entra se for verdade — depende de P11. Se o time for apenas comercial, cortar agronomic support.
+Antes de publicar
+Citar essas seis instituições pelo nome depende de autorização — pendência P19. Se alguma não puder ser nomeada, a seção continua funcionando com as demais, mas perde força: é justamente a nomeação que separa esta página de um site de biostimulante genérico.
+Recomendação
+Direção sugerida — não prescritiva
+Layout
+Headline centralizada, corpo curto abaixo, e uma faixa horizontal com os nomes das fontes em tipografia — não em logotipo, a menos que haja autorização de uso de marca.
+Fundo
+Branco ou cinza muito claro. Esta seção precisa parecer documento, não campanha.
+Asset
+Se houver autorização de marca, logos em escala de cinza e altura óptica igualada. Sem autorização, os nomes em tipografia funcionam igualmente bem.
+Animação
+Nenhuma. Seção de credibilidade não deve chamar atenção para si — o movimento aqui trabalha contra.
+
+AGUARDA DADO DA JUMA   Aguarda P19 (autorização de citação) e P11 (natureza do time americano).
+[S8]  Contato
+Conversão. Formulário curto, endereço americano visível, resposta com prazo declarado.
+HEADLINE (H2)
+Tell us what you're growing.
+PT · Conte o que você planta.
+↳ Abre pelo interesse do visitante em vez de pedir dados. Contact us é rótulo; isto é convite.
+SUBHEADLINE
+We'll come back with the trial data for your crop, the label, and rates in fl oz per acre. Usually within one business day.
+PT · Retornamos com os dados de ensaio da sua cultura, o rótulo e as doses em fl oz por acre. Normalmente em um dia útil.
+↳ Prometer conteúdo específico converte muito melhor que "entraremos em contato". Só publicar o prazo se o time americano puder cumpri-lo — promessa de SLA descumprida queima o lead na primeira interação.
+CAMPOS DO FORMULÁRIO
+Campo (EN)
+Campo (PT)
+Tipo
+Obrigatório
+Full name
+Nome completo
+Texto
+Sim
+Farm or company
+Fazenda ou empresa
+Texto
+Não
+State
+Estado
+Seleção — pré-preenchido pela geolocalização
+Sim
+Primary crop
+Cultura principal
+Seleção — mesma lista da S5
+Sim
+Acres
+Acres
+Faixa: <500 · 500–2,000 · 2,000–10,000 · 10,000+
+Não
+Email
+E-mail
+E-mail
+Sim
+Phone
+Telefone
+Telefone US
+Não
+What are you trying to solve?
+O que você quer resolver?
+Texto longo
+Não
+I'd like a call from an agronomist
+Quero uma ligação de um agrônomo
+Checkbox
+Não
+
+BOTÃO
+Send
+PT · Enviar
+↳ Uma palavra. Submit soa burocrático em inglês americano e Send my request é longo demais para um botão.
+CONSENTIMENTO
+By sending this, you agree to our Privacy Policy. We use your information to answer this request and nothing else.
+PT · Ao enviar, você concorda com nossa Política de Privacidade. Usamos suas informações para responder a esta solicitação e nada além disso.
+↳ A segunda frase não é enfeite: o site coleta dados de residentes da Califórnia, o que atrai a CCPA (pendência P18). Declarar a finalidade de uso é exigência prática, além de aumentar a taxa de envio.
+MENSAGEM DE SUCESSO
+Got it. You'll hear from us — check your inbox for a copy of what you sent.
+PT · Recebido. Vamos retornar — confira sua caixa de entrada, enviamos uma cópia do que você mandou.
+MENSAGEM DE ERRO
+That didn't go through. Try again, or email us directly at [e-mail da LLC].
+PT · Não foi possível enviar. Tente de novo ou escreva direto para [e-mail da LLC].
+↳ Erro de formulário sem caminho alternativo perde o lead. O e-mail da LLC depende de P11.
+Recomendação
+Direção sugerida — não prescritiva
+Layout
+Duas colunas: formulário à esquerda ocupando dois terços, bloco de endereço e contato à direita. Mobile: formulário primeiro, endereço abaixo.
+Fundo
+Verde profundo com formulário em card branco, ou branco com o card em cinza claro. O contraste ajuda a marcar que aqui a página termina em ação.
+Asset
+Opcional: mapa estático de Lakeland, sem interatividade — mapa embutido custa peso e requisições de terceiros. Uma miniatura estática resolve.
+Animação
+Estado de carregamento no botão durante o envio, e transição suave para a mensagem de sucesso sem recarregar a página.
+Observação
+Nove campos é o teto. Cada campo a mais derruba a conversão, e a meta do PRD é 2,5%.
+
+AGUARDA DADO DA JUMA   Aguarda P11 (destinatário e SLA), P18 (política de privacidade) e P27 (CRM).
+[S9]  Footer — componente global
+Fecha as três páginas. Endereço americano, navegação, jurídico e o vínculo com a matriz.
+BLOCO INSTITUCIONAL
+Juma-Agro Fertilizer LLC3928 Anchuca Drive, Suite 11Lakeland, FL 33811
+PT · Juma-Agro Fertilizer LLC · 3928 Anchuca Drive, Suite 11 · Lakeland, FL 33811
+LINHA DE VÍNCULO COM A MATRIZ
+A subsidiary of Juma Agro — family-run in Mogi Guaçu, Brazil, since 1988.
+PT · Uma subsidiária da Juma Agro — empresa familiar em Mogi Guaçu, Brasil, desde 1988.
+↳ Transparência sobre a estrutura societária é obrigatória na prática e ajuda a credibilidade. Confirmar a razão social exata em P26 — subsidiary pressupõe uma relação jurídica específica que precisa estar correta.
+COLUNAS DE NAVEGAÇÃO
+Products: KMEP Ultra · Aminosan   |   Company: About · Trials · Contact   |   Legal: Privacy Policy · Terms of Use
+PT · Produtos: KMEP Ultra · Aminosan | Empresa: Sobre · Ensaios · Contato | Jurídico: Política de Privacidade · Termos de Uso
+DISCLAIMER GLOBAL
+Trial results shown on this site come from field trials conducted in Brazil. Field performance varies with climate, soil and management. Always read and follow the label.
+PT · Os resultados de ensaio mostrados neste site vêm de ensaios de campo conduzidos no Brasil. O desempenho em campo varia com clima, solo e manejo. Sempre leia e siga o rótulo.
+↳ Always read and follow the label é fórmula padrão do setor nos EUA. A ausência dela num site de insumo chama atenção pelo motivo errado.
+COPYRIGHT
+© 2026 Juma-Agro Fertilizer LLC. All rights reserved.
+PT · © 2026 Juma-Agro Fertilizer LLC. Todos os direitos reservados.
+Recomendação
+Direção sugerida — não prescritiva
+Layout
+Quatro colunas em desktop, acordeão em mobile. Endereço em destaque tipográfico maior que os links — é ele que prova a operação americana.
+Fundo
+Verde profundo, texto em branco a 80% de opacidade, links em branco cheio.
+Asset
+Logo em versão monocromática branca. Ícones de rede social só se houver conta americana — apontar para o Instagram brasileiro em português contradiz a página inteira.
+Observação
+Decisão pendente P17: o /en do site brasileiro precisa receber canonical apontando para cá ou ser despublicado. Enquanto os dois estiverem no ar, competem pelas mesmas buscas em inglês.
+
+AGUARDA DADO DA JUMA   Aguarda P16, P17, P18 e P26.
+
+
+
+
+PÁGINA 2
+LP KMEP Ultra®
+Doze seções em estrutura de página de vendas: dor, mecanismo, prova, economia por acre, objeções e conversão. Escrita em duas trilhas regulatórias.
+Origem: Arquitetura base: PRD §6.2 (8 seções), expandida para 12 — inclui a seção de ROI por acre identificada como lacuna na Parte V do documento mestre.
+
+A situação deste produto
+O KMEP Ultra é o produto mais difícil de escrever do portfólio e, ao mesmo tempo, o que tem a maior oportunidade aberta. Os dois fatos vêm da mesma origem.
+No Brasil ele é vendido como potencializador de inseticida com ação desalojante. Essa é a narrativa forte: resolve um problema que o produtor reconhece, tem ensaio de cigarrinha e explica por que a reaplicação não resolveu. Nos Estados Unidos, essa mesma narrativa pode enquadrar o produto como pesticida sob a FIFRA e exigir registro na EPA — e a cigarrinha acabou de chegar ao país, em 185 condados de 16 estados.
+Por que duas trilhas
+A oportunidade e o risco são literalmente o mesmo texto. Por isso a página está escrita duas vezes nos três blocos onde isso importa: hero, problema e como funciona. O resto — resultados, ROI, culturas, dados técnicos, FAQ, CTA — é comum às duas trilhas e não muda.
+
+Trilha A — nutricional
+Trilha B — adjuvante de praga
+Posicionamento
+Fonte de potássio foliar aplicada junto com a pulverização já programada
+Adjuvante que altera onde o inseto está no momento da aplicação
+Palavra-chave
+foliar potassium source
+spray adjuvant / tank-mix partner
+Argumento central
+Demanda de potássio no enchimento × o que a raiz entrega a tempo
+A fração da praga que nunca encontra a calda
+Cunha de mercado
+Nutrição de precisão, custo marginal zero de operação
+Corn leafhopper — dez anos de campo no Brasil contra dois nos EUA
+Status
+Pode publicar. Não depende de ninguém
+HOLD. Depende de P2 e possivelmente de registro EPA
+Risco se publicada errado
+Nenhum identificado
+Enquadramento como pesticida não registrado. Precedente de US$ 437 mil
+
+Regra de publicação
+A Trilha B está escrita neste documento para que o time não perca tempo se a liberação vier — e para que a decisão seja tomada com o texto à vista, não no abstrato. Nenhuma linha dela vai ao ar sem aprovação por escrito. Se a resposta de P2 não chegar até o dia 20/08, a página publica em Trilha A e a decisão fica registrada no handoff.
+[K1]  Hero
+Promessa central e CTA. É o bloco que mais muda entre as trilhas.
+TRILHA A  Nutricional — publicável
+Versão que vai ao ar se P2 não voltar a tempo.
+EYEBROW
+FOLIAR POTASSIUM · TANK-MIX COMPATIBLE
+PT · POTÁSSIO FOLIAR · COMPATÍVEL EM MISTURA
+↳ tank-mix compatible é informação operacional e funciona como benefício: diz que não há operação extra sem precisar de uma frase inteira.
+HEADLINE (H1)
+Potassium the leaf can use, in a pass you're already making.
+PT · O potássio que a folha consegue usar, na aplicação que você já faz.
+↳ the leaf can use faz o trabalho pesado. Diferencia de potássio de solo sem afirmar superioridade — o que exigiria substanciação comparativa — e antecipa o mecanismo explicado em K4.
+SUBHEADLINE
+KMEP Ultra® is a foliar potassium source built to ride along with your scheduled application. No extra trip across the field. No new weather window to wait for.
+PT · KMEP Ultra® é uma fonte de potássio foliar feita para ir junto com a aplicação que você já tem programada. Sem viagem extra pelo talhão. Sem nova janela de clima para esperar.
+↳ As duas frases curtas do fim carregam o argumento econômico. Em um mercado em que a operação custa por hora e a janela de clima é o recurso escasso, no new weather window vale mais que qualquer adjetivo.
+CTA PRIMÁRIO
+Get the label and rate sheet
+PT · Receba o rótulo e a tabela de doses
+↳ Descreve exatamente o que o visitante recebe. Learn more converte menos porque não promete nada específico.
+CTA SECUNDÁRIO
+See the trial
+PT · Ver o ensaio
+ALTERNATIVAS PARA TESTAR
+○  Grain fill doesn't wait for the soil to dry out.
+O enchimento de grãos não espera o solo secar.
+○  The potassium is in your ground. Getting it into the plant is the problem.
+O potássio está no seu solo. Levá-lo até a planta é que é o problema.
+○  One more thing in the tank. No more passes in the field.
+Mais uma coisa no tanque. Nenhuma passada a mais no campo.
+PODE PUBLICAR   Descreve composição, forma de entrega e logística. Sem claim de praga ou de estimulação de crescimento.
+TRILHA B  Adjuvante de praga — HOLD
+Não publicar sem aprovação escrita do regulatório.
+HEADLINE (H1) — HOLD
+The one you didn't reach is the one that comes back.
+PT · O que você não alcançou é o que volta.
+↳ Deliberadamente não nomeia o inseto na headline — quem convive com cigarrinha completa a frase sozinho, e a construção é mais forte assim. Ainda é claim de controle de praga: HOLD.
+SUBHEADLINE — HOLD
+Corn leafhopper reached 185 counties across 16 states in 2025. Brazil has been managing it for over a decade. KMEP Ultra® was built for that fight.
+PT · O corn leafhopper chegou a 185 condados em 16 estados em 2025. O Brasil convive com ele há mais de uma década. O KMEP Ultra® foi construído para essa briga.
+↳ Os dados são de fonte pública (Pioneer, safra 2025) e podem ser citados. O que está sob HOLD é vincular o produto ao controle da praga, não a estatística.
+HOLD — AGUARDA REGULATÓRIO   Claim de mecanismo sobre praga. Depende de P2 e possivelmente de registro EPA.
+Recomendação
+Direção sugerida — não prescritiva
+Layout
+Hero de produto: texto à esquerda, embalagem à direita em plano fechado. Menos alto que o hero da Home — numa LP o visitante já decidiu clicar, então o conteúdo começa antes.
+Fundo
+Branco ou cinza claríssimo. Guardar o verde profundo para a seção de resultados, que é o clímax da página.
+Asset
+Embalagem com rótulo americano — P12. Se não existir, preferir uma composição tipográfica do nome do produto a exibir o frasco brasileiro numa página em inglês.
+Animação
+AN-01 (biblioteca) — entrada curta do produto, sem loop.
+
+[K2]  Seletor de cultura
+Barra fina logo abaixo do hero. Troca resultado, janela de aplicação, ROI e imagem ao longo da página inteira.
+RÓTULO
+Showing for:
+PT · Mostrando para:
+OPÇÕES
+Corn  ·  Soybeans  ·  Cotton  ·  Specialty crops
+PT · Milho · Soja · Algodão · Culturas de alto valor
+↳ Lista provisória — depende de P6. Specialty crops como agrupamento evita prometer cultura específica antes de o técnico confirmar eficácia.
+ESTADO PADRÃO
+Corn — the crop with the trial data we can show you.
+PT · Milho — a cultura com o dado de ensaio que podemos mostrar.
+↳ Assumir por que o padrão é milho, em vez de simplesmente abrir nele, transforma uma limitação em sinal de honestidade.
+Recomendação
+Direção sugerida — não prescritiva
+Layout
+Barra horizontal fina, fixa ao rolar, com as culturas como abas. Mobile: chips roláveis horizontalmente.
+Fundo
+Cinza claro com a aba ativa em verde profundo e texto branco.
+Asset
+Nenhum, ou ícone de cultura em traço fino de 16px.
+Animação
+Transição de 200ms no conteúdo trocado. Sem deslocamento de layout — reservar altura fixa para os blocos que mudam, senão a página "pula" e prejudica o CLS.
+Observação
+Se P5 for respondida e a Juma escolher um mercado, este componente sai e a página abre direto na cultura certa. Nenhum outro bloco muda.
+
+AGUARDA DADO DA JUMA   Lista de culturas aguarda P6.
+[K3]  O problema
+A dor específica que o produto endereça. Precisa ser reconhecível em uma leitura.
+TRILHA A  Nutricional — publicável
+
+HEADLINE (H2)
+Grain fill runs on potassium the root may not deliver in time.
+PT · O enchimento de grãos funciona com um potássio que a raiz pode não entregar a tempo.
+CORPO
+Potassium demand peaks late — through pollination and grain fill — right when a dry stretch, a compaction layer or a shallow root system limits how much the soil can actually move. The potassium is in the ground. Your soil test says so. That isn't the same as having it in the plant during the three weeks that set the kernel.
+PT · A demanda por potássio tem pico no fim do ciclo — durante a polinização e o enchimento de grãos — exatamente quando um veranico, uma camada compactada ou um sistema radicular raso limitam quanto o solo consegue de fato movimentar. O potássio está no solo. Sua análise diz isso. O que não é a mesma coisa que tê-lo dentro da planta nas três semanas que definem o grão.
+↳ O parágrafo inteiro serve a uma frase: a distinção entre potássio disponível e potássio absorvido. É uma verdade agronômica que o público conhece, e reconhecê-la estabelece autoridade antes de qualquer promessa.
+PODE PUBLICAR   Descrição de demanda nutricional e dinâmica de solo. Nenhum efeito atribuído ao produto.
+TRILHA B  Adjuvante de praga — HOLD
+
+HEADLINE (H2) — HOLD
+You sprayed. Days later, they're back.
+PT · Você pulverizou. Dias depois, eles voltaram.
+CORPO — HOLD
+The application was right. The product was right. Part of the population simply never met the spray — it was in the whorl, under the leaf, in the sheath. Re-spraying costs money and speeds up resistance selection.
+PT · A aplicação estava certa. O produto estava certo. Parte da população simplesmente nunca encontrou a calda — estava no cartucho, embaixo da folha, na bainha. Reaplicar custa dinheiro e acelera a seleção de resistência.
+↳ whorl e sheath são termos exatos que um agrônomo americano de milho usa. Se esta trilha for liberada, a precisão do vocabulário é o que a torna crível.
+HOLD — AGUARDA REGULATÓRIO   Descreve falha de controle de praga. Depende de P2.
+Recomendação
+Direção sugerida — não prescritiva
+Layout
+Texto largo, uma coluna, com a headline em escala maior que o corpo. Sem card, sem caixa — a seção precisa parecer conversa técnica.
+Fundo
+Branco.
+Asset
+Detalhe macro: folha em fim de ciclo, grão em enchimento, ou corte de perfil de solo. Evitar imagem de planta doente ou murcha, que sugere claim de proteção.
+Animação
+Nenhuma.
+
+[K4]  Como funciona
+O mecanismo. É aqui que a animação principal da página trabalha.
+TRILHA A  Nutricional — publicável
+
+HEADLINE (H2)
+Two routes. Two clocks.
+PT · Duas rotas. Dois relógios.
+↳ Headline curta feita para legendar a animação, não para ser lida sozinha. A peça visual carrega o sentido; o texto ancora.
+CORPO
+Soil potassium moves with water. It has to dissolve, travel to the root surface, cross into the xylem and ride up to the leaf — and every one of those steps slows down when the profile dries. Foliar potassium skips the queue: it lands on the leaf and moves into the tissue from there, in hours instead of days.
+PT · O potássio do solo se move com a água. Precisa dissolver, chegar até a superfície da raiz, entrar no xilema e subir até a folha — e cada uma dessas etapas desacelera quando o perfil seca. O potássio foliar fura a fila: cai na folha e entra no tecido a partir dali, em horas em vez de dias.
+↳ skips the queue é coloquial e visual — combina com o que a animação mostra. in hours instead of days é a única comparação temporal da página e precisa ser confirmada pelo técnico da Juma antes de publicar.
+LEGENDA DA ANIMAÇÃO
+Left: potassium from the soil solution. Right: potassium applied to the leaf. Same nutrient, different clock.
+PT · À esquerda: potássio da solução do solo. À direita: potássio aplicado na folha. Mesmo nutriente, relógio diferente.
+REVISAR COM O REGULATÓRIO   Descrição de dinâmica de nutriente, tecnicamente correta e nutricional. A afirmação hours instead of days é comparativa e precisa de respaldo técnico da Juma antes do ar.
+TRILHA B  Adjuvante de praga — HOLD
+
+HEADLINE (H2) — HOLD
+It changes where the insect is when the spray arrives.
+PT · Ele muda onde o inseto está quando a calda chega.
+CORPO — HOLD
+KMEP Ultra® goes in the tank with the insecticide you already chose. It doesn't replace it and it doesn't make it stronger — it changes the target's behavior so more of the population is exposed to the spray you paid for.
+PT · O KMEP Ultra® vai no tanque com o inseticida que você já escolheu. Ele não substitui e não torna o produto mais forte — muda o comportamento do alvo para que mais da população fique exposta à calda que você pagou.
+↳ A negação dupla (doesn't replace, doesn't make it stronger) foi escrita para reduzir exposição regulatória mantendo o argumento comercial. Mesmo assim é claim de mecanismo sobre praga: continua HOLD.
+HOLD — AGUARDA REGULATÓRIO   Claim de alteração de comportamento de inseto. É exatamente a categoria da FIFRA §2(v). Depende de P2.
+Recomendação
+Direção sugerida — não prescritiva
+Layout
+Animação ocupando 60% da largura, texto em coluna lateral. Em mobile, animação acima e texto abaixo — nunca sobrepostos.
+Fundo
+Cinza claro, para a animação ter contraste sem competir com o branco do resto.
+Asset
+AN-02 (biblioteca de animações).
+Animação
+AN-02 — Duas rotas, dois relógios. Dispara quando 50% da peça entra na viewport, roda uma vez, com controle de repetir visível.
+
+[K5]  O que muda — antes e depois
+A peça de maior impacto da página. Antes/depois do tipo 2: resultado medido, não planta idealizada.
+HEADLINE (H2)
+Nine bushels, same pass.
+PT · Nove bushels, mesma aplicação.
+↳ Arredondar 8,9 para "nove" na headline é aceitável e mais forte de ler; o número exato aparece completo logo abaixo, com a testemunha. Nunca arredondar para cima na tabela.
+RÓTULO DO LADO ESQUERDO
+UNTREATED CHECK — 212.3 bu/ac
+PT · TESTEMUNHA — 212,3 bu/ac
+RÓTULO DO LADO DIREITO
+KMEP ULTRA® — 221.3 bu/ac
+PT · KMEP ULTRA® — 221,3 bu/ac
+CORPO
+Corn, Rehagro trial, Brazil. Original figures 231.45 vs 222.12 sc/ha. The difference is +8.9 bu/ac, or 4.2% — from a product that went in the tank with an application already on the schedule.
+PT · Milho, ensaio Rehagro, Brasil. Números originais 231,45 vs 222,12 sc/ha. A diferença é +8,9 bu/ac, ou 4,2% — de um produto que entrou no tanque com uma aplicação que já estava programada.
+↳ Publicar a unidade brasileira ao lado da americana não é excesso de zelo: prova que o número não foi construído para o site, e um agrônomo cético consegue refazer a conversão.
+Restrição de arte inegociável
+Nunca representar isso como duas plantas, uma maior que a outra. Imagem de planta tratada visivelmente mais desenvolvida é a representação visual de plant growth regulator e carrega o mesmo risco que a frase equivalente. A EPA avalia rótulo e material promocional como conjunto. O antes/depois desta seção é de grão colhido e número medido — nunca de porte de planta.
+Recomendação
+Direção sugerida — não prescritiva
+Layout
+Split screen vertical, 50/50, com uma linha divisória fina. Números em escala grande, fonte do ensaio em corpo pequeno abaixo de tudo.
+Fundo
+Verde profundo. Este é o clímax visual da página e merece a cor mais forte da marca.
+Asset
+Duas amostras de grão fotografadas na mesma condição de luz, ou duas espigas dispostas de forma idêntica. Se não houver foto real de ensaio, tipografia pura funciona melhor que foto de banco — inventar a imagem do ensaio contradiz a seção.
+Animação
+AN-03 — O contador da diferença. Os dois valores sobem simultaneamente, o lado tratado para em 221.3 e a diferença aparece destacada.
+
+PODE PUBLICAR   Claim de rendimento com substanciação completa: tratado, testemunha, cultura, local e fonte. Falta apenas o ano do ensaio, que não consta no material.
+[K6]  Benefícios
+Quatro cards curtos. Cada um responde a uma pergunta prática, não a um atributo do produto.
+CARD 1
+TÍTULO / CORPO
+Goes in the tank you're already filling — Compatible in tank mix. No separate pass, no extra diesel, no new weather window.
+PT · Entra no tanque que você já está enchendo — Compatível em mistura. Sem aplicação separada, sem diesel extra, sem nova janela de clima.
+CARD 2
+TÍTULO / CORPO
+Potassium in a form the leaf takes up — Foliar delivery, not another product waiting on soil moisture.
+PT · Potássio numa forma que a folha absorve — Entrega foliar, não mais um produto esperando umidade do solo.
+CARD 3
+TÍTULO / CORPO
+Timed to grain fill, not to the calendar — Positioned for the window where potassium demand actually peaks.
+PT · No tempo do enchimento, não do calendário — Posicionado para a janela em que a demanda de potássio realmente tem pico.
+CARD 4
+TÍTULO / CORPO
+A number you can check — +8.9 bu/ac over the untreated check. Rehagro trial, Brazil. Ask us for the full report.
+PT · Um número que você pode conferir — +8,9 bu/ac sobre a testemunha. Ensaio Rehagro, Brasil. Peça o relatório completo.
+↳ Ask us for the full report é um CTA disfarçado de benefício e alimenta o formulário. Só publicar se o relatório existir e puder ser compartilhado — depende de P21 e P19.
+Recomendação
+Direção sugerida — não prescritiva
+Layout
+Grid de quatro colunas em desktop, duas em tablet, uma em mobile. Cards sem borda, separados por espaço em branco e um filete no topo de cada.
+Fundo
+Branco, com filete superior de cada card em amarelo-lima.
+Asset
+Sem ícone. O briefing pede para evitar cards pequenos competindo entre si, e ícone genérico é exatamente o que faz um card virar ruído.
+Animação
+Entrada escalonada de 60ms entre cards, uma única vez.
+
+PODE PUBLICAR   Card 4 depende de P19 e P21 para a promessa do relatório.
+[K7]  Resultados
+A tabela completa do ensaio. Formato de documento, não de peça de marketing.
+HEADLINE (H2)
+The trial, in full.
+PT · O ensaio, na íntegra.
+CORPO
+One trial, published whole. When we have more, they'll be here too — including the ones that didn't separate.
+PT · Um ensaio, publicado inteiro. Quando tivermos mais, estarão aqui também — inclusive os que não separaram.
+↳ including the ones that didn't separate ("que não deram diferença estatística") é uma aposta de credibilidade: sinaliza que o site não seleciona só o que favorece. Só publicar se a Juma concordar em cumprir — a frase cria uma obrigação real.
+ESTRUTURA DA TABELA
+Crop
+Location
+Treated
+Untreated check
+Difference
+Source
+Year
+Corn
+Brazil
+221.3 bu/ac
+212.3 bu/ac
++8.9 (+4.2%)
+Rehagro
+[P — pendente]
+
+
+231.45 sc/ha
+222.12 sc/ha
++9.33 sc/ha
+
+
+
+DISCLAIMER
+Results from field trials conducted in Brazil. Field performance varies with climate, soil and management.
+PT · Resultados de ensaios de campo conduzidos no Brasil. O desempenho em campo varia com clima, solo e manejo.
+Dado que falta
+O ano do ensaio não consta em nenhum dos documentos auditados. Tabela de resultado sem ano levanta suspeita imediata em leitor técnico — incluir na cobrança junto de P21 (delineamento, repetições, se é multi-local).
+Recomendação
+Direção sugerida — não prescritiva
+Layout
+Tabela de largura total, tipografia tabular, sem zebra colorida — apenas filete entre linhas. Mobile: rolagem horizontal com a primeira coluna fixa.
+Fundo
+Branco. Esta seção deve parecer um anexo técnico.
+Asset
+Opcional: link para o PDF do relatório do ensaio, se houver autorização (P19/P21).
+Animação
+Nenhuma. Movimento em tabela de dados diminui a credibilidade.
+
+PODE PUBLICAR   Falta o ano do ensaio.
+[K8]  Economia por acre
+A seção que não existia no PRD e que a pesquisa de mercado indicou como decisiva: o produtor americano decide por ROI explícito.
+HEADLINE (H2)
+What nine bushels is worth on your acres.
+PT · Quanto valem nove bushels nos seus acres.
+CORPO
+At $4.30 per bushel, 8.9 bu/ac is $38.27 an acre. Your cost for KMEP Ultra® at the labeled rate is [PENDING]. The gap between those two numbers is the whole decision — so we publish both.
+PT · A US$ 4,30 por bushel, 8,9 bu/ac valem US$ 38,27 por acre. Seu custo com KMEP Ultra® na dose de rótulo é [PENDENTE]. A diferença entre esses dois números é a decisão inteira — por isso publicamos os dois.
+↳ Publicar o próprio custo ao lado do ganho é incomum na categoria e é justamente por isso que funciona neste público. Exige, porém, que o número aguente a conta.
+FAIXA DE CENÁRIOS — TRÊS COLUNAS
+Corn price
+Value of +8.9 bu/ac
+Product cost/ac
+Net per acre
+$4.00/bu
+$35.60
+[PENDENTE — P8]
+[calcula]
+$4.30/bu
+$38.27
+[PENDENTE — P8]
+[calcula]
+$4.60/bu
+$40.94
+[PENDENTE — P8]
+[calcula]
+
+MICROCOPY DA FAIXA
+Corn price scenarios shown for reference. Yield response from the Rehagro trial, Brazil. Your result will vary.
+PT · Cenários de preço do milho mostrados como referência. Resposta de produtividade do ensaio Rehagro, Brasil. Seu resultado vai variar.
+Condição de publicação
+Esta seção não pode ir ao ar sem P8 — preço por galão e custo por acre na dose recomendada. Sem o custo, a página apresenta o ganho sem o investimento, que é exatamente o formato de propaganda que o resto do site rejeita. Se P8 não chegar até o dia 20/08, recomendo remover a seção inteira em vez de publicá-la pela metade.
+Recomendação
+Direção sugerida — não prescritiva
+Layout
+Três colunas de cenário, com o valor central destacado. Abaixo, uma linha de microcopy. Mobile: cards empilhados com o cenário central primeiro.
+Fundo
+Cinza claro, com o cenário central em card branco elevado.
+Asset
+Nenhum. Esta seção é número.
+Animação
+AN-04 — A conta por acre. Barra que preenche mostrando ganho contra custo. Discreta: o objetivo é dar leitura instantânea da proporção, não impressionar.
+
+AGUARDA DADO DA JUMA   Bloqueada por P8.
+[K9]  Culturas e janela de aplicação
+Onde e quando aplicar. Conteúdo trocado pelo seletor de cultura de K2.
+HEADLINE (H2)
+When it goes in.
+PT · Quando entra.
+MODO MILHO
+JANELA
+V4–V6, and again with the application you're already making ahead of grain fill. Rate: [PENDING] fl oz/ac.
+PT · V4–V6 e novamente com a aplicação que você já faz antes do enchimento de grãos. Dose: [PENDENTE] fl oz/ac.
+↳ Estágios em nomenclatura americana (V4, V6, VT, R1) são obrigatórios. Publicar estágio em nomenclatura brasileira numa página em inglês é o tipo de detalhe que denuncia tradução na primeira leitura técnica.
+MODO SOJA
+JANELA
+R1 through R3, in the pass you're already making. Rate: [PENDING] fl oz/ac.
+PT · De R1 a R3, na aplicação que você já faz. Dose: [PENDENTE] fl oz/ac.
+MODO SPECIALTY
+ESTADO PROVISÓRIO
+We're confirming positioning for specialty crops in the U.S. Tell us what you grow and we'll come back with the specifics.
+PT · Estamos confirmando o posicionamento para culturas de alto valor nos EUA. Conte o que você planta e retornamos com as especificações.
+↳ Honesto e converte: transforma a ausência de dado em captura de lead qualificado. Melhor que inventar posicionamento ou omitir a cultura.
+Recomendação
+Direção sugerida — não prescritiva
+Layout
+Linha do tempo horizontal com os estágios marcados e a janela de aplicação destacada. Mobile: timeline vertical.
+Fundo
+Branco.
+Asset
+Ilustração de estágio fenológico em traço, no estilo de manual técnico — não fotografia. Precisa ser reconhecível como milho americano.
+Animação
+Marcador que percorre a linha do tempo ao entrar na viewport, uma vez.
+
+AGUARDA DADO DA JUMA   Doses aguardam P4; posicionamento specialty aguarda P6.
+[K10]  Dados técnicos
+Guaranteed Analysis, embalagens, compatibilidade e SDS. É o bloco que um dealer procura primeiro.
+HEADLINE (H2)
+Guaranteed analysis
+PT · Declaração de garantia
+ESTRUTURA DA TABELA — AGUARDANDO RÓTULO AMERICANO
+Campo
+Valor
+Total Nitrogen (N)
+[PENDENTE — P1/P3]
+Available Phosphate (P₂O₅)
+[PENDENTE]
+Soluble Potash (K₂O)
+[PENDENTE]
+Micronutrients
+[PENDENTE]
+Derived from
+[PENDENTE — obrigatório no rótulo americano]
+Density (lb/gal)
+[PENDENTE]
+pH
+[PENDENTE]
+Packaging
+[PENDENTE — ver nota]
+State registrations
+[PENDENTE — P10]
+SDS
+[PDF — P14]
+
+Armadilha de localização
+As embalagens não podem ser publicadas em litros. O material registra 10L e 20L, que são as embalagens brasileiras. Num site americano isso precisa ser 2.5 gal, 5 gal, 275 gal tote — ou o que a LLC realmente comercializa. Se o produto for importado nas embalagens brasileiras, é uma decisão comercial a confirmar, não um detalhe de tradução.
+COMPATIBILIDADE
+Tank-mix compatibility and mixing order: [PENDING]. Always jar-test before mixing a combination you haven't run.
+PT · Compatibilidade de mistura e ordem no tanque: [PENDENTE]. Sempre faça teste de jarro antes de misturar uma combinação que você ainda não usou.
+↳ A recomendação de jar test é prática padrão americana. Incluí-la mostra domínio operacional e reduz risco de reclamação por incompatibilidade.
+Recomendação
+Direção sugerida — não prescritiva
+Layout
+Duas colunas: tabela à esquerda, downloads à direita (rótulo em PDF, SDS em PDF).
+Fundo
+Cinza claro. Bloco de referência, visualmente distinto do restante da página.
+Asset
+PDFs de rótulo (P1) e SDS (P14). Ícone de download e tamanho do arquivo ao lado do link — cortesia que esse público nota.
+Animação
+Nenhuma.
+
+AGUARDA DADO DA JUMA   Bloqueada por P1, P3, P4, P10 e P14. É a seção mais dependente da Juma.
+[K11]  Objeções
+Formato de perguntas frequentes, mas escrito como antecipação de objeção. Aumenta conversão e reduz volume de pergunta repetida no formulário.
+PERGUNTA
+Can I tank mix it with my insecticide or fungicide?
+PT · Posso misturar com meu inseticida ou fungicida?
+RESPOSTA
+Yes — that's how it's meant to be used. Mixing order and known incompatibilities are on the label. Jar-test any combination you haven't run before.
+PT · Sim — é assim que ele foi feito para ser usado. A ordem de mistura e as incompatibilidades conhecidas estão no rótulo. Faça teste de jarro em qualquer combinação nova.
+
+PERGUNTA
+Will it burn the leaf in high heat?
+PT · Vai queimar a folha em calor alto?
+RESPOSTA
+[PENDING — technical answer required from Juma. Temperature and humidity restrictions belong on the label.]
+PT · [PENDENTE — resposta técnica necessária. Restrições de temperatura e umidade pertencem ao rótulo.]
+
+PERGUNTA
+Is it registered in my state?
+PT · Está registrado no meu estado?
+RESPOSTA
+[PENDING — P10. List the states, or invite the visitor to ask.]
+PT · [PENDENTE — P10. Listar os estados ou convidar o visitante a perguntar.]
+
+PERGUNTA
+How is this different from a standard 0-0-25 or KTS?
+PT · Qual a diferença para um 0-0-25 comum ou KTS?
+RESPOSTA
+[PENDING — requires the guaranteed analysis (P3) to answer honestly. This is the objection a retail agronomist will raise first, and a vague answer costs the sale.]
+PT · [PENDENTE — precisa da declaração de garantia (P3) para responder com honestidade. É a primeira objeção que um agrônomo de retail levanta, e resposta vaga custa a venda.]
+
+PERGUNTA
+Your trials are from Brazil. Why should that matter to me?
+PT · Seus ensaios são do Brasil. Por que isso deveria importar para mim?
+RESPOSTA
+Because the check plots line up with your benchmark. The untreated corn in our trial ran 212.3 bu/ac — close to the U.S. national average. The trial wasn't run in easier conditions than yours; it was run in harder ones.
+PT · Porque as parcelas testemunha batem com o seu benchmark. O milho não tratado no nosso ensaio deu 212,3 bu/ac — próximo da média nacional americana. O ensaio não foi feito em condição mais fácil que a sua; foi feito em condição mais difícil.
+
+PERGUNTA
+Do you have U.S. trial data?
+PT · Vocês têm dados de ensaio nos EUA?
+RESPOSTA
+[PENDING — P20. If the answer is no, say so plainly and offer a demo strip. Dodging this question is worse than answering it.]
+PT · [PENDENTE — P20. Se a resposta for não, dizer com clareza e oferecer uma faixa de demonstração. Desviar dessa pergunta é pior que respondê-la.]
+
+A resposta que vale a página
+A resposta sobre o Brasil é a mais importante da página e talvez do site. Ela converte a objeção mais provável em prova: a testemunha do ensaio brasileiro (212,3 bu/ac em milho) coincide quase exatamente com a média nacional americana. Isso significa que os ensaios são diretamente comparáveis ao benchmark do visitante — um ativo que o documento mestre identificou e que precisa ser dito em voz alta, não deixado implícito.
+Recomendação
+Direção sugerida — não prescritiva
+Layout
+Acordeão, todas as perguntas fechadas por padrão exceto a primeira. Pergunta em peso médio, resposta em peso normal.
+Fundo
+Branco, com filete entre itens.
+Asset
+Nenhum.
+Animação
+Expansão de 200ms com easing suave. Nada mais.
+
+AGUARDA DADO DA JUMA   Quatro das seis respostas aguardam dado da Juma.
+[K12]  CTA final
+Último bloco. Repete a oferta do hero com mais contexto e menos atrito.
+HEADLINE (H2)
+Get the label, the rates and the trial.
+PT · Receba o rótulo, as doses e o ensaio.
+↳ Enumerar as três coisas é mais concreto que "fale conosco" e define expectativa clara do que chega no e-mail.
+CORPO
+Tell us your crop and your state. We'll send the label, rates in fl oz per acre, and the full trial report — and an agronomist will follow up if you want one.
+PT · Conte a sua cultura e o seu estado. Enviamos o rótulo, as doses em fl oz por acre e o relatório completo do ensaio — e um agrônomo dá retorno se você quiser.
+BOTÃO
+Send
+PT · Enviar
+Recomendação
+Direção sugerida — não prescritiva
+Layout
+Formulário reduzido: nome, e-mail, estado, cultura. Quatro campos. O formulário completo fica só na Home.
+Fundo
+Verde profundo, formulário em card branco.
+Asset
+Nenhum.
+Animação
+Nenhuma além do estado de carregamento do botão.
+Observação
+Usar o mesmo componente de formulário da Home com variante reduzida — não construir dois.
+
+AGUARDA DADO DA JUMA   Depende de P11 e P19.
+
+
+
+
+PÁGINA 3
+LP Aminosan®
+Doze seções. Mesmo template da LP anterior, com dois blocos exclusivos: a herança de 40 anos e a diferenciação técnica frente aos hidrolisados do mercado americano.
+Origem: Arquitetura base: PRD §6.2, mesmo template parametrizado. Trilha única de copy, com reescrita integral das frases de mecanismo por exigência do filtro FIFRA.
+
+A situação deste produto
+O Aminosan é o carro-chefe, o produto de origem e o mais provado da casa. Também é o produto cuja comunicação atual está mais exposta — e essa foi a descoberta que mudou o projeto.
+O PRD tratava o risco FIFRA como problema do KMEP Ultra. A pesquisa mostrou que não: as frases hoje publicadas do Aminosan em juma-agro.com.br/en — faster recovery, the plant grows again after stress, acelera a fotossíntese e a atividade enzimática — são exatamente as construções que a draft guidance da EPA classifica como claim de estimulação, do lado que exige registro como pesticida.
+O princípio de redação desta página
+A copy deste produto foi reescrita do zero sobre um princípio: descrever o que o produto entrega, nunca o que ele provoca na planta. O Aminosan contém aminoácidos livres — isso é composição, é factual e é verificável no rótulo. O que a planta faz com eles depois é fisiologia, e é ali que a linha da FIFRA passa.
+Frase hoje no ar (/en)
+Por que é problema
+Reformulação usada nesta página
+Faster recovery — the plant grows again after stress
+Claim de aceleração de crescimento e de resposta a estresse. Categoria central da FIFRA §2(v).
+Free amino acids, delivered through the leaf — descreve a entrega, não o desfecho.
+Aceleram a fotossíntese, a absorção e a atividade enzimática
+Três claims de aceleração metabólica numa frase só.
+The building blocks the plant would otherwise assemble from nitrate — descreve o que o nutriente é, e o caminho que ele encurta é bioquímica pública, não promessa.
+Melhor pegamento na fase reprodutiva
+Claim de efeito reprodutivo, próximo de regulador de crescimento.
+Substituída por dado de ensaio com testemunha, quando P9 liberar. Sem o número, não entra.
+
+[A1]  Hero
+Promessa central. Precisa carregar 40 anos de história sem soar nostálgica.
+EYEBROW
+PLANT-DERIVED FREE AMINO ACIDS · ENZYMATIC FERMENTATION
+PT · AMINOÁCIDOS LIVRES DE ORIGEM VEGETAL · FERMENTAÇÃO ENZIMÁTICA
+↳ plant-derived e enzymatic fermentation são diferenciação técnica real frente aos hidrolisados ácidos de origem animal que dominam a categoria nos EUA. Colocar isso no eyebrow qualifica o leitor técnico antes da headline.
+HEADLINE (H1)
+The plant can build amino acids. Or you can hand it the finished ones.
+PT · A planta consegue construir aminoácidos. Ou você entrega os prontos.
+↳ A construção é a página inteira em uma frase e não faz nenhum claim: reconhece que a planta é capaz e apresenta o produto como alternativa de fornecimento. hand it é coloquial e concreto — em português, "entregar" cobre bem.
+SUBHEADLINE
+Aminosan® is a foliar fertilizer of plant-derived free amino acids with N, P and K, produced by enzymatic fermentation. It has been in the field longer than the company that makes it.
+PT · O Aminosan® é um fertilizante foliar de aminoácidos livres de origem vegetal com N, P e K, produzido por fermentação enzimática. Está em campo há mais tempo que a empresa que o fabrica.
+↳ A última frase é o fato mais forte do produto: ele foi criado antes da fundação da Juma. Confirmar a cronologia antes de publicar — o material registra fundação em 1988 e "mais de 40 anos", e as duas datas não fecham (tensão 8).
+CTA PRIMÁRIO
+Get the label and rate sheet
+PT · Receba o rótulo e a tabela de doses
+CTA SECUNDÁRIO
+See the trials
+PT · Ver os ensaios
+ALTERNATIVAS PARA TESTAR
+○  Nitrogen is raw material. Amino acids are the product.
+Nitrogênio é matéria-prima. Aminoácido é o produto.
+○  Forty years of the same answer to the same question.
+Quarenta anos da mesma resposta para a mesma pergunta.
+○  Skip the assembly line.
+Pule a linha de montagem.
+Recomendação
+Direção sugerida — não prescritiva
+Layout
+Mesmo template do hero da LP anterior: texto à esquerda, produto à direita. A consistência entre as duas LPs é o que torna o template reutilizável para os dois produtos futuros.
+Fundo
+Branco ou cinza claríssimo, igual à LP do KMEP. Diferenciar as duas páginas pela cor do hero enfraquece o sistema.
+Asset
+Embalagem com rótulo americano (P12). O Aminosan tem três embalagens no Brasil (1L, 10L, 20L) — confirmar quais existem nos EUA e em que unidade.
+Animação
+AN-01 — mesma entrada de produto da LP anterior.
+
+PODE PUBLICAR   Descreve composição e processo de fabricação. Nenhum efeito fisiológico atribuído.
+[A2]  Seletor de cultura
+Mesmo componente da LP anterior. Troca resultado, janela e ROI.
+OPÇÕES
+Soybeans  ·  Corn  ·  Cotton  ·  Specialty crops
+PT · Soja · Milho · Algodão · Culturas de alto valor
+↳ Soja como padrão nesta página: é onde estão os dois ensaios do produto. Na LP do KMEP o padrão é milho, pela mesma razão.
+ESTADO PADRÃO
+Soybeans — where our trials are.
+PT · Soja — onde estão os nossos ensaios.
+Recomendação
+Direção sugerida — não prescritiva
+Layout
+Idêntico a [K2]. Mesmo componente, dados diferentes.
+Fundo
+Idem.
+Asset
+Idem.
+Observação
+Componente compartilhado entre as duas LPs e reutilizável pelos dois produtos futuros.
+
+AGUARDA DADO DA JUMA   Lista aguarda P6.
+[A3]  O problema
+A dor. Aqui está o parágrafo mais delicado do site sob a ótica regulatória.
+HEADLINE (H2)
+Nitrogen is not an amino acid.
+PT · Nitrogênio não é aminoácido.
+↳ Cinco palavras, afirmação bioquímica indiscutível, e reposiciona a categoria inteira. Um agrônomo lê isso e sabe imediatamente do que a página vai tratar.
+CORPO
+Nitrate in the soil is raw material, not finished product. Before nitrogen ends up in protein, the plant has to reduce it, aminate it and assemble it — a chain of steps that draws on carbon and energy the plant produced for something else. In a season with room to spare, that's simply how it works. In the weeks that set yield, it's a line item.
+PT · O nitrato no solo é matéria-prima, não produto acabado. Antes de o nitrogênio virar proteína, a planta precisa reduzi-lo, aminá-lo e montá-lo — uma cadeia de etapas que consome carbono e energia que a planta produziu para outra coisa. Numa safra com folga, é simplesmente como funciona. Nas semanas que definem a produtividade, é um custo.
+↳ it's a line item (item de despesa numa planilha) traduz o conceito de custo metabólico para a linguagem de quem administra fazenda. Em português, "é um custo" entrega o mesmo sem forçar a metáfora contábil.
+REVISAR COM O REGULATÓRIO   Descreve bioquímica vegetal estabelecida e não atribui efeito ao produto — o produto nem é mencionado nesta seção. Ainda assim, é a seção que mais se aproxima do território de "metabolismo", e vale a leitura do regulatório antes do ar.
+Recomendação
+Direção sugerida — não prescritiva
+Layout
+Headline em escala grande ocupando a largura, corpo em coluna estreita abaixo e à esquerda. Deixar a seção respirar — é conceitual e precisa de tempo de leitura.
+Fundo
+Branco.
+Asset
+Nenhum, ou um detalhe abstrato de folha. Evitar imagem de planta deficiente ou clorótica, que sugere claim de correção de sintoma.
+Animação
+Nenhuma.
+
+[A4]  Como funciona
+A animação mais didática do site: a rota longa contra a rota curta.
+HEADLINE (H2)
+Five steps, or one.
+PT · Cinco etapas, ou uma.
+CORPO
+To build a single amino acid from soil nitrate, the plant runs nitrate to nitrite, nitrite to ammonium, ammonium into glutamate, and glutamate into the amino acid it actually needs. Aminosan® delivers free amino acids through the leaf — already in the form the plant uses.
+PT · Para construir um único aminoácido a partir do nitrato do solo, a planta leva nitrato a nitrito, nitrito a amônio, amônio a glutamato, e glutamato até o aminoácido de que de fato precisa. O Aminosan® entrega aminoácidos livres pela folha — já na forma que a planta usa.
+↳ A cadeia bioquímica é fato de livro-texto e pode ser publicada. O cuidado está no verbo final: delivers ... already in the form the plant uses descreve a entrega. Escrever "poupa energia da planta" ou "acelera a síntese proteica" cruzaria a linha — e é o que está no ar hoje.
+LEGENDA DA ANIMAÇÃO
+Top: nitrate to protein, the long way. Bottom: free amino acids, applied to the leaf.
+PT · Acima: do nitrato à proteína, pelo caminho longo. Abaixo: aminoácidos livres, aplicados na folha.
+Recomendação
+Direção sugerida — não prescritiva
+Layout
+Animação em largura total ou 60%, com texto em coluna lateral. É a peça central da página.
+Fundo
+Cinza claro ou verde profundo, conforme a legibilidade da animação.
+Asset
+AN-05 (biblioteca).
+Animação
+AN-05 — Cinco etapas, ou uma. A rota longa desenha-se passo a passo; a rota curta aparece de uma vez. O contraste de ritmo entre as duas é o argumento — não é preciso nenhuma palavra a mais.
+
+REVISAR COM O REGULATÓRIO   Bioquímica pública descrita com verbos de entrega. Revisar o texto final com o regulatório.
+[A5]  Quarenta anos
+Bloco exclusivo desta página. A herança é o principal diferencial do Aminosan e o gancho natural da Brazil story.
+HEADLINE (H2)
+Older than the company that makes it.
+PT · Mais velho que a empresa que o fabrica.
+CORPO
+Julio Matino formulated Aminosan in the late 1980s, before there was a company to sell it. Growers in São Paulo bought it because it worked, and the demand built the business. Four decades later it is still the most tested product in the line, still made in Mogi Guaçu, and still run by the same family.
+PT · Julio Matino formulou o Aminosan no fim dos anos 80, antes de existir empresa para vendê-lo. Produtores de São Paulo compraram porque funcionava, e a demanda construiu o negócio. Quatro décadas depois, segue sendo o produto mais testado da linha, ainda fabricado em Mogi Guaçu e ainda tocado pela mesma família.
+↳ the demand built the business inverte a ordem esperada — produto primeiro, empresa depois — e é o que torna a história memorável. Confirmar a cronologia (tensão 8) antes de publicar qualquer data.
+DESTAQUE LATERAL
+Forty years of Aminosan on tropical agriculture is an asset no U.S. biostimulant company has.
+PT · Quarenta anos de Aminosan sobre agricultura tropical é um ativo que nenhuma empresa americana de biostimulante tem.
+↳ Repete deliberadamente a frase da Brazil story na Home. Repetição consistente entre páginas constrói posicionamento; variação a cada página dilui.
+Recomendação
+Direção sugerida — não prescritiva
+Layout
+Bloco largo com foto em bleed e texto sobreposto ou ao lado. Pode ser a única seção da página com tratamento editorial diferente — é história, não venda.
+Fundo
+Verde profundo ou foto em preto e branco com texto claro.
+Asset
+Foto do fundador ou da fábrica em Mogi Guaçu (P26). Uma imagem de época, mesmo com qualidade técnica baixa, vale mais que qualquer foto de banco — a imperfeição é prova de autenticidade.
+Animação
+Parallax leve na foto, se houver. Nada além.
+
+PODE PUBLICAR   Institucional. Confirmar datas antes de publicar.
+[A6]  Resultados
+O bloco mais frágil da página — e o mais importante. Está bloqueado por P9.
+Por que esta seção está bloqueada
+Os dois resultados publicados do Aminosan aparecem sem a testemunha: Taquarivaí/SP (+11 e +14 sc/ha, DETEC) e Lavras/MG (+10 sc/ha, Terras Gerais). Se a base for equivalente à dos outros ensaios da Juma, esses ganhos representam de +19% a +24% — faixa que, sem o valor do controle ao lado, um agrônomo americano lê como exagero. O número mais forte da empresa é hoje o mais frágil do site.
+ESTADO A  Estado liberado — quando P9 chegar
+Publica igual à LP do KMEP: tratado, testemunha, local, fonte, ano.
+HEADLINE (H2)
+The trials, in full.
+PT · Os ensaios, na íntegra.
+ESTRUTURA DA TABELA
+Crop
+Location
+Treated
+Untreated check
+Difference
+Source
+Year
+Soybeans
+Taquarivaí, SP
+[P9]
+[P9]
++11 sc/ha
+DETEC
+[P9]
+Soybeans
+Taquarivaí, SP
+[P9]
+[P9]
++14 sc/ha
+DETEC
+[P9]
+Soybeans
+Lavras, MG
+[P9]
+[P9]
++10 sc/ha
+Terras Gerais
+[P9]
+
+ESTADO B  Estado provisório — se P9 não chegar
+Solução honesta que mantém a seção no ar sem publicar número frágil.
+HEADLINE (H2)
+What we can show you today.
+PT · O que podemos mostrar hoje.
+CORPO
+We have soybean trial results from two Brazilian institutions — DETEC in Taquarivaí and Terras Gerais in Lavras. We're not publishing the numbers until we can put the untreated check beside them, because that's the rule for every number on this site. Ask us and we'll send what we have, in full.
+PT · Temos resultados de ensaio em soja de duas instituições brasileiras — DETEC em Taquarivaí e Terras Gerais em Lavras. Não vamos publicar os números até poder colocar a testemunha ao lado, porque essa é a regra para todo número deste site. Peça e enviamos o que temos, na íntegra.
+↳ Contraintuitivo, mas provavelmente mais eficaz que publicar o número frágil: aplicar a própria regra publicamente, mesmo quando ela custa caro, é a prova mais forte de que a regra é real. E ainda gera lead qualificado.
+Recomendação
+Direção sugerida — não prescritiva
+Layout
+Igual a [K7]: tabela de largura total, tipografia tabular. No estado provisório, bloco de texto com CTA embutido.
+Fundo
+Branco.
+Asset
+Nenhum.
+Animação
+Nenhuma.
+
+AGUARDA DADO DA JUMA   Bloqueada por P9. Estado provisório disponível para publicar sem ela.
+[A7]  Economia por acre
+Mesma estrutura de [K8]. Depende de P8 e, aqui, também de P9 para o lado do ganho.
+HEADLINE (H2)
+Run the number on your acres.
+PT · Faça a conta nos seus acres.
+CORPO — ESTADO BLOQUEADO
+We publish cost per acre next to yield response, not one without the other. Both numbers are being confirmed for the U.S. market — ask us and we'll send them as soon as they're set.
+PT · Publicamos custo por acre ao lado da resposta de produtividade, nunca um sem o outro. Os dois números estão sendo confirmados para o mercado americano — peça e enviamos assim que estiverem definidos.
+Condição de publicação
+Se P8 e P9 não chegarem, remover a seção em vez de publicar meia conta. Recomendação idêntica à de [K8]: a seção de ROI só funciona com os dois lados.
+Recomendação
+Direção sugerida — não prescritiva
+Layout
+Idêntico a [K8].
+Fundo
+Idem.
+Asset
+Idem.
+Animação
+AN-04, mesma peça da LP anterior, com dados diferentes.
+
+AGUARDA DADO DA JUMA   Bloqueada por P8 e P9.
+[A8]  Culturas e janela de aplicação
+Onde e quando. Conteúdo trocado pelo seletor.
+HEADLINE (H2)
+When it goes in.
+PT · Quando entra.
+MODO SOJA
+JANELA
+From V2–V3 through the reproductive stages, alone or in tank mix. Rate: [PENDING] fl oz/ac per application.
+PT · De V2–V3 até os estágios reprodutivos, isolado ou em mistura. Dose: [PENDENTE] fl oz/ac por aplicação.
+MODO MILHO
+JANELA
+V2 through V8, positioned with the applications already on your schedule. Rate: [PENDING] fl oz/ac.
+PT · De V2 a V8, posicionado com as aplicações que já estão no seu calendário. Dose: [PENDENTE] fl oz/ac.
+MODO SPECIALTY
+ESTADO PROVISÓRIO
+Aminosan® has four decades of use across fruit, vegetable and tree crops in Brazil. We're confirming which of those translate to U.S. conditions and registrations — tell us what you grow.
+PT · O Aminosan® tem quatro décadas de uso em frutíferas, hortaliças e culturas perenes no Brasil. Estamos confirmando quais se traduzem para as condições e os registros americanos — conte o que você planta.
+↳ Aqui a experiência brasileira em specialty é real (citros, tomate, batata) e pode ser citada como histórico — desde que não se transforme em recomendação para cultura americana sem confirmação técnica e de registro.
+Recomendação
+Direção sugerida — não prescritiva
+Layout
+Idêntico a [K9]: linha do tempo horizontal de estágios.
+Fundo
+Branco.
+Asset
+Ilustração de estágio fenológico, mesma família visual da LP anterior.
+Animação
+Marcador percorrendo a linha, uma vez.
+
+AGUARDA DADO DA JUMA   Doses aguardam P4; specialty aguarda P6.
+[A9]  Não é tudo a mesma coisa
+Bloco exclusivo desta página. Diferenciação técnica frente à categoria de aminoácidos nos EUA — onde a maioria dos concorrentes usa hidrolisado ácido de origem animal.
+HEADLINE (H2)
+Not every amino acid product is the same product.
+PT · Nem todo produto de aminoácido é o mesmo produto.
+CORPO
+The label may say amino acids on both jugs. What differs is where they came from, how they were separated, and what form they're in when they reach the leaf.
+PT · O rótulo pode dizer aminoácidos nos dois galões. O que muda é de onde vieram, como foram separados e em que forma chegam à folha.
+↳ both jugs — galão é a embalagem padrão americana de foliar. Detalhe de vocabulário que situa a conversa no contexto do leitor.
+TRÊS LINHAS DE COMPARAÇÃO
+
+Aminosan®
+Comum na categoria
+Source
+Plant-derived
+Often animal hydrolysate (leather, feather, blood meal)
+Process
+Enzymatic fermentation
+Often acid hydrolysis
+Form
+Free amino acids
+Peptide chains the plant still has to break down
+
+TRADUÇÃO DA TABELA
+—
+PT · Origem: vegetal, contra hidrolisado animal (couro, pena, farinha de sangue) comum na categoria. Processo: fermentação enzimática, contra hidrólise ácida. Forma: aminoácidos livres, contra cadeias peptídicas que a planta ainda precisa quebrar.
+Condição de publicação
+Esta seção faz comparação implícita com concorrentes e, sob a FTC, comparação exige substanciação tão rigorosa quanto claim de rendimento. Três condições antes de publicar: (1) confirmar com a Juma que as três linhas descrevem o Aminosan corretamente; (2) manter a coluna da direita genérica — nunca nomear concorrente; (3) preferir "often" a "always", que é o que a redação acima faz. Se a Juma não puder sustentar as três afirmações, cortar a seção inteira em vez de suavizá-la.
+Recomendação
+Direção sugerida — não prescritiva
+Layout
+Tabela de três linhas, com a coluna do Aminosan destacada. Sem ícone de check e X — sinaliza propaganda comparativa e aumenta a exposição.
+Fundo
+Cinza claro.
+Asset
+Nenhum. Comparação com imagem de produto concorrente é risco jurídico desnecessário.
+Animação
+Nenhuma.
+
+REVISAR COM O REGULATÓRIO   Comparativo implícito. Requer confirmação técnica e leitura jurídica.
+[A10]  Dados técnicos
+Mesma estrutura de [K10].
+ESTRUTURA DA TABELA — AGUARDANDO RÓTULO AMERICANO
+Campo
+Valor
+Total Nitrogen (N)
+[PENDENTE — P1/P3]
+Available Phosphate (P₂O₅)
+[PENDENTE]
+Soluble Potash (K₂O)
+[PENDENTE]
+Free amino acids (%)
+[PENDENTE — dado central deste produto]
+Organic carbon (%)
+[PENDENTE]
+Derived from
+[PENDENTE — obrigatório no rótulo americano]
+Density (lb/gal)
+[PENDENTE]
+pH
+[PENDENTE]
+Packaging
+[PENDENTE — 1L/10L/20L são embalagens brasileiras]
+State registrations
+[PENDENTE — P10]
+SDS
+[PDF — P14]
+
+Prioridade dentro de P3
+O percentual de aminoácidos livres é o número mais importante desta tabela: é o que sustenta a diferenciação de [A9] e o que um comprador técnico compara entre marcas. Sem ele, a seção A9 fica sem base e deve sair.
+Recomendação
+Direção sugerida — não prescritiva
+Layout
+Idêntico a [K10].
+Fundo
+Cinza claro.
+Asset
+PDFs de rótulo e SDS.
+Animação
+Nenhuma.
+
+AGUARDA DADO DA JUMA   Bloqueada por P1, P3, P4, P10 e P14.
+[A11]  Objeções
+Perguntas frequentes escritas como antecipação de objeção.
+PERGUNTA
+What's the difference between this and a hydrolysate?
+PT · Qual a diferença entre isso e um hidrolisado?
+RESPOSTA
+Source, process and form — plant-derived, enzymatic fermentation, free amino acids rather than peptide chains. The full guaranteed analysis is on the label.
+PT · Origem, processo e forma — origem vegetal, fermentação enzimática, aminoácidos livres em vez de cadeias peptídicas. A declaração de garantia completa está no rótulo.
+
+PERGUNTA
+Can I tank mix it?
+PT · Posso misturar no tanque?
+RESPOSTA
+Yes, alone or in mix, following the mixing order on the label. Jar-test any combination you haven't run before.
+PT · Sim, isolado ou em mistura, seguindo a ordem indicada no rótulo. Faça teste de jarro em qualquer combinação nova.
+
+PERGUNTA
+Is this OMRI listed?
+PT · É certificado OMRI?
+RESPOSTA
+[PENDING — P24. Relevant for organic operations and for California. If the answer is no, say so; specialty growers ask this first.]
+PT · [PENDENTE — P24. Relevante para operação orgânica e para a Califórnia. Se a resposta for não, dizer; produtor de specialty pergunta isso primeiro.]
+
+PERGUNTA
+Forty years and no U.S. data?
+PT · Quarenta anos e nenhum dado americano?
+RESPOSTA
+[PENDING — P20. If there's no U.S. trial yet, the honest answer is to say so and offer a demo strip on the visitor's own acres. That offer converts better than a defensive answer.]
+PT · [PENDENTE — P20. Se ainda não existe ensaio nos EUA, a resposta honesta é dizer isso e oferecer uma faixa de demonstração na área do próprio visitante. Essa oferta converte melhor que uma resposta defensiva.]
+
+PERGUNTA
+What does it actually do for my crop?
+PT · O que ele realmente faz pela minha lavoura?
+RESPOSTA
+It supplies free amino acids and N-P-K through the leaf. What we can show you is trial data with the untreated check beside it — ask and we'll send the reports.
+PT · Ele fornece aminoácidos livres e N-P-K pela folha. O que podemos mostrar é dado de ensaio com a testemunha ao lado — peça e enviamos os relatórios.
+
+A resposta que exige mais disciplina
+A última resposta é deliberadamente contida. É a pergunta em que a tentação de fazer claim é máxima — e é exatamente a pergunta que a EPA leria primeiro. A saída é devolver à prova: não descrever o que o produto faz, e sim o que os ensaios mostraram, com testemunha ao lado.
+Recomendação
+Direção sugerida — não prescritiva
+Layout
+Acordeão, idêntico a [K11].
+Fundo
+Branco.
+Asset
+Nenhum.
+Animação
+Expansão de 200ms.
+
+AGUARDA DADO DA JUMA   Duas das cinco respostas aguardam dado da Juma.
+[A12]  CTA final
+Fechamento. Mesmo componente reduzido da LP anterior.
+HEADLINE (H2)
+Forty years of trials. Ask for the ones that matter to you.
+PT · Quarenta anos de ensaios. Peça os que interessam a você.
+↳ Personaliza a oferta pela cultura do visitante em vez de prometer um material genérico — e alimenta o seletor de cultura que a página inteira já usou.
+CORPO
+Tell us your crop and your state. We'll send the label, rates in fl oz per acre, and the trial reports for what you grow.
+PT · Conte a sua cultura e o seu estado. Enviamos o rótulo, as doses em fl oz por acre e os relatórios de ensaio da sua cultura.
+BOTÃO
+Send
+PT · Enviar
+Recomendação
+Direção sugerida — não prescritiva
+Layout
+Formulário reduzido de quatro campos, idêntico a [K12].
+Fundo
+Verde profundo.
+Asset
+Nenhum.
+Animação
+Estado de carregamento no botão.
+
+AGUARDA DADO DA JUMA   Depende de P11 e P19.
+
+
+
+
+ANEXOS
+Animações, assets e pendências
+As oito peças de animação com roteiro e direção de prompt, as regras de performance que elas precisam respeitar, a matriz de assets a produzir e o que ainda trava a copy.
+Origem: Produzido nesta especificação, sobre a arquitetura das três páginas e o painel de pendências da Parte V do documento mestre.
+
+A. Biblioteca de animações
+Oito peças. Cada uma existe porque uma frase sozinha não resolve o entendimento — animação que apenas decora custa peso, custa LCP e não paga o próprio preço. As três centrais são AN-02, AN-03 e AN-05: se o orçamento de tempo apertar, produza essas e descarte as demais.
+As três regras que valem para todas
+1.	O desfecho mostrado é nutricional ou numérico, nunca fisiológico. Nenhuma animação pode terminar com uma planta visivelmente maior, mais verde ou mais vigorosa que a testemunha. Esse desfecho é a representação visual de plant growth regulator e carrega o mesmo risco que a frase equivalente.
+2.	Toda peça tem fallback estático. Um frame representativo, exportado em WebP, que entrega a mensagem sozinho. É o que aparece com prefers-reduced-motion, em conexão lenta e no print da página.
+3.	Nenhuma animação roda acima da dobra. O LCP precisa ficar abaixo de 2,5s em 4G e a métrica está nos critérios de aceite do PRD. Animação dispara ao entrar na viewport, uma vez, com controle de repetir visível.
+As oito peças
+AN-01 · Entrada de produto
+Campo
+Especificação
+O que precisa ficar claro
+Que o produto existe fisicamente e tem rótulo americano.
+Roteiro
+A embalagem entra com deslocamento vertical curto e um leve giro de 3 a 5 graus que assenta. Duração total de 600ms. Sem loop, sem brilho passando pelo rótulo.
+Formato e peso
+Vídeo curto WebM/AV1 com fundo transparente, ou sequência de imagens. Até 300 KB. Alternativa mais leve: PNG estático com micro-parallax em CSS ao rolar.
+Direção para gerar com IA
+Se gerar com IA: renderização 3D fotorrealista de galão de fertilizante em fundo neutro, iluminação de estúdio suave, sem reflexo forte no rótulo — o rótulo precisa ficar legível em todos os frames, porque é ele que prova a operação americana.
+Fallback estático
+Foto estática do produto, mesmo enquadramento.
+
+AN-02 · Duas rotas, dois relógios · LP KMEP [K4]
+Campo
+Especificação
+O que precisa ficar claro
+Que potássio de solo e potássio foliar chegam ao mesmo destino em tempos diferentes — e que a rota do solo depende de água.
+Roteiro
+Tela dividida. À esquerda, corte de perfil de solo: o íon K⁺ dissolve, migra até a raiz, entra no xilema e sobe — com um cronômetro correndo. À direita, uma gota deposita na folha e o íon atravessa a cutícula — cronômetro muito mais curto. No fim, os dois lados mostram o mesmo íon dentro da folha. Fecho: um segundo lado a lado, com a rota do solo desacelerando quando o perfil seca. 12 a 15 segundos.
+Formato e peso
+Lottie ou SVG animado com GSAP — vetorial, sob 150 KB, e mantém nitidez em qualquer tela. Vídeo gerado por IA não é recomendado aqui: a precisão do diagrama importa mais que o realismo.
+Direção para gerar com IA
+Se gerar assistido por IA: peça o quadro-chave em estilo de ilustração técnica agronômica, traço fino, paleta de dois tons (verde profundo e amarelo-lima), corte de solo esquemático e não fotográfico. Anime depois em vetor. Descreva o íon como um ponto rotulado K⁺, não como partícula brilhante.
+Fallback estático
+Diagrama estático das duas rotas lado a lado, com os dois tempos anotados.
+Risco regulatório
+Baixo. Mostra transporte de nutriente, não resposta da planta. Não deve terminar com planta maior de nenhum lado.
+
+AN-03 · O contador da diferença · LP KMEP [K5]
+Campo
+Especificação
+O que precisa ficar claro
+Que a diferença entre tratado e testemunha é medida, pequena e real — 8,9 bushels, não um salto de produtividade.
+Roteiro
+Duas colunas com os rótulos UNTREATED CHECK e KMEP ULTRA®. Os dois números sobem juntos a partir de zero; a testemunha para em 212.3 e o tratado segue até 221.3. A diferença aparece destacada entre os dois. A fonte do ensaio entra por último, embaixo. 3 segundos.
+Formato e peso
+Puramente CSS/JS sobre tipografia — peso próximo de zero, nitidez perfeita. Não usar vídeo.
+Direção para gerar com IA
+Não requer IA. Se quiser imagem de apoio, gere duas amostras de grão fotografadas na mesma luz e no mesmo enquadramento — nunca duas plantas de portes diferentes.
+Fallback estático
+Os dois números lado a lado, já no valor final.
+Risco regulatório
+Baixo, desde que a arte seja de grão colhido ou tipografia. Nunca duas plantas de porte diferente — isso converteria um claim de rendimento substanciado em claim visual de regulador de crescimento.
+
+AN-04 · A conta por acre · LP KMEP [K8] e LP Aminosan [A7]
+Campo
+Especificação
+O que precisa ficar claro
+Que o ganho paga o custo, e por quanto.
+Roteiro
+Uma barra horizontal preenche até o valor do ganho por acre. Uma segunda barra, abaixo e menor, preenche até o custo do produto. A diferença entre as duas fica marcada. Ao trocar o cenário de preço, as barras reajustam com transição de 300ms. 2 segundos na entrada.
+Formato e peso
+CSS/JS. Sem imagem, sem vídeo.
+Direção para gerar com IA
+Não requer IA.
+Fallback estático
+As barras já preenchidas no cenário central.
+Risco regulatório
+Nenhum. É aritmética.
+
+AN-05 · Cinco etapas, ou uma · LP Aminosan [A4]
+Campo
+Especificação
+O que precisa ficar claro
+Que construir um aminoácido a partir do nitrato é uma cadeia longa, e que o produto entrega o resultado dessa cadeia já pronto.
+Roteiro
+Faixa superior: NO₃⁻ → NO₂⁻ → NH₄⁺ → glutamato → aminoácido, cada etapa aparecendo com intervalo perceptível, com um contador de etapas subindo. Faixa inferior: uma gota deposita na folha e o aminoácido aparece de uma vez, contador em 1. O contraste de ritmo entre as duas faixas é o argumento inteiro. 10 a 12 segundos.
+Formato e peso
+Lottie ou SVG animado. Sob 120 KB.
+Direção para gerar com IA
+Se gerar assistido por IA: peça os ícones moleculares em estilo de diagrama de livro-texto de fisiologia vegetal, traço uniforme, sem sombra e sem 3D. Cada molécula precisa estar rotulada — o público lê rótulo químico com naturalidade e a precisão constrói autoridade.
+Fallback estático
+Diagrama estático das duas rotas empilhadas, com o contador de etapas visível em cada uma.
+Risco regulatório
+Baixo. Termina no aminoácido dentro do tecido, não em planta maior. Não animar proteína sendo montada nem crescimento subsequente — é onde a peça cruzaria a linha.
+
+AN-06 · Mapa e culturas · Home [S5]
+Campo
+Especificação
+O que precisa ficar claro
+Que o site sabe onde o visitante está e que as culturas listadas são as dele.
+Roteiro
+O estado detectado preenche em amarelo-lima com transição de 400ms. O grid de culturas ao lado reordena com deslocamento curto de cada item. Ao trocar de estado, a mesma transição roda ao contrário e para a frente.
+Formato e peso
+SVG inline + transições CSS. Sem biblioteca de mapas.
+Direção para gerar com IA
+Não requer IA. Os ícones de cultura, se houver, devem sair da mesma família de traço da AN-02 e AN-05.
+Fallback estático
+Mapa com o estado default destacado, grid na ordem nacional.
+Risco regulatório
+Nenhum.
+
+AN-07 · Janela de aplicação · [K9] e [A8]
+Campo
+Especificação
+O que precisa ficar claro
+Quando o produto entra, na nomenclatura de estágio que o visitante usa.
+Roteiro
+Linha do tempo horizontal com os estágios marcados (V2, V4, V6, VT, R1, R3). Um marcador percorre a linha e para nas janelas de aplicação, que acendem. 4 segundos, uma vez.
+Formato e peso
+SVG + CSS.
+Direção para gerar com IA
+As ilustrações de estágio, se houver, precisam ser reconhecíveis como milho ou soja americanos. Se gerar com IA, revise com alguém que conheça a cultura — erro de fenologia nesse público é fatal para a credibilidade da página.
+Fallback estático
+Linha do tempo estática com as janelas já destacadas.
+Risco regulatório
+Nenhum, desde que a peça mostre calendário e não resposta da planta.
+
+AN-08 · Desalojamento · LP KMEP, Trilha B — HOLD
+Campo
+Especificação
+O que precisa ficar claro
+Que parte da população da praga nunca encontra a calda, e o que muda quando encontra.
+Roteiro
+Corte de planta de milho com o inseto abrigado no cartucho e sob a bainha. A calda chega e atinge apenas parte da população. Segundo momento: com o produto na mistura, o inseto se desloca do abrigo e fica exposto à calda. 10 segundos.
+Formato e peso
+A definir. Só produzir depois da liberação.
+Direção para gerar com IA
+Não gerar esta peça antes de P2. Produzir a animação já cria o ativo e aumenta a chance de ele vazar para produção por engano.
+Fallback estático
+Nenhum — a peça inteira está suspensa.
+Risco regulatório
+Alto. É a representação visual literal de claim de mecanismo sobre praga. Depende de aprovação escrita do regulatório e possivelmente de registro EPA.
+
+Regras técnicas de implementação
+Requisito
+Regra
+Formato preferido
+SVG animado ou Lottie para diagrama; WebM/AV1 apenas quando fotorrealismo for indispensável
+Peso por peça
+Até 150 KB para vetorial, até 800 KB para vídeo. Somadas, todas as animações de uma página devem ficar sob 1,5 MB
+Carregamento
+loading="lazy" e IntersectionObserver. Nenhuma peça baixa antes de estar a uma dobra de distância
+Disparo
+Ao atingir 50% de visibilidade. Roda uma vez. Controle de repetir visível
+Movimento reduzido
+@media (prefers-reduced-motion: reduce) exibe o fallback estático. Não é opcional — está nos critérios de acessibilidade do PRD
+Reserva de espaço
+Altura e largura declaradas no HTML para não deslocar layout. CLS conta no Lighthouse
+Acessibilidade
+Texto alternativo descrevendo o conteúdo da animação, não o fato de haver animação. Toda informação transmitida pela peça precisa existir também no texto da seção
+Vídeo
+Nunca com autoplay acima da dobra. Sempre muted, playsinline e com poster
+
+Regra de redundância
+Toda informação que uma animação transmite precisa existir também em texto na mesma seção. Não é só acessibilidade: se a peça não carregar — e uma parte do tráfego rural americano navega em conexão instável — a seção precisa continuar fazendo sentido sozinha.
+B. Matriz de assets
+O que precisa ser produzido ou pedido, por origem. A coluna de fallback indica o que fazer se o asset não chegar até o deploy — em nenhum caso a resposta é atrasar a entrega.
+Asset
+Onde entra
+Origem
+Se não chegar
+Foto de produto com rótulo americano
+S4, K1, A1, K10, A10
+Juma — P12
+Composição tipográfica do nome do produto. Não usar o frasco brasileiro
+Fotos de campo americano em alta
+S1, S3, K3, A3
+Juma — P13
+Banco de imagens licenciado, com curadoria rigorosa: sem maquinário de marca visível e sem paisagem que não corresponda ao Corn Belt
+Foto histórica do fundador ou da fábrica
+S6, A5
+Juma — P26
+Seção funciona só com tipografia; perde impacto mas não quebra
+Logo da LLC em vetor
+S0, S9
+Juma — P26
+Logo da matriz, com o nome da LLC em tipografia ao lado
+PDF do rótulo americano
+K10, A10, CTAs
+Juma — P1
+Seção de dados técnicos sai da v1 e entra depois
+PDF do SDS
+K10, A10
+Juma — P14
+Link removido; a ausência é visível para dealer
+Relatório completo dos ensaios
+K6, K7, A6, CTAs
+Juma — P19/P21
+Cortar a promessa de "peça o relatório completo" dos cards e CTAs
+Mapa SVG dos EUA por estado
+S5
+Oceon — produzir
+—
+Ícones de cultura
+S5, K9, A8
+Oceon — produzir
+Lista textual sem ícone funciona
+Ilustrações de estágio fenológico
+K9, A8, AN-07
+Oceon — produzir
+Linha do tempo só com rótulos de estágio
+AN-02, AN-03, AN-04, AN-05
+K4, K5, K8, A4, A7
+Oceon — produzir
+Fallbacks estáticos já especificados
+AN-08
+K4 Trilha B
+Suspenso até P2
+Peça não existe
+
+C. O que ainda trava a copy
+Recorte do painel P1–P30 do documento mestre, filtrado pelo que impede publicar texto. A coluna da direita diz o que acontece com a seção se o item não chegar — todas têm saída, nenhuma justifica atrasar a entrega.
+ID
+Pendência
+Seções travadas
+Plano se não chegar
+P2
+Validação regulatória dos claims
+K1, K3, K4 (Trilha B) · revisão de S6, A3, A4
+Publica em Trilha A. A página funciona inteira; perde a cunha do corn leafhopper
+P1 · P3
+Rótulo americano e Guaranteed Analysis
+K10, A10 · e A9 depende do % de aminoácidos livres
+Seções de dados técnicos saem da v1 e entram por deploy posterior. A9 sai junto
+P4
+Dose em fl oz/acre
+K9, A8
+Janela de aplicação publica só com estágios, sem dose, e o CTA vira "peça a tabela de doses"
+P6
+Culturas americanas por produto
+S5, K2, K9, A2, A8
+Seletor abre com milho e soja apenas; specialty vira captura de lead
+P8
+Preço e custo por acre
+K8, A7
+Remover as duas seções de ROI. Meia conta é pior que nenhuma
+P9
+Testemunha dos ensaios de Aminosan
+S2 slot 4, A6, A7
+A6 publica no estado provisório já escrito, que aplica a própria regra da casa em público
+P11
+Quem atende o lead e se é agronômico
+S0, S8, K12, A12
+CTA muda de "Talk to an agronomist" para "Request product info"
+P19
+Autorização para citar as fontes
+S7, K6, K7, A6
+Publicar sem nomear a instituição enfraquece muito. Se necessário, citar apenas "field trial, Brazil" e oferecer a fonte por e-mail
+P20
+Existe ensaio nos EUA?
+K11, A11
+Responder "não, ainda" com oferta de faixa de demonstração — converte melhor que evasiva
+P24
+Certificação OMRI
+A11
+Resposta pendente na FAQ. Bloqueia specialty orgânico, não a v1
+
+Sequência recomendada de produção
+1.	Aprovar a copy da Home. Nenhuma seção dela depende de P2, e sete das nove estão livres para publicar. É o que destrava o Figma do Pedro imediatamente.
+2.	Produzir AN-03 primeiro. É a peça mais barata (tipografia animada), a de maior impacto e não depende de nenhuma pendência.
+3.	Escrever as duas LPs em Trilha A no Figma. Se P2 liberar a Trilha B, trocam-se três blocos de conteúdo — o layout já está desenhado.
+4.	Segurar as seções de ROI até o dia 20/08. Se P8 não chegar, remover as duas e reduzir a página em um bloco, sem redesenho.
+5.	Não produzir AN-08 enquanto P2 não voltar por escrito.
+6.	Revisar a copy inteira com o regulatório antes do deploy, incluindo as seções marcadas como PODE PUBLICAR. A marcação deste documento é análise da Oceon a partir da pesquisa — quem decide onde fica a linha é o responsável regulatório da LLC.
+
+Fim do documento. Produzido em 10/08/2026 pela Oceon Desenvolvimento Digital, sobre o Juma-Agro-USA-Documento-Mestre.docx.
