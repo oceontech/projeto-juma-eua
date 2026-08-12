@@ -8,9 +8,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Montserrat:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/styles.css?v=3">
+<link rel="stylesheet" href="assets/css/styles.css?v=4">
 </head>
-<body data-crop-padrao="soy">
+<body>
 
 <!-- ============================================================ HEADER ==== -->
 <header class="hd">
@@ -112,27 +112,14 @@
   </div>
 </section>
 
-<!-- ============================================== [A2] SELETOR DE CULTURA -->
-<div class="cropbar">
-  <div class="cropbar__in">
-    <span class="cropbar__lbl"><span data-en>Showing for</span><span data-pt>Mostrando para</span></span>
-    <div class="cropbar__opts">
-      <button type="button" data-set-crop="soy" aria-pressed="true">Soybeans</button>
-      <button type="button" data-set-crop="corn" aria-pressed="false">Corn</button>
-      <button type="button" data-set-crop="cotton" aria-pressed="false">Cotton</button>
-      <button type="button" data-set-crop="specialty" aria-pressed="false">Specialty crops</button>
-    </div>
-    <span class="mini" style="color:rgba(255,255,255,.6);margin-left:auto">
-      <span data-en>Soybeans — where our trials are.</span>
-      <span data-pt>Soja — onde estão os nossos ensaios.</span>
-    </span>
-  </div>
-</div>
+<!-- A faixa preta de seleção de cultura (antiga A2) foi removida a pedido da
+     Juma. O conteúdo que ela trocava — janela de aplicação e estágios — passou
+     a ser publicado por extenso na A8, com soja e milho lado a lado. -->
 
-<!-- ====================================================== [A3] PROBLEMA ==== -->
+<!-- ====================================================== [A2] PROBLEMA ==== -->
 <section class="sec">
   <div class="wrap">
-    <p class="note"><span class="note__id">A3</span><b>O problema.</b>
+    <p class="note"><span class="note__id">A2</span><b>O problema.</b>
       Aqui está o parágrafo mais delicado do site sob a ótica regulatória.
       <span class="note__selo selo-rev">Revisar com o regulatório</span><br>
       Descreve bioquímica vegetal estabelecida e não atribui efeito ao produto — o produto nem é
@@ -165,17 +152,22 @@
 
 <!-- ═══════════════════════════════════════════════════ ATO II — MECANISMO ══ -->
 
-<!-- ================================================= [A4] COMO FUNCIONA ==== -->
+<!-- ================================================= [A3] COMO FUNCIONA ==== -->
 <section class="sec sec--areia">
   <div class="wrap">
-    <p class="note"><span class="note__id">A4</span><b>Como funciona.</b>
+    <p class="note"><span class="note__id">A3</span><b>Como funciona.</b>
       A animação mais didática do site: a rota longa contra a rota curta.
       <span class="note__selo selo-rev">Revisar com o regulatório</span><br>
       A cadeia bioquímica é fato de livro-texto e pode ser publicada. O cuidado está no verbo final:
       <i>delivers … already in the form the plant uses</i> descreve a entrega. Escrever "poupa energia"
       ou "acelera a síntese proteica" cruzaria a linha — e é o que está no ar hoje.
       <b>Animação AN-05.</b><br>
-      <b>Absorveu a antiga seção A9</b> ("Não é tudo a mesma coisa"). A diferenciação frente aos
+      <b>Duas peças em movimento nesta seção.</b> <b>AN-05</b> é a química desenhada — a rota de cinco
+      etapas contra a de uma; é didática e não depende de filmagem. <b>VD-07</b> é a química filmada —
+      a fermentação enzimática na fábrica. As duas cobrem o mesmo argumento em registros diferentes:
+      uma explica, a outra prova que existe. Se só uma puder ser produzida, produzir a AN-05, que é
+      mais barata e sustenta a seção sozinha.<br>
+      <b>Absorveu a antiga seção "Não é tudo a mesma coisa".</b> A diferenciação frente aos
       hidrolisados não é uma seção à parte: é a segunda metade do mecanismo, e fica mais forte logo
       depois da cadeia bioquímica. <b>Três condições para publicar a tabela:</b> confirmar as três
       linhas com a Juma; manter a coluna da direita genérica, sem nomear concorrente; preferir
@@ -234,6 +226,40 @@
           <a class="btn" href="#dados"><span data-en>See the technical data</span><span data-pt>Ver os dados técnicos</span></a>
         </div>
       </div>
+    </div>
+
+    <!-- VD-07 — a parte química, filmada. No Aminosan o diferencial está no
+         processo (fermentação enzimática, origem vegetal), e processo é
+         exatamente o que uma imagem prova melhor que um parágrafo. -->
+    <div style="margin-top:clamp(34px,4vw,52px)">
+      <p class="eyebrow" style="margin-bottom:12px">
+        <span data-en>HOW IT IS MADE, FILMED</span><span data-pt>COMO É FEITO, FILMADO</span>
+      </p>
+      <div class="ph ph--video" style="min-height:260px">
+        <span class="ph__tipo"><span data-en>Video</span><span data-pt>Vídeo</span> · VD-07</span>
+        <span class="ph__desc" data-en>Enzymatic fermentation on the plant floor in Mogi Guaçu: the
+          plant-derived raw material going in, the reactor running, the sample drawn for the in-house
+          lab, the finished product in the tank. It is the one thing on this page a competitor cannot
+          copy in a headline — the process is the argument.</span>
+        <span class="ph__desc" data-pt>A fermentação enzimática na fábrica de Mogi Guaçu: a
+          matéria-prima vegetal entrando, o reator em operação, a amostra sendo tirada para o
+          laboratório próprio, o produto acabado no tanque. É a única coisa desta página que um
+          concorrente não copia em headline — o processo é o argumento.</span>
+        <span class="ph__spec">
+          MP4 H.264 + WebM · 16:9 · 20–40 s ·
+          <span data-en>with sound, subtitled, play on click</span><span data-pt>com som, legendado, play no clique</span>
+          · ≤ 8 MB ·
+          <span data-en>no claim in the voiceover: it shows the process, it does not say what the plant does with it</span>
+          <span data-pt>sem claim na locução: mostra o processo, não diz o que a planta faz com ele</span>
+          · <span class="pend">[P26]</span>
+        </span>
+      </div>
+      <p class="mini" style="margin-top:10px;max-width:76ch">
+        <span data-en>Careful here: showing how it is made is factual. A voiceover that says what it
+          does to the plant is a claim — the same line the whole page is written to respect.</span>
+        <span data-pt>Cuidado aqui: mostrar como é feito é fato. Locução dizendo o que ele faz na
+          planta é claim — a mesma linha que a página inteira foi escrita para respeitar.</span>
+      </p>
     </div>
 
     <!-- Segunda metade do mecanismo: a diferenciação técnica frente à
@@ -299,11 +325,11 @@
   </div>
 </section>
 
-<!-- ============================================ [A5] O QUE MUDA NA PRÁTICA -->
+<!-- ============================================ [A4] O QUE MUDA NA PRÁTICA -->
 <section class="sec">
   <div class="wrap">
-    <p class="note"><span class="note__id">A5</span><b>O que muda na prática.</b>
-      <i>(seção nova — espelha K5 e completa o template das duas LPs.)</i>
+    <p class="note"><span class="note__id">A4</span><b>O que muda na prática.</b>
+      <i>(seção nova — espelha a mesma seção do KMEP e completa o template das duas LPs.)</i>
       Quatro cards curtos. <span class="note__selo selo-ok">Pode publicar</span>
       <span class="note__selo selo-rev">Card 4 aguarda P9/P19</span><br>
       <b>Todos os quatro descrevem entrega, composição ou logística — nenhum descreve efeito.</b>
@@ -348,7 +374,7 @@
 
 <!-- ═══════════════════════════════════════════════════════ ATO III — PROVA ══ -->
 
-<!-- ========================================================== [A6] A PROVA -->
+<!-- ========================================================== [A5] A PROVA -->
 <!-- Mesmo lugar do template que a prova do KMEP. A diferença é que aqui o
      bloco verde não carrega um número: carrega a regra que impede o número
      de ser publicado. Aplicar a própria regra em público, mesmo quando ela
@@ -356,7 +382,7 @@
 <section class="sec sec--verde" id="prova">
   <div class="wrap">
     <p class="note" style="background:#123f28;color:#dff0e5;border-color:var(--lima)">
-      <span class="note__id">A6</span><b>A prova.</b>
+      <span class="note__id">A5</span><b>A prova.</b>
       O bloco mais frágil da página — e o mais importante.
       <span class="note__selo selo-pend">Bloqueada por P9</span><br>
       Os dois resultados publicados aparecem <b>sem a testemunha</b>: Taquarivaí/SP (+11 e +14 sc/ha,
@@ -368,7 +394,11 @@
       a página aplica a regra da casa em público. É contraintuitivo e provavelmente mais eficaz:
       cumprir a própria regra quando ela custa caro é a prova mais forte de que ela é real — e ainda
       gera lead qualificado. <b>Quando P9 chegar</b>, este bloco vira a mesma tabela do KMEP, sem
-      redesenho.</p>
+      redesenho.<br>
+      <b>Par comparativo VD-08.</b> Enquanto o número não pode ser publicado, a imagem do ensaio é a
+      única prova disponível — e é justamente por isso que ela precisa obedecer à mesma regra: parcela
+      tratada nunca aparece sozinha, e a legenda nomeia o ensaio e a instituição. Uma imagem de
+      parcela bonita sem testemunha ao lado contradiz o texto que está logo acima dela.</p>
 
     <div class="sec-head" style="margin-bottom:34px">
       <h2 class="h-lg"><span data-en>What we can show you today.</span><span data-pt>O que podemos mostrar hoje.</span></h2>
@@ -430,14 +460,56 @@
         </p>
       </div>
     </div>
+
+    <!-- VD-08 — o par comparativo de campo. Aqui ele tem um papel extra: a
+         seção não pode publicar número até P9 chegar, e a imagem é o único
+         formato de prova disponível enquanto isso. Mesmo assim vale a regra:
+         só entra com testemunha ao lado e ensaio nomeado. -->
+    <div style="margin-top:clamp(30px,4vw,48px)">
+      <p class="eyebrow eyebrow--claro" style="margin-bottom:12px">
+        <span data-en>UNTIL THE NUMBERS CAN BE PUBLISHED, THE PLOT CAN BE SHOWN</span>
+        <span data-pt>ENQUANTO O NÚMERO NÃO PODE SER PUBLICADO, A PARCELA PODE SER MOSTRADA</span>
+      </p>
+      <div class="ph-par">
+        <div class="ph ph--video">
+          <span class="ph-par__rot"><span data-en>Untreated check</span><span data-pt>Testemunha</span></span>
+          <span class="ph__tipo"><span data-en>Video</span><span data-pt>Vídeo</span> · VD-08a</span>
+          <span class="ph__desc" data-en>Drone pass over the check plot of the DETEC or Terras Gerais
+            soybean trial, plus a ground-level shot of the pod load on the same day.</span>
+          <span class="ph__desc" data-pt>Passagem de drone sobre a parcela testemunha do ensaio de soja
+            da DETEC ou da Terras Gerais, com um plano no nível do solo da carga de vagens no mesmo dia.</span>
+        </div>
+        <div class="ph ph--video">
+          <span class="ph-par__rot ph-par__rot--trat">Aminosan®</span>
+          <span class="ph__tipo"><span data-en>Video</span><span data-pt>Vídeo</span> · VD-08b</span>
+          <span class="ph__desc" data-en>The same two shots over the treated plot — same altitude, same
+            lens, same day, cut to the same length.</span>
+          <span class="ph__desc" data-pt>Os mesmos dois planos sobre a parcela tratada — mesma altura,
+            mesma lente, mesmo dia, no mesmo tempo de duração.</span>
+        </div>
+      </div>
+      <p class="ph__spec" style="max-width:none;color:var(--texto-claro);border-color:var(--linha-clara)">
+        MP4 H.264 + WebM · 16:9 · 6–10 s ·
+        <span data-en>muted, loop, playsinline</span><span data-pt>mudo, loop, playsinline</span>
+        · ≤ 2,5 MB ·
+        <span data-en>caption names the trial and the institution</span><span data-pt>legenda nomeia o ensaio e a instituição</span>
+        · <span class="pend">[P9 / P19]</span>
+      </p>
+      <p class="mini" style="margin-top:10px;max-width:76ch">
+        <span data-en>An image of a treated plot without its check beside it is advertising — the same
+          rule that is keeping the numbers off this page applies to the footage.</span>
+        <span data-pt>Imagem de parcela tratada sem a testemunha ao lado é propaganda — a mesma regra
+          que está segurando os números fora desta página vale para as imagens.</span>
+      </p>
+    </div>
   </div>
 </section>
 
-<!-- =============================================== [A7] A CONTA POR ACRE ==== -->
+<!-- =============================================== [A6] A CONTA POR ACRE ==== -->
 <section class="sec sec--cinza">
   <div class="wrap">
-    <p class="note"><span class="note__id">A7</span><b>A conta por acre.</b>
-      Mesma estrutura de K7. <span class="note__selo selo-pend">Bloqueada por P8 e P9</span><br>
+    <p class="note"><span class="note__id">A6</span><b>A conta por acre.</b>
+      Mesma estrutura da conta por acre do KMEP. <span class="note__selo selo-pend">Bloqueada por P8 e P9</span><br>
       <b>Condição:</b> se P8 e P9 não chegarem, <b>remover a seção</b> em vez de publicar meia conta.
       A seção de ROI só funciona com os dois lados — aqui falta tanto o custo quanto o ganho.
       <b>Animação AN-04.</b></p>
@@ -464,14 +536,14 @@
   </div>
 </section>
 
-<!-- ============================================== [A8] SLOT EDITORIAL ==== -->
+<!-- ============================================== [A7] SLOT EDITORIAL ==== -->
 <!-- No Aminosan a credencial da casa é a herança: o produto é mais velho que
      a empresa. É história, não venda — e por isso ganha tratamento editorial. -->
 <section class="sec sec--carvao" id="quarenta">
   <div class="wrap">
     <p class="note" style="background:#3a3a2c;color:#f3f0dd;border-color:var(--lima)">
-      <span class="note__id">A8</span><b>Slot editorial — quarenta anos.</b>
-      <i>(era A5. Desceu no template: a credencial vem depois da prova, não antes.)</i>
+      <span class="note__id">A7</span><b>Slot editorial — quarenta anos.</b>
+      Desceu no template: a credencial vem depois da prova, não antes.
       A herança é o principal diferencial do Aminosan e o gancho natural da Brazil story da Home.
       <span class="note__selo selo-ok">Pode publicar</span><br>
       <b>Confirmar a cronologia</b> antes de publicar qualquer data: o material registra fundação em
@@ -526,11 +598,12 @@
 
 <!-- ═════════════════════════════════════════ ATO IV — OPERAÇÃO E DECISÃO ══ -->
 
-<!-- ==================================================== [A9] QUANDO ENTRA ==== -->
+<!-- ==================================================== [A8] QUANDO ENTRA ==== -->
 <section class="sec">
   <div class="wrap">
-    <p class="note"><span class="note__id">A9</span><b>Quando entra.</b>
-      <i>(era A8.)</i> Janela de aplicação e dose. Conteúdo trocado pelo seletor de cultura de A2.
+    <p class="note"><span class="note__id">A8</span><b>Quando entra.</b>
+      Janela de aplicação e dose. Antes o conteúdo era trocado pela faixa de seleção de cultura;
+      com ela removida, soja e milho são publicados lado a lado.
       <span class="note__selo selo-pend">Doses aguardam P4 · specialty aguarda P6</span><br>
       <b>Obrigatório:</b> estágios em nomenclatura americana e dose em
       <span class="dado">fl oz/acre</span>. <b>Modo specialty:</b> a experiência brasileira em citros,
@@ -539,20 +612,24 @@
 
     <div class="sec-head">
       <h2 class="h-lg"><span data-en>When it goes in.</span><span data-pt>Quando entra.</span></h2>
-      <p class="corpo"
-         data-crop-soy="Soybeans: from V2–V3 through the reproductive stages, alone or in tank mix."
-         data-crop-corn="Corn: V2 through V8, positioned with the applications already on your schedule."
-         data-crop-cotton="Cotton: positioning under technical review for U.S. conditions."
-         data-crop-specialty="Specialty crops: four decades of use across fruit, vegetable and tree crops in Brazil — U.S. positioning under review."></p>
+      <p class="corpo">
+        <span data-en>Alone or in the pass you're already making. Soybeans and corn are the two crops
+          positioned for the U.S. today; cotton and specialty crops are under technical review.</span>
+        <span data-pt>Isolado ou na aplicação que você já faz. Soja e milho são as duas culturas
+          posicionadas para os EUA hoje; algodão e culturas de alto valor estão em revisão técnica.</span>
+      </p>
     </div>
 
     <div class="grid-3">
       <article class="card">
         <p class="eyebrow" style="margin:0">01 — <span data-en>WINDOW</span><span data-pt>JANELA</span></p>
-        <h3 class="h-sm dado" data-crop-soy="V2–V3 → R5" data-crop-corn="V2 → V8" data-crop-cotton="—" data-crop-specialty="—"></h3>
+        <h3 class="h-sm dado" style="margin-bottom:6px">Soybeans V2–V3 → R5</h3>
+        <h3 class="h-sm dado" style="margin-top:0">Corn V2 → V8</h3>
         <p class="corpo" style="margin:0">
-          <span data-en>Alone or in tank mix, following the technical recommendation.</span>
-          <span data-pt>Isolado ou em mistura, conforme recomendação técnica.</span>
+          <span data-en>Alone or in tank mix, following the technical recommendation. Cotton and
+            specialty crops: under technical review for U.S. conditions.</span>
+          <span data-pt>Isolado ou em mistura, conforme recomendação técnica. Algodão e culturas de
+            alto valor: em revisão técnica para as condições americanas.</span>
         </p>
       </article>
       <article class="card">
@@ -581,7 +658,7 @@
         R1, R3, R5). Um marcador percorre a linha e para nas janelas de aplicação. 4 s, uma vez.</span>
     </div>
 
-    <p class="corpo" data-only-crop="specialty" style="margin-top:22px;max-width:64ch">
+    <p class="corpo" style="margin-top:22px;max-width:64ch">
       <span data-en>Aminosan® has four decades of use across fruit, vegetable and tree crops in Brazil.
         We're confirming which of those translate to U.S. conditions and registrations — tell us what
         you grow.</span>
@@ -592,10 +669,10 @@
   </div>
 </section>
 
-<!-- ================================================ [A10] FICHA TÉCNICA ==== -->
+<!-- ================================================ [A9] FICHA TÉCNICA ==== -->
 <section class="sec sec--cinza" id="dados">
   <div class="wrap">
-    <p class="note"><span class="note__id">A10</span><b>Ficha técnica.</b>
+    <p class="note"><span class="note__id">A9</span><b>Ficha técnica.</b>
       <span class="note__selo selo-pend">Bloqueada por P1, P3, P4, P10 e P14</span><br>
       <b>Prioridade dentro de P3:</b> o percentual de <b>aminoácidos livres</b> é o número mais
       importante desta tabela — é o que sustenta a comparação dentro de A4 e o que um comprador
@@ -644,10 +721,10 @@
   </div>
 </section>
 
-<!-- ====================================================== [A11] OBJEÇÕES ==== -->
+<!-- ====================================================== [A10] OBJEÇÕES ==== -->
 <section class="sec">
   <div class="wrap">
-    <p class="note"><span class="note__id">A11</span><b>Objeções.</b>
+    <p class="note"><span class="note__id">A10</span><b>Objeções.</b>
       <span class="note__selo selo-pend">2 de 5 aguardam dado</span><br>
       <b>A resposta que exige mais disciplina</b> é a última: "o que ele realmente faz pela minha
       lavoura?". É a pergunta em que a tentação de fazer claim é máxima — e é exatamente a pergunta
@@ -718,16 +795,17 @@
   </div>
 </section>
 
-<!-- ==================================================== [A12] CTA FINAL ==== -->
+<!-- ==================================================== [A11] CTA FINAL ==== -->
 <section class="sec sec--verde" id="faixa">
   <div class="wrap">
     <p class="note" style="background:#123f28;color:#dff0e5;border-color:var(--lima)">
-      <span class="note__id">A12</span><b>CTA final — a faixa de teste.</b>
-      Personaliza a oferta pela cultura do visitante em vez de prometer material genérico — e alimenta
-      o seletor de cultura que a página inteira já usou.
+      <span class="note__id">A11</span><b>CTA final — a faixa de teste.</b>
+      Personaliza a oferta pela cultura do visitante em vez de prometer material genérico. Com a faixa
+      de seleção removida, o campo "cultura principal" do formulário passou a ser o único lugar em que
+      o visitante declara o que planta — o que aumenta a importância dele.
       <span class="note__selo selo-pend">Depende de P11 e P19</span><br>
-      Mesmo componente reduzido de K12. Aqui a faixa de teste resolve o buraco da página: é a resposta
-      operacional para "quarenta anos e nenhum dado americano".</p>
+      Mesmo componente reduzido do CTA do KMEP. Aqui a faixa de teste resolve o buraco da página: é a
+      resposta operacional para "quarenta anos e nenhum dado americano".</p>
 
     <div class="sec-head">
       <h2 class="h-lg">
@@ -806,6 +884,6 @@
   </button>
 </div>
 
-<script src="assets/js/app.js?v=3"></script>
+<script src="assets/js/app.js?v=4"></script>
 </body>
 </html>

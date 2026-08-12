@@ -8,9 +8,55 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Montserrat:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/styles.css?v=3">
+<link rel="stylesheet" href="assets/css/styles.css?v=4">
 </head>
 <body>
+
+<!-- ==========================================================================
+     MAPA DE PEÇAS EM MOVIMENTO — animações (AN) e vídeo/GIF (VD)
+     ==========================================================================
+     Três tipos, três custos, três prazos. A etiqueta de cada slot diz qual é.
+
+       AN — animação vetorial (Lottie/SVG/CSS). Não depende de safra, de
+            infestação nem de equipe de campo. É o que pode ser produzido já.
+       VD — filmagem. Fábrica e laboratório podem ser agendados; lavoura e
+            macro de inseto são filmagem de oportunidade, presas ao ensaio.
+       GIF — recorte curto e mudo de uma AN ou VD, para card e para peça de
+            redes. Nunca é peça original: é derivada, para não duplicar custo.
+
+     HOME
+       VD-01 a/b  S3   par comparativo de talhão — testemunha x tratado
+       VD-02 a/b  S4   loop do mecanismo dentro de cada card de produto
+       VD-03      S8   laboratório próprio analisando um lote (com som)
+
+     KMEP ULTRA
+       AN-01      K1   entrada do galão com rótulo americano
+       AN-02      K3   mecanismo desenhado — o alvo sai do abrigo e paralisa
+       VD-04      K3   parte física no tanque: mistura, dispersão, jar test
+       VD-05 a/b  K3   par comparativo em macro — sem e com o produto
+       AN-03      K5   contadores tratado x testemunha
+       VD-06 a/b  K5   par comparativo de campo do ensaio Rehagro
+       AN-04      K6   barras de resposta x custo por acre (bloqueada por P8)
+       AN-07      K8   linha do tempo dos estágios
+
+     AMINOSAN
+       AN-01      A1   entrada do galão com rótulo americano
+       AN-05      A3   química desenhada — rota de cinco etapas x rota de uma
+       VD-07      A3   química filmada — fermentação enzimática (com som)
+       VD-08 a/b  A5   par comparativo de campo dos ensaios DETEC/Terras Gerais
+       AN-04      A6   barras de resposta x custo (bloqueada por P8 e P9)
+       AN-07      A8   linha do tempo dos estágios
+
+     REGRA DO PAR COMPARATIVO — vale para VD-01, VD-05, VD-06 e VD-08:
+     mesma lavoura, mesmo dia, mesma altura, mesma lente, mesmo tempo de
+     duração. Legenda nomeia ensaio, local e fonte. Peça comparativa é um
+     número em forma de imagem: sem testemunha e sem fonte, não entra.
+
+     REGRA DE PESO — o tráfego rural americano navega em conexão instável.
+     Loop mudo até 3 MB, com poster JPG e lazy. Vídeo com som nunca dá
+     autoplay: play manual, legendado, e nada do que ele diz pode existir
+     só ali — o texto da seção precisa dizer a mesma coisa.
+     ========================================================================== -->
 
 <!-- ====================================================== [S0] HEADER ==== -->
 <header class="hd">
@@ -149,11 +195,15 @@
       o conhecimento construído no agro brasileiro chega agora à lavoura americana, e o que ele
       entrega é eficiência, produtividade e lucratividade.
       <span class="note__selo selo-ok">Pode publicar</span><br>
-      <b>Fundo:</b> branco. <b>Asset:</b> opcional, detalhe macro — folha, grão na mão, tela do
-      monitor de produtividade.<br>
+      <b>Fundo:</b> branco. <b>Asset:</b> o par comparativo <b>VD-01</b> logo abaixo dos três cards.<br>
       <b>Cuidado de redação:</b> "mais lucratividade" é promessa econômica, não claim agronômico —
       por isso vem sempre ligada ao que é medido (produtividade contra testemunha) e acompanhada da
-      ressalva de que o resultado varia com clima, solo e manejo.</p>
+      ressalva de que o resultado varia com clima, solo e manejo.<br>
+      <b>A regra do par comparativo, que vale para todo VD deste site:</b> as duas imagens têm de sair
+      da <b>mesma lavoura, no mesmo dia, na mesma altura e na mesma lente</b>, e a legenda tem de
+      nomear o ensaio e a fonte. Um par comparativo é um número em forma de imagem — se não puder
+      carregar testemunha e fonte, não entra. Vídeo bonito de faixa tratada sem a testemunha ao lado
+      contradiz a seção do método e derruba a credibilidade do site inteiro.</p>
 
     <div class="sec-head">
       <h2 class="h-lg">
@@ -207,6 +257,45 @@
         </p>
       </article>
     </div>
+
+    <!-- VD-01 — o par comparativo de campo. É a tradução visual da regra da
+         casa: nunca o tratado sozinho, sempre com a testemunha ao lado. -->
+    <div style="margin-top:clamp(34px,4vw,52px)">
+      <p class="eyebrow" style="margin-bottom:12px">
+        <span data-en>TREATED STRIP AND UNTREATED CHECK, SAME FIELD, SAME DAY</span>
+        <span data-pt>FAIXA TRATADA E TESTEMUNHA, MESMO TALHÃO, MESMO DIA</span>
+      </p>
+      <div class="ph-par">
+        <div class="ph ph--video">
+          <span class="ph-par__rot"><span data-en>Untreated check</span><span data-pt>Testemunha</span></span>
+          <span class="ph__tipo"><span data-en>Video</span><span data-pt>Vídeo</span> · VD-01a</span>
+          <span class="ph__desc" data-en>Slow drone pass over the untreated check strip. Same altitude,
+            same lens, same time of day as VD-01b. No music, no graphics burned in.</span>
+          <span class="ph__desc" data-pt>Passagem lenta de drone sobre a faixa testemunha. Mesma
+            altura, mesma lente e mesmo horário do VD-01b. Sem trilha, sem grafismo queimado.</span>
+        </div>
+        <div class="ph ph--video">
+          <span class="ph-par__rot ph-par__rot--trat"><span data-en>Treated</span><span data-pt>Tratado</span></span>
+          <span class="ph__tipo"><span data-en>Video</span><span data-pt>Vídeo</span> · VD-01b</span>
+          <span class="ph__desc" data-en>The same pass over the treated strip, cut to the same length so
+            the two can run side by side or as a wipe between them.</span>
+          <span class="ph__desc" data-pt>A mesma passagem sobre a faixa tratada, no mesmo tempo de
+            duração, para as duas rodarem lado a lado ou com transição de cortina entre elas.</span>
+        </div>
+      </div>
+      <p class="ph__spec" style="max-width:none">
+        MP4 H.264 + WebM · 16:9 · <span data-en>muted, loop, playsinline</span><span data-pt>mudo, loop, playsinline</span>
+        · poster JPG · ≤ 2,5 MB · 6–10 s ·
+        <span data-en>caption names trial, location and source</span><span data-pt>legenda nomeia ensaio, local e fonte</span>
+        · <span class="pend">[P21 / P26]</span>
+      </p>
+      <p class="mini" style="margin-top:10px;max-width:76ch">
+        <span data-en>Footage from field trials conducted in Brazil. Field performance varies with
+          climate, soil and management.</span>
+        <span data-pt>Imagens de ensaios de campo conduzidos no Brasil. O desempenho em campo varia
+          com clima, solo e manejo.</span>
+      </p>
+    </div>
   </div>
 </section>
 
@@ -254,6 +343,13 @@
           <span data-en>It goes in the tank with your insecticide and drives the target out of hiding, so the spray you already paid for actually reaches it.</span>
           <span data-pt>Vai no tanque misturado ao seu inseticida e tira o alvo do esconderijo, para que a calda que você já pagou chegue de fato nele.</span>
         </p>
+        <div class="ph ph--video" style="min-height:150px;margin-top:16px">
+          <span class="ph__tipo">GIF · VD-02a</span>
+          <span class="ph__desc" data-en>Six-second silent loop of the mechanism: the insect leaves the
+            shelter and stops in the open. Same animation used in full on the product page (AN-02).</span>
+          <span class="ph__desc" data-pt>Loop mudo de seis segundos do mecanismo: o inseto deixa o
+            abrigo e para no aberto. Mesma animação usada por inteiro na página do produto (AN-02).</span>
+        </div>
         <div><a class="btn" href="kmep-ultra.html"><span data-en>How it works</span><span data-pt>Como funciona</span></a></div>
       </article>
 
@@ -269,6 +365,13 @@
           <span data-en>The building blocks, delivered ready to use. In the field for 40 years.</span>
           <span data-pt>Os blocos de construção, entregues prontos para uso. Em campo há 40 anos.</span>
         </p>
+        <div class="ph ph--video" style="min-height:150px;margin-top:16px">
+          <span class="ph__tipo">GIF · VD-02b</span>
+          <span class="ph__desc" data-en>Six-second silent loop: the five-step route running against the
+            one-step route. Same animation used in full on the product page (AN-05).</span>
+          <span class="ph__desc" data-pt>Loop mudo de seis segundos: a rota de cinco etapas correndo
+            contra a rota de uma etapa. Mesma animação usada por inteiro na página do produto (AN-05).</span>
+        </div>
         <div><a class="btn" href="aminosan.html"><span data-en>How it works</span><span data-pt>Como funciona</span></a></div>
       </article>
     </div>
@@ -531,17 +634,35 @@
     <p class="note"><span class="note__id">S8</span><b>Prova institucional — o método.</b>
       Sustenta todos os números do site. <span class="note__selo selo-pend">Aguarda dado da Juma</span><br>
       <b>Bloqueio:</b> citar as seis instituições pelo nome depende de autorização — pendência
-      <b>P19</b>. <b>Asset:</b> foto do laboratório próprio em operação, que prova a frase sobre
-      controle lote a lote.</p>
+      <b>P19</b>. <b>Assets:</b> foto do laboratório próprio (P26) e o vídeo <b>VD-03</b>, que prova em
+      imagem a frase sobre controle lote a lote. É o único vídeo do site com som e com play manual —
+      os demais são loops mudos.</p>
 
     <div class="split split--img">
-      <div class="ph ph--alto">
-        <span class="ph__tag">Asset · P26</span>
-        <span class="ph__desc" data-en>In-house quality lab in operation, or archive photo of the
-          plant in Mogi Guaçu. A real 1988 photo beats any stock image.</span>
-        <span class="ph__desc" data-pt>Laboratório próprio de controle de qualidade em operação, ou
-          foto de arquivo da fábrica em Mogi Guaçu. Uma foto real de 1988 vale mais que qualquer
-          imagem de banco.</span>
+      <div>
+        <div class="ph ph--alto">
+          <span class="ph__tag">Asset · P26</span>
+          <span class="ph__desc" data-en>In-house quality lab in operation, or archive photo of the
+            plant in Mogi Guaçu. A real 1988 photo beats any stock image.</span>
+          <span class="ph__desc" data-pt>Laboratório próprio de controle de qualidade em operação, ou
+            foto de arquivo da fábrica em Mogi Guaçu. Uma foto real de 1988 vale mais que qualquer
+            imagem de banco.</span>
+        </div>
+
+        <!-- VD-03 — o vídeo que prova a frase "todo lote testado antes de sair".
+             Documental, sem locução publicitária: é a bancada trabalhando. -->
+        <div class="ph ph--video" style="margin-top:18px;min-height:200px">
+          <span class="ph__tipo"><span data-en>Video</span><span data-pt>Vídeo</span> · VD-03</span>
+          <span class="ph__desc" data-en>The in-house lab working a batch: sample drawn, titration,
+            reading, the batch record signed. Documentary, no voiceover, no music bed.</span>
+          <span class="ph__desc" data-pt>O laboratório próprio analisando um lote: coleta da amostra,
+            titulação, leitura, registro do lote assinado. Documental, sem locução, sem trilha.</span>
+          <span class="ph__spec">
+            MP4 H.264 + WebM · 16:9 · 20–40 s ·
+            <span data-en>with sound, subtitled, play on click</span><span data-pt>com som, legendado, play no clique</span>
+            · ≤ 8 MB · <span class="pend">[P26]</span>
+          </span>
+        </div>
       </div>
 
       <div>
@@ -778,6 +899,6 @@
   </button>
 </div>
 
-<script src="assets/js/app.js?v=3"></script>
+<script src="assets/js/app.js?v=4"></script>
 </body>
 </html>

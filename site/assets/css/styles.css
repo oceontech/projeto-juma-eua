@@ -280,6 +280,47 @@ h1, h2, h3, h4 {
     135deg, #E9EEDF, #E9EEDF 12px, #F1F5E9 12px, #F1F5E9 24px); }
 .ph--sobre { position: absolute; inset: auto auto 22px 22px; }
 
+/* ------------------------------------------- slots de peça em movimento
+   Vídeo, GIF e animação são pedidos diferentes para quem produz: mudam
+   equipe, custo e prazo. Por isso o slot carrega uma etiqueta de tipo
+   (.ph__tipo) além do código do asset, e a spec técnica embaixo.
+   Fundo azulado separa à distância o que é filmagem do que é foto. */
+.ph--video {
+  background: repeating-linear-gradient(
+    135deg, #E2E8F1, #E2E8F1 12px, #EDF1F7 12px, #EDF1F7 24px);
+  border-color: rgba(36, 72, 110, .38);
+}
+.ph__tipo {
+  display: inline-block;
+  font-family: var(--corpo);
+  font-size: 9.5px; font-weight: 700; letter-spacing: .11em; text-transform: uppercase;
+  padding: 3px 9px; border-radius: 999px;
+  background: var(--carvao); color: #fff;
+}
+.ph--video .ph__tipo { background: #24486E; }
+.ph__spec {
+  font-family: var(--mono);
+  font-size: 11px; line-height: 1.5;
+  color: var(--texto-suave);
+  max-width: 46ch;
+  border-top: 1px solid rgba(var(--carvao-rgb), .16);
+  padding-top: 8px; margin-top: 4px;
+}
+
+/* Par comparativo: sem o produto à esquerda, com o produto à direita.
+   Sempre em par e sempre na mesma escala — a comparação é o argumento,
+   e dois enquadramentos diferentes a destroem. */
+.ph-par { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.ph-par .ph { min-height: 250px; }
+.ph-par__rot {
+  font-family: var(--corpo);
+  font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+  padding: 3px 10px; border-radius: 999px;
+  background: rgba(var(--carvao-rgb), .1); color: var(--carvao);
+}
+.ph-par__rot--trat { background: var(--lima); color: var(--carvao); }
+@media (max-width: 860px) { .ph-par { grid-template-columns: 1fr; } }
+
 /* ---------------------------------------------------------------- header */
 .hd {
   position: sticky;

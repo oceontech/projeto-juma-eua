@@ -8,9 +8,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Montserrat:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/styles.css?v=3">
+<link rel="stylesheet" href="assets/css/styles.css?v=4">
 </head>
-<body data-crop-padrao="corn">
+<body>
 
 <!-- ============================================================ HEADER ==== -->
 <header class="hd">
@@ -126,27 +126,14 @@
   </div>
 </section>
 
-<!-- ============================================== [K2] SELETOR DE CULTURA -->
-<div class="cropbar">
-  <div class="cropbar__in">
-    <span class="cropbar__lbl"><span data-en>Showing for</span><span data-pt>Mostrando para</span></span>
-    <div class="cropbar__opts">
-      <button type="button" data-set-crop="corn" aria-pressed="true">Corn</button>
-      <button type="button" data-set-crop="soy" aria-pressed="false">Soybeans</button>
-      <button type="button" data-set-crop="cotton" aria-pressed="false">Cotton</button>
-      <button type="button" data-set-crop="specialty" aria-pressed="false">Specialty crops</button>
-    </div>
-    <span class="mini" style="color:rgba(255,255,255,.6);margin-left:auto">
-      <span data-en>Corn — the crop with the trial data we can show you.</span>
-      <span data-pt>Milho — a cultura com o dado de ensaio que podemos mostrar.</span>
-    </span>
-  </div>
-</div>
+<!-- A faixa preta de seleção de cultura (antiga K2) foi removida a pedido da
+     Juma. O conteúdo que ela trocava — janela de aplicação e estágios — passou
+     a ser publicado por extenso na K8, com milho e soja lado a lado. -->
 
-<!-- ====================================================== [K3] PROBLEMA ==== -->
+<!-- ====================================================== [K2] PROBLEMA ==== -->
 <section class="sec">
   <div class="wrap">
-    <p class="note"><span class="note__id">K3</span><b>O problema.</b>
+    <p class="note"><span class="note__id">K2</span><b>O problema.</b>
       A dor específica que o produto endereça. Precisa ser reconhecível em uma leitura, e precisa
       parecer conversa técnica — sem card, sem caixa.
       <span class="note__selo selo-rev">Aguarda leitura do regulatório (P2)</span><br>
@@ -210,10 +197,10 @@
 
 <!-- ═══════════════════════════════════════════════════ ATO II — MECANISMO ══ -->
 
-<!-- ================================================= [K4] COMO FUNCIONA ==== -->
+<!-- ================================================= [K3] COMO FUNCIONA ==== -->
 <section class="sec sec--areia">
   <div class="wrap">
-    <p class="note"><span class="note__id">K4</span><b>Como funciona.</b>
+    <p class="note"><span class="note__id">K3</span><b>Como funciona.</b>
       O mecanismo. É aqui que a animação principal da página trabalha.
       <span class="note__selo selo-rev">Aguarda leitura do regulatório (P2)</span><br>
       <b>Os três passos foram reescritos.</b> A versão anterior descrevia tensão superficial,
@@ -225,6 +212,14 @@
       <b>Animação AN-02 — redefinida de novo.</b> Não é mais gota em folha cerosa. É o alvo saindo do
       esconderijo: corte do cartucho e da face inferior da folha, o inseto abrigado, a calda chegando
       com e sem KMEP. Dispara a 50% de visibilidade, roda uma vez, com fallback estático.<br>
+      <b>Três peças em movimento nesta seção, e cada uma faz um trabalho diferente:</b>
+      <b>AN-02</b> é a animação didática (desenho, controlada, publicável sem filmagem);
+      <b>VD-04</b> é a parte física no tanque, filmada — é o que torna o produto concreto para o
+      aplicador; <b>VD-05</b> é o par comparativo em macro, sem e com o produto — é a peça mais forte
+      da página e a mais difícil de produzir.<br>
+      <b>Ordem de produção sugerida:</b> AN-02 primeiro, porque não depende de safra nem de infestação.
+      VD-04 em seguida, que é uma tarde de filmagem na fábrica. VD-05 só quando houver ensaio com
+      pressão de praga — é filmagem de oportunidade, não de agenda.<br>
       <b>Regra de redundância:</b> tudo que a animação diz precisa existir em texto na mesma seção —
       parte do tráfego rural americano navega em conexão instável.</p>
 
@@ -302,15 +297,83 @@
           </div>
         </div>
       </div>
+
+      <!-- VD-04 — a parte física do produto, filmada. O aplicador americano
+           decide muito no concreto: como entra no tanque, se dissolve, se
+           separa, se faz espuma. Um vídeo responde isso melhor que um FAQ. -->
+      <div style="margin-top:clamp(34px,4vw,52px)">
+        <p class="eyebrow" style="margin-bottom:12px">
+          <span data-en>IN THE TANK, FILMED</span><span data-pt>NO TANQUE, FILMADO</span>
+        </p>
+        <div class="ph ph--video" style="min-height:260px">
+          <span class="ph__tipo"><span data-en>Video</span><span data-pt>Vídeo</span> · VD-04</span>
+          <span class="ph__desc" data-en>The physical side, shot close: KMEP Ultra® poured into the
+            insecticide mix, dispersing through the water, the jar test standing clear with no
+            separation and no foam collar. Ends on the sprayer filling. Shows what a grower actually
+            worries about before he opens the jug.</span>
+          <span class="ph__desc" data-pt>A parte física, em plano fechado: o KMEP Ultra® entrando na
+            calda com o inseticida, dispersando na água, e o teste de jarro parado, sem separação de
+            fases e sem colar de espuma. Fecha no enchimento do pulverizador. Mostra o que o produtor
+            de fato teme antes de abrir o galão.</span>
+          <span class="ph__spec">
+            MP4 H.264 + WebM · 16:9 · 10–20 s ·
+            <span data-en>muted, loop, playsinline</span><span data-pt>mudo, loop, playsinline</span>
+            · poster JPG · ≤ 3 MB ·
+            <span data-en>jar test filmed in one unbroken take — a cut destroys the point</span>
+            <span data-pt>teste de jarro em plano único — um corte destrói o argumento</span>
+          </span>
+        </div>
+      </div>
+
+      <!-- VD-05 — o par comparativo em macro. A peça mais forte da página. -->
+      <div style="margin-top:clamp(28px,3.5vw,42px)">
+        <p class="eyebrow" style="margin-bottom:12px">
+          <span data-en>THE SAME INSECTICIDE, THE SAME RATE, THE SAME PLANT</span>
+          <span data-pt>O MESMO INSETICIDA, A MESMA DOSE, A MESMA PLANTA</span>
+        </p>
+        <div class="ph-par">
+          <div class="ph ph--video">
+            <span class="ph-par__rot"><span data-en>Insecticide alone</span><span data-pt>Só o inseticida</span></span>
+            <span class="ph__tipo"><span data-en>Video</span><span data-pt>Vídeo</span> · VD-05a</span>
+            <span class="ph__desc" data-en>Macro on the whorl and the underside of the leaf after the
+              spray. The target stays sheltered and moving. Same lens, same light, same distance as
+              VD-05b.</span>
+            <span class="ph__desc" data-pt>Macro no cartucho e na face inferior da folha depois da
+              aplicação. O alvo permanece abrigado e em movimento. Mesma lente, mesma luz e mesma
+              distância do VD-05b.</span>
+          </div>
+          <div class="ph ph--video">
+            <span class="ph-par__rot ph-par__rot--trat"><span data-en>Insecticide + KMEP Ultra®</span><span data-pt>Inseticida + KMEP Ultra®</span></span>
+            <span class="ph__tipo"><span data-en>Video</span><span data-pt>Vídeo</span> · VD-05b</span>
+            <span class="ph__desc" data-en>The same shot with KMEP Ultra® in the mix: the target leaves
+              the shelter, comes out onto the exposed surface and stops there.</span>
+            <span class="ph__desc" data-pt>O mesmo plano com o KMEP Ultra® na mistura: o alvo deixa o
+              abrigo, sai para a superfície exposta e permanece parado ali.</span>
+          </div>
+        </div>
+        <p class="ph__spec" style="max-width:none">
+          MP4 H.264 + WebM · 1:1 <span data-en>or</span><span data-pt>ou</span> 4:5 ·
+          <span data-en>muted, loop, playsinline</span><span data-pt>mudo, loop, playsinline</span>
+          · ≤ 3 MB <span data-en>each</span><span data-pt>cada</span> ·
+          <span data-en>elapsed-time stamp visible in both</span><span data-pt>carimbo de tempo decorrido visível nos dois</span>
+          · <span class="pend">[P2 — <span data-en>regulatory reading before producing</span><span data-pt>leitura do regulatório antes de produzir</span>]</span>
+        </p>
+        <p class="mini" style="margin-top:10px;max-width:76ch">
+          <span data-en>Filmed during field trials in Brazil. Field performance varies with climate,
+            soil and management.</span>
+          <span data-pt>Filmado durante ensaios de campo no Brasil. O desempenho em campo varia com
+            clima, solo e manejo.</span>
+        </p>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- ============================================ [K5] O QUE MUDA NA PRÁTICA -->
+<!-- ============================================ [K4] O QUE MUDA NA PRÁTICA -->
 <section class="sec">
   <div class="wrap">
-    <p class="note"><span class="note__id">K5</span><b>O que muda na prática.</b>
-      <i>(era K6 — Benefícios. Subiu no template: promessa antes da prova.)</i>
+    <p class="note"><span class="note__id">K4</span><b>O que muda na prática.</b>
+      Subiu no template: a promessa vem antes da prova.
       Quatro cards curtos. Cada um responde a uma pergunta prática do produtor, não a um atributo do
       produto. <span class="note__selo selo-rev">Aguarda leitura do regulatório (P2)</span><br>
       <b>Sem ícone.</b> O briefing pede para evitar cards pequenos competindo entre si, e ícone
@@ -355,15 +418,15 @@
 
 <!-- ═══════════════════════════════════════════════════════ ATO III — PROVA ══ -->
 
-<!-- ========================================================== [K6] A PROVA -->
-<!-- Fusão do antigo K5 (antes/depois) com o antigo K7 (tabela do ensaio).
+<!-- ========================================================== [K5] A PROVA -->
+<!-- Fusão de duas seções do template antigo: o antes/depois e a tabela do ensaio.
      Número grande e tabela completa são a mesma coisa em duas escalas de
      leitura: quem passa os olhos pega o número, quem audita desce na tabela. -->
 <section class="sec sec--verde" id="prova">
   <div class="wrap">
     <p class="note" style="background:#123f28;color:#dff0e5;border-color:var(--lima)">
-      <span class="note__id">K6</span><b>A prova.</b>
-      <i>(fusão do antigo K5, antes/depois, com o antigo K7, tabela do ensaio.)</i>
+      <span class="note__id">K5</span><b>A prova.</b>
+      <i>(fusão do antes/depois com a tabela do ensaio.)</i>
       O clímax visual da página, em dois níveis: o número, e o documento embaixo dele.
       <span class="note__selo selo-ok">Pode publicar</span>
       <span class="note__selo selo-pend">Falta o ano</span><br>
@@ -375,7 +438,11 @@
       imagens: inventar a imagem do ensaio contradiz a seção inteira.<br>
       <b>Dado que falta:</b> o ano do ensaio não consta em nenhum documento auditado. Tabela de
       resultado sem ano levanta suspeita imediata em leitor técnico — cobrar junto de P21
-      (delineamento, repetições, multi-local). <b>Animação AN-03.</b></p>
+      (delineamento, repetições, multi-local). <b>Animação AN-03.</b><br>
+      <b>Par comparativo VD-06:</b> as imagens precisam vir <b>deste</b> ensaio, o mesmo que dá o
+      número da tabela. Ilustrar um número com imagem de outro talhão é o tipo de atalho que ninguém
+      percebe no dia e que destrói a seção quando alguém pergunta. Se as imagens do ensaio Rehagro não
+      existirem ou não puderem ser usadas, o par sai e a seção continua de pé só com o número.</p>
 
     <div class="sec-head" style="margin-bottom:34px">
       <h2 class="h-lg"><span data-en>Nine bushels, same pass.</span><span data-pt>Nove bushels, mesma aplicação.</span></h2>
@@ -465,14 +532,47 @@
         para em 212,3, o tratado segue até 221,3, e a diferença aparece entre os dois. A fonte do
         ensaio entra por último, embaixo. 3 s, CSS/JS sobre tipografia — sem vídeo.</span>
     </div>
+
+    <!-- VD-06 — o mesmo par comparativo da Home, aqui aplicado ao ensaio que
+         a seção acabou de publicar em número. O número e a imagem precisam
+         vir do mesmo ensaio: par de talhão diferente do número da tabela é
+         propaganda com aparência de prova. -->
+    <div style="margin-top:26px">
+      <p class="eyebrow eyebrow--claro" style="margin-bottom:12px">
+        <span data-en>THE SAME TRIAL, ON CAMERA</span><span data-pt>O MESMO ENSAIO, EM IMAGEM</span>
+      </p>
+      <div class="ph-par">
+        <div class="ph ph--video">
+          <span class="ph-par__rot"><span data-en>Untreated check · 212.3 bu/ac</span><span data-pt>Testemunha · 212,3 bu/ac</span></span>
+          <span class="ph__tipo"><span data-en>Video</span><span data-pt>Vídeo</span> · VD-06a</span>
+          <span class="ph__desc" data-en>Drone pass over the check strip of this trial — the Rehagro
+            corn, not a different field. Ground-level cut of the ear as a second shot.</span>
+          <span class="ph__desc" data-pt>Passagem de drone sobre a faixa testemunha deste ensaio — o
+            milho da Rehagro, não outro talhão. Corte no nível do solo com a espiga como segundo plano.</span>
+        </div>
+        <div class="ph ph--video">
+          <span class="ph-par__rot ph-par__rot--trat"><span data-en>KMEP Ultra® · 221.3 bu/ac</span><span data-pt>KMEP Ultra® · 221,3 bu/ac</span></span>
+          <span class="ph__tipo"><span data-en>Video</span><span data-pt>Vídeo</span> · VD-06b</span>
+          <span class="ph__desc" data-en>The same two shots over the treated strip, same altitude, same
+            lens, same day, cut to the same length.</span>
+          <span class="ph__desc" data-pt>Os mesmos dois planos sobre a faixa tratada, mesma altura,
+            mesma lente, mesmo dia, no mesmo tempo de duração.</span>
+        </div>
+      </div>
+      <p class="ph__spec" style="max-width:none;color:var(--texto-claro);border-color:var(--linha-clara)">
+        MP4 H.264 + WebM · 16:9 · 6–10 s ·
+        <span data-en>muted, loop, playsinline</span><span data-pt>mudo, loop, playsinline</span>
+        · ≤ 2,5 MB · <span class="pend">[P21 — <span data-en>trial year and footage rights</span><span data-pt>ano do ensaio e direito de uso das imagens</span>]</span>
+      </p>
+    </div>
   </div>
 </section>
 
-<!-- =============================================== [K7] A CONTA POR ACRE ==== -->
+<!-- =============================================== [K6] A CONTA POR ACRE ==== -->
 <section class="sec sec--cinza">
   <div class="wrap">
-    <p class="note"><span class="note__id">K7</span><b>A conta por acre.</b>
-      <i>(era K8.)</i> Seção que não existia no PRD e que a pesquisa indicou como decisiva: o produtor
+    <p class="note"><span class="note__id">K6</span><b>A conta por acre.</b>
+      Seção que não existia no PRD e que a pesquisa indicou como decisiva: o produtor
       americano decide por ROI explícito. <span class="note__selo selo-pend">Bloqueada por P8</span><br>
       <b>Condição de publicação:</b> sem o custo por acre, a página apresenta o ganho sem o
       investimento — exatamente o formato de propaganda que o resto do site rejeita.
@@ -528,13 +628,13 @@
   </div>
 </section>
 
-<!-- ============================================== [K8] SLOT EDITORIAL ==== -->
+<!-- ============================================== [K7] SLOT EDITORIAL ==== -->
 <!-- O bloco em que o produto conta a credencial da casa. É história, não venda.
      No KMEP a credencial é tecnologia de aplicação: DESATA / UENP / NITEC. -->
 <section class="sec sec--carvao" id="desata">
   <div class="wrap">
     <p class="note" style="background:#3a3a2c;color:#f3f0dd;border-color:var(--lima)">
-      <span class="note__id">K8</span><b>Slot editorial.</b> <i>(seção nova no template.)</i>
+      <span class="note__id">K7</span><b>Slot editorial.</b> <i>(seção nova no template.)</i>
       Cada LP preenche este bloco com a credencial própria do produto. No KMEP Ultra a credencial é
       <b>tecnologia de aplicação</b>. <span class="note__selo selo-ok">Pode publicar</span><br>
       <b>Por que esta é a credencial certa.</b> Parceria com universidade pública é a moeda de
@@ -620,11 +720,12 @@
 
 <!-- ═════════════════════════════════════════ ATO IV — OPERAÇÃO E DECISÃO ══ -->
 
-<!-- ==================================================== [K9] QUANDO ENTRA ==== -->
+<!-- ==================================================== [K8] QUANDO ENTRA ==== -->
 <section class="sec">
   <div class="wrap">
-    <p class="note"><span class="note__id">K9</span><b>Quando entra.</b>
-      Janela de aplicação e dose. Conteúdo trocado pelo seletor de cultura de K2.
+    <p class="note"><span class="note__id">K8</span><b>Quando entra.</b>
+      Janela de aplicação e dose. Antes o conteúdo era trocado pela faixa de seleção de cultura;
+      com ela removida, milho e soja são publicados lado a lado.
       <span class="note__selo selo-pend">Doses aguardam P4</span><br>
       <b>Obrigatório:</b> estágios em nomenclatura americana (V4, V6, VT, R1) e dose em
       <span class="dado">fl oz/acre</span>. Estágio em nomenclatura brasileira numa página em inglês
@@ -633,20 +734,26 @@
 
     <div class="sec-head">
       <h2 class="h-lg"><span data-en>When it goes in.</span><span data-pt>Quando entra.</span></h2>
-      <p class="corpo" data-crop-corn="Corn: V4–V6, and again with the application already on your schedule ahead of grain fill."
-         data-crop-soy="Soybeans: R1 through R3, in the pass you're already making."
-         data-crop-cotton="Cotton: positioning under technical review for U.S. conditions."
-         data-crop-specialty="Specialty crops: positioning under technical review for U.S. conditions and registrations.">
+      <p class="corpo">
+        <span data-en>In the insecticide pass you already have on the schedule. Corn and soybeans are
+          the two crops positioned for the U.S. today; cotton and specialty crops are under technical
+          review.</span>
+        <span data-pt>Na aplicação de inseticida que você já tem programada. Milho e soja são as duas
+          culturas posicionadas para os EUA hoje; algodão e culturas de alto valor estão em revisão
+          técnica.</span>
       </p>
     </div>
 
     <div class="grid-3">
       <article class="card">
         <p class="eyebrow" style="margin:0">01 — <span data-en>WINDOW</span><span data-pt>JANELA</span></p>
-        <h3 class="h-sm dado" data-crop-corn="V4 – V6" data-crop-soy="R1 – R3" data-crop-cotton="—" data-crop-specialty="—"></h3>
+        <h3 class="h-sm dado" style="margin-bottom:6px">Corn V4 – V6</h3>
+        <h3 class="h-sm dado" style="margin-top:0">Soybeans R1 – R3</h3>
         <p class="corpo" style="margin:0">
-          <span data-en>First application, positioned with what's already scheduled.</span>
-          <span data-pt>Primeira aplicação, posicionada com o que já está programado.</span>
+          <span data-en>First application, positioned with what's already scheduled. Cotton and
+            specialty crops: under technical review for U.S. conditions.</span>
+          <span data-pt>Primeira aplicação, posicionada com o que já está programado. Algodão e
+            culturas de alto valor: em revisão técnica para as condições americanas.</span>
         </p>
       </article>
       <article class="card">
@@ -677,21 +784,22 @@
         VT, R1, R3). Um marcador percorre a linha e para nas janelas de aplicação. 4 s, uma vez.</span>
     </div>
 
-    <p class="corpo" data-only-crop="specialty" style="margin-top:22px;max-width:60ch">
-      <span data-en>We're confirming positioning for specialty crops in the U.S. Tell us what you grow
-        and we'll come back with the specifics.</span>
-      <span data-pt>Estamos confirmando o posicionamento para culturas de alto valor nos EUA. Conte o
-        que você planta e retornamos com as especificações.</span>
+    <p class="corpo" style="margin-top:22px;max-width:60ch">
+      <span data-en>Growing something else? In Brazil the product is used in coffee, dry beans, cotton,
+        citrus and tomato. Tell us what you grow and we'll come back with the specifics for your
+        conditions.</span>
+      <span data-pt>Planta outra coisa? No Brasil o produto é usado em café, feijão, algodão, citros e
+        tomate. Conte o que você planta e retornamos com as especificações para a sua condição.</span>
     </p>
   </div>
 </section>
 
-<!-- ====================================================== [K10] OBJEÇÕES ==== -->
+<!-- ====================================================== [K9] OBJEÇÕES ==== -->
 <!-- A antiga K10 (ficha técnica / guaranteed analysis) foi removida a pedido da
      Juma. Se voltar, entra por deploy posterior, depois desta seção. -->
 <section class="sec">
   <div class="wrap">
-    <p class="note"><span class="note__id">K10</span><b>Objeções.</b> <i>(era K11 — a ficha técnica saiu.)</i>
+    <p class="note"><span class="note__id">K9</span><b>Objeções.</b>
       Perguntas frequentes escritas como antecipação de objeção. Aumenta conversão e reduz pergunta
       repetida no formulário. <span class="note__selo selo-pend">3 de 7 aguardam dado</span><br>
       <b>A resposta que vale a página</b> é a do Brasil: a testemunha do ensaio brasileiro
@@ -800,11 +908,11 @@
   </div>
 </section>
 
-<!-- ==================================================== [K11] CTA FINAL ==== -->
+<!-- ==================================================== [K10] CTA FINAL ==== -->
 <section class="sec sec--verde" id="faixa">
   <div class="wrap">
     <p class="note" style="background:#123f28;color:#dff0e5;border-color:var(--lima)">
-      <span class="note__id">K11</span><b>CTA final — a faixa de teste.</b> <i>(era K12.)</i>
+      <span class="note__id">K10</span><b>CTA final — a faixa de teste.</b>
       Repete a oferta do hero com mais contexto e menos atrito. Formulário reduzido de quatro campos —
       o completo fica só na Home. <span class="note__selo selo-pend">Depende de P11 e P19</span><br>
       Usar o <b>mesmo componente de formulário da Home</b>, em variante reduzida. Não construir dois.</p>
@@ -891,6 +999,6 @@
   </button>
 </div>
 
-<script src="assets/js/app.js?v=3"></script>
+<script src="assets/js/app.js?v=4"></script>
 </body>
 </html>
