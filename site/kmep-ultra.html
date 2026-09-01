@@ -9,6 +9,81 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Montserrat:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/styles.css?v=4">
+
+<!-- ==========================================================================
+     AN-08 · Ação desalojante — componente exclusivo desta página.
+     Fica aqui e não no styles.css compartilhado porque nenhuma outra página
+     usa. SVG + CSS, sem biblioteca e sem arquivo externo: não acrescenta uma
+     requisição de rede, o que importa no tráfego rural americano.
+
+     REGRA DE FALLBACK — é o que faz esta peça funcionar em qualquer condição:
+     o estado de REPOUSO (sem a classe .an--roda) é o estado FINAL da
+     animação — à esquerda o inseto segue abrigado, à direita ele já saiu e
+     está em contato com a calda. A animação apenas percorre o caminho até
+     esse estado. Resultado: a peça conta a história inteira mesmo com
+     prefers-reduced-motion, com JS desligado, ou antes do IntersectionObserver
+     disparar. Nenhum leitor vê um quadro sem sentido.
+     ========================================================================== -->
+<style>
+  .desa { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(14px, 2vw, 24px); }
+  .desa__p {
+    border: 1px solid var(--linha-clara); border-radius: var(--r);
+    padding: clamp(14px, 1.8vw, 22px); background: rgba(255, 255, 255, .04);
+  }
+  .desa__p--trat { border-color: var(--lima); background: rgba(183, 199, 62, .07); }
+  .desa__rot {
+    font-family: var(--mono); font-size: 11px; font-weight: 500; letter-spacing: .1em;
+    text-transform: uppercase; margin: 0 0 12px; color: rgba(255, 255, 255, .68);
+  }
+  .desa__p--trat .desa__rot { color: var(--lima); }
+  .desa__leg { font-size: 13.5px; line-height: 1.55; margin: 14px 0 0; color: var(--texto-claro); }
+  .desa__leg b { color: var(--branco); font-weight: 700; }
+  .an-svg { width: 100%; height: auto; display: block; }
+
+  /* gotas da calda — repouso invisível: elas são o único elemento puramente
+     temporal da peça e não precisam existir no quadro estático. */
+  .an-drop { opacity: 0; }
+  .an--roda .an-drop { animation: an-cai 1.5s cubic-bezier(.4, 0, .7, 1) both; animation-delay: var(--d, 0s); }
+  @keyframes an-cai {
+    0%   { opacity: 0;   transform: translateY(-130px); }
+    14%  { opacity: .95; }
+    72%  { opacity: .95; transform: translateY(0); }
+    100% { opacity: .28;  transform: translateY(0); }
+  }
+
+  /* o inseto deixando o abrigo. Repouso = já saiu; a animação parte do
+     esconderijo (--dx/--dy) e chega ao repouso. */
+  .an--roda .an-sai { animation: an-desaloja 1.5s cubic-bezier(.45, .05, .25, 1) both; animation-delay: var(--d, 1.6s); }
+  @keyframes an-desaloja {
+    0%   { transform: translate(var(--dx, 0), var(--dy, 0)); }
+    100% { transform: translate(0, 0); }
+  }
+
+  /* anel de contato com a calda. Repouso = visível. */
+  .an-ring {
+    fill: none; stroke: var(--lima); stroke-width: 2; opacity: .85;
+    transform-box: fill-box; transform-origin: center;
+  }
+  .an--roda .an-ring { animation: an-contato 1s ease-out both; animation-delay: var(--d, 3.1s); }
+  @keyframes an-contato {
+    0%   { opacity: 0;  transform: scale(.25); }
+    60%  { opacity: 1;  transform: scale(1.18); }
+    100% { opacity: .85; transform: scale(1); }
+  }
+
+  /* inseto alcançado pela calda. Repouso = esmaecido. */
+  .an-bug { color: #E9E3CD; }
+  .an-hit { opacity: .3; }
+  .an--roda .an-hit { animation: an-atingido 1s ease-out both; animation-delay: var(--d, 3.3s); }
+  @keyframes an-atingido { 0%, 45% { opacity: 1; } 100% { opacity: .3; } }
+
+  /* inseto que continua abrigado e ativo — pulsa duas vezes ao final da
+     animação do painel sem o produto, e descansa opaco. */
+  .an--roda .an-vivo { animation: an-pulso 1.05s ease-in-out 3.3s 2 both; }
+  @keyframes an-pulso { 0%, 100% { opacity: 1; } 50% { opacity: .45; } }
+
+  @media (max-width: 760px) { .desa { grid-template-columns: 1fr; } }
+</style>
 </head>
 <body>
 
@@ -44,46 +119,49 @@
     <p class="note"><span class="note__id">K1</span><b>Hero.</b>
       Promessa central e CTA, com uma linha de prova ancorada logo abaixo — o cético encontra o dado
       sem rolar. <span class="note__selo selo-rev">Aguarda leitura do regulatório (P2)</span><br>
-      <b>Correção de mecanismo aplicada pela Juma.</b> A versão anterior desta página estava escrita
-      como <i>adjuvante de calda</i> — cobertura, deposição e tensão superficial. Está errado. O KMEP
-      Ultra é <b>potencializador de inseticida</b>: vai misturado no inseticida, paralisa e desaloja o
-      inseto e a praga do ponto onde ele se protege (embaixo da folha, na bainha, no cartucho, nas
-      fendas) e o mantém exposto à calda. Sem o KMEP, o bicho se esconde e o produto não fica agindo
-      em cima dele como deveria.<br>
+      <b>Posicionamento definido pela Juma (resposta oficial).</b> A hierarquia é dela, não nossa:
+      <b>1º</b> fonte de potássio — enchimento de grãos, vigor e desempenho da lavoura ao longo de
+      todo o ciclo; <b>2º</b> maior eficiência no uso das aplicações; <b>3º</b> <i>como vantagem
+      adicional</i>, agente desalojante, que força o inseto a sair do abrigo e entrar em contato com
+      o inseticida. As três coisas são o mesmo produto na mesma gota — e é essa sobreposição que a
+      página passa a contar.<br>
+      <b>A narrativa da página mudou de eixo.</b> A versão anterior tinha dois começos brigando: um
+      hero nutricional e um bloco de problema que falava de praga. Agora a espinha é
+      <i>uma aplicação, dois trabalhos</i> — o potássio é o que o produto faz o ciclo inteiro, o
+      desalojamento é o que ele faz no dia da aplicação. Cada seção sabe qual dos dois está contando.<br>
       <b>A distinção que não pode se perder na tradução:</b> o KMEP <b>não faz o inseticida render
       mais</b> — não é economia de dose nem de calda. Ele <b>aumenta a eficiência</b> do inseticida
-      que já está no tanque, porque coloca o alvo no caminho do produto. Toda a página foi reescrita
-      sobre essa distinção.<br>
+      que já está no tanque, porque coloca o alvo no caminho do produto.<br>
       <b>Alerta regulatório — pendência P2.</b> Nos EUA, afirmar efeito sobre inseto ou sobre a
-      performance de um defensivo é claim de pesticida sob a FIFRA e exige registro na EPA. A copy
-      abaixo é a correta do ponto de vista agronômico e é a que a Juma determinou; ela precisa de
-      leitura do regulatório americano antes do go-live em produção. As alternativas discutidas
-      (posicionar como adjuvante ou como potássio foliar) ficam registradas no documento mestre.<br>
+      performance de um defensivo é claim de pesticida sob a FIFRA e exige registro na EPA. O bloco
+      nutricional publica sozinho; os blocos de desalojamento (K3b e os trechos marcados) são os que
+      dependem da leitura do regulatório americano. Essa separação está desenhada de propósito: se o
+      regulatório vetar, <b>saem três blocos e a página continua de pé</b>.<br>
       <b>Asset:</b> P12 / <b>animação</b> AN-01.</p>
 
     <div class="hero__grid">
       <div>
         <div>
           <p class="eyebrow">
-            <span data-en>INSECTICIDE POTENTIATOR · TANK MIX · FOLIAR POTASSIUM</span>
-            <span data-pt>POTENCIALIZADOR DE INSETICIDA · MISTURA EM TANQUE · POTÁSSIO FOLIAR</span>
+            <span data-en>FOLIAR POTASSIUM · GRAIN FILL · TANK-MIX PARTNER</span>
+            <span data-pt>POTÁSSIO FOLIAR · ENCHIMENTO DE GRÃOS · PARCEIRO DE TANQUE</span>
           </p>
           <h1 class="h-xl" style="margin-bottom:22px">KMEP Ultra<span style="font-size:.4em;vertical-align:top">®</span></h1>
-          <p class="h-md" style="margin-bottom:18px;max-width:26ch">
-            <span data-en>The one you didn't reach is the one that comes back.</span>
-            <span data-pt>O que você não alcançou é o que volta.</span>
+          <p class="h-md" style="margin-bottom:18px;max-width:24ch">
+            <span data-en>One pass. Two jobs.</span>
+            <span data-pt>Uma aplicação. Dois trabalhos.</span>
           </p>
           <p class="corpo" style="max-width:54ch">
-            <span data-en>KMEP Ultra® goes in the tank mixed with the insecticide you already chose.
-              It doesn't replace it, and it doesn't make it go further. It brings the target out of
-              hiding and leaves it still and exposed, so the insecticide acts on the insect instead of
-              on the leaf it was sitting under. Same tank, same pass, more of the population reached —
-              and foliar potassium riding along in the same droplet.</span>
-            <span data-pt>O KMEP Ultra® vai no tanque misturado ao inseticida que você já escolheu.
-              Ele não substitui o defensivo e não o faz render mais. Ele tira o alvo do esconderijo e
-              o deixa parado e exposto, para que o inseticida aja sobre o inseto e não sobre a folha
-              que o abrigava. Mesmo tanque, mesma aplicação, mais da população alcançada — e potássio
-              foliar na mesma gota.</span>
+            <span data-en>KMEP Ultra® goes beyond traditional management. It acts as a potassium
+              source — contributing to grain fill, plant vigor and crop performance across the whole
+              growing cycle — and it makes the pass itself work harder. As an added advantage, it acts
+              as a flushing agent, moving insects out of their shelters and into contact with the
+              insecticide already in your tank.</span>
+            <span data-pt>O KMEP Ultra® vai além do manejo tradicional. Atua como fonte de potássio —
+              contribuindo para o enchimento de grãos, o vigor das plantas e o desempenho da lavoura ao
+              longo de todo o ciclo — e faz a própria aplicação render mais trabalho. Como vantagem
+              adicional, atua como agente desalojante, tirando os insetos de seus abrigos e colocando-os
+              em contato com o inseticida que já está no seu tanque.</span>
           </p>
         </div>
 
@@ -136,60 +214,34 @@
     <p class="note"><span class="note__id">K2</span><b>O problema.</b>
       A dor específica que o produto endereça. Precisa ser reconhecível em uma leitura, e precisa
       parecer conversa técnica — sem card, sem caixa.
-      <span class="note__selo selo-rev">Aguarda leitura do regulatório (P2)</span><br>
-      A seção tem dois movimentos: <b>o alvo escondido</b> (o argumento principal) e <b>o potássio</b>
-      (o argumento embutido). O primeiro descreve o comportamento do inseto, não o produto — o KMEP só
-      é nomeado na seção seguinte, que é onde o mecanismo entra.<br>
-      <b>Asset:</b> macro. Cartucho de milho aberto, face inferior da folha, bainha — o esconderijo,
-      não a praga em close publicitário. Evitar imagem de planta destruída, que muda o argumento de
-      eficiência para dano.</p>
+      <span class="note__selo selo-ok">Pode publicar</span><br>
+      <b>Seção reescrita — era o bloco mais quebrado da página.</b> Ela tinha headline de potássio e
+      corpo de praga, dois argumentos disputando a mesma dobra. Agora K2 é <b>inteiramente
+      nutricional</b>, que é o eixo que a Juma colocou em primeiro lugar e o único que publica sem
+      depender de ninguém. O argumento de praga foi inteiro para a K3b, onde ele tem seção própria e
+      animação.<br>
+      <b>Por que isso importa além da narrativa:</b> com a separação, esta seção deixa de carregar
+      risco regulatório. Ela descreve demanda nutricional e dinâmica de solo, sem atribuir nenhum
+      efeito ao produto. Se P2 vier restritiva, K2 não muda uma vírgula.<br>
+      <b>Asset:</b> macro de fim de ciclo — grão em enchimento, folha madura, ou corte de perfil de
+      solo. Evitar planta murcha ou doente, que sugere claim de proteção.</p>
 
-    <div>
-      <div class="sec-head">
-        <h2 class="h-lg">
-          <span data-en>You sprayed. Days later, they're back.</span>
-          <span data-pt>Você pulverizou. Dias depois, eles voltaram.</span>
-        </h2>
-        <p class="corpo">
-          <span data-en>The application was right. The product was right. Part of the population
-            simply never met the spray — it was in the whorl, under the leaf, in the sheath, down in a
-            crevice where a droplet doesn't go. The insecticide dried on the leaf above it and the
-            insect walked out afterwards. Re-spraying costs money and speeds up resistance selection.</span>
-          <span data-pt>A aplicação estava certa. O produto estava certo. Parte da população
-            simplesmente nunca encontrou a calda — estava no cartucho, embaixo da folha, na bainha,
-            numa fenda onde a gota não entra. O inseticida secou na folha acima dela e o inseto saiu
-            depois. Reaplicar custa dinheiro e acelera a seleção de resistência.</span>
-        </p>
-      </div>
-
-      <p class="h-md" style="max-width:46ch;margin-bottom:34px">
-        <span data-en>The insecticide didn't fail. It never got to act on the insect.</span>
-        <span data-pt>O inseticida não falhou. Ele nunca chegou a agir em cima do inseto.</span>
+    <div class="sec-head">
+      <h2 class="h-lg">
+        <span data-en>Grain fill runs on potassium the root may not deliver in time.</span>
+        <span data-pt>O enchimento de grãos depende de um potássio que a raiz pode não entregar a tempo.</span>
+      </h2>
+      <p class="corpo">
+        <span data-en>Potassium demand peaks late — through pollination and grain fill — exactly when
+          a dry stretch, a compaction layer or a shallow root system limits how much the soil can
+          actually move. The potassium is in the ground. Your soil test says so. That is not the same
+          as having it in the plant during the three weeks that set the kernel.</span>
+        <span data-pt>A demanda por potássio tem pico no fim do ciclo — na polinização e no enchimento
+          de grãos — exatamente quando um veranico, uma camada compactada ou um sistema radicular raso
+          limitam quanto o solo consegue de fato movimentar. O potássio está no solo. Sua análise diz
+          isso. O que não é a mesma coisa que tê-lo dentro da planta nas três semanas que definem o
+          grão.</span>
       </p>
-
-      <div class="split">
-        <div>
-          <p class="eyebrow"><span data-en>AND THE SAME PASS CARRIES SOMETHING ELSE</span><span data-pt>E A MESMA APLICAÇÃO CARREGA MAIS UMA COISA</span></p>
-          <p class="corpo" style="margin:0">
-            <span data-en>Potassium demand peaks late — through pollination and grain fill — right
-              when a dry stretch, a compaction layer or a shallow root system limits how much the soil
-              can actually move.</span>
-            <span data-pt>A demanda por potássio tem pico no fim do ciclo — na polinização e no
-              enchimento de grãos — exatamente quando um veranico, uma camada compactada ou um sistema
-              radicular raso limitam quanto o solo consegue de fato movimentar.</span>
-          </p>
-        </div>
-        <div>
-          <p class="corpo" style="margin:0">
-            <span data-en>The potassium is in the ground. Your soil test says so. That isn't the same
-              as having it in the plant during the three weeks that set the kernel — and the pass you
-              already have on the schedule is the cheapest chance you get to put it there.</span>
-            <span data-pt>O potássio está no solo. Sua análise diz isso. O que não é a mesma coisa que
-              tê-lo dentro da planta nas três semanas que definem o grão — e a aplicação que você já
-              tem programada é a chance mais barata de colocá-lo lá.</span>
-          </p>
-        </div>
-      </div>
     </div>
   </div>
 </section>
@@ -201,51 +253,58 @@
 <section class="sec sec--areia">
   <div class="wrap">
     <p class="note"><span class="note__id">K3</span><b>Como funciona.</b>
-      O mecanismo. É aqui que a animação principal da página trabalha.
-      <span class="note__selo selo-rev">Aguarda leitura do regulatório (P2)</span><br>
-      <b>Os três passos foram reescritos.</b> A versão anterior descrevia tensão superficial,
-      deposição e penetração no dossel — vocabulário de adjuvante, que não é o que o produto faz. Os
-      passos agora seguem o mecanismo real: <b>mistura</b>, <b>desalojamento</b>, <b>exposição</b>.<br>
+      O mecanismo nutricional — o trabalho que o produto faz o ciclo inteiro.
+      <span class="note__selo selo-rev">Revisar comparação temporal com o técnico</span><br>
+      <b>A seção voltou a ser sobre potássio.</b> Ela vinha tentando explicar os dois mecanismos ao
+      mesmo tempo e não explicava nenhum. Agora K3 responde <i>"como o potássio chega"</i> e a K3b
+      responde <i>"como o inseto sai"</i>. Duas perguntas, duas seções, duas animações.<br>
+      <b>Os três passos foram reordenados</b> na sequência em que acontecem: <b>mistura</b> →
+      <b>potássio foliar</b> → <b>vantagem adicional</b>. O passo 03 é deliberadamente curto: ele
+      existe para entregar o leitor à K3b, não para explicar o desalojamento aqui.<br>
       <b>A frase que precisa sobreviver a qualquer revisão:</b> "não faz o inseticida render mais,
       aumenta a eficiência dele". Sem ela, o leitor entende economia de dose — que é justamente a
       leitura errada, e a que gera reclamação de cliente depois.<br>
-      <b>Animação AN-02 — redefinida de novo.</b> Não é mais gota em folha cerosa. É o alvo saindo do
-      esconderijo: corte do cartucho e da face inferior da folha, o inseto abrigado, a calda chegando
-      com e sem KMEP. Dispara a 50% de visibilidade, roda uma vez, com fallback estático.<br>
-      <b>Três peças em movimento nesta seção, e cada uma faz um trabalho diferente:</b>
-      <b>AN-02</b> é a animação didática (desenho, controlada, publicável sem filmagem);
-      <b>VD-04</b> é a parte física no tanque, filmada — é o que torna o produto concreto para o
-      aplicador; <b>VD-05</b> é o par comparativo em macro, sem e com o produto — é a peça mais forte
-      da página e a mais difícil de produzir.<br>
-      <b>Ordem de produção sugerida:</b> AN-02 primeiro, porque não depende de safra nem de infestação.
-      VD-04 em seguida, que é uma tarde de filmagem na fábrica. VD-05 só quando houver ensaio com
-      pressão de praga — é filmagem de oportunidade, não de agenda.<br>
+      <b>Animação AN-02 — de volta à especificação original</b> (duas rotas, dois relógios): potássio
+      do solo à esquerda, potássio foliar à direita, mesmo nutriente e relógios diferentes. A peça do
+      desalojamento saiu daqui e virou a AN-08, construída na K3b.<br>
+      <b>Ordem de produção:</b> AN-02 primeiro, porque não depende de safra nem de infestação.
+      <b>VD-04</b> em seguida — uma tarde de filmagem na fábrica, e é o que torna o produto concreto
+      para o aplicador. O par comparativo em macro (VD-05) foi para a K3b, junto do resto do
+      argumento de praga.<br>
+      <b>Dado a confirmar:</b> a expressão <i>em horas em vez de dias</i> é a única comparação
+      temporal da página e precisa de respaldo do técnico da Juma antes do ar.<br>
       <b>Regra de redundância:</b> tudo que a animação diz precisa existir em texto na mesma seção —
       parte do tráfego rural americano navega em conexão instável.</p>
 
     <div>
       <div class="sec-head">
         <h2 class="h-lg">
-          <span data-en>Mix it in. Move the target. Keep it exposed.</span>
-          <span data-pt>Misturar. Desalojar. Manter exposto.</span>
+          <span data-en>Two routes. Two clocks.</span>
+          <span data-pt>Duas rotas. Dois relógios.</span>
         </h2>
         <p class="corpo">
-          <span data-en>Three steps, in the order they happen in the tank and on the plant.</span>
-          <span data-pt>Três passos, na ordem em que acontecem no tanque e na planta.</span>
+          <span data-en>Soil potassium moves with water. It has to dissolve, travel to the root
+            surface, cross into the xylem and ride up to the leaf — and every one of those steps slows
+            down when the profile dries. Foliar potassium skips the queue: it lands on the leaf and
+            moves into the tissue from there.</span>
+          <span data-pt>O potássio do solo se move com a água. Precisa dissolver, chegar à superfície
+            da raiz, entrar no xilema e subir até a folha — e cada uma dessas etapas desacelera quando
+            o perfil seca. O potássio foliar fura a fila: cai na folha e entra no tecido a partir
+            dali.</span>
         </p>
       </div>
 
       <div class="split split--img">
         <div class="ph ph--alto ph--anim">
           <span class="ph__tag">AN-02</span>
-          <span class="ph__desc" data-en>Cutaway of a whorl and the underside of a leaf, with the
-            insect sheltered in it. Same spray arrives twice: without KMEP Ultra® it dries on the leaf
-            above and the insect walks out after; with it, the insect leaves the shelter, stops, and
-            stays in contact with the spray. Lottie/SVG, under 150 KB.</span>
-          <span class="ph__desc" data-pt>Corte do cartucho e da face inferior da folha, com o inseto
-            abrigado. A mesma calda chega duas vezes: sem o KMEP Ultra® ela seca na folha acima e o
-            inseto sai depois; com ele, o inseto deixa o abrigo, paralisa e permanece em contato com a
-            calda. Lottie/SVG, até 150 KB.</span>
+          <span class="ph__desc" data-en>Two routes, two clocks. Left: potassium from the soil
+            solution — dissolve, reach the root, cross into the xylem, ride up. Right: potassium
+            applied to the leaf, moving into the tissue from where it lands. Same nutrient, different
+            clock. Lottie/SVG, under 150 KB.</span>
+          <span class="ph__desc" data-pt>Duas rotas, dois relógios. À esquerda: o potássio da solução
+            do solo — dissolver, chegar à raiz, entrar no xilema, subir. À direita: o potássio
+            aplicado na folha, entrando no tecido a partir de onde cai. Mesmo nutriente, relógio
+            diferente. Lottie/SVG, até 150 KB.</span>
         </div>
 
         <div class="card">
@@ -259,40 +318,31 @@
             </p>
           </div>
           <div style="margin-top:18px">
-            <p class="eyebrow" style="margin-bottom:6px">02 — <span data-en>OUT OF HIDING</span><span data-pt>DESALOJAMENTO</span></p>
+            <p class="eyebrow" style="margin-bottom:6px">02 — <span data-en>FOLIAR POTASSIUM</span><span data-pt>POTÁSSIO FOLIAR</span></p>
             <p class="corpo" style="margin:0">
-              <span data-en>The target leaves the whorl, the underside of the leaf, the sheath, the
-                crevice — the places a droplet was never going to reach.</span>
-              <span data-pt>O alvo deixa o cartucho, a face inferior da folha, a bainha, a fenda — os
-                pontos onde a gota nunca ia chegar.</span>
+              <span data-en>Potassium lands on the leaf in a form the tissue takes up, positioned for
+                the window where demand actually peaks — grain fill. This is the job it does across the
+                whole cycle.</span>
+              <span data-pt>O potássio cai na folha numa forma que o tecido absorve, posicionado para a
+                janela em que a demanda de fato tem pico — o enchimento de grãos. É o trabalho que ele
+                faz ao longo de todo o ciclo.</span>
             </p>
           </div>
           <div style="margin-top:18px">
-            <p class="eyebrow" style="margin-bottom:6px">03 — <span data-en>EXPOSED, AND STILL</span><span data-pt>EXPOSTO E PARADO</span></p>
+            <p class="eyebrow" style="margin-bottom:6px">03 — <span data-en>AND, AS AN ADDED ADVANTAGE</span><span data-pt>E, COMO VANTAGEM ADICIONAL</span></p>
             <p class="corpo" style="margin:0">
-              <span data-en>Out in the open it stops moving and stays in contact with the spray, which
-                now has time to act on the insect instead of drying on the leaf.</span>
-              <span data-pt>No aberto ele paralisa e permanece em contato com a calda, que agora tem
-                tempo de agir sobre o inseto em vez de secar na folha.</span>
+              <span data-en>The same droplet carries a flushing action that moves the target out of
+                the shelter where the spray was never going to reach it.</span>
+              <span data-pt>A mesma gota carrega uma ação desalojante que tira o alvo do abrigo onde a
+                calda nunca ia alcançá-lo.</span>
+              <a href="#desalojamento" style="color:var(--oliva);font-weight:700;white-space:nowrap">
+                <span data-en>See how →</span><span data-pt>Veja como →</span></a>
             </p>
           </div>
-          <div style="margin-top:18px;border-top:1px solid var(--linha);padding-top:18px">
-            <p class="eyebrow" style="margin-bottom:6px"><span data-en>WHAT THIS IS NOT</span><span data-pt>O QUE ISTO NÃO É</span></p>
-            <p class="corpo" style="margin:0">
-              <span data-en>It does not stretch your insecticide. Same rate, same label, same tank —
-                what changes is how much of the population the insecticide actually acts on.</span>
-              <span data-pt>Ele não faz o seu inseticida render mais. Mesma dose, mesmo rótulo, mesmo
-                tanque — o que muda é sobre quanto da população o inseticida de fato age.</span>
-            </p>
-          </div>
-          <div style="margin-top:18px;border-top:1px solid var(--linha);padding-top:18px">
-            <p class="eyebrow" style="margin-bottom:6px"><span data-en>AND IN THE SAME DROPLET</span><span data-pt>E NA MESMA GOTA</span></p>
-            <p class="corpo" style="margin:0">
-              <span data-en>Foliar potassium, in a form the leaf takes up — no waiting on soil moisture.</span>
-              <span data-pt>Potássio foliar, numa forma que a folha absorve — sem esperar umidade do solo.</span>
-            </p>
-          </div>
-          <div style="margin-top:14px">
+          <!-- O bloco "o que isto não é" saiu daqui: ele fala de dose de
+               inseticida, que é argumento da K3b. Estava duplicado nas duas
+               seções, e a versão da K3b é a que tem contexto. -->
+          <div style="margin-top:20px;border-top:1px solid var(--linha);padding-top:18px">
             <a class="btn" href="#prova"><span data-en>See the trial</span><span data-pt>Ver o ensaio</span></a>
           </div>
         </div>
@@ -325,46 +375,322 @@
         </div>
       </div>
 
-      <!-- VD-05 — o par comparativo em macro. A peça mais forte da página. -->
-      <div style="margin-top:clamp(28px,3.5vw,42px)">
-        <p class="eyebrow" style="margin-bottom:12px">
-          <span data-en>THE SAME INSECTICIDE, THE SAME RATE, THE SAME PLANT</span>
-          <span data-pt>O MESMO INSETICIDA, A MESMA DOSE, A MESMA PLANTA</span>
-        </p>
-        <div class="ph-par">
-          <div class="ph ph--video">
-            <span class="ph-par__rot"><span data-en>Insecticide alone</span><span data-pt>Só o inseticida</span></span>
-            <span class="ph__tipo"><span data-en>Video</span><span data-pt>Vídeo</span> · VD-05a</span>
-            <span class="ph__desc" data-en>Macro on the whorl and the underside of the leaf after the
-              spray. The target stays sheltered and moving. Same lens, same light, same distance as
-              VD-05b.</span>
-            <span class="ph__desc" data-pt>Macro no cartucho e na face inferior da folha depois da
-              aplicação. O alvo permanece abrigado e em movimento. Mesma lente, mesma luz e mesma
-              distância do VD-05b.</span>
-          </div>
-          <div class="ph ph--video">
-            <span class="ph-par__rot ph-par__rot--trat"><span data-en>Insecticide + KMEP Ultra®</span><span data-pt>Inseticida + KMEP Ultra®</span></span>
-            <span class="ph__tipo"><span data-en>Video</span><span data-pt>Vídeo</span> · VD-05b</span>
-            <span class="ph__desc" data-en>The same shot with KMEP Ultra® in the mix: the target leaves
-              the shelter, comes out onto the exposed surface and stops there.</span>
-            <span class="ph__desc" data-pt>O mesmo plano com o KMEP Ultra® na mistura: o alvo deixa o
-              abrigo, sai para a superfície exposta e permanece parado ali.</span>
-          </div>
-        </div>
-        <p class="ph__spec" style="max-width:none">
-          MP4 H.264 + WebM · 1:1 <span data-en>or</span><span data-pt>ou</span> 4:5 ·
-          <span data-en>muted, loop, playsinline</span><span data-pt>mudo, loop, playsinline</span>
-          · ≤ 3 MB <span data-en>each</span><span data-pt>cada</span> ·
-          <span data-en>elapsed-time stamp visible in both</span><span data-pt>carimbo de tempo decorrido visível nos dois</span>
-          · <span class="pend">[P2 — <span data-en>regulatory reading before producing</span><span data-pt>leitura do regulatório antes de produzir</span>]</span>
-        </p>
-        <p class="mini" style="margin-top:10px;max-width:76ch">
-          <span data-en>Filmed during field trials in Brazil. Field performance varies with climate,
-            soil and management.</span>
-          <span data-pt>Filmado durante ensaios de campo no Brasil. O desempenho em campo varia com
-            clima, solo e manejo.</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================= [K3b] A AÇÃO DESALOJANTE ==== -->
+<!-- Seção nova. Não renumerei o resto da página: a convenção do projeto é
+     preservar a rastreabilidade dos identificadores com o documento de copy,
+     então a seção entra como K3b em vez de empurrar K4..K10 para frente.
+
+     Ela existe porque o argumento de praga estava espalhado em pedaços por
+     três seções, sem dono e sem imagem. Agora tem seção própria, e é a única
+     da página que depende da liberação regulatória — se P2 vier restritiva,
+     esta seção sai inteira e a página continua de pé. -->
+<section class="sec sec--carvao" id="desalojamento">
+  <div class="wrap">
+    <p class="note" style="background:#3a3a2c;color:#f3f0dd;border-color:var(--lima)">
+      <span class="note__id">K3b</span><b>A ação desalojante.</b> <i>(seção nova.)</i>
+      A vantagem adicional que a Juma nomeou na resposta oficial, com seção e animação próprias.
+      <span class="note__selo selo-hold">Depende de P2 — leitura do regulatório</span><br>
+      <b>Por que virou seção em vez de parágrafo.</b> O desalojamento é o mecanismo mais difícil de
+      explicar do portfólio e o mais fácil de entender <i>vendo</i>. Espalhado em três meias-frases
+      pela página, ele não convencia ninguém e ainda contaminava o bloco nutricional. Concentrado
+      aqui, faz duas coisas de uma vez: explica melhor e <b>isola o risco regulatório num único
+      bloco removível</b>.<br>
+      <b>Animação AN-08 — produzida.</b> A biblioteca de animações marcava esta peça como
+      "não produzir antes de P2", pelo risco de o ativo vazar para produção por engano. Ela foi
+      construída assim mesmo, por decisão de posicionamento da Juma, mas com duas travas: vive
+      <b>dentro desta seção</b> (sai junto se a seção sair) e é <b>SVG + CSS no próprio HTML</b>,
+      sem arquivo solto que alguém possa reaproveitar em outra peça sem contexto.<br>
+      <b>Fallback:</b> o estado de repouso da animação é o quadro final — abrigado à esquerda,
+      exposto à direita. Ela conta a história inteira parada, com <span class="dado">prefers-reduced-motion</span>,
+      com JS desligado ou em conexão ruim. <b>Dispara a 45% de visibilidade, roda uma vez, com botão
+      de repetir.</b><br>
+      <b>Regra de redundância cumprida:</b> os três tempos da animação estão escritos em texto logo
+      abaixo dela. Nada que a peça diz existe só na peça.<br>
+      <b>Vocabulário:</b> <i>whorl</i>, <i>sheath</i> e <i>leaf underside</i> são os termos exatos que
+      um agrônomo americano de milho usa. Se esta seção for ao ar, é a precisão do vocabulário que a
+      torna crível.</p>
+
+    <div class="sec-head">
+      <h2 class="h-lg">
+        <span data-en>The one you didn't reach is the one that comes back.</span>
+        <span data-pt>O que você não alcançou é o que volta.</span>
+      </h2>
+      <p class="corpo">
+        <span data-en>The application was right. The product was right. Part of the population simply
+          never met the spray — it was in the whorl, under the leaf, in the sheath. KMEP Ultra® rides
+          in the same droplet and moves the target out of the shelter, into contact with the
+          insecticide you already paid for.</span>
+        <span data-pt>A aplicação estava certa. O produto estava certo. Parte da população
+          simplesmente nunca encontrou a calda — estava no cartucho, embaixo da folha, na bainha. O
+          KMEP Ultra® vai na mesma gota e tira o alvo do abrigo, colocando-o em contato com o
+          inseticida que você já pagou.</span>
+      </p>
+    </div>
+
+    <!-- Sprite do inseto: definido uma vez, referenciado pelos dois painéis.
+         currentColor deixa a cor no CSS. -->
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+      <defs>
+        <g id="kmep-bug">
+          <ellipse cx="0" cy="0" rx="7.5" ry="5" fill="currentColor"/>
+          <circle cx="-8" cy="-1.5" r="3.4" fill="currentColor"/>
+          <path d="M-10 -4.5l-4.5-4M-10.5 -2l-5.5-1.5" stroke="currentColor" stroke-width="1.3"
+                stroke-linecap="round" fill="none"/>
+          <path d="M-3.5 4.5l-2.5 4.5M1 5l1.5 4.5M5.5 3.5l4 3.5M-3.5 -4.5l-2-4M2 -5l1.5-4"
+                stroke="currentColor" stroke-width="1.3" stroke-linecap="round" fill="none"/>
+        </g>
+      </defs>
+    </svg>
+
+    <div class="desa" data-an="an-08" style="margin-top:clamp(24px,3vw,38px)">
+
+      <!-- ------------------------------------------------ painel A · sem KMEP -->
+      <div class="desa__p">
+        <p class="desa__rot"><span data-en>Insecticide alone</span><span data-pt>Só o inseticida</span></p>
+        <!-- A ordem dos elementos é o argumento deste painel: os três
+             abrigados são desenhados ANTES da folha, do colmo e do cartucho
+             que os cobrem, então aparecem parcialmente ocultos — que é
+             exatamente a condição descrita. O exposto vem por último, por
+             cima de tudo. -->
+        <svg class="an-svg" viewBox="0 0 300 280" aria-hidden="true" focusable="false">
+          <path d="M8 266H292" stroke="rgba(255,255,255,.13)" stroke-width="2" stroke-linecap="round"/>
+
+          <!-- abrigado na bainha — o colmo cobre metade dele -->
+          <g transform="translate(157,196)"><use class="an-bug an-vivo" href="#kmep-bug"/></g>
+          <path d="M150 266V86" stroke="#4B6A2E" stroke-width="10" stroke-linecap="round"/>
+
+          <!-- abrigado no cartucho — as duas folhas do cartucho o enquadram.
+               Posicionado onde elas ainda estão abertas: precisa dar para ver
+               que há um inseto ali, senão o painel perde o argumento. -->
+          <g transform="translate(151,54)"><use class="an-bug an-vivo" href="#kmep-bug"/></g>
+          <path d="M150 96C143 68 139 54 142 40" stroke="#6E9143" stroke-width="8" fill="none" stroke-linecap="round"/>
+          <path d="M150 96C158 68 163 54 161 38" stroke="#5C7B36" stroke-width="8" fill="none" stroke-linecap="round"/>
+
+          <path d="M152 150C192 143 226 151 258 172C222 162 186 160 152 164Z" fill="#5C7B36"/>
+
+          <!-- abrigado sob a folha — a folha passa por cima da metade de cima
+               do corpo; a de baixo fica visível, que é o que se vê em campo -->
+          <g transform="translate(100,221)"><use class="an-bug an-vivo" href="#kmep-bug"/></g>
+          <path d="M148 206C110 200 76 209 42 232C80 219 116 215 148 219Z" fill="#4B6A2E"/>
+          <path d="M152 238C186 234 214 240 240 256C210 248 180 246 152 248Z" fill="#3E5A26"/>
+
+          <g fill="#CFE6F5">
+            <circle class="an-drop" cx="88"  cy="214" r="3.2" style="--d:.05s"/>
+            <circle class="an-drop" cx="120" cy="209" r="2.6" style="--d:.30s"/>
+            <circle class="an-drop" cx="196" cy="157" r="3.2" style="--d:.14s"/>
+            <circle class="an-drop" cx="230" cy="165" r="2.6" style="--d:.42s"/>
+            <circle class="an-drop" cx="150" cy="88"  r="2.8" style="--d:.22s"/>
+            <circle class="an-drop" cx="46"  cy="262" r="2.4" style="--d:.55s"/>
+            <circle class="an-drop" cx="264" cy="262" r="2.4" style="--d:.36s"/>
+            <circle class="an-drop" cx="178" cy="243" r="3"   style="--d:.48s"/>
+            <circle class="an-drop" cx="210" cy="246" r="2.4" style="--d:.10s"/>
+          </g>
+
+          <!-- o único exposto, que a calda encontra -->
+          <g transform="translate(212,152)">
+            <circle class="an-ring" r="16" style="--d:1.5s"/>
+            <use class="an-bug an-hit" href="#kmep-bug" style="--d:1.7s"/>
+          </g>
+        </svg>
+        <p class="desa__leg">
+          <span data-en>The spray lands on the surfaces it can see. The target in the whorl, under the
+            leaf and in the sheath <b>never meets it</b> — and is still there when the sprayer
+            leaves.</span>
+          <span data-pt>A calda cobre as superfícies que ela enxerga. O alvo no cartucho, embaixo da
+            folha e na bainha <b>nunca a encontra</b> — e continua lá quando o pulverizador vai
+            embora.</span>
         </p>
       </div>
+
+      <!-- --------------------------------------- painel B · com o KMEP Ultra -->
+      <div class="desa__p desa__p--trat">
+        <p class="desa__rot">
+          <span data-en>Insecticide + KMEP Ultra®</span><span data-pt>Inseticida + KMEP Ultra®</span>
+        </p>
+        <svg class="an-svg" viewBox="0 0 300 280" aria-hidden="true" focusable="false">
+          <path d="M8 266H292" stroke="rgba(255,255,255,.13)" stroke-width="2" stroke-linecap="round"/>
+          <path d="M150 266V86" stroke="#4B6A2E" stroke-width="10" stroke-linecap="round"/>
+          <path d="M150 96C143 68 139 54 142 40" stroke="#6E9143" stroke-width="8" fill="none" stroke-linecap="round"/>
+          <path d="M150 96C158 68 163 54 161 38" stroke="#5C7B36" stroke-width="8" fill="none" stroke-linecap="round"/>
+          <path d="M152 150C192 143 226 151 258 172C222 162 186 160 152 164Z" fill="#5C7B36"/>
+          <path d="M148 206C110 200 76 209 42 232C80 219 116 215 148 219Z" fill="#4B6A2E"/>
+          <path d="M152 238C186 234 214 240 240 256C210 248 180 246 152 248Z" fill="#3E5A26"/>
+
+          <!-- mesma calda, agora com o produto na mistura -->
+          <g fill="#C8D65A">
+            <circle class="an-drop" cx="88"  cy="214" r="3.2" style="--d:.05s"/>
+            <circle class="an-drop" cx="120" cy="209" r="2.6" style="--d:.30s"/>
+            <circle class="an-drop" cx="196" cy="157" r="3.2" style="--d:.14s"/>
+            <circle class="an-drop" cx="230" cy="165" r="2.6" style="--d:.42s"/>
+            <circle class="an-drop" cx="150" cy="88"  r="2.8" style="--d:.22s"/>
+            <circle class="an-drop" cx="46"  cy="262" r="2.4" style="--d:.55s"/>
+            <circle class="an-drop" cx="264" cy="262" r="2.4" style="--d:.36s"/>
+            <circle class="an-drop" cx="178" cy="243" r="3"   style="--d:.48s"/>
+            <circle class="an-drop" cx="210" cy="246" r="2.4" style="--d:.10s"/>
+          </g>
+
+          <!-- os três que estavam abrigados saem e ficam expostos.
+               O translate do grupo é o destino; --dx/--dy é de onde ele veio. -->
+          <!-- saiu do cartucho: de (151,54) para (180,130) -->
+          <g transform="translate(180,130)">
+            <circle class="an-ring" r="16" style="--d:3.15s"/>
+            <g class="an-sai" style="--dx:-29px;--dy:-76px;--d:1.6s">
+              <use class="an-bug an-hit" href="#kmep-bug" style="--d:3.35s"/>
+            </g>
+          </g>
+          <!-- saiu de sob a folha: de (100,221) para (66,202) -->
+          <g transform="translate(66,202)">
+            <circle class="an-ring" r="16" style="--d:3.35s"/>
+            <g class="an-sai" style="--dx:34px;--dy:19px;--d:1.8s">
+              <use class="an-bug an-hit" href="#kmep-bug" style="--d:3.55s"/>
+            </g>
+          </g>
+          <!-- saiu da bainha: de (157,196) para (202,230) -->
+          <g transform="translate(202,230)">
+            <circle class="an-ring" r="16" style="--d:3.55s"/>
+            <g class="an-sai" style="--dx:-45px;--dy:-34px;--d:2s">
+              <use class="an-bug an-hit" href="#kmep-bug" style="--d:3.75s"/>
+            </g>
+          </g>
+          <!-- o que já estava exposto continua exposto -->
+          <g transform="translate(212,152)">
+            <circle class="an-ring" r="16" style="--d:1.5s"/>
+            <use class="an-bug an-hit" href="#kmep-bug" style="--d:1.7s"/>
+          </g>
+        </svg>
+        <p class="desa__leg">
+          <span data-en>Same insecticide, same rate, same pass. The target <b>leaves the shelter</b>
+            and stops on the exposed surface, where the spray can act on it.</span>
+          <span data-pt>Mesmo inseticida, mesma dose, mesma aplicação. O alvo <b>deixa o abrigo</b> e
+            para na superfície exposta, onde a calda consegue agir sobre ele.</span>
+        </p>
+      </div>
+    </div>
+
+    <div class="an-ctrl" style="margin-top:18px;display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+      <button class="btn btn--linha" type="button" data-an-replay="an-08">
+        <span data-en>Replay</span><span data-pt>Repetir</span>
+      </button>
+      <p class="mini" style="margin:0">
+        <span data-en>Illustration of the mechanism. Not to scale.</span>
+        <span data-pt>Ilustração do mecanismo. Fora de escala.</span>
+      </p>
+    </div>
+
+    <!-- Regra de redundância: os três tempos da animação, em texto. -->
+    <div class="grid-3" style="margin-top:clamp(30px,3.6vw,46px)">
+      <article class="card">
+        <p class="eyebrow" style="margin:0">01 — <span data-en>SHELTERED</span><span data-pt>ABRIGADO</span></p>
+        <h3 class="h-sm"><span data-en>Where the droplet was never going to reach</span><span data-pt>Onde a gota nunca ia chegar</span></h3>
+        <p class="corpo" style="margin:0">
+          <span data-en>The whorl, the underside of the leaf, the sheath, the crevice. Part of the
+            population spends the application inside a place a spray does not enter.</span>
+          <span data-pt>O cartucho, a face inferior da folha, a bainha, a fenda. Parte da população
+            passa a aplicação inteira dentro de um lugar onde a calda não entra.</span>
+        </p>
+      </article>
+      <article class="card">
+        <p class="eyebrow" style="margin:0">02 — <span data-en>DISLODGED</span><span data-pt>DESALOJADO</span></p>
+        <h3 class="h-sm"><span data-en>It comes out on its own</span><span data-pt>Ele sai por conta própria</span></h3>
+        <p class="corpo" style="margin:0">
+          <span data-en>KMEP Ultra® is in the same droplet as the insecticide. It does not chase the
+            target into the shelter — it makes the shelter a place the target leaves.</span>
+          <span data-pt>O KMEP Ultra® está na mesma gota do inseticida. Ele não persegue o alvo dentro
+            do abrigo — ele faz do abrigo um lugar de onde o alvo sai.</span>
+        </p>
+      </article>
+      <article class="card">
+        <p class="eyebrow" style="margin:0">03 — <span data-en>EXPOSED</span><span data-pt>EXPOSTO</span></p>
+        <h3 class="h-sm"><span data-en>In front of the product you already bought</span><span data-pt>Na frente do produto que você já comprou</span></h3>
+        <p class="corpo" style="margin:0">
+          <span data-en>Out in the open, the target is in contact with the spray — which now has the
+            chance to act on it instead of drying on a leaf above it.</span>
+          <span data-pt>No aberto, o alvo fica em contato com a calda — que agora tem a chance de agir
+            sobre ele em vez de secar numa folha acima dele.</span>
+        </p>
+      </article>
+    </div>
+
+    <!-- Consequência de manejo que a Juma publica no próprio site e que não
+         estava em lugar nenhum desta página: menos escape sobrevivendo à
+         aplicação é o argumento de resistência. -->
+    <div class="split" style="margin-top:clamp(30px,3.6vw,46px);align-items:start">
+      <div>
+        <p class="eyebrow eyebrow--claro" style="margin-bottom:10px">
+          <span data-en>WHY IT MATTERS BEYOND THIS SEASON</span>
+          <span data-pt>POR QUE ISSO IMPORTA ALÉM DESTA SAFRA</span>
+        </p>
+        <h3 class="h-sm" style="margin-bottom:10px">
+          <span data-en>The survivors of a partial application are the ones that write next season.</span>
+          <span data-pt>Os sobreviventes de uma aplicação parcial são os que escrevem a próxima safra.</span>
+        </h3>
+        <p class="corpo" style="margin:0">
+          <span data-en>Re-spraying costs money, and the part of the population that survives an
+            application it never fully met is the part that carries on. Reaching more of it in the
+            same pass is a resistance-management argument before it is a cost argument.</span>
+          <span data-pt>Reaplicar custa dinheiro, e a parte da população que sobrevive a uma aplicação
+            que nunca a encontrou por inteiro é a parte que segue adiante. Alcançar mais dela na mesma
+            aplicação é um argumento de manejo de resistência antes de ser um argumento de custo.</span>
+        </p>
+      </div>
+      <!-- `card--areia` não serve aqui: dentro de .sec--carvao a regra
+           `.sec--carvao .card` tem especificidade maior e vence o fundo areia,
+           sobrando texto escuro sobre fundo escuro. Card normal + faixa lima. -->
+      <div class="card" style="border-left:3px solid var(--lima)">
+        <p class="eyebrow eyebrow--claro" style="margin:0"><span data-en>WHAT THIS IS NOT</span><span data-pt>O QUE ISTO NÃO É</span></p>
+        <p class="corpo" style="margin:0">
+          <span data-en>It is not a reason to cut your insecticide rate. Same rate, same label, same
+            tank — what changes is how much of the population the insecticide actually reaches.</span>
+          <span data-pt>Não é motivo para reduzir a dose do inseticida. Mesma dose, mesmo rótulo, mesmo
+            tanque — o que muda é quanto da população o inseticida de fato alcança.</span>
+        </p>
+      </div>
+    </div>
+
+    <!-- VD-05 — o par comparativo em macro, filmado. Veio da K3: é aqui que
+         ele faz sentido, ao lado da animação que ele confirma em imagem real. -->
+    <div style="margin-top:clamp(30px,3.6vw,46px)">
+      <p class="eyebrow eyebrow--claro" style="margin-bottom:12px">
+        <span data-en>THE SAME THING, FILMED IN THE FIELD</span>
+        <span data-pt>A MESMA COISA, FILMADA EM CAMPO</span>
+      </p>
+      <div class="ph-par">
+        <div class="ph ph--video">
+          <span class="ph-par__rot"><span data-en>Insecticide alone</span><span data-pt>Só o inseticida</span></span>
+          <span class="ph__tipo"><span data-en>Video</span><span data-pt>Vídeo</span> · VD-05a</span>
+          <span class="ph__desc" data-en>Macro on the whorl and the underside of the leaf after the
+            spray. The target stays sheltered and moving. Same lens, same light, same distance as
+            VD-05b.</span>
+          <span class="ph__desc" data-pt>Macro no cartucho e na face inferior da folha depois da
+            aplicação. O alvo permanece abrigado e em movimento. Mesma lente, mesma luz e mesma
+            distância do VD-05b.</span>
+        </div>
+        <div class="ph ph--video">
+          <span class="ph-par__rot ph-par__rot--trat"><span data-en>Insecticide + KMEP Ultra®</span><span data-pt>Inseticida + KMEP Ultra®</span></span>
+          <span class="ph__tipo"><span data-en>Video</span><span data-pt>Vídeo</span> · VD-05b</span>
+          <span class="ph__desc" data-en>The same shot with KMEP Ultra® in the mix: the target leaves
+            the shelter, comes out onto the exposed surface and stops there.</span>
+          <span class="ph__desc" data-pt>O mesmo plano com o KMEP Ultra® na mistura: o alvo deixa o
+            abrigo, sai para a superfície exposta e permanece parado ali.</span>
+        </div>
+      </div>
+      <p class="ph__spec" style="max-width:none;color:var(--texto-claro);border-color:var(--linha-clara)">
+        MP4 H.264 + WebM · 1:1 <span data-en>or</span><span data-pt>ou</span> 4:5 ·
+        <span data-en>muted, loop, playsinline</span><span data-pt>mudo, loop, playsinline</span>
+        · ≤ 3 MB <span data-en>each</span><span data-pt>cada</span> ·
+        <span data-en>elapsed-time stamp visible in both</span><span data-pt>carimbo de tempo decorrido visível nos dois</span>
+        · <span class="pend">[P2 — <span data-en>regulatory reading before producing</span><span data-pt>leitura do regulatório antes de produzir</span>]</span>
+      </p>
+      <p class="mini" style="margin-top:10px;max-width:76ch">
+        <span data-en>Filmed during field trials in Brazil. Field performance varies with climate,
+          soil and management.</span>
+        <span data-pt>Filmado durante ensaios de campo no Brasil. O desempenho em campo varia com
+          clima, solo e manejo.</span>
+      </p>
     </div>
   </div>
 </section>
@@ -391,19 +717,31 @@
 
     <div class="grid-4">
       <article class="card"><div class="card__top"></div>
-        <h3 class="h-sm"><span data-en>Goes in with the insecticide you already bought</span><span data-pt>Entra junto com o inseticida que você já comprou</span></h3>
-        <p class="corpo" style="margin:0"><span data-en>Compatible in tank mix. No separate pass, no extra diesel, no new weather window.</span>
-          <span data-pt>Compatível em mistura. Sem aplicação separada, sem diesel extra, sem nova janela de clima.</span></p>
+        <h3 class="h-sm"><span data-en>Goes in the tank you're already filling</span><span data-pt>Entra no tanque que você já está enchendo</span></h3>
+        <p class="corpo" style="margin:0">
+          <span data-en>Compatible in tank mix. No separate pass, no extra diesel, no new weather
+            window to wait for.</span>
+          <span data-pt>Compatível em mistura. Sem aplicação separada, sem diesel extra, sem nova
+            janela de clima para esperar.</span>
+        </p>
       </article>
       <article class="card"><div class="card__top"></div>
-        <h3 class="h-sm"><span data-en>The insecticide acts on more of the population</span><span data-pt>O inseticida age sobre mais da população</span></h3>
-        <p class="corpo" style="margin:0"><span data-en>The target comes out of hiding and stays exposed. Same rate, more of it reached — efficiency, not a stretched jug.</span>
-          <span data-pt>O alvo sai do esconderijo e fica exposto. Mesma dose, mais alvo alcançado — eficiência, não produto rendendo mais.</span></p>
+        <h3 class="h-sm"><span data-en>Potassium in a form the leaf takes up</span><span data-pt>Potássio numa forma que a folha absorve</span></h3>
+        <p class="corpo" style="margin:0">
+          <span data-en>Positioned for the window where demand actually peaks — grain fill — instead
+            of waiting on soil moisture.</span>
+          <span data-pt>Posicionado para a janela em que a demanda realmente tem pico — o enchimento de
+            grãos — em vez de esperar umidade do solo.</span>
+        </p>
       </article>
       <article class="card"><div class="card__top"></div>
-        <h3 class="h-sm"><span data-en>Foliar potassium in the same pass</span><span data-pt>Potássio foliar na mesma aplicação</span></h3>
-        <p class="corpo" style="margin:0"><span data-en>In a form the leaf takes up, positioned for the window where demand actually peaks.</span>
-          <span data-pt>Numa forma que a folha absorve, posicionado para a janela em que a demanda realmente tem pico.</span></p>
+        <h3 class="h-sm"><span data-en>More of the population reached, same rate</span><span data-pt>Mais da população alcançada, mesma dose</span></h3>
+        <p class="corpo" style="margin:0">
+          <span data-en>The added advantage: the target comes out of the shelter and meets the spray.
+            Efficiency, not a stretched jug.</span>
+          <span data-pt>A vantagem adicional: o alvo sai do abrigo e encontra a calda. Eficiência, não
+            produto rendendo mais.</span>
+        </p>
       </article>
       <article class="card"><div class="card__top"></div>
         <h3 class="h-sm"><span data-en>A number you can check</span><span data-pt>Um número que você pode conferir</span></h3>
@@ -439,6 +777,19 @@
       <b>Dado que falta:</b> o ano do ensaio não consta em nenhum documento auditado. Tabela de
       resultado sem ano levanta suspeita imediata em leitor técnico — cobrar junto de P21
       (delineamento, repetições, multi-local). <b>Animação AN-03.</b><br>
+      <b>Achado novo — o ensaio publicado.</b> Existe um trabalho do KMEP Ultra <b>revisado por pares</b>
+      (Revista Foco, v.16 n.2, 2023 · DOI 10.54751/revistafoco.v16n2-129), em algodão, delineamento de
+      <b>blocos casualizados</b>, conduzido na estação da De Lollo em Rio Verde/GO na safra 2021, com
+      coautoria do Instituto Goiano de Agricultura. Ele não estava em nenhum documento do projeto e é
+      a resposta direta para a pergunta que a pesquisa de mercado apontou como a primeira de um
+      agrônomo americano — <i>"seus ensaios são replicados e randomizados?"</i>. Vale mais, no crivo
+      americano, que qualquer ensaio privado.<br>
+      <b>Como ele foi publicado aqui:</b> delineamento e resposta de produtividade em aberto; os
+      percentuais de controle de praga em bloco HOLD separado, porque são eles — e só eles — que
+      carregam o risco FIFRA. A autoria (três dos quatro autores são da Juma) está declarada na
+      página, não escondida.<br>
+      <b>Pendência nova P32:</b> o incremento de produtividade está em figura no artigo, não em texto.
+      Pedir o número exato e a autorização para citar o trabalho nominalmente.<br>
       <b>Par comparativo VD-06:</b> as imagens precisam vir <b>deste</b> ensaio, o mesmo que dá o
       número da tabela. Ilustrar um número com imagem de outro talhão é o tipo de atalho que ninguém
       percebe no dia e que destrói a seção quando alguém pergunta. Se as imagens do ensaio Rehagro não
@@ -521,6 +872,99 @@
         <span data-pt>Resultados de ensaios de campo conduzidos no Brasil. O desempenho em campo varia
           com clima, solo e manejo.</span>
       </p>
+
+      <!-- ============================================================
+           O ensaio publicado. Achado novo, fora dos documentos do
+           projeto: o KMEP Ultra tem um trabalho revisado por pares, em
+           delineamento de blocos casualizados, conduzido em estação
+           experimental de terceiro. Era exatamente o que faltava para
+           responder "seus ensaios são replicados e randomizados?", que
+           a pesquisa de mercado apontou como a primeira pergunta de um
+           agrônomo americano.
+           ============================================================ -->
+      <div style="margin-top:clamp(28px,3.4vw,42px);border-top:2px solid var(--carvao);padding-top:clamp(22px,2.6vw,32px)">
+        <p class="eyebrow" style="margin-bottom:10px">
+          <span data-en>AND A SECOND ONE — PEER-REVIEWED</span>
+          <span data-pt>E UM SEGUNDO — REVISADO POR PARES</span>
+        </p>
+        <h3 class="h-sm" style="margin-bottom:12px;font-size:clamp(19px,1.9vw,25px)">
+          <span data-en>Randomized blocks, a third-party station, and a journal that published it.</span>
+          <span data-pt>Blocos casualizados, estação experimental de terceiro, e um periódico que publicou.</span>
+        </h3>
+        <p class="corpo" style="max-width:74ch">
+          <span data-en>Cotton, 2021 season, run at the De Lollo Pesquisa e Experimentação Agrícola
+            station in Rio Verde, Goiás. Randomized block design, three treatments: the recommended
+            insecticide program alone, the same program with KMEP Ultra® in every application, and the
+            same program with KMEP Ultra® in alternate applications. Fifteen applications, assessments
+            at 2, 4 and 6 days after each one, manual harvest and a yield assessment at the end. Both
+            KMEP Ultra® treatments out-yielded the check.</span>
+          <span data-pt>Algodão, safra 2021, conduzido na estação da De Lollo Pesquisa e
+            Experimentação Agrícola, em Rio Verde, Goiás. Delineamento de blocos casualizados, três
+            tratamentos: o programa de inseticidas recomendado sozinho, o mesmo programa com KMEP
+            Ultra® em todas as aplicações, e o mesmo programa com KMEP Ultra® em aplicações
+            alternadas. Quinze aplicações, avaliações aos 2, 4 e 6 dias após cada uma, colheita manual
+            e avaliação de produtividade ao final. Os dois tratamentos com KMEP Ultra® produziram mais
+            que a testemunha.</span>
+        </p>
+
+        <ul class="pares" style="margin-top:18px;max-width:74ch">
+          <li>
+            <span data-en>Design</span><span data-pt>Delineamento</span>
+            <b><span data-en>Randomized blocks · 3 treatments</span><span data-pt>Blocos casualizados · 3 tratamentos</span></b>
+          </li>
+          <li>
+            <span data-en>Station</span><span data-pt>Estação</span>
+            <b>De Lollo · Rio Verde, GO</b>
+          </li>
+          <li>
+            <span data-en>Published in</span><span data-pt>Publicado em</span>
+            <b>Revista Foco · v.16 n.2 · 2023</b>
+          </li>
+          <li>
+            DOI
+            <b class="dado">10.54751/revistafoco.v16n2-129</b>
+          </li>
+          <li>
+            <span data-en>Yield increase over the check</span><span data-pt>Incremento sobre a testemunha</span>
+            <span class="pend">[P32]</span>
+          </li>
+        </ul>
+
+        <!-- A parte de eficácia sobre praga fica separada e marcada: é ela,
+             e não o delineamento nem a produtividade, que carrega o risco
+             FIFRA. Se P2 vier restritiva, sai este bloco e o resto da
+             seção permanece publicável exatamente como está. -->
+        <div class="hold-mark" style="margin-top:22px;max-width:74ch">
+          <p class="corpo" style="margin:0;color:var(--texto-suave)">
+            <span data-en>The paper also reports pest control efficiency across the cotton cycle —
+              highest for aphids, sustained through the season, with peaks above 90% for whitefly and
+              boll weevil late in the program. Those figures are pesticide-efficacy claims under FIFRA
+              and are held out of the published page until the U.S. regulatory reading (P2) comes
+              back. The trial design and the yield response above are not.</span>
+            <span data-pt>O trabalho também relata eficiência de controle ao longo do ciclo do algodão —
+              a maior delas em pulgão, sustentada durante a safra, com picos acima de 90% para
+              mosca-branca e bicudo no fim do programa. Esses números são claim de eficácia de
+              pesticida sob a FIFRA e ficam fora da página publicada até a leitura do regulatório
+              americano (P2). O delineamento e a resposta de produtividade acima, não.</span>
+          </p>
+        </div>
+
+        <!-- Divulgação de autoria. Sai na frente porque um comprador técnico
+             americano vai checar, e porque é a mesma regra que a página
+             aplica aos próprios números. -->
+        <p class="fonte" style="margin-top:20px;max-width:74ch">
+          <span data-en><b>Disclosure:</b> three of the four authors are Juma-Agro agronomists. The
+            fourth is a researcher at the Instituto Goiano de Agricultura, and the trial was run at an
+            independent experimental station. We are saying so here because it is the kind of thing
+            you would find out anyway, and because a trial you can check is worth more than one you
+            have to believe.</span>
+          <span data-pt><b>Divulgação:</b> três dos quatro autores são agrônomos da Juma-Agro. O quarto
+            é pesquisador do Instituto Goiano de Agricultura, e o ensaio foi conduzido em estação
+            experimental independente. Está dito aqui porque é o tipo de coisa que se descobre de
+            qualquer forma, e porque um ensaio que dá para conferir vale mais que um em que é preciso
+            acreditar.</span>
+        </p>
+      </div>
     </div>
 
     <div class="ph ph--anim" style="margin-top:26px;min-height:120px">
@@ -727,10 +1171,20 @@
       Janela de aplicação e dose. Antes o conteúdo era trocado pela faixa de seleção de cultura;
       com ela removida, milho e soja são publicados lado a lado.
       <span class="note__selo selo-pend">Doses aguardam P4</span><br>
+      <b>Divergência corrigida contra o rótulo da própria Juma.</b> A página publicava
+      <span class="dado">Soybeans R1–R3</span>. O posicionamento do rótulo 2026, publicado pela Juma,
+      é <b>V6/V7 com repetição a cada 10–15 dias</b> — estágio vegetativo, não reprodutivo. Publicar
+      um posicionamento que o rótulo do fabricante não sustenta é o erro mais caro que uma LP de
+      produto pode cometer, porque quem descobre é o agrônomo do cliente. Corrigido.<br>
+      <b>Milho ganhou a segunda janela:</b> o rótulo posiciona início em V4 e V6 <b>e uma aplicação na
+      formação da espiga</b>. Essa segunda janela é a que amarra a seção ao argumento do enchimento de
+      grãos da K2 — sem ela, a página promete potássio no enchimento e não diz quando aplicá-lo.<br>
       <b>Obrigatório:</b> estágios em nomenclatura americana (V4, V6, VT, R1) e dose em
       <span class="dado">fl oz/acre</span>. Estágio em nomenclatura brasileira numa página em inglês
       denuncia tradução na primeira leitura técnica. <b>Se P4 não chegar:</b> publica só com os
-      estágios e o CTA da seção vira "peça a tabela de doses". <b>Animação AN-07.</b></p>
+      estágios e o CTA da seção vira "peça a tabela de doses". <b>Animação AN-07.</b><br>
+      <b>Fonte destes estágios:</b> tabela de aplicação do rótulo 2026 no site da Juma. Confirmar que
+      valem para as condições americanas antes do ar — é pergunta técnica, não de tradução.</p>
 
     <div class="sec-head">
       <h2 class="h-lg"><span data-en>When it goes in.</span><span data-pt>Quando entra.</span></h2>
@@ -747,22 +1201,44 @@
     <div class="grid-3">
       <article class="card">
         <p class="eyebrow" style="margin:0">01 — <span data-en>WINDOW</span><span data-pt>JANELA</span></p>
-        <h3 class="h-sm dado" style="margin-bottom:6px">Corn V4 – V6</h3>
-        <h3 class="h-sm dado" style="margin-top:0">Soybeans R1 – R3</h3>
+        <h3 class="h-sm dado" style="margin-bottom:4px">Corn — V4, V6</h3>
+        <p class="mini" style="margin:0 0 10px">
+          <span data-en>and again at ear formation</span><span data-pt>e novamente na formação da espiga</span>
+        </p>
+        <h3 class="h-sm dado" style="margin:0 0 4px">Soybeans — V6 / V7</h3>
+        <p class="mini" style="margin:0 0 10px">
+          <span data-en>repeating every 10 to 15 days</span><span data-pt>repetindo a cada 10 a 15 dias</span>
+        </p>
         <p class="corpo" style="margin:0">
-          <span data-en>First application, positioned with what's already scheduled. Cotton and
-            specialty crops: under technical review for U.S. conditions.</span>
-          <span data-pt>Primeira aplicação, posicionada com o que já está programado. Algodão e
-            culturas de alto valor: em revisão técnica para as condições americanas.</span>
+          <span data-en>The corn timing has two halves and both matter: the first two go with the
+            insecticide passes you already have scheduled, and the one at ear formation is the
+            potassium arriving where K2 said the demand is.</span>
+          <span data-pt>A janela do milho tem duas metades e as duas contam: as duas primeiras vão com
+            as aplicações de inseticida que você já tem programadas, e a da formação da espiga é o
+            potássio chegando onde a K2 disse que está a demanda.</span>
+        </p>
+        <p class="fonte" style="margin:10px 0 0">
+          <span data-en>Positioning from the 2026 label. U.S. conditions under confirmation.</span>
+          <span data-pt>Posicionamento do rótulo 2026. Condições americanas em confirmação.</span>
         </p>
       </article>
       <article class="card">
-        <p class="eyebrow" style="margin:0">02 — <span data-en>RATE</span><span data-pt>DOSE</span></p>
+        <p class="eyebrow" style="margin:0">02 — <span data-en>RATE &amp; PACK</span><span data-pt>DOSE E EMBALAGEM</span></p>
         <h3 class="h-sm dado"><span class="pend">[P4] fl oz/ac</span></h3>
         <p class="corpo" style="margin:0">
           <span data-en>Rate per acre comes from the U.S. label. Pending.</span>
           <span data-pt>A dose por acre vem do rótulo americano. Pendente.</span>
         </p>
+        <ul class="pares" style="margin-top:12px">
+          <li>
+            <span data-en>Pack sizes in Brazil</span><span data-pt>Embalagens no Brasil</span>
+            <b class="dado">10 L · 20 L</b>
+          </li>
+          <li>
+            <span data-en>U.S. pack sizes</span><span data-pt>Embalagens nos EUA</span>
+            <span class="pend">[P1]</span>
+          </li>
+        </ul>
       </article>
       <article class="card">
         <p class="eyebrow" style="margin:0">03 — <span data-en>TANK MIX</span><span data-pt>MISTURA</span></p>
@@ -784,13 +1260,42 @@
         VT, R1, R3). Um marcador percorre a linha e para nas janelas de aplicação. 4 s, uma vez.</span>
     </div>
 
-    <p class="corpo" style="margin-top:22px;max-width:60ch">
-      <span data-en>Growing something else? In Brazil the product is used in coffee, dry beans, cotton,
-        citrus and tomato. Tell us what you grow and we'll come back with the specifics for your
-        conditions.</span>
-      <span data-pt>Planta outra coisa? No Brasil o produto é usado em café, feijão, algodão, citros e
-        tomate. Conte o que você planta e retornamos com as especificações para a sua condição.</span>
-    </p>
+    <!-- A lista de culturas do rótulo é bem maior do que esta página vinha
+         admitindo, e cobre hortaliça e frutífera — que é onde a pesquisa de
+         mercado apontou a melhor porta de entrada perto da LLC. Publicar a
+         lista inteira transforma esta linha de rodapé em captura de lead. -->
+    <div style="margin-top:26px;max-width:76ch">
+      <p class="corpo" style="margin:0 0 12px">
+        <span data-en>Growing something else? The Brazilian label positions the product across a
+          wider list than the two row crops above — and several of them are high-value crops grown
+          within a short drive of our Lakeland office.</span>
+        <span data-pt>Planta outra coisa? O rótulo brasileiro posiciona o produto numa lista bem maior
+          que as duas culturas acima — e várias delas são culturas de alto valor cultivadas a pouca
+          distância do nosso escritório em Lakeland.</span>
+      </p>
+      <div class="chips" style="margin-bottom:14px">
+        <span class="chip">Cotton</span><span class="chip">Tomato</span><span class="chip">Bell pepper</span>
+        <span class="chip">Potato</span><span class="chip">Onion &amp; garlic</span>
+        <span class="chip">Carrot &amp; beet</span><span class="chip">Dry beans</span>
+        <span class="chip">Coffee</span><span class="chip">Citrus</span>
+        <span class="chip"><span data-en>Fruit crops</span><span data-pt>Frutíferas</span></span>
+        <span class="chip"><span data-en>Vegetables</span><span data-pt>Hortaliças</span></span>
+      </div>
+      <p class="corpo" style="margin:0">
+        <span data-en>Positioning for U.S. conditions and state registrations is crop by crop. Tell us
+          what you grow and we'll come back with the specifics — including whether we can serve you
+          in your state yet.</span>
+        <span data-pt>O posicionamento para as condições americanas e os registros estaduais é cultura
+          a cultura. Conte o que você planta e retornamos com as especificações — inclusive se já
+          conseguimos atender no seu estado.</span>
+      </p>
+      <p class="fonte" style="margin-top:12px">
+        <span data-en>Crop list from the 2026 Brazilian label. U.S. positioning under technical
+          review</span>
+        <span data-pt>Lista de culturas do rótulo brasileiro 2026. Posicionamento americano em revisão
+          técnica</span> · <span class="pend">[P6]</span>
+      </p>
+    </div>
   </div>
 </section>
 
@@ -801,7 +1306,11 @@
   <div class="wrap">
     <p class="note"><span class="note__id">K9</span><b>Objeções.</b>
       Perguntas frequentes escritas como antecipação de objeção. Aumenta conversão e reduz pergunta
-      repetida no formulário. <span class="note__selo selo-pend">3 de 7 aguardam dado</span><br>
+      repetida no formulário. <span class="note__selo selo-pend">3 de 8 aguardam dado</span><br>
+      <b>Objeção nova, e a mais forte que a página ganhou:</b> <i>"existe algo publicado?"</i> — agora
+      tem resposta com DOI, delineamento e estação experimental de terceiro, e com a autoria declarada
+      em vez de escondida. É a pergunta que separa fornecedor de parceiro técnico no mercado
+      americano, e a página passou a poder respondê-la sem desviar.<br>
       <b>A resposta que vale a página</b> é a do Brasil: a testemunha do ensaio brasileiro
       (212,3 bu/ac em milho) coincide quase exatamente com a média nacional americana. Isso torna os
       ensaios diretamente comparáveis ao benchmark do visitante — e precisa ser dito em voz alta, não
@@ -830,6 +1339,27 @@
             <span data-pt>Porque as parcelas testemunha batem com o seu benchmark. O milho não tratado
               no nosso ensaio deu 212,3 bu/ac — próximo da média nacional americana. O ensaio não foi
               feito em condição mais fácil que a sua; foi feito em condição mais difícil.</span>
+          </div>
+        </details>
+        <details>
+          <summary><span data-en>Is there anything published, or just your own trials?</span>
+            <span data-pt>Existe algo publicado, ou só os ensaios de vocês?</span></summary>
+          <div class="corpo">
+            <span data-en>There is one peer-reviewed paper. Cotton, 2021 season, randomized block
+              design, run at an independent experimental station in Rio Verde, Goiás, and published in
+              Revista Foco in 2023 (DOI 10.54751/revistafoco.v16n2-129). Three of its four authors are
+              Juma-Agro agronomists and the fourth is a researcher at the Instituto Goiano de
+              Agricultura — we put that in writing on this page rather than let you find it yourself.
+              It is one paper, not a body of literature, and we would rather say that plainly.</span>
+            <span data-pt>Existe um trabalho revisado por pares. Algodão, safra 2021, delineamento de
+              blocos casualizados, conduzido em estação experimental independente em Rio Verde, Goiás,
+              e publicado na Revista Foco em 2023 (DOI 10.54751/revistafoco.v16n2-129). Três dos quatro
+              autores são agrônomos da Juma-Agro e o quarto é pesquisador do Instituto Goiano de
+              Agricultura — está escrito nesta página em vez de deixar você descobrir sozinho. É um
+              artigo, não um corpo de literatura, e preferimos dizer isso com todas as letras.</span>
+            <p class="fonte" style="margin-top:10px"><span class="pend">[P32]</span> —
+              <span data-en>confirm authorization to cite the paper by name</span>
+              <span data-pt>confirmar autorização para citar o trabalho nominalmente</span></p>
           </div>
         </details>
         <details>
@@ -1000,5 +1530,55 @@
 </div>
 
 <script src="assets/js/app.js?v=4"></script>
+
+<!-- ==========================================================================
+     AN-08 · disparo da animação da ação desalojante.
+     Fica nesta página, e não no app.js compartilhado, porque a peça é
+     exclusiva daqui — e porque, se a seção K3b sair por decisão do
+     regulatório, o script sai junto no mesmo commit.
+
+     Regra da biblioteca de animações: dispara quando a peça entra na
+     viewport, roda uma vez, com controle de repetir visível. Sem
+     IntersectionObserver (ou com prefers-reduced-motion), a peça fica no
+     estado de repouso — que é o quadro final e conta a história inteira.
+     ========================================================================== -->
+<script>
+(function () {
+  'use strict';
+
+  var peças = document.querySelectorAll('[data-an]');
+  if (!peças.length) return;
+
+  var reduzido = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function rodar(el) {
+    el.classList.remove('an--roda');
+    void el.offsetWidth;          /* reinicia as animações CSS */
+    el.classList.add('an--roda');
+  }
+
+  if (!reduzido && 'IntersectionObserver' in window) {
+    var obs = new IntersectionObserver(function (entradas) {
+      for (var i = 0; i < entradas.length; i++) {
+        if (entradas[i].isIntersecting) {
+          rodar(entradas[i].target);
+          obs.unobserve(entradas[i].target);   /* roda uma vez */
+        }
+      }
+    }, { threshold: 0.45 });
+
+    for (var i = 0; i < peças.length; i++) obs.observe(peças[i]);
+  }
+
+  /* O botão de repetir funciona mesmo com movimento reduzido: ali a
+     repetição é escolha explícita do leitor, não animação imposta. */
+  document.addEventListener('click', function (ev) {
+    var botão = ev.target.closest ? ev.target.closest('[data-an-replay]') : null;
+    if (!botão) return;
+    var alvo = document.querySelector('[data-an="' + botão.getAttribute('data-an-replay') + '"]');
+    if (alvo) rodar(alvo);
+  });
+})();
+</script>
 </body>
 </html>
