@@ -7,9 +7,9 @@ import { ScrollTrigger } from "@/lib/gsap";
  * Recalcula as posições de todos os ScrollTriggers quando a página termina
  * de crescer.
  *
- * Sem isto, os gatilhos são medidos no primeiro paint — antes das imagens e
- * das fontes carregarem. Nesta home a diferença é de uns três mil pixels de
- * altura, o suficiente para uma seção disparar cedo demais ou nunca disparar.
+ * Sem isto, os gatilhos são medidos no primeiro paint — antes de as fontes
+ * carregarem, quando a página ainda tem outra altura, o suficiente para uma
+ * seção disparar cedo demais ou nunca disparar.
  *
  * Fica montado uma vez, no layout raiz.
  */
@@ -17,7 +17,7 @@ export function ScrollRefresh() {
   useEffect(() => {
     const refresh = () => ScrollTrigger.refresh();
 
-    /* Fontes e imagens são as duas fontes de mudança de altura. */
+    /* As fontes ainda mudam a altura ao trocar de métrica. */
     if (document.fonts?.status !== "loaded") {
       document.fonts?.ready.then(refresh);
     }
@@ -28,28 +28,16 @@ export function ScrollRefresh() {
       window.addEventListener("load", refresh, { once: true });
     }
 
-    /* next/image entrega as imagens abaixo da dobra em lazy: cada uma que
-       chega pode mudar a altura da página. Um refresh por imagem seria caro,
-       então agrupamos os que caem na mesma janela de animação. */
-    let queued = 0;
-    const debounced = () => {
-      cancelAnimationFrame(queued);
-      queued = requestAnimationFrame(refresh);
-    };
+    /* Não há refresh por imagem aqui, e é de propósito. Todo <Image> desta
+       casa declara width/height, então o espaço já está reservado antes de o
+       arquivo chegar: a altura da página não muda e não há o que remedir.
 
-    const images = Array.from(document.images).filter((img) => !img.complete);
-    images.forEach((img) => {
-      img.addEventListener("load", debounced, { once: true });
-      img.addEventListener("error", debounced, { once: true });
-    });
-
+       Pior: com o hero pinado, cada `refresh()` despina e repina o elemento, e
+       por um quadro a página fica sem o espaçador do pin — o fundo do body
+       aparece como um lampejo branco embaixo. Uma imagem lazy chegando no meio
+       da rolagem era o bastante para causá-lo. */
     return () => {
       window.removeEventListener("load", refresh);
-      cancelAnimationFrame(queued);
-      images.forEach((img) => {
-        img.removeEventListener("load", debounced);
-        img.removeEventListener("error", debounced);
-      });
     };
   }, []);
 

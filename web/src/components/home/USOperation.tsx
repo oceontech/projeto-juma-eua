@@ -68,7 +68,7 @@ export function USOperation() {
                   alt=""
                   width={45}
                   height={45}
-                  className="w-[44.5px] shrink-0"
+                  className="h-auto w-[44.5px] shrink-0"
                 />
                 <span className="flex-1 text-small leading-[1.33] tracking-[-0.02em]">
                   {action.label}
@@ -78,7 +78,7 @@ export function USOperation() {
                   alt=""
                   width={13}
                   height={15}
-                  className="w-[13px] shrink-0"
+                  className="h-auto w-[13px] shrink-0"
                 />
               </a>
             ))}

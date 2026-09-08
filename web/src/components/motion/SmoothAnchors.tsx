@@ -39,13 +39,15 @@ export function SmoothAnchors() {
 
       /* A posição é calculada aqui, e não pelo `offsetY` do plugin: assim o
          desconto da barra fixa é explícito e fácil de conferir. */
-      const y =
-        target.getBoundingClientRect().top + window.scrollY - HEADER_OFFSET;
+      const y = Math.max(
+        0,
+        target.getBoundingClientRect().top + window.scrollY - HEADER_OFFSET,
+      );
 
       gsap.to(window, {
         duration: 0.9,
         ease: "power2.inOut",
-        scrollTo: { y: Math.max(0, y), autoKill: true },
+        scrollTo: { y, autoKill: true },
         onComplete: () => history.pushState(null, "", href),
       });
     };

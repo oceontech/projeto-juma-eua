@@ -25,7 +25,7 @@ export function CropSelection() {
   return (
     /* As cartas das pontas saem da caixa de propósito — o corte tem de ficar
        aqui, senão a página ganha rolagem horizontal. */
-    <section id="crops" className="relative overflow-hidden bg-black pt-sec">
+    <section id="crops" data-nav-theme="dark" className="relative overflow-hidden bg-black pt-sec">
       <div className="wrap">
         <Reveal>
           <SectionIntro

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Archivo, DM_Sans, Inter } from "next/font/google";
+import { Preloader } from "@/components/layout/Preloader";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { ScrollRefresh } from "@/components/motion/ScrollRefresh";
@@ -57,6 +58,7 @@ export default function RootLayout({
       className={`${archivo.variable} ${inter.variable} ${dmSans.variable}`}
     >
       <body>
+        <Preloader />
         <ScrollRefresh />
         <SmoothAnchors />
         <SiteHeader />

@@ -10,15 +10,17 @@ import { brazil } from "@/content/home";
  */
 export function BrazilAdvantage() {
   return (
-    <section id="brazil" className="bg-black pb-sec text-offwhite">
+    <section id="brazil" data-nav-theme="dark" className="bg-black pb-sec text-offwhite">
       <div className="wrap">
-        <Reveal as="h2" className="mb-[clamp(34px,3.9vw,62px)] text-center text-h2 leading-[0.967] text-white">
+        <Reveal as="h2" replay className="mb-[clamp(34px,3.9vw,62px)] text-center text-h2 leading-[0.967] text-white">
           {brazil.title}
         </Reveal>
 
         <div className="grid grid-cols-1 gap-[clamp(16px,1.5vw,20px)] min-[861px]:grid-cols-[785fr_555fr]">
           <Reveal
             as="article"
+            replay
+            delay={0.12}
             className="relative flex flex-col gap-[clamp(14px,1.65vw,32px)] overflow-hidden rounded-[clamp(12px,1.05vw,20px)] bg-linear-[122.93deg,var(--color-night-warm)_2.4%,var(--color-night-deep)_60.23%] p-[clamp(24px,2.6vw,50px)]"
           >
             {/* Vinheta clara no canto superior esquerdo, como no layout. */}
@@ -64,7 +66,8 @@ export function BrazilAdvantage() {
               <Reveal
                 key={metric.value}
                 as="article"
-                delay={i * 0.08}
+                replay
+                delay={0.34 + i * 0.2}
                 className="flex flex-col gap-[clamp(16px,2.1vw,40px)] overflow-hidden rounded-[clamp(12px,1.05vw,20px)] bg-night p-[clamp(24px,2.6vw,50px)]"
               >
                 <div className="flex items-center gap-[clamp(12px,2vw,40px)]">

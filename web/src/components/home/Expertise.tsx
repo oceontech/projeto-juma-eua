@@ -56,6 +56,7 @@ export function Expertise() {
   return (
     <section
       ref={root}
+      data-nav-theme="dark"
       className="relative grid min-h-[min(1066px,88vh)] place-items-center overflow-hidden bg-black px-gut py-sec text-center text-white max-[860px]:min-h-0 max-[860px]:py-[clamp(90px,22vw,150px)]"
     >
       <span

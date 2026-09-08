@@ -37,9 +37,9 @@ export const START = "top 88%";
 
 /**
  * Altura da barra fixa do topo, para as âncoras não pararem embaixo dela.
- * O header tem `top: clamp(12px,1.6vw,30px)` e ~66px de altura.
+ * A barra encosta no topo e tem ~48px de altura.
  */
-export const HEADER_OFFSET = 100;
+export const HEADER_OFFSET = 72;
 
 /**
  * Em desenvolvimento, gsap e ScrollTrigger ficam no console do navegador.

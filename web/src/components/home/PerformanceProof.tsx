@@ -7,7 +7,7 @@ import { proof } from "@/content/home";
 /** A prova de campo: o comparador antes/depois e os três benefícios. */
 export function PerformanceProof() {
   return (
-    <section id="proof" className="bg-black pb-sec">
+    <section id="proof" data-nav-theme="dark" className="bg-black pb-sec">
       <div className="wrap">
         <Reveal className="mb-[clamp(30px,3vw,56px)]">
           <SectionIntro

@@ -61,6 +61,7 @@ export function TrialStrip() {
     <section
       ref={root}
       id="method"
+      data-nav-theme="dark"
       className="bg-green-deep py-[clamp(70px,9.4vw,180px)] text-white"
     >
       <div className="wrap">

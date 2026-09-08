@@ -17,6 +17,14 @@ type RevealProps = {
    * O intervalo entre eles é o próprio valor (em segundos).
    */
   stagger?: number;
+  /**
+   * Refaz a entrada toda vez que o bloco volta a ser alcançado, em vez de
+   * rodar uma vez só na vida da página. Vale para a seção logo abaixo do
+   * hero: quem sobe e desce a travessia passa por ela muitas vezes, e com uma
+   * execução única ela reaparecia pronta em todas as passagens menos a
+   * primeira — que é o mesmo que não ter entrada.
+   */
+  replay?: boolean;
 };
 
 /**
@@ -34,6 +42,7 @@ export function Reveal({
   delay = 0,
   y = 22,
   stagger,
+  replay = false,
 }: RevealProps) {
   const scope = useRef<HTMLElement>(null);
 
@@ -60,25 +69,26 @@ export function Reveal({
             return;
           }
 
-          /* fromTo, e não from: o ScrollTrigger.refresh() que roda quando as
-             imagens carregam remede tudo, e um `from` reverte para o estado
-             inicial nesse recálculo — a seção volta a ficar invisível. Com
-             os dois extremos declarados, o refresh não tem o que inventar. */
-          gsap.fromTo(
-            targets,
-            { opacity: 0, y },
-            {
-              opacity: 1,
-              y: 0,
+          gsap
+            .timeline({
+              scrollTrigger: {
+                trigger: scope.current,
+                start: START,
+                /* `reverse` desfaz a entrada ao subir — animado, e não
+                   apagando o conteúdo de um quadro para o outro. */
+                ...(replay ? { toggleActions: "play none none reverse" } : { once: true }),
+              },
+            })
+            .fromTo(
+              targets,
+              { opacity: 0, y },
+              { opacity: 1, y: 0, stagger: stagger ?? 0 },
               delay,
-              stagger: stagger ?? 0,
-              scrollTrigger: { trigger: scope.current, start: START, once: true },
-            },
-          );
+            );
         },
       );
     },
-    { scope, dependencies: [delay, y, stagger] },
+    { scope, dependencies: [delay, y, stagger, replay] },
   );
 
   return (
