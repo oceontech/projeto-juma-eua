@@ -524,33 +524,94 @@
   /* ------------------------------------------------------------- leque */
   .fan {
     position: relative;
-    height: clamp(340px, 29.6vw, 569px);
+    height: clamp(340px, 24vw, 460px);
   }
 
   .crop-card {
+    --hover-lift: 0px;
     position: absolute;
     left: 50%;
     bottom: 0;
-    width: clamp(184px, 20vw, 385px);
+    width: clamp(224px, 17vw, 326px);
     aspect-ratio: 385 / 516;
     border-radius: clamp(9px, .95vw, 18px);
     overflow: hidden;
-    background: #626608 center / cover no-repeat;
+    background: transparent;
     transform-origin: center bottom;
     /* Ordem importa: desloca na horizontal primeiro, gira depois — assim o
        --dx é a distância real ao centro do leque, não uma medida no eixo
        girado. */
-    transform: translateX(-50%) translate(var(--dx), var(--dy)) rotate(var(--rot)) scale(var(--sc));
-    transition: transform .35s cubic-bezier(.22, .61, .36, 1), filter .35s;
+    transform: translateX(-50%) translate(var(--dx), calc(var(--dy) - var(--hover-lift))) rotate(var(--rot)) scale(var(--sc));
+    transition: transform .42s cubic-bezier(.22, .61, .36, 1), filter .35s ease;
     cursor: pointer;
   }
 
-  .crop-card::after {
+  .crop-card__surface,
+  .crop-card__media {
+    position: absolute;
+    inset: 0;
+  }
+
+  .crop-card__surface {
+    overflow: hidden;
+    border-radius: inherit;
+    background: #626608;
+    transform-origin: center bottom;
+    will-change: transform, opacity;
+  }
+
+  .crop-card__media {
+    background-position: center;
+    background-size: cover;
+    filter: brightness(.78) saturate(.88);
+    transform: scale(1.045);
+    transition: transform .65s cubic-bezier(.22, .61, .36, 1), filter .45s ease;
+    will-change: transform, filter;
+  }
+
+  .crop-card__surface::after {
     content: "";
     position: absolute;
     inset: auto 0 0;
     height: 46%;
     background: linear-gradient(to bottom, rgba(0, 0, 0, 0), #000);
+    z-index: 1;
+  }
+
+  .crop-card__label,
+  .crop-card__content {
+    transition: opacity .28s ease, transform .48s cubic-bezier(.22, .61, .36, 1);
+    will-change: transform, opacity;
+  }
+
+  .crop-card__label {
+    opacity: .72;
+    transform: translateY(-7px) scale(.96);
+  }
+
+  .crop-card__content {
+    opacity: .66;
+    transform: translateY(16px) scale(.98);
+    transform-origin: left bottom;
+  }
+
+  .crop-card[data-pos="2"] .crop-card__media {
+    filter: brightness(1) saturate(1);
+    transform: scale(1);
+  }
+
+  .crop-card[data-pos="2"] .crop-card__label,
+  .crop-card[data-pos="2"] .crop-card__content {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+  .crop-card[data-pos="2"] .crop-card__label {
+    transition-delay: .1s;
+  }
+
+  .crop-card[data-pos="2"] .crop-card__content {
+    transition-delay: .16s;
   }
 
   /* Os deslocamentos saem das posições do Figma: os centros das cinco cartas
@@ -574,7 +635,7 @@
   .crop-card[data-pos="2"] {
     --rot: 0deg;
     --dx: 0;
-    --dy: 0;
+    --dy: 0%;
     --sc: 1;
     z-index: 3;
   }
@@ -595,9 +656,27 @@
     z-index: 1;
   }
 
-  .crop-card:not([data-pos="2"]):hover {
-    filter: brightness(1.15);
-    z-index: 4;
+  .crop-card[data-hovered="true"] {
+    --hover-lift: clamp(14px, 1.55vw, 28px);
+    filter: brightness(1.08) drop-shadow(0 18px 18px rgba(0, 0, 0, .2));
+    z-index: 5;
+  }
+
+  .crop-card[data-hovered="true"] .crop-card__media {
+    filter: brightness(1) saturate(1);
+    transform: scale(1.015);
+  }
+
+  .crop-card[data-hovered="true"] .crop-card__label,
+  .crop-card[data-hovered="true"] .crop-card__content {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    transition-delay: 0s;
+  }
+
+  .crop-card:focus-visible {
+    outline: 3px solid var(--color-lime);
+    outline-offset: 4px;
   }
 
   /* ----------------------------------------------------------- formulário */
@@ -764,6 +843,12 @@
   }
 
   .crop-card {
+    transition: none;
+  }
+
+  .crop-card__media,
+  .crop-card__label,
+  .crop-card__content {
     transition: none;
   }
 }

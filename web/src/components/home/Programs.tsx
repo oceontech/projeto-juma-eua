@@ -12,7 +12,7 @@ export function Programs() {
   const [desata, experience, juma360] = programs.cards;
 
   return (
-    <section id="programs" className="bg-white py-sec">
+    <section id="programs" className="relative -mt-px bg-white py-sec">
       <div className="wrap">
         <Reveal className="mb-[clamp(28px,3vw,60px)]">
           <SectionIntro aside={<p className="text-muted">{programs.body}</p>}>
