@@ -185,9 +185,18 @@
     background: linear-gradient(to bottom, rgba(255,255,255,0) 13.3%, #fff 67.6%);
   }
 
+  /* `<picture>` existe só para escolher o arquivo; quem tem caixa é o <img>.
+     `display: contents` tira a caixa dele do layout, mas NÃO da árvore que os
+     seletores enxergam — por isso as imagens trocáveis declaram a própria
+     posição em vez de herdar de `.hero-ground > *`. */
+  .hero-swap { display: contents; }
+
   /* Ancorado pelo pé: é o pé da imagem que precisa casar com o preto de
      baixo, e é dali que o arredondamento não pode fugir. */
-  .hero-tractor { left: 0; bottom: 28.6245%; width: 100%; height: 71.3755%; }
+  .hero-tractor {
+    position: absolute; max-width: none; object-fit: cover;
+    left: 0; bottom: 28.6245%; width: 100%; height: 71.3755%;
+  }
 
   /* O preto que fecha o vão: abaixo do pé da imagem do trator o frame do
      Figma não tem camada nenhuma, e sem isto o vão aparece pelos rendilhados
@@ -202,7 +211,9 @@
   /* As folhas fecham a cena. O rabo preto é irmão da imagem dentro da mesma
      peça — quando ela sobe na saída, o preto sobe junto e o pé da tela nunca
      abre buraco entre a última folha e o bloco do Brasil. */
-  .hero-leaves { left: 0; top: 56.0099%; width: 100%; height: 43.9901%; }
+  /* A foto nova das folhas tem exatamente o tamanho da do trator (2688 × 1152)
+     e é a camada da frente da mesma cena: mesma caixa, ponto a ponto. */
+  .hero-leaves { left: 0; bottom: 28.6245%; width: 100%; height: 71.3755%; }
   .hero-leaves img {
     position: absolute; inset: 0;
     width: 100%; height: 100%; max-width: none;
@@ -213,9 +224,10 @@
   }
   /* Começa dentro da faixa preta da própria imagem, e não no fim dela: com a
      folha desfocada a borda de baixo perde opacidade, e um preto chapado
-     encostando ali desenharia um fio. Coberto pela imagem, some. */
+     encostando ali desenharia um fio. Coberto pela imagem, some. A foto nova
+     só fecha em preto a partir de 97%. */
   .hero-leaves-tail {
-    position: absolute; left: 0; right: 0; top: 92%;
+    position: absolute; left: 0; right: 0; top: 97%;
     height: 150vh; background: #000;
   }
 
@@ -332,15 +344,34 @@
 
 /* ========================================================== responsivo */
 @media (max-width: 860px) {
-  /* O palco sangra dos dois lados: o frame do Figma é largo, e numa viewport
-     estreita ele viraria uma tira. Alargado a 240% e centrado, o trator volta
-     a ter presença e sobra céu para o título. */
+  /* O celular tem foto própria de trator e de folhas — recorte vertical
+     (1080 × 1100), não o frame largo reescalado. Por isso o palco aqui tem
+     outra proporção, e é a da foto: as duas ocupam o palco inteiro, uma atrás
+     da outra. */
   .hero {
-    --stage-h: calc(2.4 * 100vw / 1.6654);
+    --stage-h: calc(1.08 * 100vw * 1100 / 1080);
     --scene-h: calc(var(--stage-h) + 10vh);
   }
-  .hero-stage { width: 240%; left: -70%; }
-  .hero-copy { padding-top: 76px; }
+  .hero-stage { width: 108%; left: -4%; aspect-ratio: 1080 / 1100; }
+
+  .hero-tractor { bottom: 0; height: 100%; }
+  .hero-leaves { bottom: 0; height: 100%; }
+
+  /* As bandeiras ficam atrás da máquina, ladeando a faixa de céu. As medidas
+     são do palco vertical, então não têm relação com as do desktop. */
+  .hero-flag--br { left: -34%; top: -19%; width: 88%; height: 58%; }
+  .hero-flag--us { left: 44%; top: -23%; width: 92%; height: 62%; }
+  .hero-flags-fade { top: 12%; height: 26%; }
+
+  /* Aqui o vão fica no pé do palco, onde a foto do trator acaba. */
+  .hero-underfill { top: 96%; height: 60%; }
+
+  /* A máquina começa no alto da própria foto: o texto fica todo acima do
+     palco, sem faixa de céu compartilhada. */
+  .hero-copy {
+    height: max(38%, calc(100% - var(--stage-h)));
+    padding-top: 76px;
+  }
 
   /* No mobile o Figma corta o comparador na horizontal. */
   .compare { aspect-ratio: 360 / 376; cursor: ns-resize; }
