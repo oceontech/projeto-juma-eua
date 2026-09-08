@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { gsap, HEADER_OFFSET } from "@/lib/gsap";
+import { scroller } from "@/components/motion/SmoothScroll";
 
 /**
  * Rolagem suave dos links de âncora, pelo GSAP.
@@ -43,6 +44,20 @@ export function SmoothAnchors() {
         0,
         target.getBoundingClientRect().top + window.scrollY - HEADER_OFFSET,
       );
+
+      /* Com rolagem suave ligada, quem leva é o dono dela. Um tween do GSAP
+         escrevendo em `window.scrollY` ao mesmo tempo seria um segundo dono
+         disputando a mesma posição — a origem exata dos defeitos que o
+         SmoothScroll existe para não repetir. */
+      const lenis = scroller();
+      if (lenis) {
+        lenis.scrollTo(y, {
+          duration: 0.9,
+          easing: (t: number) => 1 - Math.pow(1 - t, 3),
+          onComplete: () => history.pushState(null, "", href),
+        });
+        return;
+      }
 
       gsap.to(window, {
         duration: 0.9,

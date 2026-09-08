@@ -5,6 +5,7 @@ import Image from "next/image";
 import { SmartLink } from "@/components/ui/SmartLink";
 import { nav } from "@/content/home";
 import { gsap, useGSAP } from "@/lib/gsap";
+import { scroller } from "@/components/motion/SmoothScroll";
 
 /**
  * Navegação do mobile — não é a barra do desktop encolhida.
@@ -74,7 +75,7 @@ export function BurgerButton({
       aria-controls="mobile-menu"
       aria-label={open ? "Close menu" : "Open menu"}
       onClick={onToggle}
-      className="-mr-1.5 cursor-pointer p-1.5 text-ink transition-colors duration-400 group-data-[theme=dark]:text-offwhite group-data-[open]:text-offwhite nav:hidden"
+      className="absolute top-1/2 right-0 -mr-1.5 -translate-y-1/2 cursor-pointer p-1.5 text-ink transition-colors duration-400 group-data-[theme=dark]:text-offwhite group-data-[open]:text-offwhite nav:hidden"
     >
       <svg
         ref={svg}
@@ -154,6 +155,9 @@ export function MobileMenu({
 
     const previous = document.body.style.overflow;
     document.body.style.overflow = "hidden";
+    /* `overflow` não segura a rolagem suave: ela chama `scrollTo` por conta
+       própria e passaria por baixo do painel. Quem manda nela é o `stop`. */
+    scroller()?.stop();
 
     const onKey = (event: KeyboardEvent) => {
       if (event.key === "Escape") onClose();
@@ -162,6 +166,7 @@ export function MobileMenu({
 
     return () => {
       document.body.style.overflow = previous;
+      scroller()?.start();
       document.removeEventListener("keydown", onKey);
     };
   }, [open, onClose]);

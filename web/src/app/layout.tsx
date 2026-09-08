@@ -5,6 +5,7 @@ import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { ScrollRefresh } from "@/components/motion/ScrollRefresh";
 import { SmoothAnchors } from "@/components/motion/SmoothAnchors";
+import { SmoothScroll } from "@/components/motion/SmoothScroll";
 import "./globals.css";
 
 /**
@@ -61,6 +62,7 @@ export default function RootLayout({
         <Preloader />
         <ScrollRefresh />
         <SmoothAnchors />
+        <SmoothScroll />
         <SiteHeader />
         <main>{children}</main>
         <SiteFooter />

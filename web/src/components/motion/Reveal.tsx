@@ -25,6 +25,20 @@ type RevealProps = {
    * primeira — que é o mesmo que não ter entrada.
    */
   replay?: boolean;
+  /**
+   * Elemento que decide a hora de entrar, quando ele não é o próprio bloco.
+   *
+   * Serve para blocos cuja posição de layout não é a posição em que eles
+   * aparecem — o caso da seção logo abaixo do hero, que é puxada para dentro
+   * dele por uma margem negativa. Ali cada bloco, medido por conta própria,
+   * cruzava o gatilho e terminava a entrada enquanto a seção inteira ainda
+   * estava invisível; quando ela enfim surgia, o conteúdo já estava pronto, o
+   * que é o mesmo que não ter entrada. Com um gatilho comum, a ordem entre os
+   * blocos volta a ser a dos `delay`, e não a das alturas de cada um.
+   */
+  trigger?: string;
+  /** Sobrescreve o ponto de partida quando o padrão não serve. */
+  start?: string;
 };
 
 /**
@@ -43,6 +57,8 @@ export function Reveal({
   y = 22,
   stagger,
   replay = false,
+  trigger,
+  start,
 }: RevealProps) {
   const scope = useRef<HTMLElement>(null);
 
@@ -72,8 +88,8 @@ export function Reveal({
           gsap
             .timeline({
               scrollTrigger: {
-                trigger: scope.current,
-                start: START,
+                trigger: (trigger && document.querySelector(trigger)) || scope.current,
+                start: start ?? START,
                 /* `reverse` desfaz a entrada ao subir — animado, e não
                    apagando o conteúdo de um quadro para o outro. */
                 ...(replay ? { toggleActions: "play none none reverse" } : { once: true }),
@@ -88,7 +104,7 @@ export function Reveal({
         },
       );
     },
-    { scope, dependencies: [delay, y, stagger, replay] },
+    { scope, dependencies: [delay, y, stagger, replay, trigger, start] },
   );
 
   return (

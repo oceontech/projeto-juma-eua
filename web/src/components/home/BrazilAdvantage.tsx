@@ -8,18 +8,32 @@ import { brazil } from "@/content/home";
  *
  * Server Component: não tem interação, só a entrada, que fica no <Reveal>.
  */
+/**
+ * Gatilho comum a todos os blocos desta seção.
+ *
+ * Ela é puxada para dentro do hero por uma margem negativa, então a posição de
+ * layout de cada bloco não diz nada sobre quando ele fica visível: medindo por
+ * conta própria, título e coluna da esquerda terminavam a entrada com a seção
+ * ainda apagada, e reapareciam prontos junto com ela. Ancorando tudo na seção,
+ * a entrada começa quando a lâmina preta acabou de fechar, e a ordem passa a
+ * ser a dos `delay`.
+ *
+ * `replay` porque quem sobe e desce a travessia passa por aqui muitas vezes.
+ */
+const enter = { replay: true, trigger: "#brazil", start: "top 40%" } as const;
+
 export function BrazilAdvantage() {
   return (
     <section id="brazil" data-nav-theme="dark" className="bg-black pb-sec text-offwhite">
       <div className="wrap">
-        <Reveal as="h2" replay className="mb-[clamp(34px,3.9vw,62px)] text-center text-h2 leading-[0.967] text-white">
+        <Reveal as="h2" {...enter} className="mb-[clamp(34px,3.9vw,62px)] text-center text-h2 leading-[0.967] text-white">
           {brazil.title}
         </Reveal>
 
         <div className="grid grid-cols-1 gap-[clamp(16px,1.5vw,20px)] min-[861px]:grid-cols-[785fr_555fr]">
           <Reveal
             as="article"
-            replay
+            {...enter}
             delay={0.12}
             className="relative flex flex-col gap-[clamp(14px,1.65vw,32px)] overflow-hidden rounded-[clamp(12px,1.05vw,20px)] bg-linear-[122.93deg,var(--color-night-warm)_2.4%,var(--color-night-deep)_60.23%] p-[clamp(24px,2.6vw,50px)]"
           >
@@ -66,7 +80,7 @@ export function BrazilAdvantage() {
               <Reveal
                 key={metric.value}
                 as="article"
-                replay
+                {...enter}
                 delay={0.34 + i * 0.2}
                 className="flex flex-col gap-[clamp(16px,2.1vw,40px)] overflow-hidden rounded-[clamp(12px,1.05vw,20px)] bg-night p-[clamp(24px,2.6vw,50px)]"
               >

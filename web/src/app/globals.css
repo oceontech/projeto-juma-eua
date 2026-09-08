@@ -61,8 +61,21 @@
   /* Sem scroll-behavior: smooth aqui de propósito — a rolagem nativa suave
      briga com o ScrollTrigger e faz o parallax do hero trepidar. As âncoras
      rolam pelo ScrollToPlugin, em SmoothAnchors.tsx. */
+  /* Exigido pela rolagem suave: ela marca o <html> com `.lenis` e precisa
+     que a altura seja a do conteúdo, não a da janela. Sem isto o documento
+     fica com a altura da viewport e não há o que rolar. */
+  html.lenis,
+  html.lenis body { height: auto; }
+
   body {
-    background: var(--color-white);
+    /* Preto, e não branco.
+       O que o navegador mostra enquanto ainda não rasterizou um pedaço da
+       página — e o que aparece em qualquer vão de pixel fracionário entre
+       seções — é este fundo. Numa rolada rápida ele piscava como um retângulo
+       branco no meio do trecho escuro, e sobrava como um fio na junção de duas
+       seções pretas. As seções claras trazem o próprio fundo, então nenhuma
+       depende deste. */
+    background: #000;
     color: var(--color-ink);
     font-family: var(--font-body);
     font-size: var(--text-body);
@@ -130,13 +143,24 @@
   .hero {
     --stage-h: calc(100vw / 1.6654);
     --scene-h: calc(var(--stage-h) + 14vh);
-    --run: 120svh;
+    --run: 168svh;
     position: relative;
     height: calc(100svh + var(--run));
-    /* A cena cobre tudo isto; o que interessa é o pé preto: a borda inferior
-       da seção cai em pixel fracionário e, contra um fundo claro, o encontro
-       com o bloco do Brasil desenha um fio de luz. */
-    background: linear-gradient(to bottom, #d7eaff 0%, #d7eaff 55%, #000 80%);
+    /* Preto chapado. A cena cobre tudo isto; o que importa é que qualquer
+       vão de pixel fracionário — e eles acontecem conforme a altura da
+       janela — mostre preto, e não uma cor que desenhe um fio. */
+    background: #000;
+  }
+
+  /* Fecha a cena em preto na reta final. Por cima de tudo, dentro da janela:
+     é o que torna a emenda com o bloco seguinte exata em qualquer viewport,
+     em vez de depender de onde a última folha parou. */
+  .hero-blackout {
+    /* Estoura 2px além do pé da janela — que recorta o excesso. É seguro e
+       garante que a última linha da janela seja preta mesmo quando a altura
+       cai em pixel fracionário. */
+    position: absolute; inset: 0 0 -2px; z-index: 6;
+    background: #000; opacity: 0; pointer-events: none;
   }
 
   /* `overflow` fica aqui, e não na seção: um ancestral com overflow quebraria
@@ -145,6 +169,11 @@
     position: sticky; top: 0;
     height: 100svh; min-height: 560px;
     overflow: clip;
+    /* Acima do bloco seguinte, que sobe por dentro desta seção. Fixo, e não
+       decidido durante a rolagem: os elementos da entrada do bloco 2 ganham
+       `transform` do GSAP, e elemento com transform pinta na camada dos
+       posicionados — sem este z-index eles passariam por cima da janela. */
+    z-index: 1;
   }
 
   .hero-scene {
@@ -167,9 +196,97 @@
   .hero-stage > * { position: absolute; max-width: none; }
   .hero-stage img { object-fit: cover; }
 
-  .hero-flag { opacity: .6; }
-  .hero-flag--br { left: -2.5298%; top: 21.8092%; width: 48.3631%; height: 52.7261%; }
-  .hero-flag--us { left: 54.9479%; top: 19.0210%; width: 51.6442%; height: 61.5065%; }
+  /* Flutuação lateral das bandeiras, para elas não ficarem paradas como
+     adesivo enquanto ninguém rola.
+
+     Anima `translate`, a propriedade avulsa, e não `transform`: o `transform`
+     destas imagens é do GSAP, e uma keyframe nele apagaria o parallax inteiro
+     (animação vence estilo inline na cascata). As avulsas são compostas antes
+     do `transform`, então as duas convivem — a flutuação soma ao movimento de
+     saída em vez de disputar com ele.
+
+     Começa e termina em zero, com o desvio no meio: assim, pausada em
+     qualquer ponto, ela nunca deixa a bandeira num deslocamento fixo. E é
+     `animation-play-state`, não um `animation: none`, para que voltar a rodar
+     retome de onde parou em vez de saltar para o começo. */
+  /* Ondulação e flutuação contínua das bandeiras (tecido ao vento).
+     Executa na imagem interna (.hero-flag-media), deixando o container
+     externo (.hero-flag) livre para o parallax e transições do GSAP.
+
+     Animação 100% acelerada por hardware na GPU, sem filtros que degradam
+     a nitidez da imagem, em loop sinusoidal contínuo e perfeitamente suave. */
+  .hero-flag {
+    pointer-events: none;
+    aspect-ratio: 1238 / 810;
+  }
+  .hero-flag--br {
+    left: 0;
+    top: 19%;
+    width: 44%;
+    height: auto;
+  }
+  .hero-flag--us {
+    left: auto;
+    right: 0;
+    top: 16.5%;
+    width: 44%;
+    height: auto;
+  }
+
+  .hero-flag-media {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    opacity: .7;
+    will-change: transform;
+    animation-play-state: paused;
+  }
+  /* O pivô é o mastro de cada uma, e elas têm mastros opostos: o canton da
+     americana está na borda direita, e a brasileira abre a partir da esquerda
+     — cada uma presa na sua borda externa, com o pano batendo para dentro do
+     quadro. É a diferença entre tecido preso num ponto e adesivo boiando:
+     com o pivô no meio, o movimento leva junto a beirada que deveria estar
+     firme, e é isso que fazia parecer desalinhado. */
+  .hero-flag-media--br {
+    transform-origin: left center;
+    animation: hero-flag-wave-br 7.5s ease-in-out infinite;
+  }
+  .hero-flag-media--us {
+    transform-origin: right center;
+    /* Período diferente e fase deslocada: em compasso, as duas leem como uma
+       peça só balançando, e não como duas bandeiras no mesmo vento. */
+    animation: hero-flag-wave-us 9.1s ease-in-out infinite;
+    animation-delay: -2.6s;
+  }
+
+  /* Enquanto o parallax do scroll roda, a ondulação pausa para não trepidar. */
+  .hero[data-calm="on"] .hero-flag-media { animation-play-state: running; }
+
+  /* `skewY` é o que faz o efeito, não `translate`: ancorado à esquerda, ele
+     desloca cada coluna de pixels em função da distância até o mastro — nada
+     na borda presa, muito na ponta solta. É a forma de uma onda percorrendo
+     o pano. `rotate` e `scaleY` entram minúsculos e fora de fase, para a crista
+     não bater sempre no mesmo lugar; ambos abaixo de 1%, que é o que mantém a
+     nitidez. Deslocamento e zoom saíram: bandeira não escorrega nem cresce. */
+  @keyframes hero-flag-wave-br {
+    0%   { transform: skewY(0.00deg)     rotate(0deg)     scaleY(1); }
+    14%  { transform: skewY(-1.49deg) rotate(0.34deg)  scaleY(0.994); }
+    31%  { transform: skewY(0.59deg)  rotate(0.12deg)  scaleY(1.004); }
+    50%  { transform: skewY(1.62deg)  rotate(-0.3deg)  scaleY(0.997); }
+    67%  { transform: skewY(0.20deg)  rotate(-0.1deg)  scaleY(1.003); }
+    85%  { transform: skewY(-0.98deg) rotate(0.2deg)   scaleY(0.995); }
+    100% { transform: skewY(0.00deg)     rotate(0deg)     scaleY(1); }
+  }
+
+  @keyframes hero-flag-wave-us {
+    0%   { transform: skewY(0.00deg)     rotate(0deg)     scaleY(1); }
+    16%  { transform: skewY(1.37deg)  rotate(-0.3deg)  scaleY(0.995); }
+    34%  { transform: skewY(-0.65deg)  rotate(-0.14deg) scaleY(1.004); }
+    52%  { transform: skewY(-1.69deg)  rotate(0.32deg)  scaleY(0.996); }
+    70%  { transform: skewY(-0.26deg)  rotate(0.1deg)   scaleY(1.003); }
+    86%  { transform: skewY(1.04deg)   rotate(-0.22deg) scaleY(0.995); }
+    100% { transform: skewY(0.00deg)     rotate(0deg)     scaleY(1); }
+  }
 
   /* O chão é um grupo só — véu branco, trator e o preto que fecha embaixo —
      porque os três andam juntos: um transform no grupo, e não três tweens
@@ -213,7 +330,11 @@
      abre buraco entre a última folha e o bloco do Brasil. */
   /* A foto nova das folhas tem exatamente o tamanho da do trator (2688 × 1152)
      e é a camada da frente da mesma cena: mesma caixa, ponto a ponto. */
-  .hero-leaves { left: 0; bottom: 28.6245%; width: 100%; height: 71.3755%; }
+  /* 80px abaixo do pé, como no estreito: é posição de repouso, não
+     deslocamento da animação — o `yPercent` do parallax é transform e compõe
+     por cima. A cauda preta desce junto e, com 150vh, começar mais embaixo
+     não descobre nada. */
+  .hero-leaves { left: 0; bottom: calc(28.6245% - 80px); width: 100%; height: 71.3755%; }
   .hero-leaves img {
     position: absolute; inset: 0;
     width: 100%; height: 100%; max-width: none;
@@ -222,13 +343,20 @@
        de onde partir. */
     filter: blur(0px);
   }
-  /* Começa dentro da faixa preta da própria imagem, e não no fim dela: com a
-     folha desfocada a borda de baixo perde opacidade, e um preto chapado
-     encostando ali desenharia um fio. Coberto pela imagem, some. A foto nova
-     só fecha em preto a partir de 97%. */
+  /* O preto que continua abaixo da folha.
+     Entra por gradiente, e não chapado. Medido: o desfoque puxa luz do céu
+     para dentro do pé da folha (o brilho sobe de 0 para ~9 nas últimas
+     linhas), e um preto chapado encostando ali desenha um degrau visível
+     justamente porque os dois lados são quase pretos. Com a rampa, o escuro
+     chega junto com o brilho que o desfoque trouxe. */
   .hero-leaves-tail {
-    position: absolute; left: 0; right: 0; top: 97%;
-    height: 150vh; background: #000;
+    position: absolute; left: 0; right: 0; top: 76%;
+    height: 150vh;
+    /* Rampa longa, começando bem acima do pé: o desfoque espalha o céu para
+       dentro da folha e deixa a base acinzentada, e é essa faixa que precisa
+       ser coberta. Rampa, e não corte — preto chapado encostando em
+       quase-preto desenha um fio. */
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0, #000 96px);
   }
 
   /* O fecho. As folhas subindo levam a cena para o escuro, mas quanto sobra de
@@ -342,6 +470,26 @@
   }
 }
 
+/* O bloco seguinte entra POR CIMA da janela do hero, e não depois dela.
+
+   Ele sobe para dentro da seção do hero e aparece junto com a lâmina preta
+   chegando a 100% — os dois na mesma linha do tempo, então não há valor de um
+   atrasando em relação ao outro. Enquanto a lâmina não fechou, este bloco está
+   invisível; quando fecha, é preto entrando sobre preto, e o que se vê surgir
+   é só o conteúdo.
+
+   Resolve as duas coisas de uma vez. O conteúdo passa a começar no alto da
+   tela em vez de esperar a janela inteira subir. E a emenda entre as seções
+   deixa de existir: não há duas superfícies encostando, há uma cobrindo a
+   outra — era essa borda que aparecia como linha.
+
+   Só com movimento: sem ele as seções voltam a se empilhar. */
+html[data-hero-pin] #brazil {
+  position: relative;
+  z-index: 2;
+  margin-top: -80svh;
+}
+
 /* ========================================================== responsivo */
 @media (max-width: 860px) {
   /* O celular tem foto própria de trator e de folhas — recorte vertical
@@ -355,22 +503,44 @@
   .hero-stage { width: 108%; left: -4%; aspect-ratio: 1080 / 1100; }
 
   .hero-tractor { bottom: 0; height: 100%; }
-  .hero-leaves { bottom: 0; height: 100%; }
+  /* 40px abaixo do pé do palco: é a posição de repouso, não um deslocamento
+     da animação — o `yPercent` do parallax é transform e compõe por cima
+     dela, então tudo continua partindo daqui. A cauda preta vai junto, e como
+     ela desce 150vh, descer o começo não descobre nada embaixo. */
+  .hero-leaves { bottom: -40px; height: 100%; }
 
-  /* As bandeiras ficam atrás da máquina, ladeando a faixa de céu. As medidas
-     são do palco vertical, então não têm relação com as do desktop. */
-  .hero-flag--br { left: -34%; top: -19%; width: 88%; height: 58%; }
-  .hero-flag--us { left: 44%; top: -23%; width: 92%; height: 62%; }
+  /* As bandeiras no mobile: imponentes e generosas em tamanho (66% de largura),
+     ladeando o palco vertical sem se tocarem no centro. */
+  .hero-flag--br {
+    left: -14%;
+    top: 4%;
+    width: 66%;
+    height: auto;
+  }
+  .hero-flag--us {
+    left: auto;
+    right: -14%;
+    top: 0%;
+    width: 66%;
+    height: auto;
+  }
   .hero-flags-fade { top: 12%; height: 26%; }
 
   /* Aqui o vão fica no pé do palco, onde a foto do trator acaba. */
   .hero-underfill { top: 96%; height: 60%; }
 
   /* A máquina começa no alto da própria foto: o texto fica todo acima do
-     palco, sem faixa de céu compartilhada. */
+     palco, sem faixa de céu compartilhada.
+
+     E aqui ele encosta no topo em vez de se centrar na faixa. Centrado, a
+     sobra ia toda para cima — 121px numa tela de 780 de altura, 167px numa de
+     932 —, então o bloco descia junto com o aparelho e nunca ficava no mesmo
+     lugar. Ancorado, o padding é o único número que decide onde ele começa, e
+     a sobra vai para o céu acima do trator, que é onde ela não custa nada. */
   .hero-copy {
     height: max(38%, calc(100% - var(--stage-h)));
-    padding-top: 76px;
+    justify-content: flex-start;
+    padding-top: 112px;
   }
 
   /* No mobile o Figma corta o comparador na horizontal. */

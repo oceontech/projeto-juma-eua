@@ -46,6 +46,9 @@ import { hero } from "@/content/home";
  * ─────────────────────────────────────────────────────────────────────────
  */
 
+/** Atraso do `scrub`, em segundos. Também mede a espera da flutuação. */
+const SCRUB = 1;
+
 export function Hero() {
   const root = useRef<HTMLElement>(null);
 
@@ -60,15 +63,39 @@ export function Hero() {
         {
           animate: "(prefers-reduced-motion: no-preference)",
           still: "(prefers-reduced-motion: reduce)",
+          narrow: "(max-width: 860px)",
         },
         (context) => {
-          const { animate } = context.conditions as { animate: boolean };
+          const { animate, narrow } = context.conditions as {
+            animate: boolean;
+            narrow: boolean;
+          };
           if (!animate) return;
 
           const html = document.documentElement;
+          /* Liga a subida do bloco seguinte (globals.css). */
+          html.dataset.heroPin = "on";
 
           const leaves = scene.querySelector<HTMLElement>("[data-hero='leaves-img']");
+
+          /* Liga e desliga a flutuação das bandeiras (globals.css). Ela só
+             roda com o parallax parado; a espera é a do próprio `scrub`, que
+             continua acomodando a cena depois do último evento de rolagem —
+             soltar antes faria a bandeira flutuar enquanto ainda desliza. */
+          let settling = 0;
+          scene.dataset.calm = "on";
+          const stir = () => {
+            scene.dataset.calm = "off";
+            clearTimeout(settling);
+            settling = window.setTimeout(() => {
+              scene.dataset.calm = "on";
+            }, SCRUB * 1000 + 120);
+          };
+
           const inner = scene.querySelector<HTMLElement>(".hero-scene");
+          /* Fora do escopo do useGSAP: o bloco seguinte não é filho do hero,
+             então precisa vir por referência e não por seletor. */
+          const next = document.querySelector<HTMLElement>("#brazil");
 
           /* ------------------------------------------------------ entrada */
           /* As camadas assentam de posições ligeiramente deslocadas — a cena
@@ -159,7 +186,7 @@ export function Hero() {
                    refinar o que ele já faz, e cada peça dessas foi a origem de
                    um defeito: eram várias coisas mandando na mesma posição ao
                    mesmo tempo. Uma só manda, e ela apenas LÊ o scroll. */
-                scrub: 1,
+                scrub: SCRUB,
                 invalidateOnRefresh: true,
                 /* Recalcula antes de quem depende do fim deste trecho. */
                 refreshPriority: 10,
@@ -174,11 +201,25 @@ export function Hero() {
                     el.style.willChange = on ? "transform" : "";
                   });
                   if (leaves) leaves.style.willChange = on ? "filter" : "";
+                  /* Enquanto a cena manda na tela, a barra do topo fica sem
+                     lâmina de vidro: o que está atrás dela muda a cada quadro,
+                     e um retângulo fosco parado em cima disso lê como sujeira.
+                     Este trecho é exatamente o da travessia — passada ela, a
+                     barra volta ao vidro normal da página. */
+                  if (on) html.dataset.heroOver = "on";
+                  else delete html.dataset.heroOver;
+                },
+                /* O primeiro estado não vem de um toggle: numa carga já
+                   rolada, sem isto a barra nasceria com vidro sobre a cena. */
+                onRefresh: (self) => {
+                  if (self.isActive) html.dataset.heroOver = "on";
+                  else delete html.dataset.heroOver;
                 },
                 onUpdate: (self) => {
                   /* Rolar durante a entrada não vira disputa: a entrada corre
                      até o fim e o scroll assume. */
                   if (self.progress > 0.01 && intro.progress() < 1) intro.timeScale(4).play();
+                  stir();
                 },
               },
             })
@@ -204,13 +245,33 @@ export function Hero() {
             .fromTo(
               "[data-hero='ground']",
               { yPercent: 0, scale: 1 },
-              { yPercent: 78, scale: 1.06, ease: RIDE },
+              /* No largo o trator sobe JUNTO com as folhas, e bem mais
+                 devagar: -8 contra os -82 delas, um décimo do curso.
+                 Subir os dois na mesma direção com velocidades diferentes é o
+                 que faz profundidade — indo em sentidos opostos, a cena se
+                 rasga ao meio em vez de se afastar. E o pouco curso aqui é de
+                 propósito: quanto menos ele anda, mais tempo as folhas têm
+                 para alcançá-lo e cobrí-lo.
+
+                 No estreito ele continua descendo: ali o palco é vertical e o
+                 trator ocupa a tela toda, então subir só o tiraria de quadro.
+
+                 O zoom é o mesmo nos dois, e é ele que sustenta a sensação de
+                 aproximação onde o curso é curto. */
+              { yPercent: narrow ? 56 : -8, scale: 1.3, ease: RIDE },
               0,
             )
             .fromTo(
               "[data-hero='leaves']",
               { yPercent: 0, scale: 1 },
-              { yPercent: -8, scale: 1.14, ease: RIDE },
+              /* Bem mais rápido que o trator, para engolir ele: -82 contra os
+                 -34 dele no largo. Elas já pintam na frente por ordem de DOM —
+                 vêm depois do solo, e as duas estão na camada posicionada por
+                 causa do transform —, então o que faltava era só a diferença
+                 de velocidade. E crescem mais (1,22 contra 1,3 do trator, mas
+                 partindo de muito mais perto), que é o que faz passarem por
+                 cima em vez de só deslizarem por cima. */
+              { yPercent: -82, scale: 1.22, ease: RIDE },
               0,
             )
             .fromTo(
@@ -219,12 +280,54 @@ export function Hero() {
               { filter: "blur(11px)", ease: RIDE },
               0,
             )
-            /* O texto sai antes do resto: some enquanto a cena ainda se abre. */
+            /* Na reta final tudo fecha em preto. Além de ficar mais rápido, é
+               o que torna a emenda com o bloco seguinte exata: ela deixa de
+               depender de onde a última folha parou, e passa a valer em
+               qualquer viewport. */
+            .fromTo(
+              "[data-hero='blackout']",
+              { opacity: 0 },
+              /* Dois quintos do curso, não um quarto, e `inOut` no lugar de
+                 `in`: qualquer curva `in` guarda quase toda a mudança para o
+                 fim — era daí que o apagar vinha "de uma vez", por mais longo
+                 que fosse o trecho. Com `inOut` ela entra macia, corre parelha
+                 no miolo e encosta no preto sem bater. */
+              { opacity: 1, ease: "power1.inOut", duration: 0.4 },
+              0.36,
+            )
+
+            /* E o bloco seguinte entra DEPOIS que a lâmina fechou — 0.76
+               contra 0.76 do fecho. Sobrepor os dois faria o conteúdo aparecer
+               por cima da cena ainda visível, como dupla exposição; assim a
+               tela fica preta primeiro e o conteúdo nasce do preto.
+
+               O trecho é longo de propósito: o quarto final do curso, e como o
+               curso cresceu junto, são uns trezentos pixels de rolagem contra
+               os cento e oitenta de antes. Curto, a aparição lê como corte.
+               `inOut` tira o degrau dos dois extremos: ela não começa nem
+               termina de supetão.
+
+               Estar na mesma linha do tempo é o que garante a ordem: não há um
+               valor atrasando em relação ao outro, em nenhuma velocidade. */
+            .fromTo(
+              next,
+              { autoAlpha: 0 },
+              { autoAlpha: 1, ease: "power2.inOut", duration: 0.24 },
+              0.76,
+            )
+
+            /* O texto fica parado e sai só por fade — subir junto com a cena
+               dava dois movimentos concorrentes no mesmo quadro. E ele some
+               antes de a lâmina começar (0.42): apagar por cima de um texto
+               ainda legível é o que fazia a virada parecer um corte.
+
+               No estreito ele fica mais tempo: a tela é pequena, o texto ocupa
+               boa parte dela, e não há o que olhar em volta enquanto ele passa. */
             .fromTo(
               "[data-hero='copy']",
               { yPercent: 0, opacity: 1 },
-              { yPercent: -42, opacity: 0, ease: "power1.in", duration: 0.45 },
-              0,
+              { opacity: 0, ease: "power1.in", duration: narrow ? 0.18 : 0.24 },
+              narrow ? 0.22 : 0.1,
             )
             /* As bandeiras só apagam depois de já estarem saindo de quadro —
                apagar junto com o movimento faria elas sumirem no lugar.
@@ -239,12 +342,25 @@ export function Hero() {
             );
 
           /* ----------------------------------------------------- a barra */
-          /* Do meio do curso em diante a tela vira preta de baixo para cima, e
-             a barra do topo não descobre isso pela posição das seções — o
-             preto é uma camada que anda, não uma seção. Em vez de um número
-             mágico, a cena mede: quando o preto das folhas passa por baixo da
-             barra, o tom vira escuro. */
+          /* Enquanto o hero ocupa a tela, a barra do topo fica sem lâmina de
+             vidro: atrás dela a cena muda a cada quadro, e um retângulo
+             fosco parado em cima disso lê como sujeira — quem avisa a barra
+             é `heroOver`, lá em cima, no gatilho da própria travessia.
+
+             O tom não vem da posição das seções, porque aqui o preto é uma
+             camada que anda, não uma seção. Vem de medir o que de fato está
+             sob a barra, por dois caminhos — o que chegar primeiro:
+
+               a cauda preta das folhas subindo até passar por baixo dela;
+               a lâmina preta fechando, que é quem apaga a tela na reta final.
+
+             Medir só a cauda era o defeito: a lâmina cobria tudo bem antes de
+             a cauda chegar lá em cima, e a barra seguia clara sobre preto —
+             inclusive já dentro do bloco seguinte, porque este `navTheme`
+             tem precedência sobre a medição por seção. */
           const tail = scene.querySelector<HTMLElement>(".hero-leaves-tail");
+          const veil = scene.querySelector<HTMLElement>("[data-hero='blackout']");
+          const bar = document.querySelector<HTMLElement>("header");
           let tone = "";
 
           ScrollTrigger.create({
@@ -252,8 +368,12 @@ export function Hero() {
             start: "top top",
             end: "bottom top",
             onUpdate: () => {
-              if (!tail) return;
-              const next = tail.getBoundingClientRect().top <= 40 ? "dark" : "light";
+              /* No meio da barra, não na borda: é onde está a tipografia. */
+              const line = (bar?.offsetHeight ?? 64) * 0.5;
+              const coberto =
+                (!!tail && tail.getBoundingClientRect().top <= line) ||
+                (!!veil && Number(getComputedStyle(veil).opacity) > 0.35);
+              const next = coberto ? "dark" : "light";
               if (next === tone) return;
               tone = next;
               html.dataset.navTheme = next;
@@ -269,7 +389,11 @@ export function Hero() {
           });
 
           return () => {
+            clearTimeout(settling);
+            delete scene.dataset.calm;
             delete html.dataset.navTheme;
+            delete html.dataset.heroOver;
+            delete html.dataset.heroPin;
           };
         },
       );
@@ -293,31 +417,29 @@ export function Hero() {
         />
 
         <div className="hero-stage">
-          <Image
-            data-hero="flag-br"
-            className="hero-flag hero-flag--br"
-            src="/img/hero-flag-br.webp"
-            alt=""
-            width={1238}
-            height={810}
-            sizes="(max-width: 860px) 120vw, 50vw"
-            priority
-          />
+          <div data-hero="flag-br" className="hero-flag hero-flag--br">
+            <Image
+              className="hero-flag-media hero-flag-media--br"
+              src="/img/hero-flag-br.webp"
+              alt=""
+              width={1238}
+              height={810}
+              sizes="(max-width: 860px) 140vw, 50vw"
+              priority
+            />
+          </div>
 
-          {/* A bandeira dos EUA entra espelhada e girada 173,48°. A
-              transformação está assada no arquivo, e não em CSS: assim o
-              transform do elemento fica livre para o GSAP abrir a bandeira
-              na saída. */}
-          <Image
-            data-hero="flag-us"
-            className="hero-flag hero-flag--us"
-            src="/img/hero-flag-us.webp"
-            alt=""
-            width={1388}
-            height={993}
-            sizes="(max-width: 860px) 125vw, 52vw"
-            priority
-          />
+          <div data-hero="flag-us" className="hero-flag hero-flag--us">
+            <Image
+              className="hero-flag-media hero-flag-media--us"
+              src="/img/hero-flag-us-2026.webp"
+              alt=""
+              width={1238}
+              height={810}
+              sizes="(max-width: 860px) 140vw, 52vw"
+              priority
+            />
+          </div>
 
           {/* Véu do horizonte, trator e o preto que fecha embaixo andam como
               uma peça só: o véu segue o solo, e a faixa preta nunca se
@@ -356,6 +478,13 @@ export function Hero() {
                 fetchPriority="high"
               />
             </picture>
+
+            {/* Depois da foto, portanto na frente dela. Precisa estar na
+                frente: o cinza que aparecia no pé da folha não é o que está
+                atrás vazando, é o desfoque espalhando o céu para dentro da
+                própria folha — só dá para cobrir por cima. Por rampa longa, e
+                não por corte: preto chapado encostando em quase-preto desenha
+                um fio. */}
             <span className="hero-leaves-tail" aria-hidden />
           </div>
         </div>
@@ -363,7 +492,16 @@ export function Hero() {
         <div data-hero="copy" className="hero-copy">
           <p
             data-hero-tagline
-            className="mb-[clamp(14px,1.7vw,30px)] font-display text-[clamp(9px,0.65vw,12.4px)] tracking-[0.39em] text-muted uppercase"
+            /* No estreito ele cabe numa linha só. Não é um tamanho fixo
+               menor: com 0.39em de espaçamento a linha pede 378px e a coluna
+               do mobile tem 320, então corpo e espaçamento acompanham a
+               largura da tela — assim ele não quebra em nenhum aparelho. */
+            className={[
+              "mb-[clamp(14px,1.7vw,30px)] font-display uppercase text-muted",
+              "text-[clamp(9px,0.65vw,12.4px)] tracking-[0.39em]",
+              "max-[860px]:text-[clamp(6.6px,2.28vw,9px)] max-[860px]:tracking-[0.26em]",
+              "max-[860px]:whitespace-nowrap",
+            ].join(" ")}
           >
             {hero.tagline}
           </p>
@@ -375,13 +513,21 @@ export function Hero() {
           </h1>
           <p
             data-hero-sub
-            className="mx-auto mt-[clamp(16px,1.6vw,30px)] max-w-[646px] text-muted"
+            className={[
+              "mx-auto mt-[clamp(16px,1.6vw,30px)] max-w-[646px] text-muted",
+              /* No estreito o parágrafo ocupava cinco linhas altas e empurrava
+                 a cena para fora; corpo e entrelinha menores devolvem a
+                 proporção sem tirar nada do texto. */
+              "max-[860px]:text-[13.5px] max-[860px]:leading-[1.42]",
+            ].join(" ")}
           >
             {hero.subheadline}
           </p>
         </div>
       </div>
 
+        {/* Fora de .hero-scene: a lâmina não anda com a cena, cobre a janela. */}
+        <span data-hero="blackout" className="hero-blackout" aria-hidden />
       </div>
     </section>
   );

@@ -18,8 +18,9 @@ import { BurgerButton, MobileMenu } from "./MobileNav";
  * para o CSS resolver a aparência e o React não re-renderizar a cada pixel de
  * scroll:
  *
- *   data-scrolled  sobre o hero não há barra, só os elementos soltos; a
- *                  partir do primeiro scroll o vidro entra por trás deles;
+ *   data-scrolled  sobre o hero não há lâmina em largura nenhuma, só os
+ *                  elementos soltos; passado o hero, o vidro entra por trás
+ *                  deles a partir do primeiro scroll;
  *   data-theme     o vidro é claro sobre seção clara e escuro sobre seção
  *                  escura — ver TONE_LINE abaixo;
  *   direção        rolando para baixo (indo adiante na leitura) ela sai de
@@ -113,20 +114,29 @@ export function SiteHeader() {
          o tom por `data-nav-theme` no <html>. */
       const root = document.documentElement;
 
-      const applyTone = (y: number) => {
+      const applyChrome = (y: number) => {
+        /* Sobre o hero a barra fica sem lâmina nenhuma, em qualquer largura: a
+           cena atrás dela muda a cada quadro, e o vidro vira uma moldura
+           parada em cima do movimento. O hero avisa pelo <html>. */
+        const overHero = root.dataset.heroOver === "on";
+        element.dataset.scrolled = !overHero && y > 8 ? "true" : "false";
+
         const line = y + toneOffset;
         const overDark = darkRanges.some(([top, bottom]) => line > top && line < bottom);
         element.dataset.theme = root.dataset.navTheme ?? (overDark ? "dark" : "light");
       };
 
-      /* O aviso do hero chega fora do scroll: a cena continua se desfazendo
-         depois do último evento de rolagem, e sem observar o atributo a barra
-         ficava com o tom do instante em que o dedo parou. */
-      const watchTone = new MutationObserver(() => applyTone(window.scrollY));
-      watchTone.observe(root, { attributes: true, attributeFilter: ["data-nav-theme"] });
+      /* Os avisos do hero chegam fora do scroll: a cena continua se desfazendo
+         depois do último evento de rolagem, e sem observar os atributos a
+         barra ficava com o estado do instante em que o dedo parou. */
+      const watchHero = new MutationObserver(() => applyChrome(window.scrollY));
+      watchHero.observe(root, {
+        attributes: true,
+        attributeFilter: ["data-nav-theme", "data-hero-over"],
+      });
 
       measure();
-      applyTone(window.scrollY);
+      applyChrome(window.scrollY);
       ScrollTrigger.addEventListener("refresh", measure);
 
       ScrollTrigger.create({
@@ -135,13 +145,7 @@ export function SiteHeader() {
         onUpdate: (self) => {
           const y = self.scroll();
 
-          /* Enquanto o hero está travado a barra fica sem lâmina nenhuma: a
-             cena atrás dela muda o tempo todo, e o vidro vira uma moldura
-             parada em cima do movimento. O hero avisa pelo <html>. */
-          const overHero = document.documentElement.dataset.heroOver === "on";
-          element.dataset.scrolled = !overHero && y > 8 ? "true" : "false";
-
-          applyTone(y);
+          applyChrome(y);
 
           /* Quem pediu menos movimento fica com a barra sempre presente. */
           if (reduce) return;
@@ -153,7 +157,7 @@ export function SiteHeader() {
       });
 
       return () => {
-        watchTone.disconnect();
+        watchHero.disconnect();
         ScrollTrigger.removeEventListener("refresh", measure);
       };
     },
@@ -204,8 +208,11 @@ export function SiteHeader() {
         <div
           className={[
             "relative mx-auto flex w-[min(var(--container-wrap),calc(100%-2*var(--spacing-gut)))]",
-            "items-center justify-between gap-4 py-[clamp(10px,0.85vw,14px)]",
-            "nav:grid nav:grid-cols-[1fr_auto_1fr]",
+            /* No estreito o selo fica no meio da barra, e o botão do menu sai
+               do fluxo para a direita — com `justify-between` e só esses dois
+               em cena, o selo era empurrado para a esquerda. */
+            "items-center justify-center gap-4 py-[clamp(10px,0.85vw,14px)]",
+            "nav:grid nav:grid-cols-[1fr_auto_1fr] nav:justify-between",
           ].join(" ")}
         >
           <div className="hidden items-center gap-[clamp(14px,1.5vw,26px)] nav:flex">
@@ -246,18 +253,23 @@ export function SiteHeader() {
             </nav>
           </div>
 
-          <SmartLink
-            href="/"
-            aria-label="Juma-Agro — homepage"
-            className="shrink-0 transition-[filter] duration-400 group-data-[theme=dark]:brightness-0 group-data-[theme=dark]:invert group-data-[open]:brightness-0 group-data-[open]:invert"
-          >
+          {/* O selo é colorido, então não leva o `brightness-0 invert` que o
+              logotipo antigo usava para virar branco em seção escura: aquilo
+              achata qualquer arte numa silhueta. Ele se vira sozinho nos dois
+              fundos — o verde é escuro, mas quem carrega a leitura é o branco
+              da tipografia e da faixa.
+
+              E é medido pela ALTURA: a arte é quase quadrada (450×229), e
+              amarrar pela largura, como se fazia com o logotipo deitado,
+              estouraria a altura da barra. */}
+          <SmartLink href="/" aria-label="Juma-Agro — homepage" className="shrink-0">
             <Image
-              src="/img/logo-juma.svg"
+              src="/img/logo-juma-2026.png"
               alt="Juma-Agro"
-              width={250}
-              height={30}
+              width={450}
+              height={229}
               priority
-              className="w-[clamp(126px,10.2vw,168px)]"
+              className="h-[clamp(36px,2.9vw,46px)] w-auto"
             />
           </SmartLink>
 
