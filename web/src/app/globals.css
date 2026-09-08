@@ -98,6 +98,49 @@
     margin-inline: auto;
   }
 
+  /* ------------------------------------------------ cortina de produtos */
+  /* A seção fornece o curso do scroll; a janela sticky permanece ocupando a
+     viewport. É o mesmo contrato geométrico do hero e não cria pin spacer,
+     portanto continua estável quando a barra do navegador móvel abre/fecha. */
+  .expertise-transition {
+    --expertise-run: clamp(760px, 135svh, 1500px);
+    position: relative;
+    height: calc(100svh + var(--expertise-run));
+    background: #000;
+  }
+
+  .expertise-window {
+    position: sticky; top: 0;
+    height: 100svh;
+    display: grid; place-items: center;
+    overflow: clip;
+    isolation: isolate;
+  }
+
+  .expertise-layer {
+    position: absolute; inset: 0;
+    display: grid; place-items: center;
+    padding: var(--spacing-sec) var(--spacing-gut);
+    text-align: center;
+  }
+
+  .expertise-layer--dark { background: #000; color: #fff; }
+  .expertise-layer--dark p { color: var(--color-offwhite); }
+
+  /* O recorte revela a cópia preta exatamente sob a área já tomada pela
+     cortina. Assim nenhuma letra passa por um estado cinza intermediário. */
+  .expertise-layer--light {
+    z-index: 1;
+    background: #fff; color: #000;
+    clip-path: inset(0 0 0 100%);
+  }
+  .expertise-layer--light p { color: #000; }
+
+  .expertise-copy {
+    position: relative;
+    transform-origin: center center;
+  }
+
   /* ------------------------------------------------------------- hero */
   /* A cena vem do frame 2688 × 1614 do Figma, em seis camadas.
 
@@ -332,6 +375,8 @@
 
 /* ========================================================== responsivo */
 @media (max-width: 860px) {
+  .expertise-transition { --expertise-run: 120svh; }
+
   /* O palco sangra dos dois lados: o frame do Figma é largo, e numa viewport
      estreita ele viraria uma tira. Alargado a 240% e centrado, o trator volta
      a ter presença e sobra céu para o título. */
@@ -362,5 +407,8 @@
 /* Quem pediu menos movimento recebe tudo já no lugar — o GSAP também
    respeita isso via gsap.matchMedia (ver src/lib/gsap.ts). */
 @media (prefers-reduced-motion: reduce) {
+  .expertise-transition { height: auto; }
+  .expertise-window { position: relative; min-height: min(1066px, 88svh); }
+  .expertise-layer--light { clip-path: inset(0); }
   .crop-card { transition: none; }
 }
