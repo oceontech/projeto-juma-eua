@@ -8,39 +8,49 @@
 
 @theme {
   /* Superfícies -------------------------------------------------------- */
-  --color-night:       #0C0C0E;  /* fundo dos cards escuros */
-  --color-night-deep:  #070709;  /* fim do gradiente dos cards */
-  --color-night-warm:  #28291E;  /* início do gradiente dos cards */
-  --color-green-deep:  #002C1B;  /* seção da faixa de teste */
-  --color-green-brand: #004C25;  /* botão do header */
-  --color-offwhite:    #F6FFEE;
+  --color-night: #0C0C0E;
+  /* fundo dos cards escuros */
+  --color-night-deep: #070709;
+  /* fim do gradiente dos cards */
+  --color-night-warm: #28291E;
+  /* início do gradiente dos cards */
+  --color-green-deep: #002C1B;
+  /* seção da faixa de teste */
+  --color-green-brand: #004C25;
+  /* botão do header */
+  --color-offwhite: #F6FFEE;
 
   /* Texto -------------------------------------------------------------- */
-  --color-ink:        #2A2A2A;   /* títulos no claro */
-  --color-muted:      #4E4E4E;   /* corpo no claro */
-  --color-muted-dark: #A0A0A2;   /* corpo no escuro / placeholders */
+  --color-ink: #2A2A2A;
+  /* títulos no claro */
+  --color-muted: #4E4E4E;
+  /* corpo no claro */
+  --color-muted-dark: #A0A0A2;
+  /* corpo no escuro / placeholders */
   --color-line-night: #2E2E32;
 
   /* Acento ------------------------------------------------------------- */
-  --color-lime:        #B7C73E;  /* acento principal */
-  --color-lime-bright: #A8E63A;  /* eyebrow dos cards de programa */
-  --color-kmep:        #CB351B;
-  --color-kmep-light:  #FF694E;
-  --color-amino:       #134777;
+  --color-lime: #B7C73E;
+  /* acento principal */
+  --color-lime-bright: #A8E63A;
+  /* eyebrow dos cards de programa */
+  --color-kmep: #CB351B;
+  --color-kmep-light: #FF694E;
+  --color-amino: #134777;
 
   /* Tipografia --------------------------------------------------------- */
   /* O layout usa Neue Plak, que é licenciada. Archivo é a grotesk livre mais
      próxima em largura e terminais — quando a licença entrar, troque a fonte
      carregada em src/app/layout.tsx e estas duas linhas seguem valendo. */
   --font-display: var(--font-archivo), "Neue Plak", "Segoe UI", system-ui, sans-serif;
-  --font-body:    var(--font-inter), "Segoe UI", system-ui, sans-serif;
-  --font-tag:     var(--font-dm-sans), var(--font-inter), system-ui, sans-serif;
+  --font-body: var(--font-inter), "Segoe UI", system-ui, sans-serif;
+  --font-tag: var(--font-dm-sans), var(--font-inter), system-ui, sans-serif;
 
   /* Escala fluida: os extremos são os tamanhos dos dois frames do Figma. */
-  --text-h1:    clamp(34px, 4.6vw, 88px);
-  --text-h2:    clamp(28px, 3.15vw, 60px);
-  --text-h3:    clamp(19px, 1.68vw, 32px);
-  --text-body:  clamp(15px, 1.05vw, 18px);
+  --text-h1: clamp(34px, 4.6vw, 88px);
+  --text-h2: clamp(28px, 3.15vw, 60px);
+  --text-h3: clamp(19px, 1.68vw, 32px);
+  --text-body: clamp(15px, 1.05vw, 18px);
   --text-small: clamp(12px, 0.95vw, 18px);
   --text-micro: clamp(9px, 0.85vw, 16px);
 
@@ -58,6 +68,7 @@
 
 /* ============================================================== base */
 @layer base {
+
   /* Sem scroll-behavior: smooth aqui de propósito — a rolagem nativa suave
      briga com o ScrollTrigger e faz o parallax do hero trepidar. As âncoras
      rolam pelo ScrollToPlugin, em SmoothAnchors.tsx. */
@@ -79,12 +90,19 @@
     overflow-x: clip;
   }
 
-  h1, h2, h3, h4 {
+  h1,
+  h2,
+  h3,
+  h4 {
     font-family: var(--font-display);
     font-weight: 400;
   }
 
-  img, svg { display: block; max-width: 100%; }
+  img,
+  svg {
+    display: block;
+    max-width: 100%;
+  }
 
 }
 
@@ -110,31 +128,45 @@
   }
 
   .expertise-window {
-    position: sticky; top: 0;
+    position: sticky;
+    top: 0;
     height: 100svh;
-    display: grid; place-items: center;
+    display: grid;
+    place-items: center;
     overflow: clip;
     isolation: isolate;
   }
 
   .expertise-layer {
-    position: absolute; inset: 0;
-    display: grid; place-items: center;
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
     padding: var(--spacing-sec) var(--spacing-gut);
     text-align: center;
   }
 
-  .expertise-layer--dark { background: #000; color: #fff; }
-  .expertise-layer--dark p { color: var(--color-offwhite); }
+  .expertise-layer--dark {
+    background: #000;
+    color: #fff;
+  }
+
+  .expertise-layer--dark p {
+    color: var(--color-offwhite);
+  }
 
   /* O recorte revela a cópia preta exatamente sob a área já tomada pela
      cortina. Assim nenhuma letra passa por um estado cinza intermediário. */
   .expertise-layer--light {
     z-index: 1;
-    background: #fff; color: #000;
+    background: #fff;
+    color: #000;
     clip-path: inset(0 0 0 100%);
   }
-  .expertise-layer--light p { color: #000; }
+
+  .expertise-layer--light p {
+    color: #000;
+  }
 
   .expertise-copy {
     position: relative;
@@ -185,52 +217,108 @@
   /* `overflow` fica aqui, e não na seção: um ancestral com overflow quebraria
      o próprio `sticky`. */
   .hero-window {
-    position: sticky; top: 0;
-    height: 100svh; min-height: 560px;
+    position: sticky;
+    top: 0;
+    height: 100svh;
+    min-height: 560px;
     overflow: clip;
   }
 
   .hero-scene {
-    position: absolute; inset: 0 0 auto 0;
+    position: absolute;
+    inset: 0 0 auto 0;
     height: max(var(--scene-h), 100%);
   }
 
   .hero-sky {
-    position: absolute; inset: 0;
-    width: 100%; height: 100%; max-width: none;
-    object-fit: cover; object-position: center top;
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    object-fit: cover;
+    object-position: center top;
   }
 
   .hero-stage {
-    position: absolute; bottom: 0; left: 0;
-    width: 100%; aspect-ratio: 2688 / 1614;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    aspect-ratio: 2688 / 1614;
   }
+
   /* Sem width/height aqui: cada camada traz a sua caixa, e um seletor com
      `img` venceria a classe da camada em especificidade. */
-  .hero-stage > * { position: absolute; max-width: none; }
-  .hero-stage img { object-fit: cover; }
+  .hero-stage>* {
+    position: absolute;
+    max-width: none;
+  }
 
-  .hero-flag { opacity: .6; }
-  .hero-flag--br { left: -2.5298%; top: 21.8092%; width: 48.3631%; height: 52.7261%; }
-  .hero-flag--us { left: 54.9479%; top: 19.0210%; width: 51.6442%; height: 61.5065%; }
+  .hero-stage img {
+    object-fit: cover;
+  }
+
+  .hero-flag {
+    opacity: .6;
+  }
+
+  .hero-flag--br {
+    left: -2.5298%;
+    top: 21.8092%;
+    width: 48.3631%;
+    height: 52.7261%;
+  }
+
+  .hero-flag--us {
+    left: 54.9479%;
+    top: 19.0210%;
+    width: 51.6442%;
+    height: 61.5065%;
+  }
 
   /* O chão é um grupo só — véu branco, trator e o preto que fecha embaixo —
      porque os três andam juntos: um transform no grupo, e não três tweens
      tentando coincidir. As caixas dos filhos continuam em porcentagem do
      palco, já que o grupo tem exatamente o tamanho dele. */
-  .hero-ground { inset: 0; }
-  .hero-ground > * { position: absolute; max-width: none; }
+  .hero-ground {
+    inset: 0;
+  }
+
+  .hero-ground>* {
+    position: absolute;
+    max-width: none;
+  }
 
   /* Véu branco que apaga o pé das bandeiras na linha do horizonte. No Figma
      é um PNG de gradiente; aqui é o mesmo gradiente, sem requisição. */
   .hero-flags-fade {
-    left: 0; top: 42.3792%; width: 100%; height: 17.5341%;
-    background: linear-gradient(to bottom, rgba(255,255,255,0) 13.3%, #fff 67.6%);
+    left: 0;
+    top: 42.3792%;
+    width: 100%;
+    height: 17.5341%;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 13.3%, #fff 67.6%);
+  }
+
+  /* `<picture>` existe só para escolher o arquivo; quem tem caixa é o <img>.
+     `display: contents` tira a caixa dele do layout, mas NÃO da árvore que os
+     seletores enxergam — por isso as imagens trocáveis declaram a própria
+     posição em vez de herdar de `.hero-ground > *`. */
+  .hero-swap {
+    display: contents;
   }
 
   /* Ancorado pelo pé: é o pé da imagem que precisa casar com o preto de
      baixo, e é dali que o arredondamento não pode fugir. */
-  .hero-tractor { left: 0; bottom: 28.6245%; width: 100%; height: 71.3755%; }
+  .hero-tractor {
+    position: absolute;
+    max-width: none;
+    object-fit: cover;
+    left: 0;
+    bottom: 28.6245%;
+    width: 100%;
+    height: 71.3755%;
+  }
 
   /* O preto que fecha o vão: abaixo do pé da imagem do trator o frame do
      Figma não tem camada nenhuma, e sem isto o vão aparece pelos rendilhados
@@ -238,28 +326,48 @@
      antes era um gradiente em CSS está queimado nas últimas linhas do próprio
      hero-tractor.webp. Em CSS ele virava uma aresta atravessando a foto. */
   .hero-underfill {
-    left: 0; top: 71.2%; width: 100%; height: 28.8%;
+    left: 0;
+    top: 71.2%;
+    width: 100%;
+    height: 28.8%;
     background: #000;
   }
 
   /* As folhas fecham a cena. O rabo preto é irmão da imagem dentro da mesma
      peça — quando ela sobe na saída, o preto sobe junto e o pé da tela nunca
      abre buraco entre a última folha e o bloco do Brasil. */
-  .hero-leaves { left: 0; top: 56.0099%; width: 100%; height: 43.9901%; }
+  /* A foto nova das folhas tem exatamente o tamanho da do trator (2688 × 1152)
+     e é a camada da frente da mesma cena: mesma caixa, ponto a ponto. */
+  .hero-leaves {
+    left: 0;
+    bottom: 28.6245%;
+    width: 100%;
+    height: 71.3755%;
+  }
+
   .hero-leaves img {
-    position: absolute; inset: 0;
-    width: 100%; height: 100%; max-width: none;
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    max-width: none;
     /* O desfoque cresce com a subida (Hero.tsx): a folha passa de foco a
        borrão como quem se aproxima da lente. Declarado aqui para o GSAP ter
        de onde partir. */
     filter: blur(0px);
   }
+
   /* Começa dentro da faixa preta da própria imagem, e não no fim dela: com a
      folha desfocada a borda de baixo perde opacidade, e um preto chapado
-     encostando ali desenharia um fio. Coberto pela imagem, some. */
+     encostando ali desenharia um fio. Coberto pela imagem, some. A foto nova
+     só fecha em preto a partir de 97%. */
   .hero-leaves-tail {
-    position: absolute; left: 0; right: 0; top: 92%;
-    height: 150vh; background: #000;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 97%;
+    height: 150vh;
+    background: #000;
   }
 
   /* O fecho. As folhas subindo levam a cena para o escuro, mas quanto sobra de
@@ -270,61 +378,123 @@
      (27,9% do palco) e sim o topo da cabine, a 26,6% — o ponto mais alto da
      máquina, e o único que o texto pode encostar. */
   .hero-copy {
-    position: absolute; left: 0; right: 0; top: 0; z-index: 5;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    z-index: 5;
     height: max(38%, calc(100% - 0.734 * var(--stage-h)));
-    display: flex; flex-direction: column; justify-content: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     padding: 76px var(--spacing-gut) clamp(12px, 1.5vw, 32px);
     text-align: center;
   }
 
   /* -------------------------------------------------------- comparador */
   .compare {
-    position: relative; overflow: hidden;
+    position: relative;
+    overflow: hidden;
     border-radius: clamp(10px, 1.05vw, 20px);
     aspect-ratio: 1260 / 448;
     touch-action: pan-y;
     user-select: none;
     cursor: ew-resize;
   }
+
   /* Sem pointer-events aqui o arrasto vira drag-and-drop nativo da imagem e o
      navegador engole os pointermove seguintes. */
   .compare img {
-    position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
-    pointer-events: none; -webkit-user-drag: none;
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    pointer-events: none;
+    -webkit-user-drag: none;
   }
-  .compare-after { clip-path: inset(0 0 0 var(--split, 50%)); }
+
+  .compare-after {
+    clip-path: inset(0 0 0 var(--split, 50%));
+  }
+
   .compare-handle {
-    position: absolute; top: 0; bottom: 0; left: var(--split, 50%);
-    width: 4px; margin-left: -2px; background: var(--color-lime); z-index: 4;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: var(--split, 50%);
+    width: 4px;
+    margin-left: -2px;
+    background: var(--color-lime);
+    z-index: 4;
     pointer-events: none;
   }
+
   /* O círculo é a única parte que captura o toque: no celular o resto da foto
      precisa continuar rolando a página. */
   .compare-handle::after {
-    content: ""; position: absolute; top: 50%; left: 50%;
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
     transform: translate(-50%, -50%);
-    pointer-events: auto; touch-action: none; cursor: grab;
-    width: clamp(44px, 5.8vw, 74px); aspect-ratio: 1;
-    border-radius: 50%; background: #0E0E0D; border: 2px solid var(--color-lime);
+    pointer-events: auto;
+    touch-action: none;
+    cursor: grab;
+    width: clamp(44px, 5.8vw, 74px);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: #0E0E0D;
+    border: 2px solid var(--color-lime);
     background-image: url("/img/proof-arrows.svg");
-    background-repeat: no-repeat; background-position: center; background-size: 48%;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 48%;
   }
+
   /* O range não recebe ponteiro — o arrasto é do próprio bloco. Ele fica só
      como controle de teclado, por isso continua focável e visível no foco. */
   .compare input[type="range"] {
-    position: absolute; inset: 0; z-index: 5;
-    width: 100%; height: 100%; margin: 0; padding: 0;
-    appearance: none; background: transparent;
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    appearance: none;
+    background: transparent;
     pointer-events: none;
   }
-  .compare input[type="range"]::-webkit-slider-thumb { appearance: none; width: 0; height: 0; }
-  .compare input[type="range"]::-moz-range-thumb { width: 0; height: 0; border: 0; background: transparent; }
-  .compare input[type="range"]:focus-visible { outline: 2px solid var(--color-lime); outline-offset: -4px; }
+
+  .compare input[type="range"]::-webkit-slider-thumb {
+    appearance: none;
+    width: 0;
+    height: 0;
+  }
+
+  .compare input[type="range"]::-moz-range-thumb {
+    width: 0;
+    height: 0;
+    border: 0;
+    background: transparent;
+  }
+
+  .compare input[type="range"]:focus-visible {
+    outline: 2px solid var(--color-lime);
+    outline-offset: -4px;
+  }
 
   /* ------------------------------------------------------------- leque */
-  .fan { position: relative; height: clamp(340px, 29.6vw, 569px); }
+  .fan {
+    position: relative;
+    height: clamp(340px, 29.6vw, 569px);
+  }
+
   .crop-card {
-    position: absolute; left: 50%; bottom: 0;
+    position: absolute;
+    left: 50%;
+    bottom: 0;
     width: clamp(184px, 20vw, 385px);
     aspect-ratio: 385 / 516;
     border-radius: clamp(9px, .95vw, 18px);
@@ -335,34 +505,88 @@
        --dx é a distância real ao centro do leque, não uma medida no eixo
        girado. */
     transform: translateX(-50%) translate(var(--dx), var(--dy)) rotate(var(--rot)) scale(var(--sc));
-    transition: transform .35s cubic-bezier(.22,.61,.36,1), filter .35s;
+    transition: transform .35s cubic-bezier(.22, .61, .36, 1), filter .35s;
     cursor: pointer;
   }
+
   .crop-card::after {
-    content: ""; position: absolute; inset: auto 0 0; height: 46%;
-    background: linear-gradient(to bottom, rgba(0,0,0,0), #000);
+    content: "";
+    position: absolute;
+    inset: auto 0 0;
+    height: 46%;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0), #000);
   }
+
   /* Os deslocamentos saem das posições do Figma: os centros das cinco cartas
      ficam a −486, −242, 0, +242 e +485 px do centro num card de 385. */
-  .crop-card[data-pos="0"] { --rot: -15.42deg; --dx: -126%; --dy: 6%; --sc: .765; z-index: 1; }
-  .crop-card[data-pos="1"] { --rot:  -7.08deg; --dx:  -63%; --dy: 2%; --sc: .852; z-index: 2; }
-  .crop-card[data-pos="2"] { --rot:   0deg;    --dx:    0;  --dy: 0;  --sc: 1;    z-index: 3; }
-  .crop-card[data-pos="3"] { --rot:   7.08deg; --dx:   63%; --dy: 2%; --sc: .852; z-index: 2; }
-  .crop-card[data-pos="4"] { --rot:  15.42deg; --dx:  126%; --dy: 6%; --sc: .765; z-index: 1; }
-  .crop-card:not([data-pos="2"]):hover { filter: brightness(1.15); z-index: 4; }
+  .crop-card[data-pos="0"] {
+    --rot: -15.42deg;
+    --dx: -126%;
+    --dy: 6%;
+    --sc: .765;
+    z-index: 1;
+  }
+
+  .crop-card[data-pos="1"] {
+    --rot: -7.08deg;
+    --dx: -63%;
+    --dy: 2%;
+    --sc: .852;
+    z-index: 2;
+  }
+
+  .crop-card[data-pos="2"] {
+    --rot: 0deg;
+    --dx: 0;
+    --dy: 0;
+    --sc: 1;
+    z-index: 3;
+  }
+
+  .crop-card[data-pos="3"] {
+    --rot: 7.08deg;
+    --dx: 63%;
+    --dy: 2%;
+    --sc: .852;
+    z-index: 2;
+  }
+
+  .crop-card[data-pos="4"] {
+    --rot: 15.42deg;
+    --dx: 126%;
+    --dy: 6%;
+    --sc: .765;
+    z-index: 1;
+  }
+
+  .crop-card:not([data-pos="2"]):hover {
+    filter: brightness(1.15);
+    z-index: 4;
+  }
 
   /* ----------------------------------------------------------- formulário */
   .field-input {
-    width: 100%; padding: clamp(14px, 1vw, 20px);
-    border: 1px solid var(--color-muted-dark); border-radius: 8px;
-    background: var(--color-white); color: var(--color-ink);
-    font-family: var(--font-body); font-size: var(--text-small); line-height: 1.56;
+    width: 100%;
+    padding: clamp(14px, 1vw, 20px);
+    border: 1px solid var(--color-muted-dark);
+    border-radius: 8px;
+    background: var(--color-white);
+    color: var(--color-ink);
+    font-family: var(--font-body);
+    font-size: var(--text-small);
+    line-height: 1.56;
   }
-  .field-input::placeholder { color: var(--color-muted-dark); }
+
+  .field-input::placeholder {
+    color: var(--color-muted-dark);
+  }
+
   .field-input:focus {
-    outline: 2px solid var(--color-lime); outline-offset: 1px;
+    outline: 2px solid var(--color-lime);
+    outline-offset: 1px;
     border-color: var(--color-lime);
   }
+
   select.field-input {
     appearance: none;
     background-image: url("/img/icon-chevron.svg");
@@ -375,40 +599,135 @@
 
 /* ========================================================== responsivo */
 @media (max-width: 860px) {
-  .expertise-transition { --expertise-run: 120svh; }
 
-  /* O palco sangra dos dois lados: o frame do Figma é largo, e numa viewport
-     estreita ele viraria uma tira. Alargado a 240% e centrado, o trator volta
-     a ter presença e sobra céu para o título. */
+  /* O celular tem foto própria de trator e de folhas — recorte vertical
+     (1080 × 1100), não o frame largo reescalado. Por isso o palco aqui tem
+     outra proporção, e é a da foto: as duas ocupam o palco inteiro, uma atrás
+     da outra. */
   .hero {
-    --stage-h: calc(2.4 * 100vw / 1.6654);
+    --stage-h: calc(1.08 * 100vw * 1100 / 1080);
     --scene-h: calc(var(--stage-h) + 10vh);
   }
-  .hero-stage { width: 240%; left: -70%; }
-  .hero-copy { padding-top: 76px; }
+
+  .hero-stage {
+    width: 108%;
+    left: -4%;
+    aspect-ratio: 1080 / 1100;
+  }
+
+  .hero-tractor {
+    bottom: 0;
+    height: 100%;
+  }
+
+  .hero-leaves {
+    bottom: 0;
+    height: 100%;
+  }
+
+  /* As bandeiras ficam atrás da máquina, ladeando a faixa de céu. As medidas
+     são do palco vertical, então não têm relação com as do desktop. */
+  .hero-flag--br {
+    left: -34%;
+    top: -19%;
+    width: 88%;
+    height: 58%;
+  }
+
+  .hero-flag--us {
+    left: 44%;
+    top: -23%;
+    width: 92%;
+    height: 62%;
+  }
+
+  .hero-flags-fade {
+    top: 12%;
+    height: 26%;
+  }
+
+  /* Aqui o vão fica no pé do palco, onde a foto do trator acaba. */
+  .hero-underfill {
+    top: 96%;
+    height: 60%;
+  }
+
+  /* A máquina começa no alto da própria foto: o texto fica todo acima do
+     palco, sem faixa de céu compartilhada. */
+  .hero-copy {
+    height: max(38%, calc(100% - var(--stage-h)));
+    padding-top: 76px;
+  }
 
   /* No mobile o Figma corta o comparador na horizontal. */
-  .compare { aspect-ratio: 360 / 376; cursor: ns-resize; }
-  .compare-after { clip-path: inset(var(--split, 50%) 0 0 0); }
+  .compare {
+    aspect-ratio: 360 / 376;
+    cursor: ns-resize;
+  }
+
+  .compare-after {
+    clip-path: inset(var(--split, 50%) 0 0 0);
+  }
+
   .compare-handle {
-    top: var(--split, 50%); left: 0; right: 0; bottom: auto;
-    width: auto; height: 4px; margin: -2px 0 0;
+    top: var(--split, 50%);
+    left: 0;
+    right: 0;
+    bottom: auto;
+    width: auto;
+    height: 4px;
+    margin: -2px 0 0;
   }
 
   /* Leque mobile: sem rotação, só profundidade — como no frame de 440.
      As cartas das pontas ficam fora da tela, exatamente como no Figma. */
-  .crop-card { --rot: 0deg; width: clamp(160px, 47vw, 224px); }
-  .crop-card[data-pos="0"] { --dx: -160%; --dy: 5%; --sc: .74; }
-  .crop-card[data-pos="1"] { --dx:  -74%; --dy: 3%; --sc: .82; }
-  .crop-card[data-pos="3"] { --dx:   74%; --dy: 3%; --sc: .82; }
-  .crop-card[data-pos="4"] { --dx:  160%; --dy: 5%; --sc: .74; }
+  .crop-card {
+    --rot: 0deg;
+    width: clamp(160px, 47vw, 224px);
+  }
+
+  .crop-card[data-pos="0"] {
+    --dx: -160%;
+    --dy: 5%;
+    --sc: .74;
+  }
+
+  .crop-card[data-pos="1"] {
+    --dx: -74%;
+    --dy: 3%;
+    --sc: .82;
+  }
+
+  .crop-card[data-pos="3"] {
+    --dx: 74%;
+    --dy: 3%;
+    --sc: .82;
+  }
+
+  .crop-card[data-pos="4"] {
+    --dx: 160%;
+    --dy: 5%;
+    --sc: .74;
+  }
 }
 
 /* Quem pediu menos movimento recebe tudo já no lugar — o GSAP também
    respeita isso via gsap.matchMedia (ver src/lib/gsap.ts). */
 @media (prefers-reduced-motion: reduce) {
-  .expertise-transition { height: auto; }
-  .expertise-window { position: relative; min-height: min(1066px, 88svh); }
-  .expertise-layer--light { clip-path: inset(0); }
-  .crop-card { transition: none; }
+  .expertise-transition {
+    height: auto;
+  }
+
+  .expertise-window {
+    position: relative;
+    min-height: min(1066px, 88svh);
+  }
+
+  .expertise-layer--light {
+    clip-path: inset(0);
+  }
+
+  .crop-card {
+    transition: none;
+  }
 }

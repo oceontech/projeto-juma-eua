@@ -210,7 +210,7 @@ export function Hero() {
             .fromTo(
               "[data-hero='leaves']",
               { yPercent: 0, scale: 1 },
-              { yPercent: -47, scale: 1.14, ease: RIDE },
+              { yPercent: -8, scale: 1.14, ease: RIDE },
               0,
             )
             .fromTo(
@@ -325,29 +325,37 @@ export function Hero() {
           <div data-hero="ground" className="hero-ground">
             <span className="hero-flags-fade" aria-hidden />
 
-            <Image
-              className="hero-tractor"
-              src="/img/hero-tractor.webp"
-              alt={hero.tractorAlt}
-              width={2688}
-              height={1152}
-              sizes="(max-width: 860px) 240vw, 100vw"
-              priority
-            />
+            {/* Duas fotos, uma por formato — o recorte do celular é vertical,
+                não é a de desktop reescalada. `<picture>` e não next/image
+                porque só ele escolhe pela largura da tela e baixa uma só; os
+                arquivos já vêm em webp no tamanho certo. */}
+            <picture className="hero-swap">
+              <source media="(max-width: 860px)" srcSet="/img/hero-tractor-mobile.webp" />
+              <img
+                className="hero-tractor"
+                src="/img/hero-tractor.webp"
+                alt={hero.tractorAlt}
+                width={2688}
+                height={1152}
+                fetchPriority="high"
+              />
+            </picture>
 
             <span className="hero-underfill" aria-hidden />
           </div>
 
           <div data-hero="leaves" className="hero-leaves">
-            <Image
-              data-hero="leaves-img"
-              src="/img/hero-leaves.webp"
-              alt=""
-              width={2688}
-              height={710}
-              sizes="(max-width: 860px) 240vw, 100vw"
-              priority
-            />
+            <picture className="hero-swap">
+              <source media="(max-width: 860px)" srcSet="/img/hero-leaves-mobile.webp" />
+              <img
+                data-hero="leaves-img"
+                src="/img/hero-leaves.webp"
+                alt=""
+                width={2688}
+                height={1152}
+                fetchPriority="high"
+              />
+            </picture>
             <span className="hero-leaves-tail" aria-hidden />
           </div>
         </div>
