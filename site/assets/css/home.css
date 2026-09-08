@@ -374,21 +374,35 @@ h1, h2, h3, h4 { font-family: var(--display); font-weight: 400; margin: 0; }
 .expertise p { margin: clamp(18px, 1.7vw, 32px) auto 0; max-width: 465px; color: var(--offwhite); font-size: clamp(12px, .95vw, 16px); }
 
 /* =============================================================== produtos */
-.products { position: relative; background: var(--white); padding: clamp(60px, 6.5vw, 124px) 0; overflow: hidden; }
-/* A faixa vermelho/azul atrás dos cards é a moldura do Figma, sangrando. */
-.products__bleed { position: absolute; left: 0; top: 33.4%; width: 100%; height: 45.3%; }
+.products { position: relative; background: var(--white); padding: clamp(36px, 7vw, 60px) 0; overflow: hidden; }
+/* Faixas independentes, encostadas nos cards e sem recortes circulares. */
+.products__band {
+  position: absolute;
+  /* A faixa atravessa o card por trás e cobre todo o vão central. */
+  width: calc(50% + 20px);
+  height: 36%;
+  transition: transform 1.05s cubic-bezier(.22, .61, .36, 1);
+  will-change: transform;
+}
+.products__band--kmep { top: 10%; left: 0; background: #A71900; transform: translateX(-100%); }
+.products__band--amino { right: 0; bottom: 10%; background: #134777; transform: translateX(100%); }
+.products.bands-in .products__band { transform: translateX(0); }
+
+@media (prefers-reduced-motion: reduce) {
+  .products__band { transform: translateX(0); transition: none; }
+}
 .products__grid {
   position: relative;
   display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: clamp(20px, 3.25vw, 62px);
-  width: min(1199px, calc(100% - 2 * var(--gut)));
+  gap: clamp(18px, 2.2vw, 34px);
+  width: min(1280px, calc(100% - 2 * var(--gut)));
   margin-inline: auto;
 }
 
 .product {
   position: relative; overflow: hidden;
-  border-radius: clamp(14px, 1.1vw, 21px);
-  padding: clamp(20px, 2.15vw, 41px) clamp(20px, 2.1vw, 40px) clamp(20px, 2.5vw, 47px);
+  border-radius: clamp(14px, 1vw, 18px);
+  padding: clamp(18px, 1.55vw, 30px) clamp(18px, 1.45vw, 28px) clamp(18px, 1.7vw, 32px);
   display: flex; flex-direction: column;
   color: var(--white);
 }
@@ -396,7 +410,7 @@ h1, h2, h3, h4 { font-family: var(--display); font-weight: 400; margin: 0; }
 .product--amino { background: linear-gradient(158.24deg, #000 39.81%, var(--amino) 94.16%); }
 
 .product__cat { display: flex; align-items: center; }
-.product__cat span { font-size: clamp(8px, .73vw, 14px); letter-spacing: .03em; white-space: nowrap; }
+.product__cat span { font-size: clamp(8px, .62vw, 12px); letter-spacing: .03em; white-space: nowrap; }
 .product__cat i { flex: 1; height: 2.6px; border-radius: 27px; margin-left: 14px; }
 .product--kmep  .product__cat span { color: var(--kmep-light); }
 .product--kmep  .product__cat i    { background: var(--kmep); }
@@ -404,20 +418,16 @@ h1, h2, h3, h4 { font-family: var(--display); font-weight: 400; margin: 0; }
 .product--amino .product__cat i    { background: var(--white); }
 
 .product h3 {
-  font-weight: 400; font-size: clamp(26px, 3.15vw, 60px); line-height: 1;
-  color: #FAFBFC; margin: clamp(18px, 2vw, 39px) 0 clamp(10px, 1.2vw, 22px);
+  font-weight: 400; font-size: clamp(26px, 2.2vw, 42px); line-height: 1;
+  color: #FAFBFC; margin: clamp(12px, 1.4vw, 20px) 0 clamp(8px, .8vw, 12px);
 }
-.product__desc { margin: 0; color: #E9E9E9; font-size: clamp(12px, .95vw, 18px); line-height: 1.56; max-width: 40ch; }
+.product__desc { margin: 0; color: #E9E9E9; font-size: clamp(12px, .73vw, 14px); line-height: 1.5; max-width: 40ch; }
 
-.product__shot { position: relative; margin: clamp(14px, 1.6vw, 30px) 0 clamp(16px, 1.9vw, 36px); }
-.product__shot img { position: relative; z-index: 1; width: 100%; }
-/* Bolinha de acento atrás do frasco. */
-.product__shot::before { content: ""; position: absolute; z-index: 0; width: 19%; aspect-ratio: 1; border-radius: 50%; }
-.product--kmep  .product__shot::before { background: var(--kmep);  left: 3%; top: 20%; }
-.product--amino .product__shot::before { background: var(--white); left: 0;  top: 4%; }
+.product__shot { position: relative; width: 100%; height: clamp(330px, 90vw, 430px); margin: clamp(10px, 1.3svh, 16px) auto; }
+.product__shot img { position: relative; z-index: 1; width: 100%; height: 100%; object-fit: contain; transform: scale(1.18); }
 
 .product__video {
-  position: relative; margin-top: auto;
+  position: relative; width: 100%; max-width: 220px; margin: auto auto 0;
   display: grid; place-items: center;
   aspect-ratio: 485 / 271;
   border-radius: 14px; border: 1.3px solid;
@@ -427,12 +437,69 @@ h1, h2, h3, h4 { font-family: var(--display); font-weight: 400; margin: 0; }
 .product--kmep  .product__video { background: var(--kmep); border-color: var(--kmep-light); }
 .product--amino .product__video { background: #D3D3D3; border-color: #E8E8E8; }
 .product__video::after {
-  content: ""; width: clamp(28px, 3.6vw, 69px); aspect-ratio: 69 / 83;
+  content: ""; width: clamp(26px, 2vw, 40px); aspect-ratio: 69 / 83;
   clip-path: polygon(0 0, 100% 50%, 0 100%);
   border-radius: 4px;
 }
 .product--kmep  .product__video::after { background: var(--kmep-light); }
 .product--amino .product__video::after { background: var(--white); }
+
+@media (min-width: 861px) {
+  .products { min-height: 100svh; display: flex; align-items: center; padding-block: clamp(20px, 3svh, 36px); }
+  .product__shot { height: clamp(300px, 44svh, 440px); }
+  .product__video { max-width: 380px; }
+
+  /* Os dois cards compartilham a mesma sequência: cada nível equivalente
+     entra junto, enquanto os níveis seguintes formam o stagger. */
+  .product {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity .55s cubic-bezier(.22,.61,.36,1) .16s,
+                transform .55s cubic-bezier(.22,.61,.36,1) .16s;
+  }
+  .product__cat,
+  .product h3,
+  .product__desc,
+  .product__shot,
+  .product__video { opacity: 0; }
+  .product__cat {
+    transform: translateX(-18px);
+    transition: opacity .42s ease-out .28s, transform .42s cubic-bezier(.22,.61,.36,1) .28s;
+  }
+  .product h3 {
+    transform: translateY(16px);
+    transition: opacity .46s ease-out .38s, transform .46s cubic-bezier(.22,.61,.36,1) .38s;
+  }
+  .product__desc { transition: opacity .42s ease-out .48s; }
+  .product__shot {
+    transform: translateY(24px);
+    transition: opacity .55s ease-out .56s, transform .55s cubic-bezier(.22,.61,.36,1) .56s;
+  }
+  .product__video { transition: opacity .48s ease-out .7s, transform .25s; }
+
+  .products.bands-in .product,
+  .products.bands-in .product__cat,
+  .products.bands-in .product h3,
+  .products.bands-in .product__desc,
+  .products.bands-in .product__shot {
+    opacity: 1;
+    transform: translate(0, 0);
+  }
+  .products.bands-in .product__video { opacity: 1; }
+}
+
+@media (min-width: 861px) and (prefers-reduced-motion: reduce) {
+  .product,
+  .product__cat,
+  .product h3,
+  .product__desc,
+  .product__shot,
+  .product__video {
+    opacity: 1;
+    transform: translate(0, 0);
+    transition: none;
+  }
+}
 
 /* =============================================================== culturas */
 /* As cartas das pontas do leque saem da caixa de propósito — o corte tem de
@@ -709,8 +776,8 @@ h1, h2, h3, h4 { font-family: var(--display); font-weight: 400; margin: 0; }
   .compare__label--b { left: 50%; transform: translateX(-50%); right: auto; top: auto; bottom: clamp(14px, 2.6vw, 50px); }
   .compare { cursor: ns-resize; }
 
-  .products__grid { grid-template-columns: 1fr; }
-  .products__bleed { display: none; }
+  .products__grid { max-width: 480px; grid-template-columns: 1fr; }
+  .products__band { display: none; }
 
   .expertise { min-height: 0; padding-block: clamp(90px, 22vw, 150px); }
   .crops__field { aspect-ratio: 444 / 250; }

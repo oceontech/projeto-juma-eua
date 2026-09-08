@@ -116,6 +116,42 @@
     margin-inline: auto;
   }
 
+  /* --------------------------------------------------- faixas dos produtos */
+  .products-band {
+    position: absolute;
+    display: none;
+    /* Passa por trás do card e cruza todo o vão central. Os 20px extras
+       cobrem metade do gap máximo entre as duas colunas. */
+    width: calc(50% + 20px);
+    height: 36%;
+  }
+
+  .products-band--kmep {
+    top: 10%;
+    left: 0;
+    background: #A71900;
+    transform: translateX(-100%);
+  }
+
+  .products-band--amino {
+    right: 0;
+    bottom: 10%;
+    background: #134777;
+    transform: translateX(100%);
+  }
+
+  @media (min-width: 861px) {
+    .products-band {
+      display: block;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .products-band {
+      transform: translateX(0);
+    }
+  }
+
   /* ------------------------------------------------ cortina de produtos */
   /* A seção fornece o curso do scroll; a janela sticky permanece ocupando a
      viewport. É o mesmo contrato geométrico do hero e não cria pin spacer,
