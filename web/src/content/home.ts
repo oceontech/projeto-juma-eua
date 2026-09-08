@@ -107,7 +107,7 @@ export const products: Product[] = [
   },
 ];
 
-export type Crop = { id: string; name: string; body: string };
+export type Crop = { id: string; name: string; body: string; image: string };
 
 export const crops = {
   headline: "Find the right crop for your state.",
@@ -119,26 +119,31 @@ export const crops = {
       id: "cotton",
       name: "Cotton",
       body: "A major source of sugar and renewable products.",
+      image: "/img/crop-cotton.webp",
     },
     {
       id: "corn",
       name: "Corn",
       body: "Cultivated in tropical regions around the world.",
+      image: "/img/crop-corn.webp",
     },
     {
       id: "soybean",
       name: "Soybean",
       body: "Versatile, resistant, and essential to feeding the world.",
+      image: "/img/crop-soybean.webp",
     },
     {
       id: "coffee",
       name: "Coffee",
       body: "Cultivated in tropical regions around the world.",
+      image: "/img/crop-coffee.webp",
     },
     {
       id: "sugarcane",
       name: "Sugarcane",
       body: "A major source of sugar and renewable products.",
+      image: "/img/crop-sugarcane.webp",
     },
   ] satisfies Crop[],
 };

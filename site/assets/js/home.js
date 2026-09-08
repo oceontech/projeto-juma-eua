@@ -110,6 +110,31 @@
   }
 
   /* ------------------------------------------------------------------ reveal */
+  var productsSection = document.querySelector('.products');
+  var productsGrid = document.querySelector('.products__grid');
+
+  if (productsSection && productsGrid) {
+    if (reduced || !('IntersectionObserver' in window)) {
+      productsSection.classList.add('bands-in');
+    } else {
+      var observeProductBands = function () {
+        /* Só mede depois do load: antes disso as imagens e as seções sticky
+           anteriores ainda podem deslocar o grid e disparar a animação cedo. */
+        var bandsIo = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            productsSection.classList.toggle('bands-in', entry.intersectionRatio >= 0.88);
+          });
+        }, { threshold: [0, 0.88] });
+
+        productsSection.classList.remove('bands-in');
+        bandsIo.observe(productsSection);
+      };
+
+      if (document.readyState === 'complete') observeProductBands();
+      else window.addEventListener('load', observeProductBands, { once: true });
+    }
+  }
+
   var targets = document.querySelectorAll('.reveal');
 
   if (reduced || !('IntersectionObserver' in window)) {

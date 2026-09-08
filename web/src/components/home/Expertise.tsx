@@ -1,21 +1,50 @@
 "use client";
 
 import { Fragment, useRef } from "react";
-import { gsap, useGSAP, START } from "@/lib/gsap";
+import { gsap, useGSAP } from "@/lib/gsap";
 import { expertise } from "@/content/home";
 
 /**
- * A virada da página: tela preta, uma frase, nada mais.
- *
- * No Figma este bloco tem uma "cortina" branca deslizando por cima do texto.
- * Aqui ela é uma faixa que varre a seção quando ela entra, revelando o texto
- * por baixo — o mesmo efeito, feito com scrub em vez de frame a frame.
+ * O texto existe nas duas cores para a cortina revelar a versão clara sem
+ * tingir a frase inteira de cinza durante a passagem. A cópia de cima é
+ * decorativa; leitores de tela recebem somente a primeira.
+ */
+function ExpertiseCopy({ light = false }: { light?: boolean }) {
+  return (
+    <div
+      data-expertise-copy
+      aria-hidden={light || undefined}
+      className="expertise-copy"
+    >
+      <h2 className="max-w-[727px] text-[clamp(30px,5.2vw,96px)] leading-[1.06]">
+        {expertise.headline.map((line, i) => (
+          <Fragment key={line}>
+            {i > 0 && <br />}
+            {line}
+          </Fragment>
+        ))}
+      </h2>
+      <p className="mx-auto mt-[clamp(18px,1.7vw,32px)] max-w-[465px] text-[clamp(12px,0.95vw,16px)]">
+        {expertise.body}
+      </p>
+    </div>
+  );
+}
+
+/**
+ * A virada da página: a janela fica presa enquanto uma cortina branca avança
+ * da direita para a esquerda, dirigida diretamente pelo scroll. A geometria
+ * sticky vive no CSS para não depender do pin spacer do ScrollTrigger — no
+ * mobile isso também evita saltos quando a barra do navegador muda de altura.
  */
 export function Expertise() {
   const root = useRef<HTMLElement>(null);
 
   useGSAP(
     () => {
+      const scene = root.current;
+      if (!scene) return;
+
       const mm = gsap.matchMedia();
 
       mm.add(
@@ -25,28 +54,85 @@ export function Expertise() {
         },
         (context) => {
           const { animate } = context.conditions as { animate: boolean };
+          const lightLayer = scene.querySelector<HTMLElement>("[data-expertise-light]");
+          const copies = scene.querySelectorAll<HTMLElement>("[data-expertise-copy]");
+
+          if (!lightLayer) return;
 
           if (!animate) {
-            gsap.set("[data-curtain]", { display: "none" });
-            gsap.set("[data-expertise-text] > *", { opacity: 1, y: 0 });
+            gsap.set(lightLayer, { clipPath: "inset(0% 0% 0% 0%)" });
+            gsap.set(copies, { scale: 1, y: 0 });
             return;
           }
 
-          gsap
+          const html = document.documentElement;
+          let tone = "";
+
+          const applyTone = (next: "dark" | "light") => {
+            if (tone === next) return;
+            tone = next;
+            html.dataset.navTheme = next;
+          };
+
+          const clearTone = () => {
+            tone = "";
+            delete html.dataset.navTheme;
+          };
+
+          const timeline = gsap
             .timeline({
-              scrollTrigger: { trigger: root.current, start: START, once: true },
+              defaults: { ease: "none" },
+              scrollTrigger: {
+                id: "expertise-curtain",
+                trigger: scene,
+                start: "top top",
+                end: "bottom bottom",
+                /* Sem amortecimento: a borda nunca fica para trás quando a
+                   janela sticky começa a soltar, mesmo num flick rápido. */
+                scrub: true,
+                invalidateOnRefresh: true,
+                refreshPriority: 5,
+                onToggle: (self) => {
+                  const active = self.isActive;
+                  lightLayer.style.willChange = active ? "clip-path" : "";
+                  copies.forEach((copy) => {
+                    copy.style.willChange = active ? "transform" : "";
+                  });
+                  if (active) applyTone(self.progress < 0.5 ? "dark" : "light");
+                },
+                onUpdate: (self) => {
+                  if (!self.isActive) return;
+                  /* A borda cruza o centro do header na metade do percurso. */
+                  applyTone(self.progress < 0.5 ? "dark" : "light");
+                },
+                onLeave: clearTone,
+                onLeaveBack: clearTone,
+              },
             })
             .fromTo(
-              "[data-curtain]",
-              { xPercent: -100 },
-              { xPercent: 100, duration: 1.1, ease: "power2.inOut" },
+              lightLayer,
+              { clipPath: "inset(0% 0% 0% 100%)" },
+              { clipPath: "inset(0% 0% 0% 0%)", duration: 0.7 },
+              0.15,
             )
+            /* As duas cópias se movem juntas; o corte continua pixel-perfect. */
             .fromTo(
-              "[data-expertise-text] > *",
-              { opacity: 0, y: 24 },
-              { opacity: 1, y: 0, stagger: 0.12 },
-              "-=0.75",
+              copies,
+              { y: 12, scale: 0.985 },
+              { y: -12, scale: 1.015, duration: 1 },
+              0,
             );
+
+          /* Garante o quadro inicial antes do primeiro evento de scroll. */
+          timeline.progress(0);
+
+          return () => {
+            clearTone();
+            lightLayer.style.willChange = "";
+            copies.forEach((copy) => {
+              copy.style.willChange = "";
+            });
+          };
         },
       );
     },
@@ -57,26 +143,20 @@ export function Expertise() {
     <section
       ref={root}
       data-nav-theme="dark"
-      className="relative grid min-h-[min(1066px,88vh)] place-items-center overflow-hidden bg-black px-gut py-sec text-center text-white max-[860px]:min-h-0 max-[860px]:py-[clamp(90px,22vw,150px)]"
+      className="expertise-transition"
     >
-      <span
-        data-curtain
-        aria-hidden
-        className="pointer-events-none absolute inset-0 z-10 bg-white"
-      />
+      <div className="expertise-window">
+        <div className="expertise-layer expertise-layer--dark">
+          <ExpertiseCopy />
+        </div>
 
-      <div data-expertise-text className="relative">
-        <h2 className="max-w-[727px] text-[clamp(30px,5.2vw,96px)] leading-[1.06]">
-          {expertise.headline.map((line, i) => (
-            <Fragment key={line}>
-              {i > 0 && <br />}
-              {line}
-            </Fragment>
-          ))}
-        </h2>
-        <p className="mx-auto mt-[clamp(18px,1.7vw,32px)] max-w-[465px] text-[clamp(12px,0.95vw,16px)] text-offwhite">
-          {expertise.body}
-        </p>
+        <div
+          data-expertise-light
+          aria-hidden
+          className="expertise-layer expertise-layer--light"
+        >
+          <ExpertiseCopy light />
+        </div>
       </div>
     </section>
   );
