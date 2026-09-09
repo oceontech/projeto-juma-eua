@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import Image from "next/image";
 import { gsap, ScrollTrigger, useGSAP, START } from "@/lib/gsap";
 import { Rule, SectionIntro } from "@/components/ui";
@@ -8,114 +8,249 @@ import { crops } from "@/content/home";
 
 const CARDS = crops.cards;
 const CENTER = Math.floor(CARDS.length / 2);
-const AUTOPLAY_INTERVAL = 3_000;
+const SECONDS_PER_CARD = 5;
+
+const DESKTOP_GEOMETRY = {
+  x: [0, 63, 126, 158],
+  y: [0, 2, 6, 9],
+  rotation: [0, 7.08, 15.42, 19.5],
+  scale: [1, 0.852, 0.765, 0.72],
+};
+
+const MOBILE_GEOMETRY = {
+  x: [0, 74, 160, 205],
+  y: [0, 3, 5, 7],
+  rotation: [0, 0, 0, 0],
+  scale: [1, 0.82, 0.74, 0.7],
+};
+
+function interpolate(values: number[], distance: number) {
+  const index = Math.min(Math.floor(distance), values.length - 2);
+  const progress = distance - index;
+  return values[index] + (values[index + 1] - values[index]) * progress;
+}
 
 /**
- * Leque de culturas. A carta escolhida vai para o centro e as outras se
- * distribuem em volta na mesma ordem, em círculo.
- *
- * A geometria de cada posição está em globals.css (.crop-card[data-pos]);
- * aqui só decidimos qual carta ocupa qual posição.
+ * Leque de culturas em movimento contínuo. Cada carta percorre a mesma
+ * esteira, desaparece na borda e retorna pelo lado oposto sem um salto
+ * visível.
  */
 export function CropSelection() {
   const section = useRef<HTMLElement>(null);
   const fan = useRef<HTMLDivElement>(null);
+  const focusCrop = useRef<(index: number) => void>(() => undefined);
+  const setConveyorPaused = useRef<(paused: boolean) => void>(() => undefined);
   const [active, setActive] = useState(CENTER);
   const [hovered, setHovered] = useState<number | null>(null);
-  const [carouselVisible, setCarouselVisible] = useState(false);
 
   useGSAP(
     () => {
-      const cards = gsap.utils.toArray<HTMLElement>(".crop-card__surface");
-      const dots = gsap.utils.toArray<HTMLElement>(".crop-dots button");
+      const cards = gsap.utils.toArray<HTMLElement>(".crop-card");
+      const entrances = gsap.utils.toArray<HTMLElement>(".crop-card__entrance");
       const intro = section.current!.querySelector<HTMLElement>(".crop-intro")!;
       const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const mobile = window.matchMedia("(max-width: 860px)");
+      const phase = { value: CENTER };
+      const fanBounds = fan.current!.getBoundingClientRect();
+      let activeIndex = CENTER;
+      let conveyorVisible = fanBounds.top < window.innerHeight && fanBounds.bottom > 0;
+      let interactionPaused = false;
+      let conveyor: gsap.core.Tween | null = null;
+      let selectionTween: gsap.core.Tween | null = null;
 
-      if (reduceMotion) {
-        gsap.set([intro, ...cards, ...dots], { opacity: 1, y: 0, scale: 1 });
-        return;
-      }
+      const renderConveyor = () => {
+        const geometry = mobile.matches ? MOBILE_GEOMETRY : DESKTOP_GEOMETRY;
 
-      const entrance = gsap
-        .timeline({ paused: true })
-        .fromTo(
-          intro,
-          { opacity: 0, y: 22 },
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.7,
-            ease: "power3.out",
-          },
-        )
-        .fromTo(
-          cards,
-          { opacity: 0, y: 52, scale: 0.94 },
-          {
-            opacity: 1,
-            y: 0,
-            scale: 1,
-            duration: 0.72,
-            ease: "power3.out",
-            stagger: { each: 0.08, from: "center" },
-          },
-          "-=0.28",
-        )
-        .fromTo(
-          dots,
-          { opacity: 0, y: 10 },
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.35,
-            stagger: 0.05,
-            ease: "power2.out",
-          },
-          "-=0.24",
+        cards.forEach((card, index) => {
+          // Mantém cada card no intervalo -2.5…2.5. Nas duas extremidades a
+          // opacidade chega a zero, ocultando a troca de lado da esteira.
+          const position = gsap.utils.wrap(
+            -CARDS.length / 2,
+            CARDS.length / 2,
+            index - phase.value,
+          );
+          const distance = Math.abs(position);
+          const direction = Math.sign(position) || 1;
+          const edgeOpacity = 1 - Math.max(0, distance - 2) * 2;
+
+          card.style.setProperty(
+            "--dx",
+            `${interpolate(geometry.x, distance) * direction}%`,
+          );
+          card.style.setProperty("--dy", `${interpolate(geometry.y, distance)}%`);
+          card.style.setProperty(
+            "--rot",
+            `${interpolate(geometry.rotation, distance) * direction}deg`,
+          );
+          card.style.setProperty("--sc", `${interpolate(geometry.scale, distance)}`);
+          card.style.opacity = `${Math.max(0, edgeOpacity)}`;
+          card.style.zIndex =
+            card.dataset.hovered === "true"
+              ? "10"
+              : `${3 - Math.min(2, Math.floor(distance + 0.5))}`;
+        });
+
+        const nextActive =
+          ((Math.round(phase.value) % CARDS.length) + CARDS.length) % CARDS.length;
+
+        if (nextActive !== activeIndex) {
+          activeIndex = nextActive;
+          setActive(nextActive);
+        }
+      };
+
+      const startConveyor = () => {
+        conveyor?.kill();
+        conveyor = gsap.to(phase, {
+          value: phase.value + CARDS.length,
+          duration: CARDS.length * SECONDS_PER_CARD,
+          ease: "none",
+          repeat: -1,
+          paused: !conveyorVisible || interactionPaused,
+          onUpdate: renderConveyor,
+        });
+      };
+
+      renderConveyor();
+
+      setConveyorPaused.current = (paused) => {
+        interactionPaused = paused;
+
+        if (paused || !conveyorVisible) {
+          conveyor?.pause();
+          selectionTween?.pause();
+          return;
+        }
+
+        if (selectionTween) {
+          selectionTween.play();
+        } else {
+          conveyor?.play();
+        }
+      };
+
+      focusCrop.current = (index) => {
+        const current =
+          ((phase.value % CARDS.length) + CARDS.length) % CARDS.length;
+        const distance = gsap.utils.wrap(
+          -CARDS.length / 2,
+          CARDS.length / 2,
+          index - current,
         );
 
-      ScrollTrigger.create({
-        trigger: section.current,
-        start: START,
-        onEnter: () => entrance.play(),
-        onLeaveBack: () => entrance.reverse(),
-      });
+        conveyor?.kill();
+        selectionTween?.kill();
+
+        if (reduceMotion) {
+          phase.value += distance;
+          renderConveyor();
+          return;
+        }
+
+        selectionTween = gsap.to(phase, {
+          value: phase.value + distance,
+          duration: Math.max(0.8, Math.abs(distance) * 1.1),
+          ease: "power2.inOut",
+          paused: interactionPaused,
+          onUpdate: renderConveyor,
+          onComplete: () => {
+            selectionTween = null;
+            startConveyor();
+          },
+        });
+      };
+
+      if (reduceMotion) {
+        gsap.set([intro, ...entrances], { opacity: 1, y: 0, scale: 1 });
+      } else {
+        const entrance = gsap
+          .timeline({ paused: true })
+          .fromTo(
+            intro,
+            { opacity: 0, y: 22 },
+            {
+              opacity: 1,
+              y: 0,
+              duration: 0.7,
+              ease: "power3.out",
+            },
+          )
+          .fromTo(
+            entrances,
+            { opacity: 0, y: 52, scale: 0.94 },
+            {
+              opacity: 1,
+              y: 0,
+              scale: 1,
+              duration: 0.72,
+              ease: "power3.out",
+              stagger: { each: 0.08, from: "center" },
+            },
+            "-=0.28",
+          );
+
+        ScrollTrigger.create({
+          trigger: section.current,
+          start: START,
+          onEnter: () => entrance.play(),
+          onLeaveBack: () => entrance.reverse(),
+        });
+
+        ScrollTrigger.create({
+          trigger: fan.current,
+          start: "bottom 48%",
+          onEnter: () => entrance.reverse(),
+          onLeaveBack: () => entrance.play(),
+        });
+
+        startConveyor();
+      }
 
       ScrollTrigger.create({
         trigger: fan.current,
-        start: "bottom 48%",
-        onEnter: () => entrance.reverse(),
-        onLeaveBack: () => entrance.play(),
+        start: "top bottom",
+        end: "bottom top",
+        onEnter: () => {
+          conveyorVisible = true;
+          if (!interactionPaused) {
+            if (selectionTween) {
+              selectionTween.play();
+            } else {
+              conveyor?.play();
+            }
+          }
+        },
+        onEnterBack: () => {
+          conveyorVisible = true;
+          if (!interactionPaused) {
+            if (selectionTween) {
+              selectionTween.play();
+            } else {
+              conveyor?.play();
+            }
+          }
+        },
+        onLeave: () => {
+          conveyorVisible = false;
+          conveyor?.pause();
+          selectionTween?.pause();
+        },
+        onLeaveBack: () => {
+          conveyorVisible = false;
+          conveyor?.pause();
+          selectionTween?.pause();
+        },
       });
+
+      return () => {
+        conveyor?.kill();
+        selectionTween?.kill();
+        focusCrop.current = () => undefined;
+        setConveyorPaused.current = () => undefined;
+      };
     },
     { scope: section },
   );
-
-  useEffect(() => {
-    const element = fan.current;
-    if (!element) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => setCarouselVisible(entry.isIntersecting),
-      { threshold: 0.08 },
-    );
-
-    observer.observe(element);
-    return () => observer.disconnect();
-  }, []);
-
-  useEffect(() => {
-    if (hovered !== null || !carouselVisible) return;
-
-    const interval = window.setInterval(() => {
-      setActive((current) => (current + 1) % CARDS.length);
-    }, AUTOPLAY_INTERVAL);
-
-    return () => window.clearInterval(interval);
-  }, [carouselVisible, hovered]);
-
-  const positionOf = (index: number) =>
-    (((index - active + CENTER) % CARDS.length) + CARDS.length) % CARDS.length;
 
   return (
     /* As cartas das pontas saem da caixa de propósito — o corte tem de ficar
@@ -138,62 +273,58 @@ export function CropSelection() {
             <article
               key={crop.id}
               className="crop-card"
-              data-pos={positionOf(i)}
+              data-pos={i}
+              data-center={i === active ? "true" : undefined}
               data-hovered={hovered === i ? "true" : undefined}
               tabIndex={0}
               aria-label={`Show ${crop.name}`}
-              onMouseEnter={() => setHovered(i)}
-              onMouseLeave={() => setHovered(null)}
-              onFocus={() => setHovered(i)}
-              onBlur={() => setHovered(null)}
-              onClick={() => setActive(i)}
+              onMouseEnter={() => {
+                setHovered(i);
+                setConveyorPaused.current(true);
+              }}
+              onMouseLeave={() => {
+                setHovered(null);
+                setConveyorPaused.current(false);
+              }}
+              onFocus={() => {
+                setHovered(i);
+                setConveyorPaused.current(true);
+              }}
+              onBlur={() => {
+                setHovered(null);
+                setConveyorPaused.current(false);
+              }}
+              onClick={() => focusCrop.current(i)}
               onKeyDown={(event) => {
                 if (event.key === "Enter" || event.key === " ") {
                   event.preventDefault();
-                  setActive(i);
+                  focusCrop.current(i);
                 }
               }}
             >
-              <div className="crop-card__surface">
-                <div
-                  className="crop-card__media"
-                  style={{ backgroundImage: `url(${crop.image})` }}
-                />
-                <span className="crop-card__label absolute top-[5.3%] right-[6%] z-2 rounded-full bg-white px-[1.15em] py-[0.72em] text-[clamp(6px,0.62vw,12px)] leading-none font-semibold tracking-[0.15em] text-[#0E0E0D] uppercase">
-                  {crop.name}
-                </span>
-                <div className="crop-card__content absolute bottom-[8%] left-[7%] z-2 right-[7%] text-offwhite">
-                  <h3 className="text-[clamp(13px,1.68vw,32px)] font-semibold">
+              <div className="crop-card__entrance">
+                <div className="crop-card__surface">
+                  <div
+                    className="crop-card__media"
+                    style={{ backgroundImage: `url(${crop.image})` }}
+                  />
+                  <span className="crop-card__label absolute top-[5.3%] right-[6%] z-2 rounded-full bg-white px-[1.15em] py-[0.72em] text-[clamp(6px,0.62vw,12px)] leading-none font-semibold tracking-[0.15em] text-[#0E0E0D] uppercase">
                     {crop.name}
-                  </h3>
-                  <p className="mt-[0.5em] text-[clamp(8px,0.95vw,18px)] leading-[1.5] font-light">
-                    {crop.body}
-                  </p>
+                  </span>
+                  <div className="crop-card__content absolute bottom-[8%] left-[7%] z-2 right-[7%] text-offwhite">
+                    <h3 className="text-[clamp(13px,1.68vw,32px)] font-semibold">
+                      {crop.name}
+                    </h3>
+                    <p className="mt-[0.5em] text-[clamp(8px,0.95vw,18px)] leading-[1.5] font-light">
+                      {crop.body}
+                    </p>
+                  </div>
                 </div>
               </div>
             </article>
           ))}
         </div>
 
-        {/* As cartas das pontas descem além da caixa do leque; a margem maior
-            mantém a paginação livre delas. */}
-        <div
-          className="crop-dots mt-[clamp(28px,2.2vw,42px)] flex justify-center gap-[clamp(5px,0.65vw,13px)]"
-          role="tablist"
-          aria-label="Crops"
-        >
-          {CARDS.map((crop, i) => (
-            <button
-              key={crop.id}
-              type="button"
-              role="tab"
-              aria-selected={i === active}
-              aria-label={`Show ${crop.name}`}
-              onClick={() => setActive(i)}
-              className="h-[clamp(5px,0.63vw,12px)] w-[clamp(28px,3.4vw,65px)] cursor-pointer rounded-full bg-[#D9D9D9] transition-colors aria-selected:bg-lime"
-            />
-          ))}
-        </div>
       </div>
 
       {/* O Figma usa só a faixa central da foto; o resto é névoa. */}
@@ -202,9 +333,12 @@ export function CropSelection() {
           src="/img/crop-field.jpg"
           alt=""
           aria-hidden
-          width={1536}
-          height={1024}
-          className="h-full w-full object-cover object-[center_62%] min-[861px]:object-[center_76%]"
+          width={2880}
+          height={945}
+          quality={95}
+          sizes="100vw"
+          loading="eager"
+          className="h-full w-full object-cover object-[center_62%] min-[861px]:object-center"
         />
         <div
           aria-hidden

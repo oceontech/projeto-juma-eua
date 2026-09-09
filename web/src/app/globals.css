@@ -1127,26 +1127,33 @@
 
   .crop-card {
     --hover-lift: 0px;
+    --hover-scale: 1;
     position: absolute;
     left: 50%;
     bottom: 0;
     width: clamp(224px, 17vw, 326px);
     aspect-ratio: 385 / 516;
     border-radius: clamp(9px, .95vw, 18px);
-    overflow: hidden;
+    overflow: visible;
     background: transparent;
     transform-origin: center bottom;
     /* Ordem importa: desloca na horizontal primeiro, gira depois — assim o
        --dx é a distância real ao centro do leque, não uma medida no eixo
        girado. */
-    transform: translateX(-50%) translate(var(--dx), calc(var(--dy) - var(--hover-lift))) rotate(var(--rot)) scale(var(--sc));
-    transition: transform .42s cubic-bezier(.22, .61, .36, 1), filter .35s ease;
+    transform: translateX(-50%) translate(var(--dx), var(--dy)) rotate(var(--rot)) scale(var(--sc));
+    will-change: transform, opacity;
   }
 
+  .crop-card__entrance,
   .crop-card__surface,
   .crop-card__media {
     position: absolute;
     inset: 0;
+  }
+
+  .crop-card__entrance {
+    border-radius: inherit;
+    will-change: transform, opacity;
   }
 
   .crop-card__surface {
@@ -1154,7 +1161,9 @@
     border-radius: inherit;
     background: #626608;
     transform-origin: center bottom;
-    will-change: transform, opacity;
+    transform: translateY(var(--hover-lift)) scale(var(--hover-scale));
+    transition: transform .48s cubic-bezier(.22, .61, .36, 1), filter .35s ease;
+    will-change: transform, filter;
   }
 
   .crop-card__media {
@@ -1192,22 +1201,22 @@
     transform-origin: left bottom;
   }
 
-  .crop-card[data-pos="2"] .crop-card__media {
+  .crop-card[data-center="true"] .crop-card__media {
     filter: brightness(1) saturate(1);
     transform: scale(1);
   }
 
-  .crop-card[data-pos="2"] .crop-card__label,
-  .crop-card[data-pos="2"] .crop-card__content {
+  .crop-card[data-center="true"] .crop-card__label,
+  .crop-card[data-center="true"] .crop-card__content {
     opacity: 1;
     transform: translateY(0) scale(1);
   }
 
-  .crop-card[data-pos="2"] .crop-card__label {
+  .crop-card[data-center="true"] .crop-card__label {
     transition-delay: .1s;
   }
 
-  .crop-card[data-pos="2"] .crop-card__content {
+  .crop-card[data-center="true"] .crop-card__content {
     transition-delay: .16s;
   }
 
@@ -1254,14 +1263,18 @@
   }
 
   .crop-card[data-hovered="true"] {
-    --hover-lift: clamp(14px, 1.55vw, 28px);
+    --hover-lift: clamp(-28px, -1.55vw, -14px);
+    --hover-scale: 1.025;
+    z-index: 10 !important;
+  }
+
+  .crop-card[data-hovered="true"] .crop-card__surface {
     filter: brightness(1.08) drop-shadow(0 18px 18px rgba(0, 0, 0, .2));
-    z-index: 5;
   }
 
   .crop-card[data-hovered="true"] .crop-card__media {
     filter: brightness(1) saturate(1);
-    transform: scale(1.015);
+    transform: scale(1.045);
   }
 
   .crop-card[data-hovered="true"] .crop-card__label,
