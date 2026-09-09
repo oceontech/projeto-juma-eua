@@ -1,25 +1,104 @@
 "use client";
 
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useRef } from "react";
 import Image from "next/image";
 import { Pill } from "@/components/ui";
 import { proof } from "@/content/home";
+import { gsap, useGSAP, type ScrollTrigger } from "@/lib/gsap";
+
+/** Onde o corte assenta depois que o scroll termina de abri-lo. */
+const RESTING = 50;
 
 /**
  * Comparador antes/depois. As duas fotos ocupam a mesma caixa e o corte da
  * de cima anda com o ponteiro — na horizontal no desktop, na vertical no
  * mobile, como nos dois frames do Figma.
  *
+ * Duas coisas mexem no corte, nesta ordem:
+ *
+ *   o scroll   enquanto a seção entra, o corte anda de 100 até a metade
+ *              sozinho. É a demonstração se dando: quem chega vê a faixa
+ *              tratada abrir sobre a testemunha sem precisar descobrir que
+ *              dá para arrastar — que é o defeito de todo comparador que
+ *              espera pelo arrasto;
+ *
+ *   o ponteiro no primeiro toque ele assume, e o gatilho de scroll é morto
+ *              ali mesmo. Sem isso os dois escreveriam no mesmo valor e a
+ *              rolagem arrancaria o corte da mão de quem está arrastando.
+ *
+ * O valor mora no estilo do elemento, escrito direto pelo GSAP e pelos
+ * handlers, e não em estado do React: são dezenas de quadros por segundo, e
+ * cada um viraria uma renderização de árvore inteira para andar com um corte.
+ *
  * O <input type="range"> não recebe ponteiro: existe para quem navega por
  * teclado. O arrasto real vem de pointer events na caixa.
  */
 export function ImageCompare() {
   const box = useRef<HTMLDivElement>(null);
-  const [split, setSplit] = useState(50);
+  const slider = useRef<HTMLInputElement>(null);
+  const reveal = useRef<ScrollTrigger | null>(null);
+  const taken = useRef(false);
 
-  const set = useCallback((value: number) => {
-    setSplit(Math.max(0, Math.min(100, value)));
+  const apply = useCallback((value: number) => {
+    const clamped = Math.max(0, Math.min(100, value));
+    box.current?.style.setProperty("--split", `${clamped}%`);
+    if (slider.current) slider.current.value = String(clamped);
   }, []);
+
+  /* O ponteiro assume de vez: mata a abertura automática e apaga a dica. */
+  const takeOver = useCallback(() => {
+    if (taken.current) return;
+    taken.current = true;
+    reveal.current?.kill();
+    reveal.current = null;
+    box.current?.setAttribute("data-touched", "on");
+  }, []);
+
+  useGSAP(
+    () => {
+      const el = box.current;
+      if (!el) return;
+
+      const mm = gsap.matchMedia();
+
+      mm.add(
+        {
+          animate: "(prefers-reduced-motion: no-preference)",
+          still: "(prefers-reduced-motion: reduce)",
+        },
+        (context) => {
+          const { animate } = context.conditions as { animate: boolean };
+
+          if (!animate) {
+            apply(RESTING);
+            return;
+          }
+
+          const cut = { value: 100 };
+          apply(100);
+
+          const tween = gsap.to(cut, {
+            value: RESTING,
+            ease: "power2.inOut",
+            onUpdate: () => apply(cut.value),
+            scrollTrigger: {
+              trigger: el,
+              start: "top 88%",
+              end: "top 34%",
+              scrub: true,
+            },
+          });
+
+          reveal.current = tween.scrollTrigger ?? null;
+
+          return () => {
+            reveal.current = null;
+          };
+        },
+      );
+    },
+    { scope: box, dependencies: [apply] },
+  );
 
   const fromPointer = useCallback(
     (event: { clientX: number; clientY: number }) => {
@@ -27,13 +106,13 @@ export function ImageCompare() {
       if (!el) return;
       const rect = el.getBoundingClientRect();
       const vertical = window.matchMedia("(max-width: 860px)").matches;
-      set(
+      apply(
         vertical
           ? ((event.clientY - rect.top) / rect.height) * 100
           : ((event.clientX - rect.left) / rect.width) * 100,
       );
     },
-    [set],
+    [apply],
   );
 
   /* O move e o up ficam na janela, não na caixa: mexer o corte troca o
@@ -41,6 +120,7 @@ export function ImageCompare() {
      primeiro movimento. */
   const onPointerDown = useCallback(
     (event: React.PointerEvent) => {
+      takeOver();
       fromPointer(event);
 
       const onMove = (e: PointerEvent) => {
@@ -57,16 +137,11 @@ export function ImageCompare() {
       window.addEventListener("pointerup", onUp);
       window.addEventListener("pointercancel", onUp);
     },
-    [fromPointer],
+    [fromPointer, takeOver],
   );
 
   return (
-    <div
-      ref={box}
-      className="compare"
-      style={{ "--split": `${split}%` } as React.CSSProperties}
-      onPointerDown={onPointerDown}
-    >
+    <div ref={box} className="compare" onPointerDown={onPointerDown}>
       <Image
         src="/img/proof-untreated.jpg"
         alt={proof.compare.beforeAlt}
@@ -94,12 +169,16 @@ export function ImageCompare() {
       <div className="compare-handle" aria-hidden />
 
       <input
+        ref={slider}
         type="range"
         min={0}
         max={100}
         step={0.1}
-        value={split}
-        onChange={(e) => set(Number(e.target.value))}
+        defaultValue={RESTING}
+        onInput={(e) => {
+          takeOver();
+          apply(Number(e.currentTarget.value));
+        }}
         aria-label="Reveal the treated strip"
       />
     </div>

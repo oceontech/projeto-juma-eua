@@ -245,20 +245,26 @@ export function Hero() {
             .fromTo(
               "[data-hero='ground']",
               { yPercent: 0, scale: 1 },
-              /* No largo o trator sobe JUNTO com as folhas, e bem mais
-                 devagar: -8 contra os -82 delas, um décimo do curso.
-                 Subir os dois na mesma direção com velocidades diferentes é o
-                 que faz profundidade — indo em sentidos opostos, a cena se
-                 rasga ao meio em vez de se afastar. E o pouco curso aqui é de
+              /* O trator sobe JUNTO com as folhas, e bem mais devagar: -8
+                 contra os -82 delas, um décimo do curso. Subir os dois na
+                 mesma direção com velocidades diferentes é o que faz
+                 profundidade — indo em sentidos opostos, a cena se rasga ao
+                 meio em vez de se afastar. E o pouco curso aqui é de
                  propósito: quanto menos ele anda, mais tempo as folhas têm
                  para alcançá-lo e cobrí-lo.
 
-                 No estreito ele continua descendo: ali o palco é vertical e o
-                 trator ocupa a tela toda, então subir só o tiraria de quadro.
+                 Vale nos dois formatos, com números diferentes porque a
+                 porcentagem é da altura do palco e no estreito ele é quase
+                 metade: os mesmos -8 ali dariam 48px de curso contra os 200
+                 do largo, um movimento que não se vê. Os -20 devolvem a
+                 proporção — o trator anda pouco mais de um terço do que
+                 andam as folhas, nos dois formatos. O pé não descobre nada
+                 ao subir: `.hero-underfill` desce muito além do palco e
+                 viaja junto com esta camada.
 
                  O zoom é o mesmo nos dois, e é ele que sustenta a sensação de
                  aproximação onde o curso é curto. */
-              { yPercent: narrow ? 56 : -8, scale: 1.3, ease: RIDE },
+              { yPercent: narrow ? -20 : -8, scale: 1.3, ease: RIDE },
               0,
             )
             .fromTo(
@@ -495,19 +501,28 @@ export function Hero() {
             /* No estreito ele cabe numa linha só. Não é um tamanho fixo
                menor: com 0.39em de espaçamento a linha pede 378px e a coluna
                do mobile tem 320, então corpo e espaçamento acompanham a
-               largura da tela — assim ele não quebra em nenhum aparelho. */
+               largura da tela — assim ele não quebra em nenhum aparelho.
+               E ali sobra a versão curta: sem a praça, o que resta cabe com
+               um corpo legível em vez de tipografia de 7px. */
             className={[
               "mb-[clamp(14px,1.7vw,30px)] font-display uppercase text-muted",
               "text-[clamp(9px,0.65vw,12.4px)] tracking-[0.39em]",
-              "max-[860px]:text-[clamp(6.6px,2.28vw,9px)] max-[860px]:tracking-[0.26em]",
+              "max-[860px]:text-[clamp(8px,2.6vw,10.5px)] max-[860px]:tracking-[0.26em]",
               "max-[860px]:whitespace-nowrap",
             ].join(" ")}
           >
-            {hero.tagline}
+            <span className="max-[860px]:hidden">{hero.tagline}</span>
+            <span className="hidden max-[860px]:inline">{hero.taglineShort}</span>
           </p>
           <h1
             data-hero-title
-            className="mx-auto max-w-[785px] text-h1 leading-none tracking-[-0.01em] text-ink"
+            /* O piso do --text-h1 foi calibrado para não estourar a cena com
+               a copy inteira; com o pré-título curto sobra altura para o
+               título crescer com a tela em vez de travar em 34px. */
+            className={[
+              "mx-auto max-w-[785px] text-h1 leading-none tracking-[-0.01em] text-ink",
+              "max-[860px]:text-[clamp(35px,9.7vw,44px)]",
+            ].join(" ")}
           >
             {hero.headline}
           </h1>
@@ -517,8 +532,10 @@ export function Hero() {
               "mx-auto mt-[clamp(16px,1.6vw,30px)] max-w-[646px] text-muted",
               /* No estreito o parágrafo ocupava cinco linhas altas e empurrava
                  a cena para fora; corpo e entrelinha menores devolvem a
-                 proporção sem tirar nada do texto. */
-              "max-[860px]:text-[13.5px] max-[860px]:leading-[1.42]",
+                 proporção sem tirar nada do texto. A margem extra estreita a
+                 medida além da coluna: linhas mais curtas, bloco mais alto e
+                 estreito, que é o desenho que o título grande pede ao lado. */
+              "max-[860px]:text-[13.5px] max-[860px]:leading-[1.42] max-[860px]:px-[7vw]",
             ].join(" ")}
           >
             {hero.subheadline}

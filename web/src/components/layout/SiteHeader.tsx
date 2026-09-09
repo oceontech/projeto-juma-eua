@@ -61,6 +61,19 @@ const linkClass = [
   "hover:after:origin-left hover:after:scale-x-100",
 ].join(" ");
 
+/* Os atalhos do estreito não levam o sublinhado do desktop: sem hover, um
+   traço que só aparece no toque é decoração invisível. A tipografia é a mesma
+   do pré-título do hero — corpo pequeno, peso normal e 0.26em de espaçamento —
+   e não a dos links da barra larga: no estreito eles convivem com o hero, não
+   com o menu. Espaçados assim, três rótulos ainda cabem ao lado do selo em
+   360px, que é a tela mais estreita que atendemos. */
+const compactLinkClass = [
+  "font-display text-[clamp(8px,2.4vw,10px)] uppercase tracking-[0.26em] whitespace-nowrap",
+  "text-muted transition-colors duration-400 active:text-ink",
+  "group-data-[theme=dark]:text-white/70",
+  "group-data-[open]:text-offwhite/70",
+].join(" ");
+
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
   const header = useRef<HTMLElement>(null);
@@ -120,6 +133,7 @@ export function SiteHeader() {
            parada em cima do movimento. O hero avisa pelo <html>. */
         const overHero = root.dataset.heroOver === "on";
         element.dataset.scrolled = !overHero && y > 8 ? "true" : "false";
+
 
         const line = y + toneOffset;
         const overDark = darkRanges.some(([top, bottom]) => line > top && line < bottom);
@@ -202,17 +216,18 @@ export function SiteHeader() {
             "group-data-[theme=dark]:shadow-[inset_0_1px_0_0_rgba(255,255,255,0.13),0_1px_24px_-20px_rgba(0,0,0,0.8)]",
             /* Sobre o painel escuro do mobile o vidro não faz sentido. */
             "group-data-[open]:opacity-0",
+
           ].join(" ")}
         />
 
         <div
           className={[
             "relative mx-auto flex w-[min(var(--container-wrap),calc(100%-2*var(--spacing-gut)))]",
-            /* No estreito o selo fica no meio da barra, e o botão do menu sai
-               do fluxo para a direita — com `justify-between` e só esses dois
-               em cena, o selo era empurrado para a esquerda. */
-            "items-center justify-center gap-4 py-[clamp(10px,0.85vw,14px)]",
-            "nav:grid nav:grid-cols-[1fr_auto_1fr] nav:justify-between",
+            /* No estreito o selo encosta na margem esquerda e o botão do menu
+               sai do fluxo para a direita; a faixa é mais baixa que no largo,
+               onde o padding só precisa dar respiro à linha inteira. */
+            "items-center justify-start gap-4 py-[9px]",
+            "nav:grid nav:grid-cols-[1fr_auto_1fr] nav:justify-between nav:py-[clamp(6px,0.5vw,9px)]",
           ].join(" ")}
         >
           <div className="hidden items-center gap-[clamp(14px,1.5vw,26px)] nav:flex">
@@ -262,16 +277,45 @@ export function SiteHeader() {
               E é medido pela ALTURA: a arte é quase quadrada (450×229), e
               amarrar pela largura, como se fazia com o logotipo deitado,
               estouraria a altura da barra. */}
-          <SmartLink href="/" aria-label="Juma-Agro — homepage" className="shrink-0">
+          {/* O link é a caixa que dá a altura da barra; o selo mora solto
+              dentro dela, então o tamanho da arte não engorda a faixa. A
+              largura fixa (altura × 450/229) é o que segura a coluna central
+              do grid no lugar com a imagem fora do fluxo.
+
+              No largo o selo é maior que a caixa e transborda por baixo, como
+              um adesivo colado na barra. No estreito não há altura sobrando
+              para esse gesto: ali ele é pequeno, cabe inteiro na faixa e fica
+              centrado na própria caixa. */}
+          <SmartLink
+            href="/"
+            aria-label="Juma-Agro — homepage"
+            className="relative z-10 h-[32px] w-[63px] shrink-0 nav:h-[clamp(36px,2.9vw,46px)] nav:w-[clamp(71px,5.7vw,90px)]"
+          >
             <Image
               src="/img/logo-juma-2026.png"
               alt="Juma-Agro"
               width={450}
               height={229}
               priority
-              className="h-[clamp(36px,2.9vw,46px)] w-auto"
+              className="absolute top-1/2 left-1/2 h-[32px] w-auto max-w-none -translate-x-1/2 -translate-y-1/2 nav:h-[clamp(52px,4.2vw,66px)] nav:-translate-y-[34%]"
             />
           </SmartLink>
+
+          {/* Some no largo, onde os mesmos destinos já estão à volta do selo.
+              `flex-1` centra os três no vão que sobra entre o selo e o botão
+              do menu — não no meio da barra, que jogaria o primeiro rótulo por
+              cima do selo — e o `pr` reserva a coluna do hambúrguer, que está
+              fora do fluxo. */}
+          <nav
+            aria-label="Shortcuts"
+            className="flex flex-1 items-center justify-center gap-[clamp(13px,4.6vw,24px)] pr-7 nav:hidden"
+          >
+            {nav.compact.map((item) => (
+              <SmartLink key={item.label} href={item.href} className={compactLinkClass}>
+                {item.label}
+              </SmartLink>
+            ))}
+          </nav>
 
           <div className="hidden items-center justify-end gap-[clamp(14px,1.5vw,26px)] nav:flex">
             {nav.right.map((item) => (

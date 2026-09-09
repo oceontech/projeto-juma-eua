@@ -13,10 +13,22 @@ type RevealProps = {
   /** Distância que o bloco sobe ao entrar, em px. */
   y?: number;
   /**
-   * Seleciona descendentes específicos para a cascata. Quando omitido,
-   * `stagger` continua animando apenas os filhos diretos.
+   * Distância que o bloco anda na horizontal ao entrar, em px. Negativo vem
+   * da esquerda, positivo da direita. Zero (o padrão) mantém a entrada só
+   * vertical, que é a de quase toda a página.
    */
-  targetSelector?: string;
+  x?: number;
+  /**
+   * Desfoque de partida, em px. É a mesma linguagem das travessias entre
+   * seções — o bloco ganha foco enquanto assenta, em vez de só aparecer.
+   */
+  blur?: number;
+  /**
+   * Largura de partida, como fração. Menor que 1 faz o bloco se desenhar da
+   * esquerda para a direita em vez de aparecer inteiro — é o gesto dos traços
+   * lima que abrem as seções.
+   */
+  scaleX?: number;
   /**
    * Anima os filhos diretos um a um em vez do bloco inteiro.
    * O intervalo entre eles é o próprio valor (em segundos).
@@ -60,6 +72,9 @@ export function Reveal({
   className,
   delay = 0,
   y = 22,
+  x = 0,
+  blur = 0,
+  scaleX = 1,
   stagger,
   targetSelector,
   replay = false,
@@ -89,9 +104,29 @@ export function Reveal({
           const { animate } = context.conditions as { animate: boolean };
 
           if (!animate) {
-            gsap.set(targets, { opacity: 1, y: 0 });
+            gsap.set(targets, {
+              opacity: 1,
+              x: 0,
+              y: 0,
+              scaleX: 1,
+              filter: "none",
+            });
             return;
           }
+
+          /* `filter` não interpola a partir de `none`: quando há desfoque, os
+             dois extremos precisam ser escritos. */
+          const draw =
+            scaleX === 1
+              ? {}
+              : { scaleX, transformOrigin: "left center" as const };
+
+          const from = blur
+            ? { opacity: 0, x, y, ...draw, filter: `blur(${blur}px)` }
+            : { opacity: 0, x, y, ...draw };
+          const to = blur
+            ? { opacity: 1, x: 0, y: 0, scaleX: 1, filter: "blur(0px)" }
+            : { opacity: 1, x: 0, y: 0, scaleX: 1 };
 
           gsap
             .timeline({
@@ -105,17 +140,14 @@ export function Reveal({
             })
             .fromTo(
               targets,
-              { opacity: 0, y },
-              { opacity: 1, y: 0, stagger: stagger ?? 0 },
+              from,
+              { ...to, stagger: stagger ?? 0 },
               delay,
             );
         },
       );
     },
-    {
-      scope,
-      dependencies: [delay, y, stagger, targetSelector, replay, trigger, start],
-    },
+    { scope, dependencies: [delay, y, x, blur, scaleX, stagger, replay, trigger, start] },
   );
 
   return (
