@@ -1,9 +1,64 @@
-<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="318.167" height="318.167" viewBox="0 0 318.167 318.167" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g id="Vector" opacity="0.5">
-<path id="Globe / Inner" d="M159.083 317.448C246.546 317.448 317.448 246.546 317.448 159.083C317.448 71.621 246.546 0.718685 159.083 0.718685C71.621 0.718685 0.71863 71.621 0.71863 159.083C0.71863 246.546 71.621 317.448 159.083 317.448Z" stroke="#A8E63A" stroke-width="1.43726"/>
-<path id="Globe / Inner_2" d="M159.085 317.448C196.569 317.448 226.955 246.546 226.955 159.083C226.955 71.621 196.569 0.71863 159.085 0.71863C121.601 0.71863 91.2141 71.621 91.2141 159.083C91.2141 246.546 121.601 317.448 159.085 317.448Z" stroke="#A8E63A" stroke-width="1.43726"/>
-<path id="Globe / Inner_3" d="M159.085 317.448C227.805 317.448 283.514 246.546 283.514 159.083C283.514 71.621 227.805 0.71863 159.085 0.71863C90.3643 0.71863 34.6553 71.621 34.6553 159.083C34.6553 246.546 90.3643 317.448 159.085 317.448Z" stroke="#A8E63A" stroke-width="1.43726"/>
-<path id="Globe / Lines" d="M0.71863 159.084H317.448" stroke="#A8E63A" stroke-width="1.43726"/>
-<path id="Globe / Lines_2" d="M16.5559 79.9012H301.612M16.5559 238.266H301.612" stroke="#A8E63A" stroke-width="1.43726"/>
-</g>
+<svg width="420" height="420" viewBox="0 0 420 420" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="globe-fade" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(178 182) rotate(45) scale(275)">
+      <stop stop-color="white"/>
+      <stop offset="0.76" stop-color="white" stop-opacity="0.86"/>
+      <stop offset="1" stop-color="white" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="globe-line" x1="52" y1="48" x2="355" y2="372" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#A8E63A" stop-opacity="0.16"/>
+      <stop offset="0.5" stop-color="#A8E63A" stop-opacity="0.68"/>
+      <stop offset="1" stop-color="#A8E63A" stop-opacity="0.12"/>
+    </linearGradient>
+    <pattern id="land-dots" width="8" height="8" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1.05" fill="#A8E63A" fill-opacity="0.72"/>
+    </pattern>
+    <clipPath id="sphere">
+      <circle cx="210" cy="210" r="185"/>
+    </clipPath>
+    <mask id="soft-sphere">
+      <circle cx="210" cy="210" r="188" fill="url(#globe-fade)"/>
+    </mask>
+    <filter id="dot-glow" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur stdDeviation="4"/>
+    </filter>
+  </defs>
+
+  <g mask="url(#soft-sphere)" clip-path="url(#sphere)" stroke="url(#globe-line)" stroke-linecap="round" vector-effect="non-scaling-stroke">
+    <circle cx="210" cy="210" r="184" stroke-width="1.35" opacity="0.72"/>
+
+    <g stroke-width="1.15" stroke-dasharray="0.1 6.2" opacity="0.82">
+      <ellipse cx="210" cy="210" rx="142" ry="184"/>
+      <ellipse cx="210" cy="210" rx="94" ry="184"/>
+      <ellipse cx="210" cy="210" rx="46" ry="184"/>
+      <path d="M26 210C26 174 108 145 210 145C312 145 394 174 394 210"/>
+      <path d="M26 210C26 246 108 275 210 275C312 275 394 246 394 210"/>
+      <path d="M49 118C89 139 146 151 210 151C274 151 331 139 371 118"/>
+      <path d="M49 302C89 281 146 269 210 269C274 269 331 281 371 302"/>
+      <path d="M94 63C124 91 164 108 210 108C256 108 296 91 326 63"/>
+      <path d="M94 357C124 329 164 312 210 312C256 312 296 329 326 357"/>
+    </g>
+
+    <g stroke-width="0.85" opacity="0.22">
+      <path d="M26 210H394"/>
+      <path d="M48 119H372"/>
+      <path d="M48 301H372"/>
+      <path d="M210 26V394"/>
+    </g>
+
+    <g fill="url(#land-dots)" stroke="none" opacity="0.9">
+      <path d="M77 102C96 73 128 56 160 60C181 63 188 78 205 84C218 89 236 85 246 96C254 105 247 118 232 124C214 131 208 143 197 157C184 173 164 174 148 166C132 158 121 145 102 140C84 135 66 120 77 102Z"/>
+      <path d="M168 177C185 165 207 171 215 187C222 202 210 216 216 231C222 247 242 254 238 271C233 294 215 320 196 341C184 354 169 346 167 326C165 307 172 288 163 271C153 252 137 239 139 218C141 201 152 188 168 177Z"/>
+      <path d="M257 121C278 106 315 108 333 127C347 142 340 159 322 163C306 167 294 162 282 174C271 185 263 201 245 200C229 199 222 186 229 173C239 155 242 132 257 121Z"/>
+      <path d="M274 207C293 193 329 199 342 219C352 235 342 252 327 263C311 275 307 296 289 305C273 313 254 305 252 288C250 273 260 259 256 244C251 228 258 218 274 207Z"/>
+    </g>
+  </g>
+
+  <g fill="#A8E63A">
+    <circle cx="118" cy="111" r="2.6" opacity="0.88"/>
+    <circle cx="118" cy="111" r="10" opacity="0.14" filter="url(#dot-glow)"/>
+    <circle cx="287" cy="178" r="3.2" opacity="0.95"/>
+    <circle cx="287" cy="178" r="11" opacity="0.16" filter="url(#dot-glow)"/>
+    <circle cx="202" cy="302" r="2.4" opacity="0.78"/>
+  </g>
 </svg>

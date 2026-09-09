@@ -1,12 +1,57 @@
-<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="360.721" height="360.721" viewBox="0 0 360.721 360.721" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g id="Vector" opacity="0.55">
-<path id="Orbit / Outer" d="M180.36 359.98C279.561 359.98 359.98 279.561 359.98 180.36C359.98 81.1592 279.561 0.74093 180.36 0.74093C81.1592 0.74093 0.74093 81.1592 0.74093 180.36C0.74093 279.561 81.1592 359.98 180.36 359.98Z" stroke="#A8E63A" stroke-width="1.48186" stroke-dasharray="4.94 14.82"/>
-<path id="Orbit / Middle" d="M180.359 303.848C248.559 303.848 303.847 248.561 303.847 180.36C303.847 112.159 248.559 56.8717 180.359 56.8717C112.158 56.8717 56.8705 112.159 56.8705 180.36C56.8705 248.561 112.158 303.848 180.359 303.848Z" stroke="#A8E63A" stroke-width="1.48186" stroke-dasharray="4.94 14.82"/>
-<path id="Orbit / Inner" d="M180.359 247.718C217.559 247.718 247.716 217.561 247.716 180.36C247.716 143.16 217.559 113.003 180.359 113.003C143.159 113.003 113.002 143.16 113.002 180.36C113.002 217.561 143.159 247.718 180.359 247.718Z" stroke="#A8E63A" stroke-width="1.48186" stroke-dasharray="4.94 14.82"/>
-<g id="Orbit / Dots">
-<path id="Vector_2" d="M270.17 117.494C272.65 117.494 274.66 115.483 274.66 113.003C274.66 110.523 272.65 108.513 270.17 108.513C267.69 108.513 265.679 110.523 265.679 113.003C265.679 115.483 267.69 117.494 270.17 117.494Z" fill="#A8E63A"/>
-<path id="Vector_3" d="M90.5507 252.208C93.0307 252.208 95.0412 250.198 95.0412 247.718C95.0412 245.238 93.0307 243.227 90.5507 243.227C88.0707 243.227 86.0602 245.238 86.0602 247.718C86.0602 250.198 88.0707 252.208 90.5507 252.208Z" fill="#A8E63A"/>
-<path id="Vector_4" d="M202.813 295.99C204.673 295.99 206.181 294.482 206.181 292.622C206.181 290.762 204.673 289.254 202.813 289.254C200.953 289.254 199.445 290.762 199.445 292.622C199.445 294.482 200.953 295.99 202.813 295.99Z" fill="#A8E63A"/>
-</g>
-</g>
+<svg width="420" height="360" viewBox="0 0 420 360" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="topo-stroke" x1="24" y1="32" x2="392" y2="326" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#A8E63A" stop-opacity="0.16"/>
+      <stop offset="0.5" stop-color="#A8E63A" stop-opacity="0.62"/>
+      <stop offset="1" stop-color="#A8E63A" stop-opacity="0.12"/>
+    </linearGradient>
+    <linearGradient id="divider" x1="0" y1="24" x2="0" y2="336" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#A8E63A" stop-opacity="0"/>
+      <stop offset="0.18" stop-color="#A8E63A" stop-opacity="0.28"/>
+      <stop offset="0.82" stop-color="#A8E63A" stop-opacity="0.28"/>
+      <stop offset="1" stop-color="#A8E63A" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="edge-fade" x1="0" y1="0" x2="1" y2="0">
+      <stop stop-color="white" stop-opacity="0"/>
+      <stop offset="0.08" stop-color="white"/>
+      <stop offset="0.9" stop-color="white"/>
+      <stop offset="1" stop-color="white" stop-opacity="0"/>
+    </linearGradient>
+    <mask id="soft-edges">
+      <rect width="398" height="360" fill="url(#edge-fade)"/>
+    </mask>
+    <filter id="soft-glow" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur stdDeviation="3.5"/>
+    </filter>
+  </defs>
+
+  <g mask="url(#soft-edges)" stroke="url(#topo-stroke)" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke">
+    <path d="M8 48C53 37 83 10 119 27C149 42 157 72 192 73C230 74 247 28 282 20C319 12 340 44 394 25"/>
+    <path d="M6 65C48 54 82 25 118 42C149 57 158 87 193 88C231 89 249 43 283 35C322 26 345 58 395 40"/>
+    <path d="M8 82C52 71 84 42 120 59C149 73 160 102 195 104C233 105 251 60 286 51C324 42 348 73 395 57"/>
+    <path d="M10 100C54 87 86 59 122 76C151 90 162 118 197 120C235 121 254 78 288 68C326 58 351 88 397 74"/>
+    <path d="M12 118C57 104 88 76 124 93C153 107 165 134 200 136C238 138 256 95 291 85C328 75 354 103 398 91"/>
+    <path d="M14 136C59 121 91 93 127 110C156 124 168 151 203 153C241 155 260 113 294 102C331 91 357 119 399 108"/>
+    <path d="M15 154C61 138 94 111 130 127C159 140 172 167 207 170C245 172 263 130 297 119C334 107 360 135 400 126"/>
+    <path d="M16 173C63 156 97 129 133 145C162 158 175 184 210 187C248 190 267 148 301 137C337 124 363 151 401 144"/>
+    <path d="M17 192C65 174 100 148 136 163C165 176 178 202 213 205C251 208 270 167 304 155C340 142 366 168 401 163"/>
+    <path d="M18 211C67 192 103 167 139 182C168 194 181 220 216 223C254 227 273 186 307 174C343 160 369 186 402 182"/>
+    <path d="M19 230C69 210 106 186 142 201C171 213 184 238 219 242C257 246 277 205 311 193C346 179 372 204 403 201"/>
+    <path d="M20 249C71 229 109 205 145 220C174 232 187 257 222 261C260 265 280 225 314 212C349 198 375 223 404 220"/>
+    <path d="M21 268C73 247 112 224 148 239C177 251 190 276 225 280C263 284 283 244 317 231C352 217 378 242 405 239"/>
+    <path d="M22 287C75 266 115 243 151 258C180 270 193 295 228 299C266 303 286 263 320 250C355 236 381 261 406 258"/>
+    <path d="M24 306C78 285 118 262 154 277C183 289 196 314 231 318C269 322 289 282 323 269C358 255 384 280 408 277"/>
+    <path d="M27 325C80 304 121 281 157 296C186 308 199 332 234 336C272 340 292 301 326 288C361 274 387 299 410 296"/>
+  </g>
+
+  <path d="M405 24V336" stroke="url(#divider)" stroke-width="1.4" stroke-linecap="round"/>
+
+  <g fill="#A8E63A">
+    <circle cx="78" cy="196" r="2.5" opacity="0.75"/>
+    <circle cx="78" cy="196" r="7" opacity="0.12" filter="url(#soft-glow)"/>
+    <circle cx="236" cy="118" r="3.2" opacity="0.9"/>
+    <circle cx="236" cy="118" r="9" opacity="0.18" filter="url(#soft-glow)"/>
+    <circle cx="326" cy="248" r="2.3" opacity="0.72"/>
+    <circle cx="326" cy="248" r="7" opacity="0.12" filter="url(#soft-glow)"/>
+  </g>
 </svg>
