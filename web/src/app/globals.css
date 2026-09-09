@@ -76,13 +76,17 @@
      que a altura seja a do conteúdo, não a da janela. Sem isto o documento
      fica com a altura da viewport e não há o que rolar. */
   html.lenis,
-  html.lenis body { height: auto; }
+  html.lenis body {
+    height: auto;
+  }
 
   /* Curso de saída da cortina de produtos. Fica em :root porque quem o
      consome são duas seções irmãs — a cortina, que o soma à própria altura,
      e o bloco de produtos, que sobe pelo mesmo tanto. Zero por padrão: só a
      versão com movimento liga a sobreposição. */
-  :root { --expertise-exit: 0px; }
+  :root {
+    --expertise-exit: 0px;
+  }
 
   body {
     /* Preto, e não branco.
@@ -535,8 +539,12 @@
     /* Estoura 2px além do pé da janela — que recorta o excesso. É seguro e
        garante que a última linha da janela seja preta mesmo quando a altura
        cai em pixel fracionário. */
-    position: absolute; inset: 0 0 -2px; z-index: 6;
-    background: #000; opacity: 0; pointer-events: none;
+    position: absolute;
+    inset: 0 0 -2px;
+    z-index: 6;
+    background: #000;
+    opacity: 0;
+    pointer-events: none;
   }
 
   /* `overflow` fica aqui, e não na seção: um ancestral com overflow quebraria
@@ -623,12 +631,14 @@
     pointer-events: none;
     aspect-ratio: 1238 / 810;
   }
+
   .hero-flag--br {
     left: 0;
     top: 19%;
     width: 44%;
     height: auto;
   }
+
   .hero-flag--us {
     left: auto;
     right: 0;
@@ -645,6 +655,7 @@
     will-change: transform;
     animation-play-state: paused;
   }
+
   /* O pivô é o mastro de cada uma, e elas têm mastros opostos: o canton da
      americana está na borda direita, e a brasileira abre a partir da esquerda
      — cada uma presa na sua borda externa, com o pano batendo para dentro do
@@ -655,6 +666,7 @@
     transform-origin: left center;
     animation: hero-flag-wave-br 7.5s ease-in-out infinite;
   }
+
   .hero-flag-media--us {
     transform-origin: right center;
     /* Período diferente e fase deslocada: em compasso, as duas leem como uma
@@ -664,7 +676,9 @@
   }
 
   /* Enquanto o parallax do scroll roda, a ondulação pausa para não trepidar. */
-  .hero[data-calm="on"] .hero-flag-media { animation-play-state: running; }
+  .hero[data-calm="on"] .hero-flag-media {
+    animation-play-state: running;
+  }
 
   /* `skewY` é o que faz o efeito, não `translate`: ancorado à esquerda, ele
      desloca cada coluna de pixels em função da distância até o mastro — nada
@@ -673,23 +687,63 @@
      não bater sempre no mesmo lugar; ambos abaixo de 1%, que é o que mantém a
      nitidez. Deslocamento e zoom saíram: bandeira não escorrega nem cresce. */
   @keyframes hero-flag-wave-br {
-    0%   { transform: skewY(0.00deg)     rotate(0deg)     scaleY(1); }
-    14%  { transform: skewY(-1.49deg) rotate(0.34deg)  scaleY(0.994); }
-    31%  { transform: skewY(0.59deg)  rotate(0.12deg)  scaleY(1.004); }
-    50%  { transform: skewY(1.62deg)  rotate(-0.3deg)  scaleY(0.997); }
-    67%  { transform: skewY(0.20deg)  rotate(-0.1deg)  scaleY(1.003); }
-    85%  { transform: skewY(-0.98deg) rotate(0.2deg)   scaleY(0.995); }
-    100% { transform: skewY(0.00deg)     rotate(0deg)     scaleY(1); }
+    0% {
+      transform: skewY(0.00deg) rotate(0deg) scaleY(1);
+    }
+
+    14% {
+      transform: skewY(-1.49deg) rotate(0.34deg) scaleY(0.994);
+    }
+
+    31% {
+      transform: skewY(0.59deg) rotate(0.12deg) scaleY(1.004);
+    }
+
+    50% {
+      transform: skewY(1.62deg) rotate(-0.3deg) scaleY(0.997);
+    }
+
+    67% {
+      transform: skewY(0.20deg) rotate(-0.1deg) scaleY(1.003);
+    }
+
+    85% {
+      transform: skewY(-0.98deg) rotate(0.2deg) scaleY(0.995);
+    }
+
+    100% {
+      transform: skewY(0.00deg) rotate(0deg) scaleY(1);
+    }
   }
 
   @keyframes hero-flag-wave-us {
-    0%   { transform: skewY(0.00deg)     rotate(0deg)     scaleY(1); }
-    16%  { transform: skewY(1.37deg)  rotate(-0.3deg)  scaleY(0.995); }
-    34%  { transform: skewY(-0.65deg)  rotate(-0.14deg) scaleY(1.004); }
-    52%  { transform: skewY(-1.69deg)  rotate(0.32deg)  scaleY(0.996); }
-    70%  { transform: skewY(-0.26deg)  rotate(0.1deg)   scaleY(1.003); }
-    86%  { transform: skewY(1.04deg)   rotate(-0.22deg) scaleY(0.995); }
-    100% { transform: skewY(0.00deg)     rotate(0deg)     scaleY(1); }
+    0% {
+      transform: skewY(0.00deg) rotate(0deg) scaleY(1);
+    }
+
+    16% {
+      transform: skewY(1.37deg) rotate(-0.3deg) scaleY(0.995);
+    }
+
+    34% {
+      transform: skewY(-0.65deg) rotate(-0.14deg) scaleY(1.004);
+    }
+
+    52% {
+      transform: skewY(-1.69deg) rotate(0.32deg) scaleY(0.996);
+    }
+
+    70% {
+      transform: skewY(-0.26deg) rotate(0.1deg) scaleY(1.003);
+    }
+
+    86% {
+      transform: skewY(1.04deg) rotate(-0.22deg) scaleY(0.995);
+    }
+
+    100% {
+      transform: skewY(0.00deg) rotate(0deg) scaleY(1);
+    }
   }
 
   /* O chão é um grupo só — véu branco, trator e o preto que fecha embaixo —
@@ -757,7 +811,13 @@
      deslocamento da animação — o `yPercent` do parallax é transform e compõe
      por cima. A cauda preta desce junto e, com 150vh, começar mais embaixo
      não descobre nada. */
-  .hero-leaves { left: 0; bottom: calc(28.6245% - 80px); width: 100%; height: 71.3755%; }
+  .hero-leaves {
+    left: 0;
+    bottom: calc(28.6245% - 80px);
+    width: 100%;
+    height: 71.3755%;
+  }
+
   .hero-leaves img {
     position: absolute;
     inset: 0;
@@ -769,6 +829,7 @@
        de onde partir. */
     filter: blur(0px);
   }
+
   /* O preto que continua abaixo da folha.
      Entra por gradiente, e não chapado. Medido: o desfoque puxa luz do céu
      para dentro do pé da folha (o brilho sobe de 0 para ~9 nas últimas
@@ -776,7 +837,10 @@
      justamente porque os dois lados são quase pretos. Com a rampa, o escuro
      chega junto com o brilho que o desfoque trouxe. */
   .hero-leaves-tail {
-    position: absolute; left: 0; right: 0; top: 76%;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 76%;
     height: 150vh;
     /* Rampa longa, começando bem acima do pé: o desfoque espalha o céu para
        dentro da folha e deixa a base acinzentada, e é essa faixa que precisa
@@ -922,7 +986,6 @@
        girado. */
     transform: translateX(-50%) translate(var(--dx), calc(var(--dy) - var(--hover-lift))) rotate(var(--rot)) scale(var(--sc));
     transition: transform .42s cubic-bezier(.22, .61, .36, 1), filter .35s ease;
-    cursor: pointer;
   }
 
   .crop-card__surface,
@@ -1192,16 +1255,25 @@ html[data-expertise-overlap] #products {
     height: 100%;
     min-height: 0;
     padding:
-      calc(var(--band-top) + clamp(26px, 4.4svh, 52px))
-      clamp(30px, 8vw, 52px)
-      clamp(28px, 5svh, 52px);
+      calc(var(--band-top) + clamp(26px, 4.4svh, 52px)) clamp(30px, 8vw, 52px) clamp(28px, 5svh, 52px);
     text-align: center;
   }
 
-  .product-slide__shot { order: 1; }
-  .product-slide__text { order: 2; }
-  .product-slide__video { order: 3; }
-  .product-slide__cta { order: 4; }
+  .product-slide__shot {
+    order: 1;
+  }
+
+  .product-slide__text {
+    order: 2;
+  }
+
+  .product-slide__video {
+    order: 3;
+  }
+
+  .product-slide__cta {
+    order: 4;
+  }
 
   /* O `top` sobe a arte sem mexer no layout — a caixa continua ocupando o
      mesmo espaço, então a centralização do corpo não se desloca junto e a
@@ -1271,14 +1343,26 @@ html[data-expertise-overlap] #products {
     --stage-h: calc(1.08 * 100vw * 1100 / 1080);
     --scene-h: calc(var(--stage-h) + 10vh);
   }
-  .hero-stage { width: 108%; left: -4%; aspect-ratio: 1080 / 1100; }
 
-  .hero-tractor { bottom: 0; height: 100%; }
+  .hero-stage {
+    width: 108%;
+    left: -4%;
+    aspect-ratio: 1080 / 1100;
+  }
+
+  .hero-tractor {
+    bottom: 0;
+    height: 100%;
+  }
+
   /* 40px abaixo do pé do palco: é a posição de repouso, não um deslocamento
      da animação — o `yPercent` do parallax é transform e compõe por cima
      dela, então tudo continua partindo daqui. A cauda preta vai junto, e como
      ela desce 150vh, descer o começo não descobre nada embaixo. */
-  .hero-leaves { bottom: -40px; height: 100%; }
+  .hero-leaves {
+    bottom: -40px;
+    height: 100%;
+  }
 
   /* As bandeiras no mobile: imponentes e generosas em tamanho (66% de largura),
      ladeando o palco vertical sem se tocarem no centro. */
@@ -1288,6 +1372,7 @@ html[data-expertise-overlap] #products {
     width: 66%;
     height: auto;
   }
+
   .hero-flag--us {
     left: auto;
     right: -14%;
@@ -1295,7 +1380,11 @@ html[data-expertise-overlap] #products {
     width: 66%;
     height: auto;
   }
-  .hero-flags-fade { top: 12%; height: 26%; }
+
+  .hero-flags-fade {
+    top: 12%;
+    height: 26%;
+  }
 
   /* Aqui o vão fica no pé do palco, onde a foto do trator acaba. */
   .hero-underfill {
@@ -1413,4 +1502,3 @@ html[data-expertise-overlap] #products {
     transition: none;
   }
 }
-
