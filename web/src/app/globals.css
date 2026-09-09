@@ -78,6 +78,12 @@
   html.lenis,
   html.lenis body { height: auto; }
 
+  /* Curso de saída da cortina de produtos. Fica em :root porque quem o
+     consome são duas seções irmãs — a cortina, que o soma à própria altura,
+     e o bloco de produtos, que sobe pelo mesmo tanto. Zero por padrão: só a
+     versão com movimento liga a sobreposição. */
+  :root { --expertise-exit: 0px; }
+
   body {
     /* Preto, e não branco.
        O que o navegador mostra enquanto ainda não rasterizou um pedaço da
@@ -129,61 +135,307 @@
     margin-inline: auto;
   }
 
-  /* --------------------------------------------------- faixas dos produtos */
-  .products-band {
+  /* ---------------------------------------------------- palco dos produtos */
+  /* Dois produtos, um lugar só. A seção dá o curso da rolagem e a janela
+     sticky fica ocupando a tela — mesmo contrato do hero e da cortina, sem
+     pin spacer. As duas faixas dividem a mesma célula do grid: o KMEP entra
+     pela esquerda, segura, sai pela direita, e o Aminosan entra pela direita
+     por cima dele.
+
+     A faixa é mais larga que a tela em duas vezes o raio, e recuada por um
+     raio. Assim, parada, ela sangra de ponta a ponta com os cantos redondos
+     logo fora do quadro — e em movimento a extremidade arredondada aparece
+     inteira, que é o ponto do efeito. */
+  .product-stage {
+    --product-run: clamp(1700px, 265svh, 3200px);
+    --slide-r: clamp(18px, 1.6vw, 30px);
+    --cta-h: clamp(42px, 3.4vw, 56px);
+    position: relative;
+    height: calc(100lvh + var(--product-run));
+    background: #fff;
+  }
+
+  .product-stage__window {
+    position: sticky;
+    top: 0;
+    height: 100lvh;
+    display: grid;
+    /* Corta o transbordo dos raios e as faixas em trânsito. */
+    overflow: clip;
+    background: #fff;
+  }
+
+  .product-slide {
+    grid-area: 1 / 1;
+    position: relative;
+    align-self: center;
+    justify-self: start;
+    width: calc(100% + 2 * var(--slide-r));
+    margin-left: calc(-1 * var(--slide-r));
+    color: #fff;
+  }
+
+  /* Na troca o Aminosan passa por cima: é a ponta arredondada dele que varre
+     a tela enquanto o KMEP escapa por baixo.
+
+     As duas faixas precisam de `z-index` — e não só a de cima. Com a de baixo
+     em `auto` ela não abre contexto de empilhamento, e o botão dela, que tem
+     `z-index: 2` para montar na borda, escapava para o contexto da seção e
+     ficava boiando sobre a faixa que estava entrando. */
+  .product-slide--kmep {
+    z-index: 1;
+  }
+
+  .product-slide--amino {
+    z-index: 2;
+  }
+
+  .product-slide__panel {
     position: absolute;
-    display: none;
-    /* Passa por trás do card e cruza todo o vão central. Os 20px extras
-       cobrem metade do gap máximo entre as duas colunas. */
-    width: calc(50% + 20px);
-    height: 36%;
+    inset: 0;
+    border-radius: var(--slide-r);
   }
 
-  .products-band--kmep {
-    top: 10%;
-    left: 0;
-    background: #A71900;
-    transform: translateX(-100%);
+  .product-slide--kmep .product-slide__panel {
+    background: linear-gradient(90deg, #92251B 0%, #4C140E 24%, #180706 58%, #310D08 100%);
   }
 
-  .products-band--amino {
-    right: 0;
-    bottom: 10%;
-    background: #134777;
-    transform: translateX(100%);
+  .product-slide--amino .product-slide__panel {
+    background: linear-gradient(270deg, #154572 0%, #0C2C55 24%, #050E1C 58%, #0A1B31 100%);
   }
 
+  .product-slide__body {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    align-items: center;
+    column-gap: clamp(12px, 1.7vw, 38px);
+    /* O raio entra no padding para o conteúdo continuar medido pela tela, e
+       não pela faixa, que é maior que ela. */
+    padding: clamp(24px, 2.6vw, 40px) calc(var(--slide-r) + var(--spacing-gut));
+    min-height: clamp(248px, 35svh, 372px);
+  }
+
+  /* ------------------------------------------------------- texto da faixa */
+  .product-slide__text {
+    min-width: 0;
+  }
+
+  /* O filete sai da borda da faixa e morre no texto: o recuo negativo é
+     exatamente o padding do corpo, então ele encosta na beirada. */
+  .product-slide__eyebrow {
+    display: flex;
+    align-items: center;
+    gap: clamp(10px, 1vw, 18px);
+    margin-left: calc(-1 * (var(--slide-r) + var(--spacing-gut)));
+    margin-bottom: clamp(14px, 1.6vw, 26px);
+    font-family: var(--font-tag);
+    font-size: clamp(8px, 0.62vw, 11px);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .product-slide__rule {
+    flex: 1;
+    min-width: clamp(28px, 5vw, 120px);
+    height: 1.4px;
+    border-radius: 2px;
+    background: currentColor;
+  }
+
+  .product-slide__title {
+    font-family: var(--font-display);
+    font-size: clamp(26px, 3.1vw, 54px);
+    line-height: 1.02;
+    margin-bottom: clamp(10px, 1.1vw, 18px);
+  }
+
+  .product-slide__lede {
+    max-width: 42ch;
+    font-size: clamp(12px, 0.86vw, 16px);
+    line-height: 1.52;
+    color: #E4E4E4;
+  }
+
+  /* ------------------------------------------------------- pack e vídeo */
+  /* O pack sobe além da borda de cima da faixa, como no layout. Nada corta
+     porque quem recorta é a janela, não a faixa. */
+  .product-slide__shot {
+    position: relative;
+    width: clamp(210px, 27vw, 380px);
+    margin-top: calc(-1 * clamp(40px, 5vw, 96px));
+    margin-bottom: calc(-1 * clamp(4px, 0.8vw, 14px));
+  }
+
+  /* O arquivo tem cerca de um terço de transparência em volta da arte, então
+     a caixa já passa da borda da faixa sem que o pack pareça passar. Escala e
+     sobe dentro da própria caixa: `transform` aqui é livre porque o GSAP
+     escreve na caixa, não na imagem. */
+  .product-slide__shot img {
+    width: 100%;
+    height: auto;
+    transform: translateY(-7%) scale(1.2);
+  }
+
+  .product-slide__video {
+    position: relative;
+    display: grid;
+    place-items: center;
+    justify-self: end;
+    width: 100%;
+    max-width: clamp(230px, 29vw, 400px);
+    aspect-ratio: 16 / 9;
+    border-radius: clamp(10px, 0.9vw, 16px);
+    background: #000;
+    /* `scale`, propriedade própria, e não `transform`: o GSAP escreve
+       `transform` em linha nestes mesmos elementos e venceria a regra. */
+    transition: scale .35s cubic-bezier(.22, 1, .36, 1);
+  }
+
+  .product-slide__video:hover {
+    scale: 1.015;
+  }
+
+  .product-slide__play {
+    display: grid;
+    place-items: center;
+    width: clamp(42px, 4.2vw, 74px);
+    aspect-ratio: 1;
+    border: 1.6px solid rgb(255 255 255 / .62);
+    border-radius: 999px;
+  }
+
+  .product-slide__play i {
+    width: 32%;
+    aspect-ratio: 69 / 83;
+    margin-left: 9%;
+    background: rgb(255 255 255 / .86);
+    clip-path: polygon(0 0, 100% 50%, 0 100%);
+  }
+
+  /* ------------------------------------------------------------- botão */
+  /* Fica montado na borda de baixo, metade dentro e metade fora — é o que o
+     layout faz, e é o que costura a faixa ao branco da página. */
+  .product-slide__cta {
+    position: absolute;
+    inset-inline: 0;
+    bottom: calc(-0.5 * var(--cta-h));
+    /* Absoluto num contêiner de grid não é item de grid: ele não vira uma
+       quarta coluna, e o bloco de referência é a caixa de padding do corpo —
+       que coincide com a borda da faixa. Daí o meio botão para fora. */
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(10px, 0.9vw, 16px);
+    width: fit-content;
+    height: var(--cta-h);
+    margin-inline: auto;
+    padding-inline: clamp(20px, 2.2vw, 36px);
+    border-radius: 999px;
+    background: #0A0A0A;
+    color: #fff;
+    font-size: clamp(11px, 0.8vw, 14px);
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+    transition: scale .35s cubic-bezier(.22, 1, .36, 1);
+  }
+
+  .product-slide__cta:hover {
+    scale: 1.03;
+  }
+
+  .product-slide__cta span:first-child {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .product-slide__cta i {
+    display: grid;
+    place-items: center;
+    width: clamp(20px, 1.6vw, 26px);
+    aspect-ratio: 1;
+    border: 1.2px solid currentColor;
+    border-radius: 999px;
+    font-size: 0.72em;
+    font-style: normal;
+    line-height: 1;
+  }
+
+  /* ------------------------------------------------- espelho do Aminosan */
+  /* Só a ordem das colunas e o lado do filete mudam — a marcação é a mesma nas
+     duas faixas, para o leitor de tela receber título antes de vídeo em ambas.
+     Dentro da media query de propósito: no celular a faixa é uma coluna só, e
+     estas regras, soltas, venceriam as de lá em especificidade. */
   @media (min-width: 861px) {
-    .products-band {
-      display: block;
+    .product-slide--amino .product-slide__video {
+      order: 1;
+      justify-self: start;
     }
-  }
 
-  @media (prefers-reduced-motion: reduce) {
-    .products-band {
-      transform: translateX(0);
+    .product-slide--amino .product-slide__shot {
+      order: 2;
+    }
+
+    .product-slide--amino .product-slide__text {
+      order: 3;
+      text-align: right;
+    }
+
+    .product-slide--amino .product-slide__eyebrow {
+      flex-direction: row-reverse;
+      margin-left: 0;
+      margin-right: calc(-1 * (var(--slide-r) + var(--spacing-gut)));
+    }
+
+    .product-slide--amino .product-slide__lede {
+      margin-left: auto;
     }
   }
 
   /* ------------------------------------------------ cortina de produtos */
   /* A seção fornece o curso do scroll; a janela sticky permanece ocupando a
      viewport. É o mesmo contrato geométrico do hero e não cria pin spacer,
-     portanto continua estável quando a barra do navegador móvel abre/fecha. */
+     portanto continua estável quando a barra do navegador móvel abre/fecha.
+
+     São dois cursos em sequência dentro da mesma janela:
+
+       --expertise-run   a cortina branca atravessando a tela;
+       --expertise-exit  a dissolução, com o bloco de produtos já por baixo.
+
+     O curso de saída só existe quando o JS liga `data-expertise-overlap` no
+     <html> — é ele que também sobe o bloco seguinte. Sem movimento (ou sem
+     JS) os dois valem zero e as seções voltam a se empilhar. */
   .expertise-transition {
-    --expertise-run: clamp(760px, 135svh, 1500px);
+    --expertise-run: clamp(620px, 105svh, 1150px);
     position: relative;
-    height: calc(100svh + var(--expertise-run));
+    height: calc(100lvh + var(--expertise-run) + var(--expertise-exit));
     background: #000;
   }
 
   .expertise-window {
     position: sticky;
     top: 0;
-    height: 100svh;
+    /* `lvh`, não `svh`. No celular a barra do navegador recolhe e a área
+       visível passa a ser a grande; com `svh` sobrava uma faixa no pé da
+       janela, e na dissolução essa faixa entregava o bloco de baixo antes da
+       hora. `lvh` é estático — não muda quando a barra some — então cobre
+       sempre sem provocar remedição. */
+    height: 100lvh;
     display: grid;
     place-items: center;
     overflow: clip;
     isolation: isolate;
+    /* Acima do bloco de produtos, que sobe para dentro desta seção — e por
+       isso está aqui, na janela, e não na seção. A seção precisa continuar
+       ABAIXO dos produtos: é a caixa dela que preenche a tela acima deles
+       enquanto eles sobem, e ela só consegue ficar atrás se não abrir um
+       contexto de empilhamento próprio (`z-index: auto`). */
+    z-index: 3;
+    /* Nada aqui é clicável, e na saída esta janela fica por cima dos cards do
+       bloco seguinte enquanto some. */
+    pointer-events: none;
   }
 
   .expertise-layer {
@@ -195,9 +447,19 @@
     text-align: center;
   }
 
+  /* O fundo é uma camada à parte porque sai sozinho: na dissolução o texto
+     some com blur + opacidade e o fundo, só com opacidade. */
+  .expertise-bg {
+    position: absolute;
+    inset: 0;
+  }
+
   .expertise-layer--dark {
-    background: #000;
     color: #fff;
+  }
+
+  .expertise-layer--dark .expertise-bg {
+    background: #000;
   }
 
   .expertise-layer--dark p {
@@ -208,9 +470,12 @@
      cortina. Assim nenhuma letra passa por um estado cinza intermediário. */
   .expertise-layer--light {
     z-index: 1;
-    background: #fff;
     color: #000;
     clip-path: inset(0 0 0 100%);
+  }
+
+  .expertise-layer--light .expertise-bg {
+    background: #fff;
   }
 
   .expertise-layer--light p {
@@ -846,8 +1111,157 @@ html[data-hero-pin] #brazil {
   margin-top: -80svh;
 }
 
+/* A mesma ideia na saída da cortina, invertida: aqui é a janela que fica por
+   cima e o bloco de baixo que espera atrás dela.
+
+   O bloco de produtos sobe para dentro do curso de saída da cortina, e é ele
+   que a dissolução revela — o texto sai com blur, o fundo branco sai com
+   opacidade, e o que aparece embaixo já estava lá o tempo todo. Sem isto a
+   cortina só teria o preto do body atrás, e "sumir" viraria "escurecer".
+
+   Só com movimento: `data-expertise-overlap` é ligado em Expertise.tsx. */
+html[data-expertise-overlap] {
+  /* Uma tela cheia, exatamente. É o que faz o topo do bloco de produtos
+     coincidir com o topo da janela no último quadro da dissolução: no fim do
+     percurso a página está onde estaria se a cortina não existisse. */
+  --expertise-exit: 100lvh;
+}
+
+/* Branco, e não preto: a caixa da seção é o que se vê acima do bloco de
+   produtos enquanto ele sobe por trás da janela que se dissolve. Sendo da cor
+   dele, a emenda não existe — some o fundo da janela e o que fica é uma tela
+   branca só, com os produtos chegando. Enquanto a cortina corre esta caixa
+   está inteiramente coberta pela janela, então a cor não aparece antes. */
+html[data-expertise-overlap] .expertise-transition {
+  background: #fff;
+}
+
+html[data-expertise-overlap] #products {
+  position: relative;
+  /* Acima da caixa da cortina e abaixo da janela dela (z-index: 3). */
+  z-index: 2;
+  margin-top: calc(-1 * var(--expertise-exit));
+}
+
 /* ========================================================== responsivo */
 @media (max-width: 860px) {
+
+  /* ---------------------------------------------------- palco dos produtos */
+  /* No celular a faixa toma a tela inteira e a leitura vira vertical: pack no
+     alto, título, texto, vídeo e botão. A tarja de categoria sai da coluna de
+     texto e vira um filete em pé na borda esquerda, como no layout. */
+  .product-stage {
+    --product-run: clamp(1600px, 255svh, 2900px);
+    --slide-r: 22px;
+    --cta-h: 46px;
+    /* O quanto a faixa desce do topo da tela. É essa folga que deixa o pack
+       passar por cima da borda, como no desktop, e é ela que faz os cantos de
+       cima existirem para poderem ser arredondados. */
+    --band-top: clamp(58px, 11svh, 110px);
+  }
+
+  .product-slide {
+    align-self: stretch;
+    /* Sem a sobra lateral do desktop: aqui nada anda na horizontal, e é a
+       ausência dela que traz os cantos de cima para dentro do quadro. */
+    width: 100%;
+    margin-left: 0;
+  }
+
+  /* Desce do topo e escapa pelo pé — em cima a borda é para ser vista, em
+     baixo a janela recorta. */
+  .product-slide__panel {
+    inset: var(--band-top) 0 calc(-1 * var(--slide-r)) 0;
+  }
+
+  /* Na horizontal o degradê separava texto de vídeo; aqui não há lados, há
+     alto e pé — então ele vira diagonal, claro no alto e fechando embaixo. */
+  .product-slide--kmep .product-slide__panel {
+    background: linear-gradient(152deg, #92251B 0%, #56160F 30%, #1E0806 68%, #310D08 100%);
+  }
+
+  .product-slide--amino .product-slide__panel {
+    background: linear-gradient(152deg, #154572 0%, #0C2C55 30%, #06101F 68%, #0A1B31 100%);
+  }
+
+  .product-slide__body {
+    grid-template-columns: minmax(0, 1fr);
+    align-content: center;
+    justify-items: center;
+    row-gap: clamp(10px, 1.8svh, 20px);
+    height: 100%;
+    min-height: 0;
+    padding:
+      calc(var(--band-top) + clamp(26px, 4.4svh, 52px))
+      clamp(30px, 8vw, 52px)
+      clamp(28px, 5svh, 52px);
+    text-align: center;
+  }
+
+  .product-slide__shot { order: 1; }
+  .product-slide__text { order: 2; }
+  .product-slide__video { order: 3; }
+  .product-slide__cta { order: 4; }
+
+  /* O `top` sobe a arte sem mexer no layout — a caixa continua ocupando o
+     mesmo espaço, então a centralização do corpo não se desloca junto e a
+     sobra por cima da borda fica previsível. A margem negativa só encolhe o
+     quanto ela pesa na conta da altura. */
+  .product-slide__shot {
+    width: min(88%, 380px);
+    margin-top: 0;
+    margin-bottom: calc(-1 * clamp(50px, 9svh, 105px));
+    top: calc(-1 * clamp(85px, 14svh, 165px));
+  }
+
+  /* Deitada na borda, lendo de baixo para cima. `writing-mode` mais rotação
+     de meia volta: assim o filete cai embaixo do texto, e não em cima. */
+  .product-slide__eyebrow {
+    position: absolute;
+    left: clamp(14px, 4.5vw, 26px);
+    top: calc(var(--band-top) + clamp(20px, 3.4svh, 40px));
+    bottom: clamp(28px, 5svh, 52px);
+    margin: 0;
+    writing-mode: vertical-rl;
+    rotate: 180deg;
+    font-size: 9px;
+    letter-spacing: 0.14em;
+  }
+
+  .product-slide__rule {
+    width: 1.4px;
+    height: auto;
+    min-width: 0;
+    min-height: 30px;
+  }
+
+  .product-slide__title {
+    font-size: clamp(20px, 6vw, 30px);
+    margin-bottom: clamp(6px, 1.2svh, 12px);
+  }
+
+  .product-slide__lede {
+    max-width: 34ch;
+    margin-inline: auto;
+    font-size: clamp(11px, 3.1vw, 14px);
+  }
+
+  .product-slide__video {
+    justify-self: center;
+    max-width: min(84%, 400px);
+  }
+
+  /* Dentro da faixa, e claro sobre o fundo escuro — a janela recorta o que
+     passar do pé, então aqui ele não pode montar na borda. */
+  .product-slide__cta {
+    position: relative;
+    inset: auto;
+    margin-top: clamp(6px, 1.6svh, 16px);
+    background: #FAFAFA;
+    color: #101010;
+    font-size: 12px;
+  }
+
 
   /* O celular tem foto própria de trator e de folhas — recorte vertical
      (1080 × 1100), não o frame largo reescalado. Por isso o palco aqui tem
@@ -964,6 +1378,7 @@ html[data-hero-pin] #brazil {
 
   .expertise-window {
     position: relative;
+    height: auto;
     min-height: min(1066px, 88svh);
   }
 
@@ -971,6 +1386,23 @@ html[data-hero-pin] #brazil {
     clip-path: inset(0);
   }
 
+  /* Sem palco: as duas faixas voltam a ser dois blocos empilhados. */
+  .product-stage {
+    height: auto;
+    padding-block: var(--spacing-sec);
+  }
+
+  .product-stage__window {
+    position: relative;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--spacing-sec) + var(--cta-h));
+  }
+
+  /* A largura extra e o recuo continuam: as faixas sangram de ponta a ponta,
+     com os cantos redondos fora do quadro. Quem corta é a janela, que mantém
+     o `overflow: clip`. */
   .crop-card {
     transition: none;
   }

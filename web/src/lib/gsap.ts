@@ -20,6 +20,24 @@ import { useGSAP } from "@gsap/react";
 gsap.registerPlugin(useGSAP, ScrollTrigger, ScrollToPlugin);
 
 /**
+ * No celular, a barra do navegador some e volta durante a rolagem, e cada
+ * mudança dessas é um `resize` — que por padrão faz o ScrollTrigger remedir
+ * tudo no meio do gesto. As consequências eram duas, as duas visíveis na
+ * cortina de produtos: as cenas com `scrub` davam solavancos a cada troca de
+ * altura, e um `fromTo` com `invalidateOnRefresh` era devolvido ao quadro
+ * inicial toda vez — a cortina branca voltava para fora da tela antes de
+ * terminar de atravessar, então nunca chegava a atravessar.
+ *
+ * Ignorar é seguro aqui porque nenhuma geometria do site depende da altura
+ * que muda: as cenas são medidas em `svh` e `lvh`, que são estáticos. Uma
+ * troca de orientação continua remedindo — o ScrollTrigger só ignora o
+ * resize quando apenas a altura mudou, em dispositivo de toque.
+ */
+if (typeof window !== "undefined") {
+  ScrollTrigger.config({ ignoreMobileResize: true });
+}
+
+/**
  * Defaults do projeto. Toda animação de entrada sai daqui, então o ritmo do
  * site inteiro se ajusta em um lugar.
  */
