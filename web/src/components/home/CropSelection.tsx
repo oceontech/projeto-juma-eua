@@ -330,7 +330,7 @@ export function CropSelection() {
       {/* O Figma usa só a faixa central da foto; o resto é névoa. */}
       <div className="relative mt-[28px] aspect-[444/250] overflow-hidden bg-white min-[861px]:mt-0 min-[861px]:aspect-[1918/629]">
         <Image
-          src="/img/crop-field.jpg"
+          src="/img/crop-field.webp"
           alt=""
           aria-hidden
           width={2880}

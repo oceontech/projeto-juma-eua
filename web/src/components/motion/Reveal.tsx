@@ -54,6 +54,8 @@ type RevealProps = {
    * blocos volta a ser a dos `delay`, e não a das alturas de cada um.
    */
   trigger?: string;
+  /** Seletor de alvos internos específicos para animar */
+  targetSelector?: string;
   /** Sobrescreve o ponto de partida quando o padrão não serve. */
   start?: string;
 };
