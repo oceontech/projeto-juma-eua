@@ -135,6 +135,29 @@
     margin-inline: auto;
   }
 
+  /* -------------------------------------------------- cards da credencial */
+  /* O toque de vida no repouso: o card sobe um fio e o brilho lima cresce.
+     `translate` e `scale` são propriedades próprias, não `transform` — os
+     cards recebem `transform` do GSAP na entrada, e uma transição em
+     `transform` aqui perderia para o estilo em linha dele. */
+  .brazil-card {
+    transition: translate .5s cubic-bezier(.22, 1, .36, 1);
+  }
+
+  .brazil-card:hover {
+    translate: 0 -4px;
+  }
+
+  .brazil-card__glow {
+    transition: scale .7s cubic-bezier(.22, 1, .36, 1), opacity .7s ease;
+    transform-origin: top left;
+  }
+
+  .brazil-card:hover .brazil-card__glow {
+    scale: 1.35;
+    opacity: .75;
+  }
+
   /* ---------------------------------------------------- palco dos produtos */
   /* Dois produtos, um lugar só. A seção dá o curso da rolagem e a janela
      sticky fica ocupando a tela — mesmo contrato do hero e da cortina, sem
@@ -244,11 +267,30 @@
     background: currentColor;
   }
 
+  /* A caixa que corta o título na entrada. O respiro embaixo é o que impede
+     a máscara de comer a perna de um "g" ou de um "y" — e sai da margem, para
+     o espaçamento até a linha seguinte continuar o mesmo. */
   .product-slide__title {
     font-family: var(--font-display);
     font-size: clamp(26px, 3.1vw, 54px);
     line-height: 1.02;
-    margin-bottom: clamp(10px, 1.1vw, 18px);
+    overflow: hidden;
+    padding-bottom: 0.14em;
+    margin-bottom: calc(clamp(10px, 1.1vw, 18px) - 0.14em);
+  }
+
+  .product-slide__title > span {
+    display: block;
+  }
+
+  /* O filete se desenha a partir da borda da faixa, e é de lá que ele cresce:
+     à esquerda no KMEP, à direita no Aminosan, que é espelhado. */
+  .product-slide__rule {
+    transform-origin: left center;
+  }
+
+  .product-slide--amino .product-slide__rule {
+    transform-origin: right center;
   }
 
   .product-slide__lede {
@@ -812,6 +854,12 @@
     overflow: hidden;
     border-radius: clamp(10px, 1.05vw, 20px);
     aspect-ratio: 1260 / 448;
+    /* A proporção sozinha faz a altura crescer com a largura, e numa tela
+       larga e baixa a foto engolia a seção inteira — o cabeçalho ficava fora
+       do quadro e os benefícios espremidos no pé. O teto em `svh` corta pela
+       altura da tela, que é o que de fato limita; as fotos são `cover`, então
+       elas só recortam um pouco mais. */
+    max-height: min(48svh, 560px);
     touch-action: pan-y;
     user-select: none;
     cursor: ew-resize;
@@ -865,6 +913,79 @@
     background-repeat: no-repeat;
     background-position: center;
     background-size: 48%;
+  }
+
+  /* Enquanto ninguém arrastou, o punho respira. É a única pista de que a foto
+     é manipulável — e some no primeiro toque, quando já não é mais pista. */
+  @keyframes compare-hint {
+    0%, 100% { transform: translate(-50%, -50%) scale(1); }
+    50%      { transform: translate(-50%, -50%) scale(1.09); }
+  }
+
+  .compare-handle::after {
+    animation: compare-hint 2.6s ease-in-out infinite;
+  }
+
+  .compare[data-touched] .compare-handle::after {
+    animation: none;
+  }
+
+  /* ------------------------------------------------- benefícios da prova */
+  .proof-benefits {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: clamp(22px, 2.4vw, 34px);
+    text-align: center;
+  }
+
+  .proof-benefit {
+    position: relative;
+  }
+
+  /* O filete divisor é um elemento, e não uma borda, porque entra junto com o
+     bloco — e some no empilhamento do celular, onde não separa coluna
+     nenhuma. */
+  .proof-benefit__divider {
+    display: none;
+    position: absolute;
+    inset-block: 0;
+    left: 0;
+    width: 1px;
+    background: rgb(255 255 255 / .14);
+  }
+
+  .proof-benefit__rule {
+    margin-inline: auto;
+    transition: scale .45s cubic-bezier(.22, 1, .36, 1);
+    transform-origin: center;
+  }
+
+  @media (min-width: 861px) {
+    .proof-benefits {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0;
+      text-align: left;
+    }
+
+    .proof-benefit {
+      padding-inline: clamp(20px, 3vw, 60px);
+    }
+
+    .proof-benefit:first-child { padding-left: 0; }
+    .proof-benefit:last-child { padding-right: 0; }
+
+    .proof-benefit + .proof-benefit .proof-benefit__divider {
+      display: block;
+    }
+
+    .proof-benefit__rule {
+      margin-inline: 0;
+      transform-origin: left center;
+    }
+
+    .proof-benefit:hover .proof-benefit__rule {
+      scale: 1.5 1;
+    }
   }
 
   /* O range não recebe ponteiro — o arrasto é do próprio bloco. Ele fica só
@@ -1156,8 +1277,10 @@ html[data-expertise-overlap] #products {
     --cta-h: 46px;
     /* O quanto a faixa desce do topo da tela. É essa folga que deixa o pack
        passar por cima da borda, como no desktop, e é ela que faz os cantos de
-       cima existirem para poderem ser arredondados. */
-    --band-top: clamp(58px, 11svh, 110px);
+       cima existirem para poderem ser arredondados. Ela desce quase um quinto
+       da tela: a faixa fica mais baixa, o pack ganha o dobro de sobra por
+       cima dela e o branco da página continua aparecendo no alto. */
+    --band-top: clamp(92px, 19svh, 176px);
   }
 
   .product-slide {
@@ -1188,67 +1311,81 @@ html[data-expertise-overlap] #products {
     grid-template-columns: minmax(0, 1fr);
     align-content: center;
     justify-items: center;
-    row-gap: clamp(10px, 1.8svh, 20px);
+    row-gap: clamp(8px, 1.4svh, 16px);
     height: 100%;
     min-height: 0;
+    /* O pé reserva a linha da tarja, que é absoluta e não empurra ninguém. */
     padding:
-      calc(var(--band-top) + clamp(26px, 4.4svh, 52px))
-      clamp(30px, 8vw, 52px)
-      clamp(28px, 5svh, 52px);
+      calc(var(--band-top) + clamp(16px, 2.6svh, 30px))
+      clamp(20px, 6vw, 36px)
+      clamp(44px, 7.4svh, 78px);
     text-align: center;
   }
 
+  /* Botão entre o texto e o vídeo: ele fecha a leitura do produto, e o vídeo
+     é o que fica por último na tela, grande, antes da tarja. */
   .product-slide__shot { order: 1; }
   .product-slide__text { order: 2; }
-  .product-slide__video { order: 3; }
-  .product-slide__cta { order: 4; }
+  .product-slide__cta { order: 3; }
+  .product-slide__video { order: 4; }
 
   /* O `top` sobe a arte sem mexer no layout — a caixa continua ocupando o
      mesmo espaço, então a centralização do corpo não se desloca junto e a
      sobra por cima da borda fica previsível. A margem negativa só encolhe o
      quanto ela pesa na conta da altura. */
   .product-slide__shot {
-    width: min(88%, 380px);
+    width: min(80%, 340px);
     margin-top: 0;
-    margin-bottom: calc(-1 * clamp(50px, 9svh, 105px));
-    top: calc(-1 * clamp(85px, 14svh, 165px));
+    /* Mais negativa que antes: é ela que encurta o vão entre o pack e o
+       título, sem mexer em onde a arte está desenhada. */
+    margin-bottom: calc(-1 * clamp(88px, 15.5svh, 178px));
+    top: calc(-1 * clamp(74px, 12.5svh, 146px));
   }
 
-  /* Deitada na borda, lendo de baixo para cima. `writing-mode` mais rotação
-     de meia volta: assim o filete cai embaixo do texto, e não em cima. */
+  /* Deitada no pé da faixa, embaixo do vídeo, e não mais em pé na borda
+     esquerda: a coluna de texto ficou larga e o filete vertical espremia o
+     conteúdo pela lateral. Continua absoluta — assim ela não entra na conta
+     do grid e o corpo segue centrado no que resta da faixa. */
   .product-slide__eyebrow {
     position: absolute;
-    left: clamp(14px, 4.5vw, 26px);
-    top: calc(var(--band-top) + clamp(20px, 3.4svh, 40px));
-    bottom: clamp(28px, 5svh, 52px);
+    left: clamp(20px, 6vw, 36px);
+    right: clamp(20px, 6vw, 36px);
+    top: auto;
+    bottom: clamp(16px, 2.8svh, 30px);
     margin: 0;
-    writing-mode: vertical-rl;
-    rotate: 180deg;
-    font-size: 9px;
-    letter-spacing: 0.14em;
+    writing-mode: horizontal-tb;
+    rotate: none;
+    justify-content: flex-start;
+    font-size: 9.5px;
+    letter-spacing: 0.12em;
   }
 
+  /* Sem o filete: deitado ele viraria um traço solto atravessando o pé da
+     faixa, e o que a linha precisa carregar é o texto. */
   .product-slide__rule {
-    width: 1.4px;
-    height: auto;
-    min-width: 0;
-    min-height: 30px;
+    display: none;
   }
 
   .product-slide__title {
-    font-size: clamp(20px, 6vw, 30px);
-    margin-bottom: clamp(6px, 1.2svh, 12px);
+    font-size: clamp(25px, 7.6vw, 38px);
+    margin-bottom: clamp(8px, 1.4svh, 15px);
   }
 
+  /* Centrado como o título: no estreito a coluna é uma só, e o texto à
+     esquerda destoava do resto do bloco. O `text-align` do corpo já é
+     `center` — aqui basta não contrariá-lo. */
   .product-slide__lede {
-    max-width: 34ch;
+    max-width: none;
     margin-inline: auto;
-    font-size: clamp(11px, 3.1vw, 14px);
+    font-size: clamp(13px, 3.6vw, 16px);
+    line-height: 1.46;
   }
 
+  /* A largura inteira da coluna: no estreito o vídeo é o segundo assunto da
+     faixa, e encolhido dava uma tarja preta pequena no meio do vermelho. */
   .product-slide__video {
-    justify-self: center;
-    max-width: min(84%, 400px);
+    justify-self: stretch;
+    max-width: none;
   }
 
   /* Dentro da faixa, e claro sobre o fundo escuro — a janela recorta o que
@@ -1256,7 +1393,9 @@ html[data-expertise-overlap] #products {
   .product-slide__cta {
     position: relative;
     inset: auto;
-    margin-top: clamp(6px, 1.6svh, 16px);
+    width: min(84%, 320px);
+    margin-top: clamp(6px, 1.4svh, 14px);
+    margin-bottom: clamp(6px, 1.4svh, 14px);
     background: #FAFAFA;
     color: #101010;
     font-size: 12px;

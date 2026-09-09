@@ -14,10 +14,11 @@
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ScrollToPlugin } from "gsap/ScrollToPlugin";
+import { SplitText } from "gsap/SplitText";
 import { useGSAP } from "@gsap/react";
 
 /* registerPlugin é idempotente; o módulo é avaliado uma vez por bundle. */
-gsap.registerPlugin(useGSAP, ScrollTrigger, ScrollToPlugin);
+gsap.registerPlugin(useGSAP, ScrollTrigger, ScrollToPlugin, SplitText);
 
 /**
  * No celular, a barra do navegador some e volta durante a rolagem, e cada
@@ -69,4 +70,4 @@ if (process.env.NODE_ENV !== "production" && typeof window !== "undefined") {
   Object.assign(window, { gsap, ScrollTrigger });
 }
 
-export { gsap, ScrollTrigger, useGSAP };
+export { gsap, ScrollTrigger, SplitText, useGSAP };

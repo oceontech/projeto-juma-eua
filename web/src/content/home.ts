@@ -22,11 +22,22 @@ export const nav = {
     { label: "Aminosan®", href: "/aminosan" },
     { label: "KMEP Ultra®", href: "/kmep-ultra" },
   ] satisfies NavLink[],
+  /* Só no estreito: os três destinos que valem um toque direto ficam na
+     barra, e o resto continua no painel. Rótulos curtos porque a faixa já
+     carrega selo e botão do menu — "KMEP Ultra®" não caberia. */
+  compact: [
+    { label: "Home", href: "/" },
+    { label: "KMEP", href: "/kmep-ultra" },
+    { label: "Aminosan", href: "/aminosan" },
+  ] satisfies NavLink[],
   cta: { label: "Get a Free Trial", href: "#us-operation" },
 };
 
 export const hero = {
   tagline: "Juma-Agro Fertilizer LLC · Lakeland, Florida",
+  /* No estreito a linha inteira só cabe encolhendo a tipografia até quase
+     sumir; a praça entrega menos que o nome da empresa, então ela sai. */
+  taglineShort: "Juma-Agro Fertilizer LLC",
   headline: "Proven where the harvest never stops.",
   subheadline:
     "In Brazil, the farmer harvests two to three crops from the same plot each year. There is no winter to reset the field. Our foliar nutrition has been tested in this for 38 years, trial after trial, with the witness alongside.",

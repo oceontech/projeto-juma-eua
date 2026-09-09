@@ -52,8 +52,11 @@ function Slide({ product }: { product: Product }) {
             <span>{product.category}</span>
           </p>
 
+          {/* O título sobe de dentro de uma máscara — daí o <span>: quem
+              corta é a caixa de fora, quem anda é a de dentro. Fosse um só,
+              o corte andaria junto com o texto e não cortaria nada. */}
           <h3 data-slide-part className="product-slide__title">
-            {product.title}
+            <span data-slide-mask>{product.title}</span>
           </h3>
 
           <p data-slide-part className="product-slide__lede">
@@ -151,13 +154,23 @@ export function Products() {
           const [kmep, amino] = slides;
           if (!windowEl || !kmep || !amino) return;
 
-          /* A tarja de categoria fica de lado no celular por `rotate`, que é
+          /* Cada peça é colhida por conta própria: a entrada não é mais um
+             fade de bloco com escalonamento, e sim um gesto por peça — ver
+             `arm`/`enter` abaixo.
+
+             A tarja de categoria fica de lado no celular por `rotate`, que é
              propriedade própria e não `transform` — mas o GSAP escreve
-             `transform`, e um `y` aqui seria aplicado no eixo girado. Ela
-             entra só com opacidade, e por isso vem separada das demais. */
+             `transform`, e um `y` nela seria aplicado no eixo girado. Por isso
+             quem anda ali é o <span> de dentro, nunca a tarja. */
           const partsOf = (slide: HTMLElement) => ({
             eyebrow: slide.querySelector<HTMLElement>("[data-slide-eyebrow]"),
+            rule: slide.querySelector<HTMLElement>(".product-slide__rule"),
+            tag: slide.querySelector<HTMLElement>("[data-slide-eyebrow] span"),
+            title: slide.querySelector<HTMLElement>("[data-slide-mask]"),
+            lede: slide.querySelector<HTMLElement>(".product-slide__lede"),
             shot: slide.querySelector<HTMLElement>(".product-slide__shot"),
+            video: slide.querySelector<HTMLElement>(".product-slide__video"),
+            play: slide.querySelector<HTMLElement>(".product-slide__play"),
             cta: slide.querySelector<HTMLElement>(".product-slide__cta"),
             parts: Array.from(
               slide.querySelectorAll<HTMLElement>("[data-slide-part]"),
@@ -170,6 +183,54 @@ export function Products() {
           const everyPart = [...k.parts, ...a.parts];
           const everyEyebrow = [k.eyebrow, a.eyebrow].filter(Boolean);
 
+          type Group = ReturnType<typeof partsOf>;
+
+          /* O pack CRESCE até o tamanho; não é cortado nem apagado.
+
+             Cortar deixava a arte partida no meio do caminho — meio galão, com
+             a linha do corte à mostra. E apagar tinha um problema mais
+             específico: o pack cavalga a borda de cima da faixa, então metade
+             dele fica sobre a cor e metade sobre o branco da página. Meio
+             transparente, os dois fundos aparecem por dentro da mesma peça e a
+             arte ganha duas cores. Escalando, ele está inteiro e opaco em todo
+             quadro — só menor —, e a origem no pé o faz crescer a partir de
+             onde encosta na faixa.
+
+             O vídeo pode apagar: ele mora inteiro DENTRO da faixa, sobre uma
+             cor só, e não tem emenda para deixar aparecer. */
+          const SHOT_ORIGIN = "50% 100%";
+
+          /* Quadro de partida das peças. Escrito à mão e não por `fromTo`
+             porque a faixa que ainda não entrou precisa estar armada desde o
+             primeiro layout — inclusive a do Aminosan, que só se move na
+             troca, lá adiante. */
+          const arm = (g: Group) => {
+            gsap.set(g.rule, { scaleX: 0 });
+            gsap.set(g.tag, { opacity: 0, x: narrow ? 0 : -14, y: narrow ? 10 : 0 });
+            /* `y` explícito ao lado do `yPercent`, sempre — a mesma armadilha
+               que as faixas já documentam mais abaixo: o GSAP guarda os dois
+               separados e SOMA na matriz, então uma porcentagem sozinha se
+               empilha sobre qualquer translação em pixels que ele tenha
+               encontrado, e o título fica preso fora da máscara. */
+            gsap.set(g.title, { y: 0, yPercent: 115 });
+            gsap.set(g.lede, { opacity: 0, y: 18 });
+            gsap.set(g.shot, { transformOrigin: SHOT_ORIGIN, scale: 0.84, y: 18 });
+            gsap.set(g.video, { opacity: 0, scale: 0.94 });
+            gsap.set(g.play, { opacity: 0, scale: 0.72 });
+            gsap.set(g.cta, { opacity: 0, y: 22 });
+          };
+
+          /* O mesmo quadro, do outro lado: tudo no lugar. Serve a quem pediu
+             menos movimento e à faixa que, no celular, chega pronta. */
+          const settle = (g: Group) => {
+            gsap.set(g.rule, { scaleX: 1 });
+            gsap.set([g.tag, g.lede, g.cta], { opacity: 1, x: 0, y: 0 });
+            gsap.set(g.title, { y: 0, yPercent: 0 });
+            gsap.set(g.shot, { transformOrigin: SHOT_ORIGIN, scale: 1, y: 0 });
+            gsap.set(g.video, { opacity: 1, scale: 1 });
+            gsap.set(g.play, { opacity: 1, scale: 1 });
+          };
+
           if (!animate) {
             gsap.set([kmep, amino], {
               x: 0,
@@ -178,8 +239,8 @@ export function Products() {
               yPercent: 0,
               filter: "none",
             });
-            gsap.set(everyPart, { opacity: 1, y: 0 });
-            gsap.set(everyEyebrow, { opacity: 1 });
+            settle(k);
+            settle(a);
             return;
           }
 
@@ -189,6 +250,9 @@ export function Products() {
             });
             everyPart.forEach((part) => {
               part.style.willChange = active ? "transform, opacity" : "";
+            });
+            [k.shot, a.shot, k.video, a.video].forEach((piece) => {
+              if (piece) piece.style.willChange = active ? "transform, opacity" : "";
             });
           };
 
@@ -219,8 +283,9 @@ export function Products() {
              1) até a vez deles chegar, e apareciam prontos no meio da
              varredura, muito antes da hora. Com o estado escrito aqui, quem
              ainda não entrou está escondido de qualquer forma. */
-          gsap.set([...k.parts, ...a.parts], { opacity: 0, y: 30 });
-          gsap.set([k.eyebrow, a.eyebrow], { opacity: 0 });
+          arm(k);
+          arm(a);
+          gsap.set(everyEyebrow, { opacity: 1 });
           /* `x` e `y` em zero junto com as porcentagens, sempre. O GSAP guarda
              os dois separados e SOMA os dois na matriz; quando ele encontra um
              `transform` que não foi ele quem escreveu — um resquício de uma
@@ -278,9 +343,24 @@ export function Products() {
             },
           });
 
-          /* As peças de dentro chegam logo atrás da faixa, escalonadas. */
-          const partsIn = (
-            group: ReturnType<typeof partsOf>,
+          /* A entrada das peças de dentro.
+           *
+           * Não é uma varredura de opacidade: cada peça tem o gesto que a
+           * própria forma pede, e a ordem é a da leitura — o filete se desenha
+           * a partir da borda da faixa, a categoria vem atrás dele, o título
+           * sobe de dentro da máscara, o texto assenta, o pack se descobre de
+           * baixo para cima enquanto sobe, o vídeo se abre de cima para baixo,
+           * o play cresce no meio dele e o botão fecha a leitura.
+           *
+           * Os tempos são frações do gesto, não segundos: o mesmo desenho vale
+           * para a chegada (curso longo) e para a troca (curso curto).
+           *
+           * As peças se sobrepõem de propósito. Uma fila de gestos que esperam
+           * uns pelos outros lê como lista; sobrepostas, lê como uma coisa só
+           * chegando — e é isso que a faixa é.
+           */
+          const enter = (
+            g: Group,
             at: number,
             duration: number,
             /* Fração do gesto já cumprida quando as peças começam a aparecer.
@@ -290,24 +370,76 @@ export function Products() {
                borda esquerda. */
             after: number,
           ) => {
+            const t = (fraction: number) => at + duration * (after + fraction);
+            const d = (fraction: number) => duration * fraction;
+
             timeline
+              /* O traço sai da borda e corre até o texto. É o primeiro gesto
+                 porque é ele que ancora a faixa na tela: enquanto ele cresce,
+                 o resto ainda está por chegar. */
               .fromTo(
-                group.eyebrow,
-                { opacity: 0 },
-                { opacity: 1, duration: duration * 0.28 },
-                at + duration * (after + 0.05),
+                g.rule,
+                { scaleX: 0 },
+                { scaleX: 1, duration: d(0.34), ease: "power2.out" },
+                t(0),
               )
               .fromTo(
-                group.parts,
-                { opacity: 0, y: 30 },
-                {
-                  opacity: 1,
-                  y: 0,
-                  duration: duration * 0.42,
-                  stagger: duration * 0.08,
-                  ease: "power2.out",
-                },
-                at + duration * after,
+                g.tag,
+                { opacity: 0, x: narrow ? 0 : -14, y: narrow ? 10 : 0 },
+                { opacity: 1, x: 0, y: 0, duration: d(0.26), ease: "power2.out" },
+                t(0.1),
+              )
+              /* O título sobe inteiro de dentro do corte — sem opacidade
+                 nenhuma, porque tipografia meio transparente sobre cor lê como
+                 borrão. `power3.out` para ele chegar rápido e assentar devagar,
+                 que é o que dá peso a um nome de produto. */
+              .fromTo(
+                g.title,
+                { y: 0, yPercent: 115 },
+                { y: 0, yPercent: 0, duration: d(0.42), ease: "power3.out" },
+                t(0.14),
+              )
+              .fromTo(
+                g.lede,
+                { opacity: 0, y: 18 },
+                { opacity: 1, y: 0, duration: d(0.38), ease: "power2.out" },
+                t(0.28),
+              )
+              /* O pack cresce do pé até o tamanho, com um empurrão para cima
+                 no meio do caminho. Curso longo e `power3.out`: ele é a peça
+                 maior da faixa, e peça grande que assenta rápido demais parece
+                 que caiu ali. */
+              .fromTo(
+                g.shot,
+                { transformOrigin: SHOT_ORIGIN, scale: 0.84, y: 18 },
+                { scale: 1, y: 0, duration: d(0.62), ease: "power3.out" },
+                t(0.12),
+              )
+              /* O vídeo vem atrás, também crescendo — só que de perto de 1,
+                 porque ele é uma superfície e não um objeto: exagerar a escala
+                 numa moldura preta lê como zoom, não como entrada. */
+              .fromTo(
+                g.video,
+                { opacity: 0, scale: 0.94 },
+                { opacity: 1, scale: 1, duration: d(0.5), ease: "power2.out" },
+                t(narrow ? 0.46 : 0.3),
+              )
+              .fromTo(
+                g.play,
+                { opacity: 0, scale: 0.72 },
+                { opacity: 1, scale: 1, duration: d(0.3), ease: "back.out(2)" },
+                t(narrow ? 0.62 : 0.52),
+              )
+              /* O botão fecha a leitura — e "fechar" é outro lugar em cada
+                 formato. No largo ele fica pendurado na borda de baixo, depois
+                 do vídeo, e entra por último. No estreito ele está ENTRE o
+                 texto e o vídeo, então entra ali: um gesto que pula uma peça e
+                 volta atrás lê como falha, não como coreografia. */
+              .fromTo(
+                g.cta,
+                { opacity: 0, y: 22 },
+                { opacity: 1, y: 0, duration: d(0.34), ease: "back.out(1.4)" },
+                t(narrow ? 0.34 : 0.6),
               );
           };
 
@@ -336,7 +468,7 @@ export function Products() {
             IN_AT,
           );
 
-          partsIn(k, IN_AT, IN_DUR, 0.42);
+          enter(k, IN_AT, IN_DUR, 0.34);
 
           /* -------------------------------------------------------- troca */
           /* Duas coreografias, porque o palco é outro em cada largura.
@@ -428,10 +560,9 @@ export function Products() {
                desliza por cima como um cartão inteiro, e não como uma casca
                que se preenche depois. Ninguém vê isto acontecer — ela ainda
                está abaixo do pé da tela. */
-            gsap.set(a.parts, { opacity: 1, y: 0 });
-            gsap.set(a.eyebrow, { opacity: 1 });
+            settle(a);
           } else {
-            partsIn(a, SWAP_AT, SWAP_DUR, 0.48);
+            enter(a, SWAP_AT, SWAP_DUR, 0.4);
           }
 
           /* Estica o timeline até 1 para o Aminosan ter o mesmo respiro de
