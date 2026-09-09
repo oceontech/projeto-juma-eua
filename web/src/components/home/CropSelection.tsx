@@ -9,6 +9,8 @@ import { crops } from "@/content/home";
 const CARDS = crops.cards;
 const CENTER = Math.floor(CARDS.length / 2);
 const SECONDS_PER_CARD = 5;
+const DRAG_THRESHOLD = 7;
+const INERTIA_MS = 180;
 
 const DESKTOP_GEOMETRY = {
   x: [0, 63, 126, 158],
@@ -57,6 +59,17 @@ export function CropSelection() {
       let interactionPaused = false;
       let conveyor: gsap.core.Tween | null = null;
       let selectionTween: gsap.core.Tween | null = null;
+      let dragPointerId: number | null = null;
+      let dragStartX = 0;
+      let dragStartY = 0;
+      let dragStartPhase = CENTER;
+      let dragCardStride = 1;
+      let lastPointerX = 0;
+      let lastPointerTime = 0;
+      let pointerVelocity = 0;
+      let dragLocked = false;
+      let suppressClick = false;
+      let suppressClickTimer: number | null = null;
 
       const renderConveyor = () => {
         const geometry = mobile.matches ? MOBILE_GEOMETRY : DESKTOP_GEOMETRY;
@@ -160,6 +173,129 @@ export function CropSelection() {
         });
       };
 
+      const resumeConveyor = () => {
+        interactionPaused = false;
+
+        if (!conveyorVisible || reduceMotion) return;
+
+        if (selectionTween) {
+          selectionTween.play();
+        } else {
+          conveyor?.play();
+        }
+      };
+
+      const handlePointerDown = (event: PointerEvent) => {
+        if (!mobile.matches || !event.isPrimary || event.button !== 0) return;
+
+        dragPointerId = event.pointerId;
+        dragStartX = event.clientX;
+        dragStartY = event.clientY;
+        dragStartPhase = phase.value;
+        lastPointerX = event.clientX;
+        lastPointerTime = event.timeStamp;
+        pointerVelocity = 0;
+        dragLocked = false;
+        suppressClick = false;
+        interactionPaused = true;
+        conveyor?.pause();
+        selectionTween?.kill();
+        selectionTween = null;
+
+        const cardWidth = cards[0]?.offsetWidth ?? 0;
+        dragCardStride = Math.max(1, cardWidth * (MOBILE_GEOMETRY.x[1] / 100));
+        fan.current?.setPointerCapture(event.pointerId);
+      };
+
+      const handlePointerMove = (event: PointerEvent) => {
+        if (event.pointerId !== dragPointerId) return;
+
+        const deltaX = event.clientX - dragStartX;
+        const deltaY = event.clientY - dragStartY;
+
+        if (!dragLocked) {
+          if (Math.abs(deltaX) < DRAG_THRESHOLD) return;
+
+          if (Math.abs(deltaY) > Math.abs(deltaX)) return;
+
+          dragLocked = true;
+          fan.current?.setAttribute("data-dragging", "true");
+        }
+
+        event.preventDefault();
+
+        const elapsed = Math.max(1, event.timeStamp - lastPointerTime);
+        const instantVelocity = (event.clientX - lastPointerX) / elapsed;
+        pointerVelocity = pointerVelocity * 0.65 + instantVelocity * 0.35;
+        lastPointerX = event.clientX;
+        lastPointerTime = event.timeStamp;
+        phase.value = dragStartPhase - deltaX / dragCardStride;
+        renderConveyor();
+      };
+
+      const finishDrag = (event: PointerEvent) => {
+        if (event.pointerId !== dragPointerId) return;
+
+        const pointerId = dragPointerId;
+        dragPointerId = null;
+        fan.current?.removeAttribute("data-dragging");
+
+        if (fan.current?.hasPointerCapture(pointerId)) {
+          fan.current.releasePointerCapture(pointerId);
+        }
+
+        if (!dragLocked) {
+          resumeConveyor();
+          return;
+        }
+
+        suppressClick = true;
+        if (suppressClickTimer !== null) window.clearTimeout(suppressClickTimer);
+        suppressClickTimer = window.setTimeout(() => {
+          suppressClick = false;
+        }, 300);
+
+        const inertia = Math.max(
+          -1.25,
+          Math.min(1.25, (-pointerVelocity * INERTIA_MS) / dragCardStride),
+        );
+        const destination = Math.round(phase.value + inertia);
+
+        interactionPaused = false;
+
+        if (reduceMotion) {
+          phase.value = destination;
+          renderConveyor();
+          return;
+        }
+
+        selectionTween = gsap.to(phase, {
+          value: destination,
+          duration: Math.min(0.55, 0.24 + Math.abs(destination - phase.value) * 0.18),
+          ease: "power3.out",
+          onUpdate: renderConveyor,
+          onComplete: () => {
+            selectionTween = null;
+            startConveyor();
+          },
+        });
+      };
+
+      const preventClickAfterDrag = (event: MouseEvent) => {
+        if (!suppressClick) return;
+
+        event.preventDefault();
+        event.stopPropagation();
+        suppressClick = false;
+      };
+
+      const fanElement = fan.current!;
+      fanElement.addEventListener("pointerdown", handlePointerDown);
+      fanElement.addEventListener("pointermove", handlePointerMove, { passive: false });
+      fanElement.addEventListener("pointerup", finishDrag);
+      fanElement.addEventListener("pointercancel", finishDrag);
+      fanElement.addEventListener("click", preventClickAfterDrag, true);
+
       if (reduceMotion) {
         gsap.set([intro, ...entrances], { opacity: 1, y: 0, scale: 1 });
       } else {
@@ -245,6 +381,12 @@ export function CropSelection() {
       return () => {
         conveyor?.kill();
         selectionTween?.kill();
+        if (suppressClickTimer !== null) window.clearTimeout(suppressClickTimer);
+        fanElement.removeEventListener("pointerdown", handlePointerDown);
+        fanElement.removeEventListener("pointermove", handlePointerMove);
+        fanElement.removeEventListener("pointerup", finishDrag);
+        fanElement.removeEventListener("pointercancel", finishDrag);
+        fanElement.removeEventListener("click", preventClickAfterDrag, true);
         focusCrop.current = () => undefined;
         setConveyorPaused.current = () => undefined;
       };
@@ -268,7 +410,13 @@ export function CropSelection() {
           </SectionIntro>
         </div>
 
-        <div ref={fan} className="fan mt-[clamp(24px,1.9vw,36px)]">
+        <div
+          ref={fan}
+          className="fan mt-[clamp(24px,1.9vw,36px)]"
+          role="region"
+          aria-roledescription="carousel"
+          aria-label="Supported crops. Swipe horizontally on touch screens or select a crop."
+        >
           {CARDS.map((crop, i) => (
             <article
               key={crop.id}
@@ -276,6 +424,7 @@ export function CropSelection() {
               data-pos={i}
               data-center={i === active ? "true" : undefined}
               data-hovered={hovered === i ? "true" : undefined}
+              aria-current={i === active ? "true" : undefined}
               tabIndex={0}
               aria-label={`Show ${crop.name}`}
               onMouseEnter={() => {
@@ -335,10 +484,10 @@ export function CropSelection() {
           aria-hidden
           width={2880}
           height={945}
-          quality={95}
+          quality={100}
           sizes="100vw"
           loading="eager"
-          className="h-full w-full object-cover object-[center_62%] min-[861px]:object-center"
+          className="h-full w-full object-[center_62%] object-cover min-[861px]:object-center"
         />
         <div
           aria-hidden

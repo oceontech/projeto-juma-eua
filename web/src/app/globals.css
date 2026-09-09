@@ -69,6 +69,16 @@
 /* ============================================================== base */
 @layer base {
 
+  /* O viewport mobile rola pelo elemento raiz. Cortar apenas no body ainda
+     permite que um filho largo desloque a página para o lado e revele o fundo
+     preto. `clip` bloqueia esse eixo sem criar outro contêiner de rolagem. */
+  html {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: clip;
+    overscroll-behavior-x: none;
+  }
+
   /* Sem scroll-behavior: smooth aqui de propósito — a rolagem nativa suave
      briga com o ScrollTrigger e faz o parallax do hero trepidar. As âncoras
      rolam pelo ScrollToPlugin, em SmoothAnchors.tsx. */
@@ -107,9 +117,17 @@
        do pin as duas correções entram em disputa: a página prende no quadro
        da virada e não sobe mais. */
     overflow-anchor: none;
+    width: 100%;
+    max-width: 100%;
     /* `clip` e não `hidden`: com `hidden` num eixo, o outro vira `auto` e o
        body passa a ser um contêiner de rolagem — o que quebra o pin do
        ScrollTrigger na saída do hero. `clip` corta sem criar contêiner. */
+    overflow-x: clip;
+  }
+
+  main {
+    width: 100%;
+    max-width: 100%;
     overflow-x: clip;
   }
 
@@ -1986,6 +2004,17 @@ html[data-expertise-overlap] #products {
 
   /* Leque mobile: sem rotação, só profundidade — como no frame de 440.
      As cartas das pontas ficam fora da tela, exatamente como no Figma. */
+  .fan {
+    cursor: grab;
+    touch-action: pan-y;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  .fan[data-dragging="true"] {
+    cursor: grabbing;
+  }
+
   .crop-card {
     --rot: 0deg;
     width: clamp(160px, 47vw, 224px);
