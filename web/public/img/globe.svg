@@ -1,64 +1,271 @@
-<svg width="420" height="420" viewBox="0 0 420 420" fill="none" xmlns="http://www.w3.org/2000/svg">
+<svg width="420" height="420" viewBox="0 0 420 420" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
   <defs>
-    <radialGradient id="globe-fade" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(178 182) rotate(45) scale(275)">
-      <stop stop-color="white"/>
-      <stop offset="0.76" stop-color="white" stop-opacity="0.86"/>
-      <stop offset="1" stop-color="white" stop-opacity="0"/>
+    <!-- Soft ambient depth glow in the globe interior -->
+    <radialGradient id="globe-depth" cx="230" cy="230" r="180" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#A8E63A" stop-opacity="0.18"/>
+      <stop offset="0.65" stop-color="#A8E63A" stop-opacity="0.05"/>
+      <stop offset="1" stop-color="#A8E63A" stop-opacity="0"/>
     </radialGradient>
-    <linearGradient id="globe-line" x1="52" y1="48" x2="355" y2="372" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#A8E63A" stop-opacity="0.16"/>
-      <stop offset="0.5" stop-color="#A8E63A" stop-opacity="0.68"/>
-      <stop offset="1" stop-color="#A8E63A" stop-opacity="0.12"/>
+
+    <!-- Refined stroke gradient -->
+    <linearGradient id="globe-stroke" x1="80" y1="80" x2="380" y2="380" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#A8E63A" stop-opacity="0.35"/>
+      <stop offset="0.5" stop-color="#BAF74D" stop-opacity="0.85"/>
+      <stop offset="1" stop-color="#A8E63A" stop-opacity="0.45"/>
     </linearGradient>
-    <pattern id="land-dots" width="8" height="8" patternUnits="userSpaceOnUse">
-      <circle cx="2" cy="2" r="1.05" fill="#A8E63A" fill-opacity="0.72"/>
+
+    <!-- Subtle line gradient for minimal graticule -->
+    <linearGradient id="subtle-line" x1="60" y1="60" x2="360" y2="360" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#A8E63A" stop-opacity="0.2"/>
+      <stop offset="0.5" stop-color="#A8E63A" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#A8E63A" stop-opacity="0.25"/>
+    </linearGradient>
+
+    <!-- Trajectory arc gradient (Brazil to US connection) -->
+    <linearGradient id="arc-stroke" x1="198" y1="245" x2="142" y2="122" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#D4FF70" stop-opacity="1"/>
+      <stop offset="0.5" stop-color="#BAF74D" stop-opacity="0.95"/>
+      <stop offset="1" stop-color="#D4FF70" stop-opacity="1"/>
+    </linearGradient>
+
+    <!-- 4 Interleaved alternating pattern grids (7px step in 14px tile) -->
+    <!-- Phase 1: Top-Left (3.5, 3.5) -->
+    <pattern id="land-dots-1" width="14" height="14" patternUnits="userSpaceOnUse">
+      <circle cx="3.5" cy="3.5" r="1.45" fill="#BAF74D"/>
     </pattern>
-    <clipPath id="sphere">
-      <circle cx="210" cy="210" r="185"/>
-    </clipPath>
-    <mask id="soft-sphere">
-      <circle cx="210" cy="210" r="188" fill="url(#globe-fade)"/>
+
+    <!-- Phase 2: Top-Right (10.5, 3.5) -->
+    <pattern id="land-dots-2" width="14" height="14" patternUnits="userSpaceOnUse">
+      <circle cx="10.5" cy="3.5" r="1.45" fill="#BAF74D"/>
+    </pattern>
+
+    <!-- Phase 3: Bottom-Left (3.5, 10.5) -->
+    <pattern id="land-dots-3" width="14" height="14" patternUnits="userSpaceOnUse">
+      <circle cx="3.5" cy="10.5" r="1.45" fill="#BAF74D"/>
+    </pattern>
+
+    <!-- Phase 4: Bottom-Right (10.5, 10.5) -->
+    <pattern id="land-dots-4" width="14" height="14" patternUnits="userSpaceOnUse">
+      <circle cx="10.5" cy="10.5" r="1.45" fill="#BAF74D"/>
+    </pattern>
+
+    <!-- Smooth clearance mask: protects text while gently blending upper-left of globe -->
+    <linearGradient id="corner-clearance" x1="20" y1="20" x2="320" y2="320" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="white" stop-opacity="0.12"/>
+      <stop offset="0.28" stop-color="white" stop-opacity="0.35"/>
+      <stop offset="0.58" stop-color="white" stop-opacity="0.85"/>
+      <stop offset="0.8" stop-color="white" stop-opacity="1"/>
+      <stop offset="1" stop-color="white" stop-opacity="1"/>
+    </linearGradient>
+
+    <mask id="globe-mask">
+      <rect width="420" height="420" fill="url(#corner-clearance)"/>
     </mask>
-    <filter id="dot-glow" x="-100%" y="-100%" width="300%" height="300%">
-      <feGaussianBlur stdDeviation="4"/>
-    </filter>
-  </defs>
 
-  <g mask="url(#soft-sphere)" clip-path="url(#sphere)" stroke="url(#globe-line)" stroke-linecap="round" vector-effect="non-scaling-stroke">
-    <circle cx="210" cy="210" r="184" stroke-width="1.35" opacity="0.72"/>
+    <clipPath id="sphere-clip">
+      <circle cx="210" cy="210" r="184"/>
+    </clipPath>
 
-    <g stroke-width="1.15" stroke-dasharray="0.1 6.2" opacity="0.82">
-      <ellipse cx="210" cy="210" rx="142" ry="184"/>
-      <ellipse cx="210" cy="210" rx="94" ry="184"/>
-      <ellipse cx="210" cy="210" rx="46" ry="184"/>
-      <path d="M26 210C26 174 108 145 210 145C312 145 394 174 394 210"/>
-      <path d="M26 210C26 246 108 275 210 275C312 275 394 246 394 210"/>
-      <path d="M49 118C89 139 146 151 210 151C274 151 331 139 371 118"/>
-      <path d="M49 302C89 281 146 269 210 269C274 269 331 281 371 302"/>
-      <path d="M94 63C124 91 164 108 210 108C256 108 296 91 326 63"/>
-      <path d="M94 357C124 329 164 312 210 312C256 312 296 329 326 357"/>
-    </g>
-
-    <g stroke-width="0.85" opacity="0.22">
-      <path d="M26 210H394"/>
-      <path d="M48 119H372"/>
-      <path d="M48 301H372"/>
-      <path d="M210 26V394"/>
-    </g>
-
-    <g fill="url(#land-dots)" stroke="none" opacity="0.9">
+    <!-- Reusable continent shapes definition -->
+    <g id="continent-shapes">
+      <!-- North America -->
       <path d="M77 102C96 73 128 56 160 60C181 63 188 78 205 84C218 89 236 85 246 96C254 105 247 118 232 124C214 131 208 143 197 157C184 173 164 174 148 166C132 158 121 145 102 140C84 135 66 120 77 102Z"/>
+      <!-- South America (Brazil center) -->
       <path d="M168 177C185 165 207 171 215 187C222 202 210 216 216 231C222 247 242 254 238 271C233 294 215 320 196 341C184 354 169 346 167 326C165 307 172 288 163 271C153 252 137 239 139 218C141 201 152 188 168 177Z"/>
+      <!-- Europe -->
       <path d="M257 121C278 106 315 108 333 127C347 142 340 159 322 163C306 167 294 162 282 174C271 185 263 201 245 200C229 199 222 186 229 173C239 155 242 132 257 121Z"/>
+      <!-- Africa -->
       <path d="M274 207C293 193 329 199 342 219C352 235 342 252 327 263C311 275 307 296 289 305C273 313 254 305 252 288C250 273 260 259 256 244C251 228 258 218 274 207Z"/>
     </g>
-  </g>
 
-  <g fill="#A8E63A">
-    <circle cx="118" cy="111" r="2.6" opacity="0.88"/>
-    <circle cx="118" cy="111" r="10" opacity="0.14" filter="url(#dot-glow)"/>
-    <circle cx="287" cy="178" r="3.2" opacity="0.95"/>
-    <circle cx="287" cy="178" r="11" opacity="0.16" filter="url(#dot-glow)"/>
-    <circle cx="202" cy="302" r="2.4" opacity="0.78"/>
+    <!-- Soft glow filters -->
+    <filter id="soft-glow" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur stdDeviation="3.5"/>
+    </filter>
+
+    <filter id="hub-pulse" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur stdDeviation="6"/>
+    </filter>
+
+    <style>
+      .orbit-ring {
+        transform-origin: 210px 210px;
+        animation: orbitRotate 45s linear infinite;
+      }
+      @keyframes orbitRotate {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+      }
+
+      /* Linha que fica se redesenhando constantemente */
+      .arc-draw {
+        stroke-dasharray: 100;
+        stroke-dashoffset: 100;
+        animation: redrawArc 3.6s cubic-bezier(0.45, 0, 0.25, 1) infinite;
+      }
+
+      @keyframes redrawArc {
+        0% {
+          stroke-dashoffset: 100;
+          opacity: 0;
+        }
+        6% {
+          opacity: 1;
+        }
+        52% {
+          stroke-dashoffset: 0;
+          opacity: 1;
+        }
+        72% {
+          stroke-dashoffset: 0;
+          opacity: 1;
+        }
+        90% {
+          stroke-dashoffset: -100;
+          opacity: 0;
+        }
+        100% {
+          stroke-dashoffset: -100;
+          opacity: 0;
+        }
+      }
+
+      /* Piscar sutil e orgânico dos pontos mestres */
+      .blink-node-1 {
+        animation: blinkSoft 2.6s ease-in-out infinite alternate;
+      }
+      .blink-node-2 {
+        animation: blinkSoft 2.6s ease-in-out infinite alternate;
+        animation-delay: -0.85s;
+      }
+      .blink-node-3 {
+        animation: blinkSoft 2.6s ease-in-out infinite alternate;
+        animation-delay: -1.7s;
+      }
+
+      @keyframes blinkSoft {
+        0%, 20% {
+          opacity: 0.35;
+        }
+        65%, 100% {
+          opacity: 1;
+        }
+      }
+
+      /* Piscar alternado e suave dos pontinhos da matriz dos continentes */
+      .matrix-layer {
+        animation: matrixShimmer 3.8s ease-in-out infinite alternate;
+      }
+      .matrix-1 {
+        animation-delay: -0.0s;
+      }
+      .matrix-2 {
+        animation-delay: -0.95s;
+      }
+      .matrix-3 {
+        animation-delay: -1.90s;
+      }
+      .matrix-4 {
+        animation-delay: -2.85s;
+      }
+
+      @keyframes matrixShimmer {
+        0%, 15% {
+          opacity: 0.35;
+        }
+        50% {
+          opacity: 0.95;
+        }
+        85%, 100% {
+          opacity: 0.35;
+        }
+      }
+
+      .hub-ripple {
+        transform-origin: 198px 245px;
+        animation: hubPulse 3.6s ease-out infinite;
+      }
+      @keyframes hubPulse {
+        0% { transform: scale(0.9); opacity: 0.75; }
+        55% { transform: scale(1.5); opacity: 0; }
+        100% { transform: scale(1.5); opacity: 0; }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .orbit-ring, .arc-draw, .blink-node-1, .blink-node-2, .blink-node-3, .hub-ripple, .matrix-layer {
+          animation: none !important;
+        }
+      }
+    </style>
+  </defs>
+
+  <!-- Master group with corner clearance mask -->
+  <g mask="url(#globe-mask)">
+    <!-- Soft ambient depth volume -->
+    <circle cx="210" cy="210" r="184" fill="url(#globe-depth)"/>
+
+    <!-- Subtle outer tech orbit ring with slow rotation -->
+    <circle class="orbit-ring" cx="210" cy="210" r="198" stroke="#A8E63A" stroke-width="1" stroke-dasharray="3 8" opacity="0.3"/>
+
+    <!-- Sphere content clipped to circular edge -->
+    <g clip-path="url(#sphere-clip)">
+      <!-- Outer rim circle: clean and defining -->
+      <circle cx="210" cy="210" r="184" stroke="url(#globe-stroke)" stroke-width="1.5" opacity="0.9"/>
+
+      <!-- Minimal, refined graticule: only 3 essential subtle curves -->
+      <g stroke="url(#subtle-line)" stroke-linecap="round" vector-effect="non-scaling-stroke">
+        <!-- 1. Equator line -->
+        <path d="M26 210H394" stroke-width="1.1" stroke-dasharray="6 5" opacity="0.5"/>
+
+        <!-- 2. Single primary meridian ellipse -->
+        <ellipse cx="210" cy="210" rx="105" ry="184" stroke-width="1.15" stroke-dasharray="6 6" opacity="0.55"/>
+
+        <!-- 3. Single subtle latitude curve (Tropic arc) -->
+        <path d="M42 275C95 254 150 244 210 244C270 244 325 254 378 275" stroke-width="1.05" stroke-dasharray="5 5" opacity="0.45"/>
+      </g>
+
+      <!-- Continents: base tint + fine contour outline -->
+      <use xlink:href="#continent-shapes" href="#continent-shapes" fill="#A8E63A" fill-opacity="0.08" stroke="#BAF74D" stroke-width="1.1" stroke-opacity="0.6" stroke-linejoin="round"/>
+
+      <!-- Matriz de pontinhos dos continentes piscando alternadamente e suavemente -->
+      <use class="matrix-layer matrix-1" xlink:href="#continent-shapes" href="#continent-shapes" fill="url(#land-dots-1)" stroke="none"/>
+      <use class="matrix-layer matrix-2" xlink:href="#continent-shapes" href="#continent-shapes" fill="url(#land-dots-2)" stroke="none"/>
+      <use class="matrix-layer matrix-3" xlink:href="#continent-shapes" href="#continent-shapes" fill="url(#land-dots-3)" stroke="none"/>
+      <use class="matrix-layer matrix-4" xlink:href="#continent-shapes" href="#continent-shapes" fill="url(#land-dots-4)" stroke="none"/>
+
+      <!-- Guia sutil da rota (trajetória de base) -->
+      <path d="M198 245 C 185 182, 160 148, 142 122" fill="none" stroke="#A8E63A" stroke-width="1" stroke-dasharray="2 4" opacity="0.22"/>
+
+      <!-- Linha ativa que se redesenha constantemente de um ponto a outro -->
+      <path class="arc-draw" pathLength="100" d="M198 245 C 185 182, 160 148, 142 122" fill="none" stroke="url(#arc-stroke)" stroke-width="1.8" stroke-linecap="round"/>
+    </g>
+
+    <!-- Pontos luminosos piscando sutilmente -->
+    <g fill="#A8E63A">
+      <!-- North America / US Hub Node -->
+      <g class="blink-node-2">
+        <circle cx="142" cy="122" r="3.2" fill="#D4FF70" opacity="0.95"/>
+        <circle cx="142" cy="122" r="8" opacity="0.18" filter="url(#soft-glow)"/>
+      </g>
+
+      <!-- Brazil Core Hub Node (Juma 360 convention epicenter) -->
+      <g class="blink-node-1">
+        <circle cx="198" cy="245" r="3.6" fill="#D4FF70" opacity="1"/>
+        <circle cx="198" cy="245" r="10" opacity="0.25" filter="url(#hub-pulse)"/>
+      </g>
+      <!-- Radar pulse ring no epicentro do Brasil -->
+      <circle class="hub-ripple" cx="198" cy="245" r="7" fill="none" stroke="#D4FF70" stroke-width="1.2" opacity="0.65"/>
+
+      <!-- Regional Brazil Team Nodes (Piscando sutilmente) -->
+      <circle class="blink-node-3" cx="182" cy="216" r="2.4" fill="#BAF74D" opacity="0.88"/>
+      <circle class="blink-node-2" cx="178" cy="272" r="2.2" fill="#BAF74D" opacity="0.8"/>
+      <circle class="blink-node-1" cx="218" cy="258" r="2.4" fill="#BAF74D" opacity="0.88"/>
+
+      <!-- Global network accent point -->
+      <g class="blink-node-3">
+        <circle cx="287" cy="178" r="3" fill="#BAF74D" opacity="0.9"/>
+        <circle cx="287" cy="178" r="8" opacity="0.18" filter="url(#soft-glow)"/>
+      </g>
+    </g>
   </g>
 </svg>
