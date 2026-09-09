@@ -1570,11 +1570,25 @@ html[data-expertise-overlap] #products {
 
   .programs-card__globe {
     top: auto;
-    right: -8%;
-    bottom: -10%;
-    width: 105%;
+    right: -16%;
+    bottom: -14%;
+    width: 88%;
     transform: none;
-    opacity: .8;
+    opacity: .54;
+    -webkit-mask-image: linear-gradient(
+      to bottom,
+      transparent 0%,
+      rgba(0, 0, 0, .12) 28%,
+      rgba(0, 0, 0, .72) 58%,
+      #000 78%
+    );
+    mask-image: linear-gradient(
+      to bottom,
+      transparent 0%,
+      rgba(0, 0, 0, .12) 28%,
+      rgba(0, 0, 0, .72) 58%,
+      #000 78%
+    );
   }
 
   .programs-card--juma360 .programs-card__copy {

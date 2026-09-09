@@ -119,7 +119,9 @@ export function TrialStrip() {
             }
 
             cards.forEach((card, index) => {
-              const direction = desktop ? (index % 2 === 0 ? -1 : 1) : 0;
+              const direction = index % 2 === 0 ? -1 : 1;
+              const horizontalTravel = desktop ? 100 : 42;
+              const horizontalExit = desktop ? 70 : 32;
 
               gsap
                 .timeline({
@@ -134,7 +136,7 @@ export function TrialStrip() {
                   card,
                   {
                     autoAlpha: 0,
-                    x: direction * 100,
+                    x: direction * horizontalTravel,
                     y: desktop ? 28 : 48,
                     scale: 0.975,
                   },
@@ -151,7 +153,7 @@ export function TrialStrip() {
                   card,
                   {
                     autoAlpha: 0,
-                    x: direction * -70,
+                    x: direction * -horizontalExit,
                     y: desktop ? -24 : -36,
                     scale: 0.985,
                     duration: 0.24,
@@ -162,7 +164,7 @@ export function TrialStrip() {
             });
           }
 
-          if (!desktop || !stepsRoot.current) return;
+          if (!stepsRoot.current) return;
 
           const connector = stepsRoot.current.querySelector<SVGSVGElement>(
             "[data-trial-connector]",
@@ -185,22 +187,36 @@ export function TrialStrip() {
           const updateConnectorGeometry = () => {
             const [first, second, third] = cards;
             const width = stepsRoot.current?.clientWidth ?? 0;
-            const firstEnd = {
-              x: first.offsetLeft + first.offsetWidth - 1,
-              y: first.offsetTop + first.offsetHeight * 0.48,
-            };
-            const secondEntry = {
-              x: width * 0.76,
-              y: second.offsetTop + 1,
-            };
-            const secondExit = {
-              x: second.offsetLeft + 1,
-              y: second.offsetTop + second.offsetHeight * 0.58,
-            };
-            const thirdEntry = {
-              x: width * 0.24,
-              y: third.offsetTop + 1,
-            };
+            const firstEnd = desktop
+              ? {
+                  x: first.offsetLeft + first.offsetWidth - 1,
+                  y: first.offsetTop + first.offsetHeight * 0.48,
+                }
+              : {
+                  x: first.offsetLeft + first.offsetWidth - 1,
+                  y: first.offsetTop + first.offsetHeight * 0.62,
+                };
+            const secondEntry = desktop
+              ? { x: width * 0.76, y: second.offsetTop + 1 }
+              : {
+                  x: second.offsetLeft + second.offsetWidth * 0.72,
+                  y: second.offsetTop + 1,
+                };
+            const secondExit = desktop
+              ? {
+                  x: second.offsetLeft + 1,
+                  y: second.offsetTop + second.offsetHeight * 0.58,
+                }
+              : {
+                  x: second.offsetLeft + 1,
+                  y: second.offsetTop + second.offsetHeight * 0.62,
+                };
+            const thirdEntry = desktop
+              ? { x: width * 0.24, y: third.offsetTop + 1 }
+              : {
+                  x: third.offsetLeft + third.offsetWidth * 0.28,
+                  y: third.offsetTop + 1,
+                };
             const points = [firstEnd, secondEntry, secondExit, thirdEntry];
 
             path.setAttribute(
@@ -330,12 +346,12 @@ export function TrialStrip() {
 
         <div
           ref={stepsRoot}
-          className="relative grid gap-[22px] min-[861px]:gap-[clamp(18px,3.2vw,61px)]"
+          className="relative grid gap-[clamp(64px,18vw,112px)] min-[861px]:gap-[clamp(18px,3.2vw,61px)]"
         >
           <svg
             data-trial-connector
             aria-hidden="true"
-            className="pointer-events-none absolute inset-0 z-1 h-full w-full overflow-visible text-lime max-[860px]:hidden"
+            className="pointer-events-none absolute inset-0 z-1 h-full w-full overflow-visible text-lime"
           >
             <path
               data-connector-path
@@ -364,8 +380,8 @@ export function TrialStrip() {
             <article
               key={step.number}
               data-step
-              className={`relative z-2 w-full overflow-hidden rounded-[clamp(12px,1.05vw,20px)] bg-green-deep text-white will-change-transform min-[861px]:w-[min(670px,100%)] ${
-                i === 1 ? "min-[861px]:ml-auto" : ""
+              className={`relative z-2 w-[calc(100%-clamp(28px,8vw,64px))] overflow-hidden rounded-[clamp(12px,1.05vw,20px)] bg-green-deep text-white will-change-transform min-[861px]:w-[min(670px,100%)] ${
+                i === 1 ? "ml-auto" : ""
               }`}
             >
               <span className="absolute top-[clamp(14px,1.05vw,20px)] left-[clamp(14px,1.05vw,20px)] z-1 rounded-full bg-green-deep/85 px-[10px] py-[7px] font-tag text-[clamp(10px,0.72vw,13px)] leading-none font-semibold tracking-[0.18em] text-offwhite/65 ring-1 ring-white/15 backdrop-blur-[2px]">
