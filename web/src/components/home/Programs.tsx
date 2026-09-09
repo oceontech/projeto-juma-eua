@@ -270,10 +270,11 @@ export function Programs() {
           if (jumaGlobe) {
             tl.fromTo(
               jumaGlobe,
-              { opacity: 0, x: 42, scale: 0.88 },
+              { opacity: 0, x: 28, y: 16, scale: 0.92 },
               {
-                opacity: 0.58,
+                opacity: 0.88,
                 x: 0,
+                y: 0,
                 scale: 1,
                 duration: 0.75,
                 ease: "power3.out",

@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useActionState, useId } from "react";
+import { useActionState, useEffect, useId, useRef, useState } from "react";
 import { submitTrialRequest, type TrialRequestState } from "@/lib/actions";
 import { usOperation } from "@/content/home";
 import { cx } from "@/components/ui";
@@ -23,8 +23,13 @@ export function TrialForm() {
 
   return (
     <form action={action} noValidate>
-      <div className="grid grid-cols-1 gap-x-[clamp(16px,1vw,20px)] gap-y-[clamp(20px,1.55vw,31px)] min-[861px]:grid-cols-2">
-        <Field id={`${id}-name`} label={form.name.label} error={state.errors.name}>
+      <div className="grid grid-cols-2 gap-x-[clamp(12px,1vw,20px)] gap-y-[clamp(14px,1vw,20px)]">
+        <Field
+          id={`${id}-name`}
+          label={form.name.label}
+          error={state.errors.name}
+          className="col-span-2 min-[861px]:col-span-1"
+        >
           <input
             id={`${id}-name`}
             name="name"
@@ -35,7 +40,11 @@ export function TrialForm() {
           />
         </Field>
 
-        <Field id={`${id}-company`} label={form.company.label}>
+        <Field
+          id={`${id}-company`}
+          label={form.company.label}
+          className="col-span-2 min-[861px]:col-span-1"
+        >
           <input
             id={`${id}-company`}
             name="company"
@@ -54,11 +63,20 @@ export function TrialForm() {
           <Select id={`${id}-crop`} name="crop" options={form.crop.options} />
         </Field>
 
-        <Field id={`${id}-acres`} label={form.acres.label}>
+        <Field
+          id={`${id}-acres`}
+          label={form.acres.label}
+          className="col-span-2 min-[861px]:col-span-1"
+        >
           <Select id={`${id}-acres`} name="acres" options={form.acres.options} />
         </Field>
 
-        <Field id={`${id}-email`} label={form.email.label} error={state.errors.email}>
+        <Field
+          id={`${id}-email`}
+          label={form.email.label}
+          error={state.errors.email}
+          className="col-span-2 min-[861px]:col-span-1"
+        >
           <input
             id={`${id}-email`}
             name="email"
@@ -72,23 +90,26 @@ export function TrialForm() {
         <Field
           id={`${id}-problem`}
           label={form.problem.label}
-          className="min-[861px]:col-span-2"
+          className="col-span-2"
         >
           <textarea
             id={`${id}-problem`}
             name="problem"
             placeholder={form.problem.placeholder}
-            className="field-input min-h-[178px] resize-y"
+            className="field-input min-h-[112px] resize-y min-[861px]:min-h-[128px]"
           />
         </Field>
       </div>
 
-      <div className="mt-[clamp(24px,2.5vw,47px)] flex items-start gap-5">
+      <div
+        data-trial-item=""
+        className="mt-[clamp(18px,1.5vw,26px)] flex items-start gap-3"
+      >
         <input
           id={`${id}-call`}
           name="call"
           type="checkbox"
-          className="mt-[3px] size-5 shrink-0 cursor-pointer appearance-none rounded-[2px] border border-lime bg-[#F0F0F0] checked:bg-lime"
+          className="mt-[2px] size-[18px] shrink-0 cursor-pointer appearance-none rounded-[2px] border border-lime bg-[#F0F0F0] checked:bg-lime"
         />
         <label htmlFor={`${id}-call`} className="text-small text-muted">
           {form.call}
@@ -96,9 +117,10 @@ export function TrialForm() {
       </div>
 
       <button
+        data-trial-item=""
         type="submit"
         disabled={pending}
-        className="mt-[clamp(20px,2.2vw,41px)] inline-flex cursor-pointer items-center gap-2.5 rounded-lg bg-lime px-[clamp(34px,3.9vw,75px)] py-[clamp(14px,1vw,20px)] font-display text-[clamp(16px,1.25vw,24px)] font-semibold text-white transition-colors hover:bg-[#A6B534] disabled:opacity-60"
+        className="mt-[clamp(18px,1.5vw,26px)] inline-flex cursor-pointer items-center gap-2.5 rounded-lg bg-lime px-[clamp(30px,3vw,52px)] py-[clamp(11px,0.8vw,14px)] font-display text-[clamp(15px,1.05vw,20px)] font-semibold text-white transition-colors hover:bg-[#A6B534] disabled:opacity-60"
       >
         {pending ? "Sending…" : form.submit}
         <Image src="/img/icon-arrow-white.svg" alt="" width={14} height={15} />
@@ -116,7 +138,10 @@ export function TrialForm() {
         </p>
       )}
 
-      <p className="mt-[clamp(18px,1.9vw,36px)] max-w-[620px] text-small text-muted">
+      <p
+        data-trial-item=""
+        className="mt-[clamp(14px,1.2vw,20px)] max-w-[620px] text-small leading-[1.45] text-muted"
+      >
         {form.privacy.before}
         <a href="#" className="text-lime">
           {form.privacy.link}
@@ -141,7 +166,10 @@ function Field({
   children: React.ReactNode;
 }) {
   return (
-    <div className={cx("flex flex-col gap-[clamp(10px,1vw,20px)]", className)}>
+    <div
+      data-trial-item=""
+      className={cx("flex flex-col gap-[clamp(6px,0.55vw,10px)]", className)}
+    >
       <label htmlFor={id} className="text-small font-semibold text-muted">
         {label}
       </label>
@@ -160,11 +188,148 @@ function Select({
   name: string;
   options: readonly string[];
 }) {
+  const [value, setValue] = useState(options[0]);
+  const [open, setOpen] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const rootRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const listboxId = `${id}-listbox`;
+
+  useEffect(() => {
+    function closeOnOutsidePointer(event: PointerEvent) {
+      if (!rootRef.current?.contains(event.target as Node)) {
+        setOpen(false);
+      }
+    }
+
+    document.addEventListener("pointerdown", closeOnOutsidePointer);
+    return () => document.removeEventListener("pointerdown", closeOnOutsidePointer);
+  }, []);
+
+  function openDropdown() {
+    setActiveIndex(options.indexOf(value));
+    setOpen(true);
+  }
+
+  function selectOption(index: number) {
+    setValue(options[index]);
+    setActiveIndex(index);
+    setOpen(false);
+    triggerRef.current?.focus();
+  }
+
+  function handleKeyDown(event: React.KeyboardEvent<HTMLButtonElement>) {
+    switch (event.key) {
+      case "ArrowDown":
+        event.preventDefault();
+        if (!open) {
+          openDropdown();
+        } else {
+          setActiveIndex((current) => (current + 1) % options.length);
+        }
+        break;
+      case "ArrowUp":
+        event.preventDefault();
+        if (!open) {
+          openDropdown();
+        } else {
+          setActiveIndex((current) => (current - 1 + options.length) % options.length);
+        }
+        break;
+      case "Home":
+        if (open) {
+          event.preventDefault();
+          setActiveIndex(0);
+        }
+        break;
+      case "End":
+        if (open) {
+          event.preventDefault();
+          setActiveIndex(options.length - 1);
+        }
+        break;
+      case "Enter":
+      case " ":
+        event.preventDefault();
+        if (open) {
+          selectOption(activeIndex);
+        } else {
+          openDropdown();
+        }
+        break;
+      case "Escape":
+        if (open) {
+          event.preventDefault();
+          setOpen(false);
+        }
+        break;
+      case "Tab":
+        setOpen(false);
+        break;
+    }
+  }
+
   return (
-    <select id={id} name={name} className="field-input" defaultValue={options[0]}>
-      {options.map((option) => (
-        <option key={option}>{option}</option>
-      ))}
-    </select>
+    <div ref={rootRef} className="custom-select">
+      <input type="hidden" name={name} value={value} />
+
+      <button
+        ref={triggerRef}
+        id={id}
+        type="button"
+        role="combobox"
+        aria-expanded={open}
+        aria-controls={listboxId}
+        aria-haspopup="listbox"
+        aria-activedescendant={open ? `${id}-option-${activeIndex}` : undefined}
+        data-open={open}
+        className="field-input custom-select__trigger"
+        onClick={() => (open ? setOpen(false) : openDropdown())}
+        onKeyDown={handleKeyDown}
+      >
+        <span className="truncate">{value}</span>
+        <Image
+          src="/img/icon-chevron.svg"
+          alt=""
+          width={13}
+          height={8}
+          className="custom-select__chevron"
+        />
+      </button>
+
+      <div
+        id={listboxId}
+        role="listbox"
+        aria-label={name}
+        aria-hidden={!open}
+        data-lenis-prevent=""
+        data-open={open}
+        className="custom-select__menu"
+      >
+        {options.map((option, index) => {
+          const selected = option === value;
+          const active = index === activeIndex;
+
+          return (
+            <button
+              key={option}
+              id={`${id}-option-${index}`}
+              type="button"
+              role="option"
+              aria-selected={selected}
+              data-active={active}
+              data-selected={selected}
+              tabIndex={-1}
+              className="custom-select__option"
+              onPointerMove={() => setActiveIndex(index)}
+              onClick={() => selectOption(index)}
+            >
+              <span>{option}</span>
+              <span aria-hidden className="custom-select__selected-mark" />
+            </button>
+          );
+        })}
+      </div>
+    </div>
   );
 }

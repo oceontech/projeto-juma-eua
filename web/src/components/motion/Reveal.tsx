@@ -13,6 +13,11 @@ type RevealProps = {
   /** Distância que o bloco sobe ao entrar, em px. */
   y?: number;
   /**
+   * Seleciona descendentes específicos para a cascata. Quando omitido,
+   * `stagger` continua animando apenas os filhos diretos.
+   */
+  targetSelector?: string;
+  /**
    * Anima os filhos diretos um a um em vez do bloco inteiro.
    * O intervalo entre eles é o próprio valor (em segundos).
    */
@@ -56,6 +61,7 @@ export function Reveal({
   delay = 0,
   y = 22,
   stagger,
+  targetSelector,
   replay = false,
   trigger,
   start,
@@ -64,9 +70,11 @@ export function Reveal({
 
   useGSAP(
     () => {
-      const targets = stagger
-        ? Array.from(scope.current!.children)
-        : scope.current!;
+      const targets = targetSelector
+        ? Array.from(scope.current!.querySelectorAll<HTMLElement>(targetSelector))
+        : stagger
+          ? Array.from(scope.current!.children)
+          : scope.current!;
 
       /* matchMedia devolve o estado final sem animar para quem pediu menos
          movimento, e desfaz sozinho se a preferência mudar. */
@@ -104,7 +112,10 @@ export function Reveal({
         },
       );
     },
-    { scope, dependencies: [delay, y, stagger, replay, trigger, start] },
+    {
+      scope,
+      dependencies: [delay, y, stagger, targetSelector, replay, trigger, start],
+    },
   );
 
   return (
