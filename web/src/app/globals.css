@@ -847,17 +847,23 @@
     aspect-ratio: 1238 / 810;
   }
 
+  /* O recuo e a descida vinham de um deslocamento que o GSAP deixava para
+     trás — a entrada antiga mexia as bandeiras em -7% e +5% e nunca zerava a
+     translação em pixels, então elas assentavam fora do que o CSS mandava.
+     Corrigida a entrada, a posição de repouso mudou. Ela está escrita aqui
+     agora: -3,08% é aquele 7% da largura da bandeira e +2,4% é aquele 5% da
+     altura dela, os dois convertidos para o palco. */
   .hero-flag--br {
-    left: 0;
-    top: 19%;
+    left: -3.08%;
+    top: 21.4%;
     width: 44%;
     height: auto;
   }
 
   .hero-flag--us {
     left: auto;
-    right: 0;
-    top: 16.5%;
+    right: -3.08%;
+    top: 18.9%;
     width: 44%;
     height: auto;
   }
@@ -1085,6 +1091,66 @@
     text-align: center;
   }
 
+
+  /* ------------------------------------------------- prova em tela cheia */
+  /* O card da prova cresce até ocupar a tela inteira enquanto a seção
+     atravessa a viewport, segura ali por um trecho de rolagem e volta ao
+     tamanho de origem na saída.
+
+     A geometria é a mesma da cortina de produtos, e pelo mesmo motivo: a
+     caixa alta dá o curso, a janela sticky segura a cena, e não há pin
+     spacer para ser remedido quando a barra do navegador móvel abre e fecha.
+
+     O curso extra só existe quando o JS liga `data-scene` (ProofStage.tsx).
+     Sem movimento — ou sem JS — a caixa some do caminho e o card volta a ser
+     um bloco no fluxo, do tamanho de sempre. */
+  .proof-stage[data-scene] {
+    --proof-run: clamp(560px, 104svh, 1200px);
+    position: relative;
+    height: calc(100lvh + var(--proof-run));
+  }
+
+  .proof-stage[data-scene] .proof-window {
+    position: sticky;
+    top: 0;
+    /* `lvh`, e não `svh`: é estático, então a janela cobre a tela também
+       quando a barra do navegador recolhe — e sem provocar remedição. */
+    height: 100lvh;
+    display: grid;
+    place-items: center;
+  }
+
+  /* `--open` vai de 0 (repouso) a 1 (tela cheia), escrito pelo GSAP junto com
+     a largura e a altura em pixels. Tudo o mais que muda no gesto sai daqui,
+     onde pode ser lido ao lado da geometria de repouso. */
+  .proof-card {
+    --open: 0;
+    --proof-pad: calc(clamp(20px, 2.6vw, 50px) + var(--open) * clamp(6px, 1.4vw, 26px));
+    position: relative;
+    display: flex;
+    /* A mesma conta do `.wrap`: o card nasce do tamanho do container mesmo
+       estando fora dele — é o que permite ao palco ocupar a tela toda e ainda
+       assim o repouso alinhar com o resto da página. */
+    width: min(var(--container-wrap), calc(100% - 2 * var(--spacing-gut)));
+    margin-inline: auto;
+    /* Teto para o celular baixo: o conteúdo encolhe dentro da janela em vez
+       de vazar por cima e por baixo dela. */
+    max-height: 100%;
+    min-height: 0;
+    flex-direction: column;
+    justify-content: center;
+    border-radius: calc((1 - var(--open)) * clamp(14px, 1.25vw, 24px));
+    padding: var(--proof-pad);
+    /* Em tela cheia a barra do topo flutua sobre o card; o respiro a mais no
+       topo mantém a etiqueta da foto abaixo dela. */
+    padding-top: calc(var(--proof-pad) + var(--open) * 30px);
+    background: linear-gradient(
+      130.5deg,
+      var(--color-night-warm) 2.4%,
+      var(--color-night-deep) 60.23%
+    );
+  }
+
   /* -------------------------------------------------------- comparador */
   .compare {
     position: relative;
@@ -1096,7 +1162,13 @@
        do quadro e os benefícios espremidos no pé. O teto em `svh` corta pela
        altura da tela, que é o que de fato limita; as fotos são `cover`, então
        elas só recortam um pouco mais. */
-    max-height: min(48svh, 560px);
+    /* O teto cresce com a abertura: em tela cheia a foto é quem recebe o
+       espaço que sobrou. `flex` com `min-height: 0` é o outro lado disso —
+       numa tela baixa ela encolhe abaixo do teto em vez de empurrar os
+       benefícios para fora do card. */
+    max-height: calc(min(48svh, 560px) + var(--open, 0) * 22svh);
+    flex: 1 1 auto;
+    min-height: 0;
     touch-action: pan-y;
     user-select: none;
     cursor: ew-resize;
@@ -1170,6 +1242,8 @@
   /* ------------------------------------------------- benefícios da prova */
   .proof-benefits {
     display: grid;
+    /* O que encolhe quando falta altura é a foto, nunca o texto. */
+    flex: none;
     grid-template-columns: minmax(0, 1fr);
     gap: clamp(22px, 2.4vw, 34px);
     text-align: center;
@@ -1982,9 +2056,19 @@ html[data-expertise-overlap] #products {
     padding-top: 112px;
   }
 
+  /* Curso mais curto: a tela é menor, o gesto atravessa menos espaço, e um
+     curso de desktop aqui viraria meia página de rolagem parada. */
+  .proof-stage[data-scene] {
+    --proof-run: clamp(420px, 82svh, 760px);
+  }
+
   /* No mobile o Figma corta o comparador na horizontal. */
   .compare {
     aspect-ratio: 360 / 376;
+    /* Mais baixa em repouso do que no desktop, e por causa do gesto: com os
+       benefícios empilhados o card já nasce alto, e se ele ocupasse a tela
+       inteira parado não sobraria diferença para a abertura mostrar. */
+    max-height: calc(38svh + var(--open, 0) * 24svh);
     cursor: ns-resize;
   }
 
@@ -2087,5 +2171,37 @@ html[data-expertise-overlap] #products {
   .crop-card__label,
   .crop-card__content {
     transition: none;
+  }
+}
+
+/* ------------------------------------------------- copy do hero no médio */
+/* Entre 861 e 1599 a copy anda apertada contra o trator: o texto encolhe com
+   a largura, mas a foto do palco cresce com ela, e o vão entre os dois ficava
+   em vinte e poucos pixels — a 1366, o pior caso, eram 22. O que se recolhe
+   aqui é entrelinha e vão entre blocos, nunca corpo de letra: o texto continua
+   do mesmo tamanho, só ocupa menos altura.
+
+   Mora em `utilities` porque é ali que estão o `leading-none` do título e o
+   `mt-[...]` do subtítulo, escritos no JSX. Camada posterior ganha de
+   especificidade, então de dentro de `components` estas regras não seriam nem
+   consideradas. */
+@layer utilities {
+  @media (min-width: 861px) and (max-width: 1599px) {
+    /* E o conjunto inteiro sobe um pouco: com o palco alto nesta faixa, o que
+       falta é vão embaixo, e sobra em cima — quarenta e tantos pixels entre a
+       tarja e a barra. Como o bloco é centrado no que resta da caixa, tirar
+       quarenta do respiro do topo o move por vinte. */
+    .hero-copy {
+      padding-top: 36px;
+    }
+
+    .hero-copy [data-hero-title] {
+      line-height: 0.94;
+    }
+
+    .hero-copy [data-hero-sub] {
+      margin-top: clamp(8px, 0.85vw, 14px);
+      line-height: 1.38;
+    }
   }
 }

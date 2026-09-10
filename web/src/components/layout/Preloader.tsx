@@ -114,8 +114,11 @@ export function Preloader() {
          trás de um logo parado, e sim depois de ele se afastar. */
       gsap
         .timeline({ onComplete: () => setGone(true) })
-        .to(stage.current, { opacity: 0, scale: 1.08, duration: 0.55, ease: "power2.in" }, 0)
-        .to(veil, { opacity: 0, duration: 0.75, ease: "power2.inOut" }, 0.2);
+        /* Saída curta de propósito: a entrada do hero parte junto com este
+           gesto (ver Hero.tsx), então cada décimo a mais aqui é um décimo do
+           movimento dela acontecendo atrás de um véu. */
+        .to(stage.current, { opacity: 0, scale: 1.08, duration: 0.4, ease: "power2.in" }, 0)
+        .to(veil, { opacity: 0, duration: 0.5, ease: "power2.inOut" }, 0.12);
     });
 
     return () => {

@@ -9,6 +9,21 @@ import { gsap, useGSAP, type ScrollTrigger } from "@/lib/gsap";
 /** Onde o corte assenta depois que o scroll termina de abri-lo. */
 const RESTING = 50;
 
+type ImageCompareProps = {
+  /**
+   * Elemento que decide a hora da abertura, quando ele não é a própria caixa.
+   *
+   * Serve para quando o comparador vive dentro de uma janela `sticky`: ali a
+   * caixa mede a própria posição já deslocada pelo sticky, e o gatilho cairia
+   * num ponto de rolagem que não corresponde ao que se vê.
+   */
+  trigger?: string;
+  /** Começo do curso de abertura. */
+  start?: string;
+  /** Fim do curso de abertura. */
+  end?: string;
+};
+
 /**
  * Comparador antes/depois. As duas fotos ocupam a mesma caixa e o corte da
  * de cima anda com o ponteiro — na horizontal no desktop, na vertical no
@@ -33,7 +48,11 @@ const RESTING = 50;
  * O <input type="range"> não recebe ponteiro: existe para quem navega por
  * teclado. O arrasto real vem de pointer events na caixa.
  */
-export function ImageCompare() {
+export function ImageCompare({
+  trigger,
+  start = "top 88%",
+  end = "top 34%",
+}: ImageCompareProps = {}) {
   const box = useRef<HTMLDivElement>(null);
   const slider = useRef<HTMLInputElement>(null);
   const reveal = useRef<ScrollTrigger | null>(null);
@@ -82,9 +101,9 @@ export function ImageCompare() {
             ease: "power2.inOut",
             onUpdate: () => apply(cut.value),
             scrollTrigger: {
-              trigger: el,
-              start: "top 88%",
-              end: "top 34%",
+              trigger: (trigger && document.querySelector(trigger)) || el,
+              start,
+              end,
               scrub: true,
             },
           });
@@ -97,7 +116,7 @@ export function ImageCompare() {
         },
       );
     },
-    { scope: box, dependencies: [apply] },
+    { scope: box, dependencies: [apply, trigger, start, end] },
   );
 
   const fromPointer = useCallback(

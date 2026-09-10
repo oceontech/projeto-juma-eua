@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { Fragment, useRef } from "react";
 import Image from "next/image";
 import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
 import { booted } from "@/lib/boot";
@@ -104,49 +104,98 @@ export function Hero() {
              `fromTo`: com os dois extremos declarados ela não herda um valor
              colhido no meio desta entrada nem o perde num `invalidate()`. */
           const intro = gsap
-            .timeline({ paused: true, defaults: { duration: 1.3, ease: "power3.out" } })
-            .fromTo("[data-hero='sky']", { scale: 1.07 }, { scale: 1 }, 0)
+            .timeline({ paused: true, defaults: { duration: 2.1, ease: "power2.out" } })
+            /* O céu abre o quadro sozinho, um pouco mais devagar que o resto:
+               é o fundo, e fundo que assenta junto com a frente achata a
+               profundidade. */
+            .fromTo("[data-hero='sky']", { scale: 1.12 }, { scale: 1, duration: 2.4 }, 0)
+            /* As bandeiras entram de fora da tela, cada uma do seu lado, e
+               caminham para o centro até o lugar. Os 125% são da largura delas
+               mesmas — o bastante para começarem inteiras fora do quadro em
+               qualquer viewport, no largo e no estreito.
+
+               `x` e `y` vão escritos ao lado das porcentagens em TODA camada
+               desta cena, aqui e na travessia. O GSAP guarda os dois separados
+               e soma na matriz: com um deslocamento grande como este, a
+               travessia lia os -792px que a intro tinha acabado de escrever
+               como se fossem `x`, empilhava a porcentagem por cima e as
+               bandeiras terminavam a entrada fora da tela — some a cena e
+               ninguém vê de onde. */
             .fromTo(
               "[data-hero='flag-br']",
-              { xPercent: -7, yPercent: 5 },
-              { xPercent: 0, yPercent: 0 },
-              0.1,
+              { x: 0, xPercent: -125, y: 0, yPercent: 0 },
+              { x: 0, xPercent: 0, y: 0, yPercent: 0 },
+              0.15,
             )
             .fromTo(
               "[data-hero='flag-us']",
-              { xPercent: 7, yPercent: 5 },
-              { xPercent: 0, yPercent: 0 },
-              0.1,
+              { x: 0, xPercent: 125, y: 0, yPercent: 0 },
+              { x: 0, xPercent: 0, y: 0, yPercent: 0 },
+              0.15,
             )
-            .fromTo("[data-hero='ground']", { yPercent: 5 }, { yPercent: 0 }, 0.05)
-            .fromTo("[data-hero='leaves']", { yPercent: 9 }, { yPercent: 0 }, 0)
+            /* O trator e as folhas sobem do pé da tela, nessa ordem: primeiro
+               o solo assenta, depois a moldura de folhas fecha por cima dele.
+               Invertido, as folhas chegariam a um campo vazio.
+
+               O curso é curto de propósito — 14% e 18% da altura de cada
+               camada, uns cem pixels. Estas duas cobrem o pé da tela, e
+               tudo que elas descem descobre o preto que fecha a cena por baixo
+               (`.hero-underfill` e a rampa de `.hero-leaves-tail`): com o
+               dobro disso o gesto ganhava pouco e a abertura passava um
+               segundo com uma tarja preta no rodapé. O que dá tempo de ver não
+               é a distância, é a duração — daí os 2,3s e a curva mansa. */
+            .fromTo(
+              "[data-hero='ground']",
+              { y: 0, yPercent: 14 },
+              { y: 0, yPercent: 0, duration: 2.3 },
+              0.3,
+            )
+            .fromTo(
+              "[data-hero='leaves']",
+              { y: 0, yPercent: 18 },
+              { y: 0, yPercent: 0, duration: 2.3 },
+              0.45,
+            )
             .fromTo(
               "[data-hero-tagline]",
               { opacity: 0, y: 18 },
-              { opacity: 1, y: 0, duration: 0.7 },
-              0.25,
+              { opacity: 1, y: 0, duration: 1 },
+              1.2,
             )
             .fromTo(
               "[data-hero-title]",
               { opacity: 0, y: 28 },
-              { opacity: 1, y: 0, duration: 0.8 },
-              0.4,
+              { opacity: 1, y: 0, duration: 1.05 },
+              1.45,
             )
             .fromTo(
               "[data-hero-sub]",
               { opacity: 0, y: 20 },
-              { opacity: 1, y: 0, duration: 0.8 },
-              0.55,
+              { opacity: 1, y: 0, duration: 1.05 },
+              1.7,
             );
 
           /* Pausada no quadro zero desde o primeiro layout: nada aparece
-             parado antes de animar. Só corre quando o véu do preloader sai. */
+             parado antes de animar. */
           intro.progress(0);
+
+          /* Sem espera: a entrada parte no mesmo instante em que o véu começa
+             a se desfazer, e as duas coisas correm juntas.
+
+             Esperar a saída inteira deixava a cena armada e PARADA por quase
+             um segundo — o trator um pouco abaixo do lugar, as bandeiras fora
+             do quadro, tudo imóvel até a hora de andar. Correndo junto, o
+             primeiro terço do gesto acontece sob um véu que já está quase
+             transparente (ver a saída encurtada em Preloader.tsx), e o que se
+             vê é uma cena que já vinha se montando quando a tela abriu. */
           void booted.then(() => {
             if (!root.current) return;
             /* Se já rolaram por baixo do véu, a cena não é mais a de abertura. */
-            if (window.scrollY > 4) intro.progress(1);
-            else intro.play();
+            if (window.scrollY > 4) {
+              intro.progress(1);
+              return;
+            }
+            intro.play();
           });
 
           /* ---------------------------------------------------- travessia */
@@ -172,7 +221,15 @@ export function Hero() {
 
           gsap
             .timeline({
-              defaults: { duration: 1 },
+              /* `immediateRender: false` em toda a travessia, e é o que faz a
+                 abertura existir. Um `fromTo` grava o quadro inicial no
+                 instante em que é criado, e o quadro inicial DESTE percurso é
+                 a cena montada — a mesma posição que a entrada leva três
+                 segundos para alcançar. Criada depois da entrada, ela
+                 desarmava tudo: a cena aparecia pronta assim que o véu saía e
+                 só então dava o pulo para trás e animava. Adiada, quem manda
+                 até o primeiro pixel de rolagem é a entrada. */
+              defaults: { duration: 1, immediateRender: false },
               scrollTrigger: {
                 id: "hero-exit",
                 trigger: scene,
@@ -226,25 +283,25 @@ export function Hero() {
             .fromTo("[data-hero='scene']", { y: 0 }, { y: travel, ease: RIDE, duration: 0.8 }, 0)
             .fromTo(
               "[data-hero='sky']",
-              { yPercent: 0, scale: 1 },
-              { yPercent: -13, scale: 1.12, ease: RIDE },
+              { y: 0, yPercent: 0, scale: 1 },
+              { y: 0, yPercent: -13, scale: 1.12, ease: RIDE },
               0,
             )
             .fromTo(
               "[data-hero='flag-br']",
-              { xPercent: 0, yPercent: 0, scale: 1 },
-              { xPercent: -134, yPercent: -66, scale: 1.12, ease: RIDE },
+              { x: 0, xPercent: 0, y: 0, yPercent: 0, scale: 1 },
+              { x: 0, xPercent: -134, y: 0, yPercent: -66, scale: 1.12, ease: RIDE },
               0,
             )
             .fromTo(
               "[data-hero='flag-us']",
-              { xPercent: 0, yPercent: 0, scale: 1 },
-              { xPercent: 134, yPercent: -66, scale: 1.12, ease: RIDE },
+              { x: 0, xPercent: 0, y: 0, yPercent: 0, scale: 1 },
+              { x: 0, xPercent: 134, y: 0, yPercent: -66, scale: 1.12, ease: RIDE },
               0,
             )
             .fromTo(
               "[data-hero='ground']",
-              { yPercent: 0, scale: 1 },
+              { y: 0, yPercent: 0, scale: 1 },
               /* O trator sobe JUNTO com as folhas, e bem mais devagar: -8
                  contra os -82 delas, um décimo do curso. Subir os dois na
                  mesma direção com velocidades diferentes é o que faz
@@ -264,12 +321,12 @@ export function Hero() {
 
                  O zoom é o mesmo nos dois, e é ele que sustenta a sensação de
                  aproximação onde o curso é curto. */
-              { yPercent: narrow ? -20 : -8, scale: 1.3, ease: RIDE },
+              { y: 0, yPercent: narrow ? -20 : -8, scale: 1.3, ease: RIDE },
               0,
             )
             .fromTo(
               "[data-hero='leaves']",
-              { yPercent: 0, scale: 1 },
+              { y: 0, yPercent: 0, scale: 1 },
               /* Bem mais rápido que o trator, para engolir ele: -82 contra os
                  -34 dele no largo. Elas já pintam na frente por ordem de DOM —
                  vêm depois do solo, e as duas estão na camada posicionada por
@@ -277,7 +334,7 @@ export function Hero() {
                  de velocidade. E crescem mais (1,22 contra 1,3 do trator, mas
                  partindo de muito mais perto), que é o que faz passarem por
                  cima em vez de só deslizarem por cima. */
-              { yPercent: -82, scale: 1.22, ease: RIDE },
+              { y: 0, yPercent: -82, scale: 1.22, ease: RIDE },
               0,
             )
             .fromTo(
@@ -505,7 +562,20 @@ export function Hero() {
                E ali sobra a versão curta: sem a praça, o que resta cabe com
                um corpo legível em vez de tipografia de 7px. */
             className={[
-              "mb-[clamp(14px,1.7vw,30px)] font-display uppercase text-muted",
+              /* A tarja desce um pouco e encosta mais na manchete: ela nascia
+                 grudada na barra do topo — perto de 1280 sobravam vinte e sete
+                 pixels — enquanto o vão até a manchete era quase o mesmo, o
+                 que a deixava boiando entre as duas coisas. O que ela ganha
+                 em cima sai de baixo — e sai exatamente o que entra, para a
+                 soma das duas margens continuar sendo o vão de antes. Assim a
+                 manchete e o subtítulo não descem um pixel, o que importa nas
+                 telas largas e baixas, onde o texto já passa raspando no
+                 trator. Vale só no largo; no estreito ela volta ao respiro de
+                 antes, que lá o bloco é ancorado pelo topo e qualquer margem
+                 empurraria a cena inteira. */
+              "mt-[clamp(8px,0.9vw,16px)] mb-[clamp(6px,0.8vw,14px)]",
+              "max-[860px]:mt-0 max-[860px]:mb-[clamp(14px,1.7vw,30px)]",
+              "font-display uppercase text-muted",
               "text-[clamp(9px,0.65vw,12.4px)] tracking-[0.39em]",
               "max-[860px]:text-[clamp(8px,2.6vw,10.5px)] max-[860px]:tracking-[0.26em]",
               "max-[860px]:whitespace-nowrap",
@@ -524,7 +594,12 @@ export function Hero() {
               "max-[860px]:text-[clamp(35px,9.7vw,44px)]",
             ].join(" ")}
           >
-            {hero.headline}
+            {hero.headline.map((line, i) => (
+              <Fragment key={line}>
+                {i > 0 && <br />}
+                {line}
+              </Fragment>
+            ))}
           </h1>
           <p
             data-hero-sub
