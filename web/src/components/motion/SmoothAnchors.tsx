@@ -59,12 +59,10 @@ export function SmoothAnchors() {
         return;
       }
 
-      gsap.to(window, {
-        duration: 0.9,
-        ease: "power2.inOut",
-        scrollTo: { y, autoKill: true },
-        onComplete: () => history.pushState(null, "", href),
-      });
+      /* No mobile (onde o Lenis está desligado), usamos o scroll nativo direto
+         para nunca interferir com o compositor ou a física de toque do aparelho */
+      window.scrollTo(0, y);
+      history.pushState(null, "", href);
     };
 
     document.addEventListener("click", onClick);

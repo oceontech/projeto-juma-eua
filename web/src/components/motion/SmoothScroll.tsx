@@ -32,57 +32,127 @@ import { booted } from "@/lib/boot";
 
 let instance: Lenis | null = null;
 
-/** O dono da rolagem, ou `null` quando ela é nativa (menos movimento). */
+/** O dono da rolagem, ou `null` quando ela é nativa (mobile ou menos movimento). */
 export function scroller(): Lenis | null {
   return instance;
 }
 
+/**
+ * Detecta se o dispositivo atual é móvel, tablet ou sensível ao toque.
+ * A rolagem suave (Lenis) roda exclusivamente no desktop tradicional (mouse / ponteiro fino).
+ * Em qualquer celular ou tablet, a rolagem do navegador permanece 100% nativa para
+ * eliminar trepidações e disputas com o compositor de gestos do sistema.
+ */
+function isMobileOrTouch(): boolean {
+  if (typeof window === "undefined") return true;
+
+  // 1. Respeita preferência do sistema por redução de movimento
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    return true;
+  }
+
+  // 2. Qualquer viewport mobile ou tablet (<= 1024px) roda scroll 100% nativo
+  if (window.innerWidth <= 1024 || window.matchMedia("(max-width: 1024px)").matches) {
+    return true;
+  }
+
+  // 3. Telas com ponteiro de toque (touchscreen / coarse)
+  if (
+    window.matchMedia("(pointer: coarse)").matches ||
+    window.matchMedia("(hover: none)").matches
+  ) {
+    return true;
+  }
+
+  // 4. Hardware de toque em telas até 1280px (ex: tablets, iPads, celulares em paisagem)
+  if (
+    ("ontouchstart" in window || navigator.maxTouchPoints > 0) &&
+    window.innerWidth <= 1280
+  ) {
+    return true;
+  }
+
+  // 5. User-Agent clássico de smartphone ou tablet
+  if (
+    /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile/i.test(
+      navigator.userAgent,
+    )
+  ) {
+    return true;
+  }
+
+  return false;
+}
+
 export function SmoothScroll() {
   useEffect(() => {
-    /* Quem pediu menos movimento fica com a rolagem nativa do navegador: a
-       suavização é justamente movimento que a pessoa não pediu. */
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-
-    const lenis = new Lenis({
-      duration: 1.05,
-      /* Exponencial: começa a acompanhar na hora e vai assentando. Sem
-         overshoot, que num site com parallax vira balanço. */
-      easing: (t) => 1 - Math.pow(1 - t, 3.4),
-      smoothWheel: true,
-      /* O toque fica nativo. Suavizar o dedo significa `preventDefault` num
-         gesto que o compositor já está tocando, e o resultado é pior que o
-         problema: atraso na resposta e briga com o rolar por inércia do
-         próprio sistema. */
-      syncTouch: false,
-      wheelMultiplier: 1,
-    });
-
-    instance = lenis;
-
-    /* O véu do preloader trava a rolagem por `overflow`, e `overflow` não
-       segura o Lenis — ele chamaria `scrollTo` por trás do véu. Ele nasce
-       parado e só assume quando a página é liberada. */
-    lenis.stop();
+    let lenis: Lenis | null = null;
+    let tick: ((time: number) => void) | null = null;
     let alive = true;
-    booted.then(() => {
-      if (alive) lenis.start();
-    });
 
-    /* O ScrollTrigger já ouve o evento nativo, mas assinar aqui coloca a
-       leitura dele no mesmo quadro da escrita do Lenis. */
-    lenis.on("scroll", ScrollTrigger.update);
+    const stopLenis = () => {
+      if (tick) {
+        gsap.ticker.remove(tick);
+        tick = null;
+      }
+      if (lenis) {
+        lenis.destroy();
+        lenis = null;
+      }
+      instance = null;
+      document.documentElement.classList.remove("lenis");
+      gsap.ticker.lagSmoothing(500, 33);
+    };
 
-    /* O ticker do GSAP entrega segundos; o `raf` do Lenis espera milissegundos. */
-    const tick = (time: number) => lenis.raf(time * 1000);
-    gsap.ticker.add(tick);
-    gsap.ticker.lagSmoothing(0);
+    const startLenis = () => {
+      if (isMobileOrTouch()) {
+        stopLenis();
+        return;
+      }
+      if (lenis) return; // já ativo
+
+      lenis = new Lenis({
+        duration: 1.05,
+        easing: (t) => 1 - Math.pow(1 - t, 3.4),
+        smoothWheel: true,
+        syncTouch: false,
+        wheelMultiplier: 1,
+      });
+
+      instance = lenis;
+
+      lenis.stop();
+      booted.then(() => {
+        if (alive && lenis) lenis.start();
+      });
+
+      lenis.on("scroll", ScrollTrigger.update);
+
+      tick = (time: number) => {
+        if (lenis) lenis.raf(time * 1000);
+      };
+      gsap.ticker.add(tick);
+      gsap.ticker.lagSmoothing(0);
+    };
+
+    // Inicializa conforme o dispositivo
+    startLenis();
+
+    // Reavalia dinamicamente caso o desenvolvedor alterne entre desktop e mobile no DevTools ou rotacione a tela
+    const onResize = () => {
+      if (isMobileOrTouch()) {
+        stopLenis();
+      } else {
+        startLenis();
+      }
+    };
+
+    window.addEventListener("resize", onResize, { passive: true });
 
     return () => {
       alive = false;
-      gsap.ticker.remove(tick);
-      gsap.ticker.lagSmoothing(500, 33);
-      lenis.destroy();
-      instance = null;
+      window.removeEventListener("resize", onResize);
+      stopLenis();
     };
   }, []);
 
