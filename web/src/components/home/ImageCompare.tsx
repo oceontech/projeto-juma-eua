@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useRef } from "react";
-import Image from "next/image";
+import { getImageProps } from "next/image";
 import { Pill } from "@/components/ui";
 import { proof } from "@/content/home";
 import { gsap, useGSAP, type ScrollTrigger } from "@/lib/gsap";
@@ -23,6 +23,42 @@ type ImageCompareProps = {
   /** Fim do curso de abertura. */
   end?: string;
 };
+
+type CompareImageProps = {
+  alt: string;
+  className?: string;
+  kind: "treated" | "untreated";
+};
+
+function CompareImage({ alt, className, kind }: CompareImageProps) {
+  const {
+    props: { srcSet: desktopSrcSet, ...desktop },
+  } = getImageProps({
+    alt,
+    height: 640,
+    sizes: "(min-width: 861px) 100vw, 0px",
+    src: `/img/soybean-${kind}-desktop.webp`,
+    width: 1800,
+  });
+
+  const {
+    props: { srcSet: mobileSrcSet },
+  } = getImageProps({
+    alt,
+    height: 752,
+    sizes: "(max-width: 860px) 100vw, 0px",
+    src: `/img/soybean-${kind}-mobile.webp`,
+    width: 720,
+  });
+
+  return (
+    <picture>
+      <source media="(max-width: 860px)" srcSet={mobileSrcSet} />
+      <source media="(min-width: 861px)" srcSet={desktopSrcSet} />
+      <img {...desktop} alt={alt} className={className} />
+    </picture>
+  );
+}
 
 /**
  * Comparador antes/depois. As duas fotos ocupam a mesma caixa e o corte da
@@ -161,18 +197,11 @@ export function ImageCompare({
 
   return (
     <div ref={box} className="compare" onPointerDown={onPointerDown}>
-      <Image
-        src="/img/proof-untreated.jpg"
-        alt={proof.compare.beforeAlt}
-        width={1020}
-        height={700}
-      />
-      <Image
+      <CompareImage alt={proof.compare.beforeAlt} kind="untreated" />
+      <CompareImage
         className="compare-after"
-        src="/img/proof-treated.jpg"
         alt={proof.compare.afterAlt}
-        width={980}
-        height={700}
+        kind="treated"
       />
 
       <Pill

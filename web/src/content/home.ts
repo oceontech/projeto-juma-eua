@@ -56,7 +56,7 @@ export const brazil = {
     year: "1988",
     title: "The product came first",
     body: "Julio Matino formulated Aminosan before there was a company to sell it. Growers in Sao Paulo bought it because it worked, and the demand built the business.",
-    author: { name: "Júlio Matino", role: "Co Founder of Metrilo" },
+    author: { name: "Júlio Matino", role: "Founder" },
   },
   metrics: [
     {
@@ -78,8 +78,8 @@ export const proof = {
   compare: {
     beforeLabel: "Untreated check",
     afterLabel: "Treated",
-    beforeAlt: "Untreated check strip: thin, browning stand",
-    afterAlt: "Treated strip: dense, closed canopy",
+    beforeAlt: "Untreated soybean check strip with lighter canopy and more visible soil",
+    afterAlt: "Treated soybean strip with deeper green canopy and stronger row closure",
   },
   benefits: [
     { title: "Efficiency", body: "More work per pass." },

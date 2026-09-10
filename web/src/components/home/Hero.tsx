@@ -280,6 +280,15 @@ export function Hero() {
                 },
               },
             })
+            /* O bloco seguinte fica escondido desde o primeiro quadro.
+               O `fromTo` lá embaixo declara `autoAlpha: 0`, mas um `from`
+               posicionado no meio do timeline não vale para antes dele: até a
+               cabeça chegar aos 0.76 o bloco ficava opaco, e como ele é preto
+               chapado e sobe 80svh para dentro da cena, a borda de cima dele
+               atravessava a foto das folhas como uma aresta reta. Ficava mais
+               óbvio no estreito, onde a lâmina ainda está em 0.7 quando essa
+               borda entra em quadro. */
+            .set(next, { autoAlpha: 0 }, 0)
             .fromTo("[data-hero='scene']", { y: 0 }, { y: travel, ease: RIDE, duration: 0.8 }, 0)
             .fromTo(
               "[data-hero='sky']",
@@ -321,7 +330,7 @@ export function Hero() {
 
                  O zoom é o mesmo nos dois, e é ele que sustenta a sensação de
                  aproximação onde o curso é curto. */
-              { y: 0, yPercent: narrow ? -20 : -8, scale: 1.3, ease: RIDE },
+              { y: 0, yPercent: narrow ? -32 : -8, scale: 1.3, ease: RIDE },
               0,
             )
             .fromTo(
@@ -333,8 +342,14 @@ export function Hero() {
                  causa do transform —, então o que faltava era só a diferença
                  de velocidade. E crescem mais (1,22 contra 1,3 do trator, mas
                  partindo de muito mais perto), que é o que faz passarem por
-                 cima em vez de só deslizarem por cima. */
-              { y: 0, yPercent: -82, scale: 1.22, ease: RIDE },
+                 cima em vez de só deslizarem por cima.
+
+                 No estreito as duas sobem mais — o palco é quase metade da
+                 altura do largo, e a mesma porcentagem ali dá pouco mais que
+                 um terço do curso em pixels. A diferença entre elas continua
+                 sendo a mesma proporção, que é o que sustenta a profundidade;
+                 o que muda é o quanto a cena inteira anda. */
+              { y: 0, yPercent: narrow ? -104 : -82, scale: 1.22, ease: RIDE },
               0,
             )
             .fromTo(

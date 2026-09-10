@@ -5,10 +5,26 @@ import { gsap, useGSAP } from "@/lib/gsap";
 import { expertise } from "@/content/home";
 
 /**
- * A linha do tempo em fracções do curso de rolagem. Uma só fonte para o
- * timeline e para a virada do tema da barra do topo — que acontece quando a
- * borda da cortina cruza o meio da tela, ou seja, no meio do trecho dela.
+ * A frase não espera a própria seção começar: ela aparece DENTRO do preto que
+ * a prova ainda está espalhando, uma seção acima. Por isso estes números são
+ * fracções do curso da PROVA, e não do desta seção — ver `preroll` abaixo.
+ *
+ * A entrada começa com o painel preto já bem adiantado e termina no quadro em
+ * que a tela fica inteiramente preta. Quem rola vê a frase se formar no escuro
+ * em vez de encontrá-la pronta do outro lado da emenda.
  */
+const TEXT_AT = 0.77;
+const TEXT_DUR = 0.16;
+/**
+ * O fundo desta janela acende no fim, sobre o painel que já é preto pleno.
+ * Curto e tarde de propósito: é uma troca de preto por preto, e o único
+ * requisito é estar completa antes de a janela da prova se apagar.
+ */
+const BG_AT = 0.935;
+const BG_DUR = 0.02;
+
+/* A cortina já encontra a frase pronta — a entrada aconteceu antes da emenda.
+   O 0.06 original ficou porque não há mais nada a esperar aqui. */
 const CURTAIN_AT = 0.06;
 const CURTAIN_DUR = 0.5;
 const CURTAIN_MID = CURTAIN_AT + CURTAIN_DUR / 2;
@@ -31,17 +47,22 @@ function ExpertiseCopy({ light = false }: { light?: boolean }) {
       aria-hidden={light || undefined}
       className="expertise-copy"
     >
-      <h2 className="max-w-[727px] text-[clamp(30px,5.2vw,96px)] leading-[1.06]">
-        {expertise.headline.map((line, i) => (
-          <Fragment key={line}>
-            {i > 0 && <br />}
-            {line}
-          </Fragment>
-        ))}
-      </h2>
-      <p className="mx-auto mt-[clamp(18px,1.7vw,32px)] max-w-[465px] text-[clamp(12px,0.95vw,16px)]">
-        {expertise.body}
-      </p>
+      {/* A entrada mora numa caixa própria, por dentro do parallax. Os dois
+          escrevem `transform`, e no mesmo elemento um sobrescreveria o outro —
+          aninhados, eles compõem. */}
+      <div data-expertise-enter>
+        <h2 className="max-w-[727px] text-[clamp(30px,5.2vw,96px)] leading-[1.06]">
+          {expertise.headline.map((line, i) => (
+            <Fragment key={line}>
+              {i > 0 && <br />}
+              {line}
+            </Fragment>
+          ))}
+        </h2>
+        <p className="mx-auto mt-[clamp(18px,1.7vw,32px)] max-w-[465px] text-[clamp(12px,0.95vw,16px)]">
+          {expertise.body}
+        </p>
+      </div>
     </div>
   );
 }
@@ -104,12 +125,15 @@ export function Expertise() {
           if (!lightBg || !darkBg || !lightCopy || !darkCopy) return;
 
           const copies = [darkCopy, lightCopy];
+          const darkEnter = darkCopy.querySelector<HTMLElement>("[data-expertise-enter]");
+          if (!darkEnter) return;
           const html = document.documentElement;
 
           if (!animate) {
             gsap.set(lightLayer, { clipPath: "inset(0% 0% 0% 0%)" });
             gsap.set([lightBg, darkBg], { opacity: 1 });
             gsap.set(copies, { scale: 1, y: 0, opacity: 1, filter: "none" });
+            gsap.set(darkEnter, { scale: 1, y: 0, opacity: 1, filter: "none" });
             return;
           }
 
@@ -147,7 +171,106 @@ export function Expertise() {
             copies.forEach((copy) => {
               copy.style.willChange = active ? "transform, opacity, filter" : "";
             });
+            darkEnter.style.willChange = active ? "transform, opacity, filter" : "";
           };
+
+          /* ── pré-entrada ──────────────────────────────────────────────
+             A frase se forma dentro do preto que a seção anterior ainda está
+             espalhando. É um timeline próprio porque corre sobre o curso da
+             PROVA, não sobre o desta seção — e por isso é medido a partir do
+             palco dela, exatamente como ele se mede.
+
+             O que torna isto possível é o `z-index: 5` da janela: ela está
+             por cima do card da prova, então o texto aparece sobre o painel
+             preto em vez de atrás dele. O fundo desta janela paga o preço —
+             nasce transparente e só acende no fim (globals.css). */
+          const proofStage = document.querySelector<HTMLElement>("[data-proof-stage]");
+          const proofWindow = document.querySelector<HTMLElement>(".proof-window");
+
+          if (proofStage && proofWindow) {
+            /* O curso da cena da prova. */
+            const course = () =>
+              Math.max(1, proofStage.offsetHeight - proofWindow.offsetHeight);
+
+            /* A frase é colocada na altura em que a janela VAI parar, e não na
+               altura em que a janela está.
+
+               O quanto ela ainda tem a subir é `end - scroll` do próprio
+               gatilho: este curso termina no quadro em que o topo desta seção
+               encosta no topo da tela, que é justamente quando a janela trava.
+               Tirar o número daqui, e não de uma medição paralela, é o que
+               mantém as duas coisas presas uma à outra — se a emenda mudar de
+               lugar, a compensação muda junto, sem ninguém precisar lembrar.
+
+               A versão anterior deduzia esse valor do curso medido, supondo
+               que a janela sobe um pixel por pixel de rolagem. A conta fecha
+               no papel e ainda deixava uns 4px de deriva na prática; e num
+               celular de verdade, onde a barra do navegador faz `lvh` ser
+               maior que a área visível, a suposição quebra de vez. */
+            const placeCopy = (self: { end: number; scroll: () => number }) => {
+              gsap.set(darkEnter, { y: -Math.max(0, self.end - self.scroll()) });
+            };
+
+            gsap
+              .timeline({
+                defaults: { ease: "none" },
+                scrollTrigger: {
+                  id: "expertise-preroll",
+                  trigger: proofStage,
+                  start: "top top",
+                  end: () => "+=" + course(),
+                  scrub: true,
+                  refreshPriority: 5,
+                  onRefresh: placeCopy,
+                  onUpdate: placeCopy,
+                },
+              })
+              /* Estica o timeline até 1 e o mantém lá.
+                 `scrub` mapeia o curso da rolagem sobre a DURAÇÃO do timeline,
+                 e não sobre o número 1: sem este tween vazio a duração seria a
+                 do último tween — 0.96 —, e cada posição escrita aqui como
+                 fracção do curso da prova valeria 1/0.96 a mais do que diz.
+                 Foi o que empurrou o fundo desta janela para depois do
+                 apagamento da prova e deixou o branco da seção vazar. */
+              .to({}, { duration: 1 }, 0)
+              /* O parallax da cortina parte de `y: 12`. Ele só começa depois
+                 da emenda — e a essa altura a frase já está legível, então
+                 aquele valor inicial seria um salto de 12px em cena aberta.
+                 Aplicado aqui, ele entra enquanto ainda não há o que ver.
+
+                 Só onde o parallax existe: no estreito ele não roda (ver a
+                 nota adiante), e este `set` ficava gravado para sempre — a
+                 frase inteira 12px mais baixa e 1,5% menor, sem nada que
+                 desfizesse. */
+              .set(wide ? copies : [], { y: 12, scale: 0.985 }, 0)
+              /* Forma e opacidade em curvas separadas, de propósito.
+                 A escala e o foco assentam cedo — `power2.out` —, que é o que
+                 dá a sensação de a frase chegar. Já o brilho sobe linear: com
+                 a mesma curva de saída ele batia em 70% no primeiro terço, e o
+                 que se pediu foi que a frase ficasse fraquinha um bom tempo e
+                 fosse ganhando corpo com o preto. */
+              .fromTo(
+                darkEnter,
+                { scale: 0.88, filter: "blur(14px)" },
+                {
+                  scale: 1,
+                  filter: "blur(0px)",
+                  duration: TEXT_DUR,
+                  ease: "power2.out",
+                },
+                TEXT_AT,
+              )
+              /* Linear para a frase ficar fraca um bom tempo em vez de saltar
+                 para meio brilho no primeiro terço. A altura não está aqui:
+                 ela é escrita por `placeCopy` a cada quadro. */
+              .fromTo(
+                darkEnter,
+                { opacity: 0 },
+                { opacity: 1, duration: TEXT_DUR, ease: "none" },
+                TEXT_AT,
+              )
+              .to(darkBg, { opacity: 1, duration: BG_DUR }, BG_AT);
+          }
 
           const timeline = gsap
             .timeline({

@@ -95,11 +95,11 @@ export function BrazilAdvantage() {
                 height={58}
                 className="size-[clamp(29px,3vw,58px)] rounded-full object-cover"
               />
-              <div>
-                <strong className="block font-display text-[clamp(11px,1.05vw,20px)] font-semibold text-offwhite">
+              <div className="leading-none">
+                <strong className="block font-display text-[clamp(11px,1.05vw,20px)] leading-[1.05] font-semibold text-offwhite">
                   {brazil.history.author.name}
                 </strong>
-                <span className="text-[clamp(8px,0.73vw,14px)] font-extralight text-offwhite/45">
+                <span className="mt-[3px] block text-[clamp(8px,0.73vw,14px)] leading-[1.1] font-extralight text-offwhite/45">
                   {brazil.history.author.role}
                 </span>
               </div>

@@ -650,8 +650,13 @@
        isso está aqui, na janela, e não na seção. A seção precisa continuar
        ABAIXO dos produtos: é a caixa dela que preenche a tela acima deles
        enquanto eles sobem, e ela só consegue ficar atrás se não abrir um
-       contexto de empilhamento próprio (`z-index: auto`). */
-    z-index: 3;
+       contexto de empilhamento próprio (`z-index: auto`).
+
+       E acima também da janela da prova (4): a frase precisa aparecer POR
+       CIMA do painel preto que ainda está crescendo lá embaixo. O preço disso
+       é que o fundo desta janela não pode ser opaco enquanto a cena da prova
+       corre — ver a regra sob `data-proof-overlap` mais abaixo. */
+    z-index: 5;
     /* Nada aqui é clicável, e na saída esta janela fica por cima dos cards do
        bloco seguinte enquanto some. */
     pointer-events: none;
@@ -1091,6 +1096,20 @@
     text-align: center;
   }
 
+  @media (min-width: 1601px) {
+    .hero-copy {
+      transform: translateY(-15px);
+    }
+
+    .hero-copy [data-hero-title] {
+      line-height: .88;
+    }
+
+    .hero-copy [data-hero-sub] {
+      margin-top: 2px;
+    }
+  }
+
 
   /* ------------------------------------------------- prova em tela cheia */
   /* O card da prova cresce até ocupar a tela inteira enquanto a seção
@@ -1105,7 +1124,11 @@
      Sem movimento — ou sem JS — a caixa some do caminho e o card volta a ser
      um bloco no fluxo, do tamanho de sempre. */
   .proof-stage[data-scene] {
-    --proof-run: clamp(560px, 104svh, 1200px);
+    /* Mais curso que o resto das cenas porque são três gestos em sequência, e
+       o último — a engolida — leva metade dele sozinho: é uma superfície muito
+       grande atravessando a tela, e superfície grande precisa de tempo ou lê
+       como corte. */
+    --proof-run: clamp(700px, 132svh, 1500px);
     position: relative;
     height: calc(100lvh + var(--proof-run));
   }
@@ -1118,6 +1141,12 @@
     height: 100lvh;
     display: grid;
     place-items: center;
+    /* Acima da janela da cortina (3), que sobe para dentro desta seção. A
+       ordem importa durante a cena inteira: a cortina traz o próprio fundo
+       preto e o próprio texto, e sem esta linha eles apareceriam por cima do
+       card em tela cheia. Quem some no fim é esta janela, por opacidade —
+       ver ProofStage.tsx. */
+    z-index: 4;
   }
 
   /* `--open` vai de 0 (repouso) a 1 (tela cheia), escrito pelo GSAP junto com
@@ -1126,6 +1155,16 @@
   .proof-card {
     --open: 0;
     --proof-pad: calc(clamp(20px, 2.6vw, 50px) + var(--open) * clamp(6px, 1.4vw, 26px));
+    /* O fundo da barra de benefícios mora aqui, e não na barra, porque o
+       painel da engolida precisa nascer com exatamente o mesmo pixel. Fossem
+       duas declarações, qualquer divergência viraria um piscar no quadro em
+       que um substitui o outro. */
+    --proof-bar-bg: linear-gradient(
+      136.8deg,
+      #070709 4.26%,
+      rgb(40 41 35 / .2) 98.7%,
+      rgb(74 75 62 / .1) 106.3%
+    );
     position: relative;
     display: flex;
     /* A mesma conta do `.wrap`: o card nasce do tamanho do container mesmo
@@ -1139,7 +1178,15 @@
     min-height: 0;
     flex-direction: column;
     justify-content: center;
-    border-radius: calc((1 - var(--open)) * clamp(14px, 1.25vw, 24px));
+    /* O raio segura quase toda a abertura e só se desfaz na chegada.
+       Desfazê-lo em proporção a `--open`, como era antes, deixava o card cada
+       vez mais quadrado justamente enquanto ele cresce — o gesto lê como um
+       retângulo endurecendo. Mantê-lo até o fim também não serve: em tela
+       cheia os quatro cantos abrem para o preto da seção, e o que devia ser
+       borda a borda fica com quinas. Então ele fica redondo enquanto há o que
+       arredondar e chega em zero junto com a borda da tela. */
+    --flat: clamp(0, calc((var(--open) - 0.82) / 0.18), 1);
+    border-radius: calc((1 - var(--flat)) * clamp(14px, 1.25vw, 24px));
     padding: var(--proof-pad);
     /* Em tela cheia a barra do topo flutua sobre o card; o respiro a mais no
        topo mantém a etiqueta da foto abaixo dela. */
@@ -1151,10 +1198,50 @@
     );
   }
 
+  /* A engolida: a barra de benefícios cresce até cobrir o card inteiro — que
+     nessa altura já é a tela — e assenta em preto pleno, que é a cor da seção
+     seguinte.
+
+     É um elemento à parte, e não a própria barra crescendo, por dois motivos.
+     A barra está no fluxo do card: crescê-la empurraria a foto, e a foto tem
+     `flex: 1 1 auto` — ela reagiria ao espaço liberado em vez de ficar parada
+     esperando ser coberta. E o painel precisa passar POR CIMA da foto, o que
+     um irmão no fluxo não faz.
+
+     Nasce com o mesmo fundo da barra e com opacidade zero: quem aparece no
+     quadro da troca é um retângulo idêntico ao que já estava ali. O preto
+     pleno entra depois, por `--swallow-black`, conforme ele cresce — o brilho
+     quente do canto do gradiente se apaga em vez de trocar de cor de um
+     quadro para o outro. */
+  .proof-swallow {
+    position: absolute;
+    /* Acima da foto e da barra, abaixo de nada — é a última camada do card. */
+    z-index: 2;
+    opacity: 0;
+    pointer-events: none;
+    background-image: var(--proof-bar-bg);
+    /* O JS escreve `top`, `left`, `width`, `height`, `border-radius`,
+       `opacity`, `scale` e `--swallow-black`. */
+  }
+
+  .proof-swallow::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: #000;
+    opacity: var(--swallow-black, 0);
+  }
+
   /* -------------------------------------------------------- comparador */
   .compare {
     position: relative;
     overflow: hidden;
+    /* O punho e o range têm `z-index` para se empilharem entre si. Sem um
+       contexto próprio aqui eles sobem para o do card e passam por cima do
+       painel da engolida — a foto some no preto e sobram a linha lima e o
+       botão flutuando. `isolate` prende os dois aqui dentro. */
+    isolation: isolate;
     border-radius: clamp(10px, 1.05vw, 20px);
     aspect-ratio: 1260 / 448;
     /* A proporção sozinha faz a altura crescer com a largura, e numa tela
@@ -1242,6 +1329,8 @@
   /* ------------------------------------------------- benefícios da prova */
   .proof-benefits {
     display: grid;
+    /* Compartilhado com o painel da engolida — ver `--proof-bar-bg`. */
+    background-image: var(--proof-bar-bg);
     /* O que encolhe quando falta altura é a foto, nunca o texto. */
     flex: none;
     grid-template-columns: minmax(0, 1fr);
@@ -1718,6 +1807,46 @@ html[data-expertise-overlap] #products {
   margin-top: calc(-1 * var(--expertise-exit));
 }
 
+/* A mesma ideia uma seção acima: a cortina sobe para dentro do curso da prova,
+   de modo que a janela dela trave no topo no mesmo quadro em que a engolida
+   termina.
+
+   Sem isto sobra uma tela inteira de rolagem entre as duas: o card preto sai
+   por cima e a cortina entra por baixo, e o texto dela sobe pela tela em vez
+   de aparecer no centro. Com a sobreposição, o preto da prova se apaga com o
+   preto da cortina já parado atrás — preto sobre preto — e o texto entra em
+   seguida, sem nada deslizando.
+
+   `spacing-sec` entra na conta porque é o respiro no pé de `#proof`, que fica
+   entre o palco e a cortina. Só com movimento: `data-proof-overlap` é ligado
+   em ProofStage.tsx. */
+html[data-proof-overlap] .expertise-transition {
+  margin-top: calc(-100lvh - var(--spacing-sec));
+  /* Preta no trecho que a cena da prova alcança, branca no resto.
+     A caixa desta seção é branca porque é ela que se vê acima do bloco de
+     produtos no fim (ver a nota acima). Só que agora ela sobe para dentro do
+     curso da prova, e ali a janela desta seção está transparente — então esse
+     branco aparecia por baixo do card enquanto ele ainda estava crescendo,
+     antes de chegar à tela cheia.
+
+     Uma tela é o bastante: durante o curso da prova esta seção nunca mostra
+     mais do que os seus primeiros 100lvh, porque o topo dela só alcança o topo
+     da janela no último quadro. */
+  background: linear-gradient(#000 0 100lvh, #fff 100lvh);
+}
+
+/* A contrapartida do `z-index: 5` da janela: ela passa por cima do card da
+   prova, e um fundo preto opaco aqui apagaria a foto no meio da cena. Então
+   ele nasce transparente e só ganha corpo no fim da engolida, quando o painel
+   já é preto pleno — preto sobre preto, sem quadro em que se veja a troca.
+   Quem o acende é o timeline de pré-entrada em Expertise.tsx.
+
+   Fora da cena da prova (sem movimento, sem JS) o flag não existe e o fundo
+   volta a ser opaco desde o primeiro quadro. */
+html[data-proof-overlap] .expertise-layer--dark .expertise-bg {
+  opacity: 0;
+}
+
 /* ========================================================== responsivo */
 @media (max-width: 860px) {
 
@@ -2057,9 +2186,14 @@ html[data-expertise-overlap] #products {
   }
 
   /* Curso mais curto: a tela é menor, o gesto atravessa menos espaço, e um
-     curso de desktop aqui viraria meia página de rolagem parada. */
+     curso de desktop aqui viraria meia página de rolagem parada.
+
+     Ainda assim ele cresceu junto com o do desktop, e por um motivo que só
+     existe aqui: a tela é estreita e alta, então a engolida tem quase nada a
+     percorrer na horizontal e a altura inteira na vertical. É o caso em que o
+     gesto mais precisa de tempo, não o que menos precisa. */
   .proof-stage[data-scene] {
-    --proof-run: clamp(420px, 82svh, 760px);
+    --proof-run: clamp(520px, 104svh, 940px);
   }
 
   /* No mobile o Figma corta o comparador na horizontal. */
@@ -2202,6 +2336,34 @@ html[data-expertise-overlap] #products {
     .hero-copy [data-hero-sub] {
       margin-top: clamp(8px, 0.85vw, 14px);
       line-height: 1.38;
+    }
+  }
+}
+
+/* --------------------------------------------- copy do hero no muito largo */
+/* Acima de 1600 a faixa de céu cresce mais devagar que o corpo de texto: a
+   `--text-body` bate no teto de 18px e a entrelinha de 1.56 do body vira um
+   parágrafo alto demais para a proporção do palco. Aqui, ao contrário da faixa
+   média, o corpo de letra encolhe junto — é largura sobrando, não faltando, e
+   o texto menor é o que devolve o desenho do bloco.
+
+   Mesma camada e mesmo motivo da regra de 861–1599: o `leading-none` do título
+   e o `mt-[...]` do subtítulo estão no JSX, em `utilities`, e de dentro de
+   `components` estas regras não ganhariam. */
+@layer utilities {
+  @media (min-width: 1601px) {
+    /* Com o título no teto da escala (88px), a entrelinha de 1 abre um vão
+       largo demais entre as duas linhas da manchete. 0.95 é o recuo mínimo
+       que fecha o vão sem as maiúsculas de uma linha encostarem nas descidas
+       da outra. */
+    .hero-copy [data-hero-title] {
+      line-height: 0.95;
+    }
+
+    .hero-copy [data-hero-sub] {
+      margin-top: calc(clamp(10px, 0.85vw, 18px) + 5px);
+      font-size: clamp(15px, 0.9vw, 16.5px);
+      line-height: 1.42;
     }
   }
 }

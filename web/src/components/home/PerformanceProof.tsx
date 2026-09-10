@@ -65,7 +65,9 @@ export function PerformanceProof() {
           delay={0.1}
           trigger="[data-proof-stage]"
           start="top 60%"
-          className="proof-benefits mt-[clamp(18px,2.4vw,46px)] rounded-[clamp(12px,1.05vw,20px)] bg-linear-[136.8deg,#070709_4.26%,rgba(40,41,35,0.2)_98.7%,rgba(74,75,62,0.1)_106.3%] px-[clamp(16px,2vw,30px)] py-[clamp(24px,2.2vw,38px)]"
+          /* O fundo saiu daqui para `--proof-bar-bg`, no card: o painel da
+             engolida nasce com ele e precisa do mesmo pixel. */
+          className="proof-benefits mt-[clamp(18px,2.4vw,46px)] rounded-[clamp(12px,1.05vw,20px)] px-[clamp(16px,2vw,30px)] py-[clamp(24px,2.2vw,38px)]"
         >
           {proof.benefits.map((benefit) => (
             <div key={benefit.title} className="proof-benefit">
@@ -80,6 +82,11 @@ export function PerformanceProof() {
             </div>
           ))}
         </Reveal>
+
+        {/* O painel da engolida: nasce sobre a barra acima e cresce até cobrir
+            o card, que nessa altura é a tela. Vazio e inerte — só geometria e
+            cor, escritas por ProofStage.tsx. */}
+        <span data-proof-swallow aria-hidden className="proof-swallow" />
       </ProofStage>
     </section>
   );

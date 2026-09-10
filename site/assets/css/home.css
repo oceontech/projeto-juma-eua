@@ -232,6 +232,20 @@ h1, h2, h3, h4 { font-family: var(--display); font-weight: 400; margin: 0; }
   color: var(--muted);
 }
 
+@media (min-width: 1601px) {
+  .hero__copy {
+    top: 7.75%;
+  }
+
+  .hero__copy .h1 {
+    line-height: .88;
+  }
+
+  .hero__sub {
+    margin-top: 2px;
+  }
+}
+
 /* ======================================================= vantagem Brasil */
 .brazil { background: var(--black); color: var(--offwhite); padding-bottom: var(--sec); }
 .brazil__title { text-align: center; color: var(--white); margin-bottom: clamp(34px, 3.9vw, 62px); }
@@ -274,8 +288,8 @@ h1, h2, h3, h4 { font-family: var(--display); font-weight: 400; margin: 0; }
 
 .card-author { display: flex; align-items: center; gap: clamp(8px, 1.1vw, 16px); margin-top: auto; }
 .card-author img { width: clamp(29px, 3vw, 58px); height: clamp(29px, 3vw, 58px); border-radius: 50%; object-fit: cover; }
-.card-author strong { display: block; font-family: var(--display); font-weight: 600; font-size: clamp(11px, 1.05vw, 20px); color: var(--offwhite); }
-.card-author span { font-size: clamp(8px, .73vw, 14px); font-weight: 200; color: rgba(246, 255, 238, .46); }
+.card-author strong { display: block; font-family: var(--display); font-weight: 600; font-size: clamp(11px, 1.05vw, 20px); line-height: 1.05; color: var(--offwhite); }
+.card-author span { display: block; margin-top: 3px; font-size: clamp(8px, .73vw, 14px); font-weight: 200; line-height: 1.1; color: rgba(246, 255, 238, .46); }
 
 .card-metric { display: flex; flex-direction: column; gap: clamp(16px, 2.1vw, 40px); }
 .card-metric__head { display: flex; align-items: center; gap: clamp(12px, 2vw, 40px); }
