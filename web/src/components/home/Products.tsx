@@ -31,6 +31,287 @@ const SHARP = "blur(0px)";
 /** Vão entre as duas faixas quando a subida começa. */
 const STACK_GAP = 56;
 
+/* ------------------------------------------------------------------ flora */
+/* O que vive em volta da faixa, e o que cada faixa merece ter em volta.
+ *
+ * Não é ornamento intercambiável: o KMEP Ultra entra na calda com o
+ * inseticida e tira a praga do esconderijo, então em volta dele caem gotas de
+ * calda e debandam insetos — alguns já tombando. O Aminosan são aminoácidos
+ * livres, os blocos de construção, então em volta dele brotam folhas e descem
+ * raízes com os blocos sendo absorvidos.
+ *
+ * Tudo é gerado a partir de poucos números por peça — onde nasce, quanto
+ * avança, quanto entorta — porque é isso que se quer poder ajustar, e não uma
+ * string de `d` escrita à mão.
+ */
+
+const FLORA_W = 1600;
+const FLORA_H = 300;
+
+/* Arredonda o que vai para o atributo.
+   Sem isto o servidor escreve `rotate(-62.18246742793974)` e o navegador
+   `...939756` para a mesma conta, e o React acusa divergência de hidratação.
+   Duas casas é mais precisão do que qualquer tela consegue mostrar. */
+const n = (v: number) => Math.round(v * 100) / 100;
+
+type Vec = [number, number];
+
+/** Ponto e tangente de uma quadrática em t — é onde se pendura o que sai dela. */
+function quadAt(p0: Vec, p1: Vec, p2: Vec, t: number) {
+  const u = 1 - t;
+  const x = u * u * p0[0] + 2 * u * t * p1[0] + t * t * p2[0];
+  const y = u * u * p0[1] + 2 * u * t * p1[1] + t * t * p2[1];
+  const dx = 2 * u * (p1[0] - p0[0]) + 2 * t * (p2[0] - p1[0]);
+  const dy = 2 * u * (p1[1] - p0[1]) + 2 * t * (p2[1] - p1[1]);
+  return { x, y, angle: (Math.atan2(dy, dx) * 180) / Math.PI };
+}
+
+/** Um eixo: nasce na base, avança `h` para cima e entorta `bend` no caminho. */
+function axis(x: number, h: number, bend: number) {
+  const p0: Vec = [x, FLORA_H];
+  const p1: Vec = [x + bend * 0.35, FLORA_H - h * 0.58];
+  const p2: Vec = [x + bend, FLORA_H - h];
+  return {
+    p0,
+    p1,
+    p2,
+    d: `M${n(x)} ${FLORA_H}Q${n(p1[0])} ${n(p1[1])} ${n(p2[0])} ${n(p2[1])}`,
+  };
+}
+
+/** Um ramo saindo de um ponto do eixo, aberto `spread` graus da tangente. */
+function branch(at: { x: number; y: number; angle: number }, len: number, spread: number) {
+  const a = ((at.angle + spread) * Math.PI) / 180;
+  const ex = at.x + Math.cos(a) * len;
+  const ey = at.y + Math.sin(a) * len;
+  const cx = at.x + Math.cos(a) * len * 0.55 - Math.sin(a) * len * 0.22;
+  const cy = at.y + Math.sin(a) * len * 0.55 + Math.cos(a) * len * 0.22;
+  return { d: `M${n(at.x)} ${n(at.y)}Q${n(cx)} ${n(cy)} ${n(ex)} ${n(ey)}`, ex, ey };
+}
+
+const place = (x: number, y: number, rot: number, s: number) =>
+  `translate(${n(x)} ${n(y)}) rotate(${n(rot)}) scale(${n(s)})`;
+
+/* ---------------------------------------------------------------- desenhos */
+
+/** Gota de calda, apontada para baixo e ancorada na ponta. */
+const DROP = "M0 0C-4.6 0-8-3.5-8-8-8-14 0-24 0-24 0-24 8-14 8-8 8-3.5 4.6 0 0 0Z";
+
+/** Folha com nervura, ancorada no talo. */
+const LEAF = "M0 0C7-11 22-14 32-8 25 3 11 7 0 0Z";
+const LEAF_RIB = "M0 0C11-2 23-5 31-8";
+
+/** Bloco: o hexágono dos aminoácidos. */
+const NODE = "M0-6 5.2-3 5.2 3 0 6-5.2 3-5.2-3Z";
+
+/** Inseto estilizado: corpo, cabeça, antenas e pernas. */
+function Bug({ x, y, rot, s, dead }: { x: number; y: number; rot: number; s: number; dead?: boolean }) {
+  /* O SVG de baixo é espelhado, então tudo nasce de pernas para o ar. Quem
+     está fugindo desfaz o espelho e fica de pé; quem já tombou fica como
+     está — de barriga para cima, que é como um inseto morto fica mesmo. */
+  const t = dead
+    ? place(x, y, rot, s)
+    : `translate(${n(x)} ${n(y)}) scale(${n(s)} ${n(-s)}) rotate(${n(-rot)})`;
+
+  return (
+    <g className="flora-motif flora-bug" transform={t}>
+      <ellipse className="flora-fill" cx="0" cy="0" rx="9" ry="5.4" />
+      <circle className="flora-fill" cx="10.6" cy="0" r="3.3" />
+      <path className="flora-hair" d="M13-2 20-7M13 2 20 7" />
+      <path
+        className="flora-hair"
+        d={dead ? "M-4 4-8 9M1 5 1 11M6 4 10 8M-4-4-9-8M1-5 0-11M6-4 11-9" : "M-4 4-9 11M1 5 1 13M6 4 12 10M-4-4-9-11M1-5 1-13M6-4 12-10"}
+      />
+    </g>
+  );
+}
+
+/* ------------------------------------------------------------------ dados */
+
+/** Colunas de calda: x, y da gota mais baixa, quantas, tamanho. */
+const SPRAY: Array<[number, number, number, number]> = [
+  [46, 232, 3, 0.9], [128, 190, 2, 0.66], [206, 254, 4, 1], [286, 168, 2, 0.78],
+  [368, 240, 3, 0.86], [448, 196, 2, 0.62], [530, 258, 4, 0.96], [612, 174, 2, 0.72],
+  [694, 236, 3, 0.9], [774, 202, 2, 0.68], [856, 250, 4, 1], [938, 180, 2, 0.76],
+  [1018, 244, 3, 0.84], [1098, 192, 2, 0.64], [1180, 256, 4, 0.94], [1262, 172, 2, 0.7],
+  [1342, 238, 3, 0.88], [1422, 200, 2, 0.66], [1504, 252, 3, 0.98], [1564, 186, 2, 0.74],
+];
+
+/** Insetos em fuga: x, y, rotação, tamanho, e se já vai tombando. */
+const BUGS: Array<[number, number, number, number, boolean]> = [
+  [72, 74, -18, 1, false], [188, 148, 26, 0.78, true], [304, 58, -8, 0.9, false],
+  [418, 172, 44, 0.72, true], [536, 96, -30, 1.05, false], [648, 42, 12, 0.82, false],
+  [762, 160, -52, 0.76, true], [876, 84, 20, 0.96, false], [988, 130, -14, 0.86, false],
+  [1104, 52, 34, 0.8, false], [1218, 168, -40, 0.74, true], [1330, 92, 16, 1, false],
+  [1444, 138, -24, 0.84, false], [1548, 64, 28, 0.9, false],
+];
+
+/** Brotos: x, altura, entorte, e em que fracções sai cada folha. */
+const SPROUTS: Array<[number, number, number, number[]]> = [
+  [56, 152, -22, [0.44, 0.74, 0.96]], [146, 96, 16, [0.56, 0.9]],
+  [238, 186, -26, [0.34, 0.62, 0.86]], [330, 118, 20, [0.5, 0.84]],
+  [420, 164, -18, [0.42, 0.72, 0.94]], [512, 88, 14, [0.6]],
+  [604, 196, -24, [0.32, 0.58, 0.82, 0.97]], [696, 126, 22, [0.48, 0.82]],
+  [788, 158, -20, [0.44, 0.74, 0.95]], [880, 102, 16, [0.54, 0.88]],
+  [972, 180, -26, [0.36, 0.64, 0.88]], [1064, 112, 20, [0.5, 0.84]],
+  [1156, 168, -18, [0.4, 0.7, 0.93]], [1248, 92, 14, [0.58]],
+  [1338, 190, -24, [0.34, 0.6, 0.84]], [1430, 122, 20, [0.48, 0.82]],
+  [1520, 148, -20, [0.46, 0.78]], [1572, 100, 16, [0.56, 0.9]],
+];
+
+/** Raízes: x, comprimento, entorte, onde saem ramos, e quais levam bloco. */
+const ROOTS: Array<[number, number, number, number[]]> = [
+  [40, 118, 20, [0.42, 0.74]], [116, 70, -16, [0.56]],
+  [196, 148, 18, [0.34, 0.6, 0.86]], [272, 86, -22, [0.48]],
+  [352, 124, 16, [0.4, 0.72]], [428, 62, -18, [0.54]],
+  [508, 156, 22, [0.32, 0.58, 0.84]], [584, 94, -20, [0.46, 0.78]],
+  [664, 112, 16, [0.42, 0.74]], [740, 72, -24, [0.55]],
+  [820, 142, 18, [0.36, 0.62, 0.88]], [896, 88, -16, [0.5]],
+  [976, 128, 20, [0.38, 0.7]], [1052, 66, -18, [0.57]],
+  [1132, 150, 16, [0.34, 0.6, 0.86]], [1208, 96, -20, [0.46, 0.78]],
+  [1288, 116, 18, [0.42, 0.74]], [1364, 74, -16, [0.55]],
+  [1444, 136, 22, [0.36, 0.64, 0.9]], [1520, 84, -18, [0.5]],
+  [1576, 108, 16, [0.44, 0.76]],
+];
+
+/* ------------------------------------------------------------- composições */
+
+function SprayField() {
+  return (
+    <>
+      {SPRAY.map(([x, y0, count, s], i) => (
+        <g key={x} className="flora-sprig" style={{ "--i": i % 7, "--d": ((i * 37) % 11) / 10 } as React.CSSProperties}>
+          {Array.from({ length: count }, (_, j) => {
+            const y = y0 - j * (34 + (i % 3) * 6);
+            return (
+              <g key={j}>
+                <path className="flora-line flora-trail" pathLength={1} d={`M${n(x)} ${n(y - 26 * s)}V${n(y - 62 * s)}`} />
+                <path className="flora-motif flora-fill" d={DROP} transform={place(x, y, 0, s * (1 - j * 0.12))} />
+              </g>
+            );
+          })}
+        </g>
+      ))}
+    </>
+  );
+}
+
+function BugField() {
+  return (
+    <>
+      {BUGS.map(([x, y, rot, s, dead], i) => (
+        <g key={x} className="flora-sprig" style={{ "--i": i % 7, "--d": ((i * 29) % 11) / 10 } as React.CSSProperties}>
+          <Bug x={x} y={y} rot={rot} s={s} dead={dead} />
+          {/* O rastro de quem saiu correndo — some antes do bicho aparecer. */}
+          <path className="flora-line flora-trail" pathLength={1} d={`M${n(x - 30 * s)} ${n(y + 10 * s)}q${n(14 * s)} ${n(-6 * s)} ${n(26 * s)} ${n(-9 * s)}`} />
+        </g>
+      ))}
+    </>
+  );
+}
+
+function SproutField() {
+  return (
+    <>
+      {SPROUTS.map(([x, h, bend, nodes], i) => {
+        const a = axis(x, h, bend);
+        return (
+          <g key={x} className="flora-sprig" style={{ "--i": i % 7, "--d": ((i * 37) % 11) / 10 } as React.CSSProperties}>
+            <path className="flora-line flora-stem" pathLength={1} d={a.d} />
+            {nodes.map((t, j) => {
+              const at = quadAt(a.p0, a.p1, a.p2, t);
+              const size = 0.5 + 0.36 * (1 - t);
+              const spread = (j % 2 ? 1 : -1) * (36 + (j % 3) * 8);
+              return (
+                <g key={t} className="flora-motif" transform={place(at.x, at.y, at.angle + spread, size)}>
+                  <path className="flora-fill" d={LEAF} />
+                  <path className="flora-hair" d={LEAF_RIB} />
+                </g>
+              );
+            })}
+          </g>
+        );
+      })}
+    </>
+  );
+}
+
+function RootField() {
+  return (
+    <>
+      {ROOTS.map(([x, h, bend, nodes], i) => {
+        const a = axis(x, h, bend);
+        return (
+          <g key={x} className="flora-sprig" style={{ "--i": i % 7, "--d": ((i * 29) % 11) / 10 } as React.CSSProperties}>
+            <path className="flora-line flora-root" pathLength={1} d={a.d} />
+            {nodes.map((t, j) => {
+              const at = quadAt(a.p0, a.p1, a.p2, t);
+              const br = branch(at, h * (0.32 - 0.06 * j), j % 2 ? 38 : -38);
+              return (
+                <g key={t}>
+                  <path className="flora-line flora-root flora-root--fine" pathLength={1} d={br.d} />
+                  {/* O bloco que a raiz encontra: um por ramo, no primeiro de
+                      cada raiz, para não virar colar de contas. */}
+                  {j === 0 && (
+                    <path
+                      className="flora-motif flora-node"
+                      d={NODE}
+                      transform={place(br.ex, br.ey, 0, 0.9)}
+                    />
+                  )}
+                </g>
+              );
+            })}
+          </g>
+        );
+      })}
+    </>
+  );
+}
+
+function Flora({ id }: { id: Product["id"] }) {
+  const kmep = id === "kmep";
+  return (
+    <div aria-hidden="true" className="product-slide__flora">
+      <div className="product-slide__flora-exit">
+        {/* A luz pontilhada: um campo de pontos na cor do produto, apagado por
+            uma máscara em degradê. O degradê está na máscara, não nos pontos —
+            aplicado à cor, daria uma faixa cinza sujando o branco; assim o que
+            resta longe da faixa é branco puro. O filho é maior que o pai e
+            desliza por dentro dele, para o movimento ser `transform` e não
+            repintura do padrão a cada quadro. */}
+        {(["top", "bottom"] as const).map((edge) => (
+          <span key={edge} className={`product-slide__stipple product-slide__stipple--${edge}`}>
+            <span className="product-slide__stipple-dots" />
+          </span>
+        ))}
+
+        {/* `slice` e não `none`: a caixa é muito mais larga que alta e a
+            proporção varia com a viewport. Esticar deformaria inseto, gota e
+            hexágono — o corte deixa cada peça com o desenho que ela tem, e o
+            que sobra em altura sai pelo topo, onde a máscara já apagou tudo. */}
+        <svg
+          className="product-slide__growth product-slide__growth--top"
+          viewBox={`0 0 ${FLORA_W} ${FLORA_H}`}
+          preserveAspectRatio="xMidYMax slice"
+          focusable="false"
+        >
+          {kmep ? <SprayField /> : <SproutField />}
+        </svg>
+
+        <svg
+          className="product-slide__growth product-slide__growth--bottom"
+          viewBox={`0 0 ${FLORA_W} ${FLORA_H}`}
+          preserveAspectRatio="xMidYMax slice"
+          focusable="false"
+        >
+          {kmep ? <BugField /> : <RootField />}
+        </svg>
+      </div>
+    </div>
+  );
+}
+
 /** Uma faixa. As duas têm a mesma marcação; o espelho é só CSS. */
 function Slide({ product }: { product: Product }) {
   const kmep = product.id === "kmep";
@@ -43,6 +324,7 @@ function Slide({ product }: { product: Product }) {
         kmep ? "product-slide--kmep" : "product-slide--amino",
       )}
     >
+      <Flora id={product.id} />
       <span aria-hidden className="product-slide__panel" />
 
       <div className="product-slide__body">
@@ -163,6 +445,11 @@ export function Products() {
              `transform`, e um `y` nela seria aplicado no eixo girado. Por isso
              quem anda ali é o <span> de dentro, nunca a tarja. */
           const partsOf = (slide: HTMLElement) => ({
+            flora: slide.querySelector<HTMLElement>(".product-slide__flora"),
+            floraExit: slide.querySelector<HTMLElement>(".product-slide__flora-exit"),
+            stipples: Array.from(slide.querySelectorAll<HTMLElement>(".product-slide__stipple-dots")),
+            lines: Array.from(slide.querySelectorAll<SVGPathElement>(".flora-line")),
+            motifs: Array.from(slide.querySelectorAll<SVGElement>(".flora-motif")),
             eyebrow: slide.querySelector<HTMLElement>("[data-slide-eyebrow]"),
             rule: slide.querySelector<HTMLElement>(".product-slide__rule"),
             tag: slide.querySelector<HTMLElement>("[data-slide-eyebrow] span"),
@@ -182,6 +469,22 @@ export function Products() {
           if (!k.eyebrow || !a.eyebrow || !k.shot || !a.shot) return;
           const everyPart = [...k.parts, ...a.parts];
           const everyEyebrow = [k.eyebrow, a.eyebrow].filter(Boolean);
+
+          /* A deriva das manchas é uma animação de CSS, não do timeline: ela
+             não tem nada a ver com a rolagem e ficaria cara em `onUpdate`.
+             O que o scroll decide é só se ela roda — e roda somente enquanto a
+             faixa está de fato na tela, para não haver seis gradientes grandes
+             sendo repintados atrás de uma faixa invisível. */
+          const syncFlora = () => {
+            if (narrow) return;
+            [k, a].forEach(({ flora, floraExit }) => {
+              if (!flora || !floraExit) return;
+              const visible =
+                Number(gsap.getProperty(flora, "opacity")) > 0.01 &&
+                Number(gsap.getProperty(floraExit, "opacity")) > 0.01;
+              flora.toggleAttribute("data-flora-active", visible);
+            });
+          };
 
           type Group = ReturnType<typeof partsOf>;
 
@@ -285,6 +588,18 @@ export function Products() {
              ainda não entrou está escondido de qualquer forma. */
           arm(k);
           arm(a);
+          if (!narrow) {
+            /* Nada brotou ainda: os traços estão por desenhar e as folhas
+               fechadas. `pathLength={1}` no JSX é o que permite escrever isto
+               sem medir caminho nenhum — o comprimento de todos é 1. */
+            gsap.set([k.flora, a.flora], { opacity: 1 });
+            gsap.set([k.floraExit, a.floraExit], { opacity: 1 });
+            [k, a].forEach(({ stipples, lines, motifs }) => {
+              gsap.set(stipples, { opacity: 0 });
+              gsap.set(lines, { strokeDasharray: 1, strokeDashoffset: 1 });
+              gsap.set(motifs, { scale: 0, opacity: 0, transformOrigin: "50% 50%" });
+            });
+          }
           gsap.set(everyEyebrow, { opacity: 1 });
           /* `x` e `y` em zero junto com as porcentagens, sempre. O GSAP guarda
              os dois separados e SOMA os dois na matriz; quando ele encontra um
@@ -313,6 +628,7 @@ export function Products() {
 
           const timeline = gsap.timeline({
             defaults: { ease: "none" },
+            onUpdate: syncFlora,
             scrollTrigger: {
               id: "product-stage",
               trigger: stage,
@@ -470,6 +786,72 @@ export function Products() {
 
           enter(k, IN_AT, IN_DUR, 0.34);
 
+          if (!narrow) {
+            /* Brota DEPOIS que a faixa assenta — o crescimento é consequência
+               da presença dela, não companhia da entrada. Os caules se
+               desenham da base para a ponta, e cada folha só abre quando o
+               traço já passou por ela: o `stagger` dos dois é o que dá a
+               ordem, e é o que separa "cresceu" de "apareceu". */
+            /* A chegada da flora, em três tempos e devagar.
+               Primeiro a luz — o campo de pontos acende sozinho, e é ele que
+               anuncia que algo vai acontecer ali. Depois os traços se
+               desenham. Só então as peças abrem, uma a uma.
+
+               `amount` e não `each` no escalonamento: são dezenas de peças, e
+               um valor por peça somaria mais de um curso inteiro à duração do
+               timeline. Como o `scrub` mapeia a rolagem sobre a DURAÇÃO, isso
+               não atrasaria só a flora — encolheria todas as outras marcas, e
+               a faixa passava a sair no lugar errado. `amount` reparte um
+               total fixo entre quantas peças houver, e o `span` mantém tudo
+               dentro do vão que sobra até a próxima marca. */
+            const grow = (g: Group, at: number, span: number) => {
+              timeline.to(
+                g.stipples,
+                { opacity: 1, duration: span * 0.5, ease: "power1.inOut" },
+                at,
+              );
+              timeline.to(
+                g.lines,
+                {
+                  strokeDashoffset: 0,
+                  duration: span * 0.4,
+                  ease: "power2.out",
+                  stagger: { amount: span * 0.5, from: "random" },
+                },
+                at,
+              );
+              timeline.to(
+                g.motifs,
+                {
+                  scale: 1,
+                  opacity: 1,
+                  duration: span * 0.28,
+                  ease: "back.out(1.9)",
+                  stagger: { amount: span * 0.4, from: "random" },
+                },
+                at + span * 0.3,
+              );
+            };
+            /* O vão até a próxima marca é o orçamento de cada uma. */
+            grow(k, IN_AT + IN_DUR * 0.5, SWAP_AT - IN_AT - IN_DUR * 0.5 - 0.04);
+            grow(a, SWAP_AT + SWAP_DUR * 0.5, 1 - SWAP_AT - SWAP_DUR * 0.5 - 0.02);
+            /* O KMEP recolhe o que cresceu enquanto o Aminosan entra: as duas
+               floras não podem dividir o branco, ou o que se lê é bagunça em
+               vez de troca. */
+            timeline.fromTo(
+              k.floraExit,
+              { opacity: 1, y: 0 },
+              {
+                opacity: 0,
+                y: 14,
+                duration: SWAP_DUR * 0.55,
+                ease: "power2.inOut",
+                immediateRender: false,
+              },
+              SWAP_AT,
+            );
+          }
+
           /* -------------------------------------------------------- troca */
           /* Duas coreografias, porque o palco é outro em cada largura.
 
@@ -583,7 +965,19 @@ export function Products() {
              Só no desktop, pela mesma razão de sempre: no celular a faixa é a
              tela inteira, e sair de lado deixaria meia tela em branco. */
           if (!narrow) {
-            gsap.fromTo(
+            const exitTimeline = gsap.timeline({
+              onUpdate: syncFlora,
+              scrollTrigger: {
+                id: "product-stage-exit",
+                trigger: stage,
+                start: () =>
+                  `top -${Math.round(stage.offsetHeight - windowEl.offsetHeight)}px`,
+                end: () => "+=" + Math.round(windowEl.offsetHeight * 0.75),
+                scrub: true,
+                invalidateOnRefresh: true,
+              },
+            });
+            exitTimeline.fromTo(
               amino,
               { x: 0 },
               {
@@ -595,29 +989,26 @@ export function Products() {
                    lineares a direção não muda do começo ao fim, como nos
                    outros gestos, em que os dois eixos usam a mesma curva. */
                 ease: "none",
-                scrollTrigger: {
-                  id: "product-stage-exit",
-                  trigger: stage,
-                  start: () =>
-                    `top -${Math.round(
-                      stage.offsetHeight - windowEl.offsetHeight,
-                    )}px`,
-                  /* O curso sai da inclinação que se quer: em 0,75 da altura
-                     da janela a faixa anda uma largura de tela para o lado
-                     enquanto sobe essa altura, o que dá a mesma diagonal com
-                     que o KMEP saiu. É também, por acaso feliz, o ponto em que
-                     ela acaba de limpar o topo. */
-                  end: () => "+=" + Math.round(windowEl.offsetHeight * 0.75),
-                  scrub: true,
-                  invalidateOnRefresh: true,
-                },
+                duration: 1,
               },
+              0,
+            );
+            /* Na saída da seção a flora recua para dentro da faixa em vez de
+               só apagar: some junto com quem a sustentava. */
+            exitTimeline.fromTo(
+              a.floraExit,
+              { opacity: 1, y: 0 },
+              { opacity: 0, y: 14, duration: 0.55, ease: "power2.inOut" },
+              0,
             );
           }
 
           timeline.progress(0);
 
-          return () => setWillChange(false);
+          return () => {
+            setWillChange(false);
+            [k, a].forEach(({ flora }) => flora?.removeAttribute("data-flora-active"));
+          };
         },
       );
     },

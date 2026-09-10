@@ -1,4 +1,14 @@
 import type { Metadata } from "next";
+import { Hero } from "@/components/aminosan/Hero";
+import { NitrogenProcess } from "@/components/aminosan/NitrogenProcess";
+import { VideoSection } from "@/components/aminosan/VideoSection";
+import { AminoAcidDelivery } from "@/components/aminosan/AminoAcidDelivery";
+import { OperationalBenefits } from "@/components/aminosan/OperationalBenefits";
+import { FieldResults } from "@/components/aminosan/FieldResults";
+import { CompanyStory } from "@/components/aminosan/CompanyStory";
+import { ProductDetails } from "@/components/aminosan/ProductDetails";
+import { Faq } from "@/components/aminosan/Faq";
+import { TrialRequest } from "@/components/aminosan/TrialRequest";
 
 export const metadata: Metadata = {
   title: "Aminosan®",
@@ -6,20 +16,20 @@ export const metadata: Metadata = {
     "Free amino acids, delivered ready to use. In the field for 40 years.",
 };
 
-/**
- * LP do Aminosan — 12 seções (A1 a A12).
- *
- * Mesma situação da LP do KMEP: copy validada no protótipo
- * (site/aminosan.html), layout do Figma pendente.
- */
+/** LP do Aminosan — layout do Figma (node 2:316 / 56:408). */
 export default function AminosanPage() {
   return (
-    <section className="wrap py-sec">
-      <h1 className="text-h1 text-ink">Aminosan®</h1>
-      <p className="mt-6 max-w-[60ch] text-muted">
-        Página em construção. A copy validada está no protótipo
-        (<code>site/aminosan.html</code>); o layout ainda não saiu do Figma.
-      </p>
-    </section>
+    <>
+      <Hero />
+      <NitrogenProcess />
+      <VideoSection />
+      <AminoAcidDelivery />
+      <OperationalBenefits />
+      <FieldResults />
+      <CompanyStory />
+      <ProductDetails />
+      <Faq />
+      <TrialRequest />
+    </>
   );
 }
