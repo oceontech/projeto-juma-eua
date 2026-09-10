@@ -398,7 +398,7 @@ export function CropSelection() {
     /* As cartas das pontas saem da caixa de propósito — o corte tem de ficar
        aqui, senão a página ganha rolagem horizontal. */
     <section ref={section} id="crops" className="relative overflow-hidden bg-white pt-sec">
-      <div className="wrap">
+      <div className="wrap relative z-2">
         <div className="crop-intro">
           <SectionIntro
             aside={<p className="text-muted">{crops.body}</p>}
@@ -476,7 +476,7 @@ export function CropSelection() {
 
       </div>
 
-      {/* O Figma usa só a faixa central da foto; o resto é névoa. */}
+      {/* O Figma usa só a faixa central da foto; o resto é névoa suave nas bordas. */}
       <div className="relative mt-[28px] aspect-[444/250] overflow-hidden bg-white min-[861px]:mt-0 min-[861px]:aspect-[1918/629]">
         <Image
           src="/img/crop-field.webp"
@@ -489,9 +489,23 @@ export function CropSelection() {
           loading="eager"
           className="h-full w-full object-[center_62%] object-cover min-[861px]:object-center"
         />
+        {/* Névoa superior: transição suave sem corte seco entre o conteúdo da seção e a imagem */}
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-x-0 bottom-0 h-[36%] bg-linear-to-b from-transparent via-white/70 to-white"
+          className="pointer-events-none absolute inset-x-0 top-0 z-1 h-[48%]"
+          style={{
+            background:
+              "linear-gradient(to bottom, #ffffff 0%, rgba(255, 255, 255, 0.95) 15%, rgba(255, 255, 255, 0.78) 32%, rgba(255, 255, 255, 0.45) 55%, rgba(255, 255, 255, 0.15) 78%, transparent 100%)",
+          }}
+        />
+        {/* Névoa inferior */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-x-0 bottom-0 z-1 h-[36%]"
+          style={{
+            background:
+              "linear-gradient(to top, #ffffff 0%, rgba(255, 255, 255, 0.92) 18%, rgba(255, 255, 255, 0.65) 45%, rgba(255, 255, 255, 0.2) 75%, transparent 100%)",
+          }}
         />
       </div>
     </section>
