@@ -160,6 +160,35 @@ export function ProofStage({ children }: { children: ReactNode }) {
           );
           if (!swallowEl || !barEl) return;
 
+          /* Entrada dos benefícios: presa ao scroll, e não ao relógio.
+             Antes era um <Reveal> (entrada por tempo, 0.7s) disparado ao
+             cruzar 60% da tela. O problema: esta MESMA opacidade também é
+             escrita, mais abaixo, pela engolida — presa à posição do scroll
+             (scrub). Se o visitante parasse de rolar bem no meio daqueles
+             0.7s, a escrita tardia do Reveal vencia a da engolida na
+             propriedade `opacity`, e o card congelava com o texto borrado
+             (filtro da engolida) mas na opacidade do Reveal — nem um estado
+             nem outro. Como as duas animações não giravam no mesmo relógio,
+             não havia como garantir quem escrevia por último.
+             Com as duas presas ao scroll, o valor em qualquer instante é
+             função só da posição — nunca sobra uma escrita atrasada. */
+          gsap.fromTo(
+            benefitEls,
+            { opacity: 0, y: 26 },
+            {
+              opacity: 1,
+              y: 0,
+              stagger: 0.12,
+              ease: "none",
+              scrollTrigger: {
+                trigger: stageEl,
+                start: "top 90%",
+                end: "top 45%",
+                scrub: true,
+              },
+            },
+          );
+
           /* Sobe a cortina de produtos para dentro deste curso (globals.css).
              Fica aqui, e não no CSS puro, porque sem movimento não há engolida
              — e então as duas seções precisam voltar a se empilhar. */
@@ -316,7 +345,7 @@ export function ProofStage({ children }: { children: ReactNode }) {
                valor natural é `none`, que não interpola. */
             .fromTo(
               benefitEls,
-              { filter: "blur(0px)" },
+              { opacity: 1, filter: "blur(0px)" },
               {
                 opacity: 0,
                 filter: "blur(6px)",

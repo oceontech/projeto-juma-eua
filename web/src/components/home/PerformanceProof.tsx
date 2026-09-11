@@ -58,15 +58,13 @@ export function PerformanceProof() {
         {/* Três colunas iguais, e não um flex centralizado com vão fixo: era
             aquele vão que deixava as três peças amontoadas no meio da barra
             com vazio nas duas pontas — o defeito ficava óbvio abaixo de
-            1600px, onde a barra é larga e o texto é curto. */}
-        <Reveal
-          stagger={0.12}
-          y={26}
-          delay={0.1}
-          trigger="[data-proof-stage]"
-          start="top 60%"
-          /* O fundo saiu daqui para `--proof-bar-bg`, no card: o painel da
-             engolida nasce com ele e precisa do mesmo pixel. */
+            1600px, onde a barra é larga e o texto é curto.
+
+            A entrada (opacidade + y) mora em ProofStage.tsx, não aqui: a
+            engolida escreve na mesma opacidade destes elementos mais tarde,
+            presa ao scroll, e as duas precisam do mesmo relógio para nunca
+            disputar a escrita — ver o comentário lá. */}
+        <div
           className="proof-benefits mt-[clamp(18px,2.4vw,46px)] rounded-[clamp(12px,1.05vw,20px)] px-[clamp(16px,2vw,30px)] py-[clamp(24px,2.2vw,38px)]"
         >
           {proof.benefits.map((benefit) => (
@@ -81,7 +79,7 @@ export function PerformanceProof() {
               </p>
             </div>
           ))}
-        </Reveal>
+        </div>
 
         {/* O painel da engolida: nasce sobre a barra acima e cresce até cobrir
             o card, que nessa altura é a tela. Vazio e inerte — só geometria e
