@@ -298,14 +298,14 @@ export const hero = {
     ],
   },
   stats: [
-    { value: "40", label: "years in the field", icon: "generic" },
-    { value: "1988", label: "the company came after", icon: "1988" },
+    { value: "40", label: "years in the field", icon: "years" },
+    { value: "1988", label: "the company came after", icon: "company" },
     {
       value: "Enzymatic Fermentation",
       label: "Better absorption. Better results",
       icon: "fermentation",
     },
-    { value: "2", label: "Named-source. Soybean trials", icon: "generic" },
+    { value: "2", label: "Named-source. Soybean trials", icon: "trials" },
   ],
   tagline: "DETEC · Terras Gerais · Brazil · Yields publish when the check arrives [P9]",
 } satisfies {
@@ -317,6 +317,6 @@ export const hero = {
     body: string;
     ctas: { label: string; href: string }[];
   };
-  stats: { value: string; label: string; icon: "generic" | "1988" | "fermentation" }[];
+  stats: { value: string; label: string; icon: "years" | "company" | "fermentation" | "trials" }[];
   tagline: string;
 };

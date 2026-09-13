@@ -58,7 +58,7 @@ export default function RootLayout({
       lang="en"
       className={`${archivo.variable} ${inter.variable} ${dmSans.variable}`}
     >
-      <body>
+      <body suppressHydrationWarning>
         <Preloader />
         <ScrollRefresh />
         <SmoothAnchors />

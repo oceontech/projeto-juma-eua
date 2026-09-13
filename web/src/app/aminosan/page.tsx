@@ -21,8 +21,14 @@ export default function AminosanPage() {
   return (
     <>
       <Hero />
-      <NitrogenProcess />
-      <VideoSection />
+      <section
+        id="nitrogen-process"
+        data-nav-theme="dark"
+        className="overflow-x-clip bg-[#0C0C0E]"
+      >
+        <NitrogenProcess />
+        <VideoSection />
+      </section>
       <AminoAcidDelivery />
       <OperationalBenefits />
       <FieldResults />

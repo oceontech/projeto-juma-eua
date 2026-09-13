@@ -979,6 +979,313 @@
     height: max(var(--scene-h), 100%);
   }
 
+  /* ---------------------------------------------------- hero do Aminosan */
+  /* O conteúdo desta cena é absoluto, portanto a seção precisa reservar no
+     fluxo tanto a viewport visível quanto o curso da animação. Sem essa
+     geometria, sua altura colapsa para zero e #nitrogen-process começa no
+     topo da página, sendo pintado atrás das camadas da hero. */
+  .aminosan-hero {
+    --aminosan-hero-run: 260svh;
+    position: relative;
+    height: calc(100svh + var(--aminosan-hero-run));
+    background: #0c0c0e;
+  }
+
+  .aminosan-hero-window {
+    position: sticky;
+    top: 0;
+    height: 100svh;
+    min-height: 560px;
+    overflow: clip;
+    isolation: isolate;
+  }
+
+  .aminosan-hero-ground-picture,
+  .aminosan-hero-ground-img {
+    width: 100%;
+  }
+
+  /* No celular, a leitura da abertura segue uma pilha clara: navegação,
+     estatística, título e proposta de valor. O deck continua dentro do mesmo
+     grupo animado, mas sobe visualmente antes do card principal; o espaço
+     reservado entre os dois acomoda a tipografia que vive em outra camada. */
+  @media (max-width: 860px) {
+    .aminosan-hero-ground .aminosan-hero-ground-picture {
+      /* A arte mobile tem transparência antes do horizonte. Ampliá-la pelo
+         contêiner preserva sua proporção, mantém o rodapé fechado e faz o
+         campo subir até a região do card/título sem esticar os produtos. */
+      width: min(205%, 92svh) !important;
+      max-width: none;
+      flex: 0 0 auto;
+    }
+
+    .aminosan-hero-window .aminosan-hero-title-wrap {
+      top: clamp(174px, 23svh, 202px) !important;
+      padding-inline: 10px !important;
+    }
+
+    .aminosan-hero-title-wrap .aminosan-hero-title {
+      font-size: clamp(58px, 16.5vw, 68px) !important;
+      line-height: 0.88 !important;
+      letter-spacing: 0.012em !important;
+    }
+
+    .aminosan-hero-window .aminosan-hero-copy {
+      top: clamp(72px, 10svh, 88px) !important;
+    }
+
+    .aminosan-hero-layout .aminosan-hero-stats {
+      order: -1;
+      align-self: center;
+      width: min(100%, 320px);
+      height: 68px;
+    }
+
+    .aminosan-hero-layout .aminosan-hero-stat-item {
+      min-height: 58px;
+      padding: 9px 14px;
+    }
+
+    .aminosan-hero-layout .aminosan-hero-stat-icon {
+      width: 34px;
+      height: 34px;
+    }
+
+    .aminosan-hero-layout .aminosan-hero-card {
+      /* Desce o card e o selo que vem logo depois dele. A fórmula acompanha
+         a altura da viewport, mas trava cedo em telas baixas para o conjunto
+         terminar antes da ponta visível da folha de primeiro plano. */
+      margin-top: clamp(150px, calc(45svh - 105px), 275px);
+      padding: 16px !important;
+    }
+
+    .aminosan-hero-card .aminosan-hero-card-badge {
+      width: 30px !important;
+      height: 30px !important;
+    }
+
+    .aminosan-hero-card .aminosan-hero-card-eyebrow {
+      padding-top: 2px !important;
+      font-size: 9px !important;
+      line-height: 1.25 !important;
+    }
+
+    .aminosan-hero-card .aminosan-hero-card-title {
+      margin-top: 12px !important;
+      font-size: 17px !important;
+      line-height: 1.15 !important;
+    }
+
+    .aminosan-hero-card .aminosan-hero-card-body-wrap {
+      margin-top: 12px !important;
+      padding-top: 12px !important;
+    }
+
+    .aminosan-hero-card .aminosan-hero-card-body {
+      font-size: 11px !important;
+      line-height: 1.35 !important;
+    }
+
+    .aminosan-hero-card .aminosan-hero-card-ctas {
+      margin-top: 14px !important;
+      flex-wrap: nowrap !important;
+      justify-content: flex-end !important;
+      gap: 6px !important;
+    }
+
+    .aminosan-hero-card .aminosan-hero-card-btn {
+      gap: 4px !important;
+      padding: 8px 10px !important;
+      font-size: 10px !important;
+      white-space: nowrap;
+    }
+
+    .aminosan-hero-copy .aminosan-hero-pill {
+      width: 100% !important;
+      gap: 6px !important;
+      margin-top: 10px !important;
+      padding: 8px !important;
+      white-space: nowrap;
+    }
+
+    .aminosan-hero-copy .aminosan-hero-pill img {
+      width: 13px !important;
+      height: auto !important;
+    }
+
+    .aminosan-hero-copy .aminosan-hero-pill p {
+      min-width: 0;
+      font-size: clamp(7.5px, 2.15vw, 8.5px) !important;
+      line-height: 1 !important;
+      letter-spacing: 0 !important;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .aminosan-hero {
+      height: 100svh;
+    }
+
+    .aminosan-hero-window {
+      position: relative;
+    }
+  }
+
+  /* O bento do processo preserva a composição modular também no celular:
+     a rota longa ocupa a coluna principal e os dois resumos se empilham na
+     coluna estreita. O CTA fecha a grade em toda a largura. */
+  .aminosan-process-card--cta-link {
+    transform-origin: center;
+    will-change: transform;
+    transition: transform .35s cubic-bezier(.22, 1, .36, 1),
+      background-color .3s ease !important;
+  }
+
+  .aminosan-process-card--cta-link:hover {
+    transform: scale(1.04) !important;
+  }
+
+  .aminosan-process-card--cta-link:focus-visible {
+    transform: scale(1.04) !important;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .aminosan-process-card--cta-link {
+      transform: none !important;
+      transition: background-color .3s ease !important;
+    }
+  }
+
+  @media (max-width: 860px) {
+    .aminosan-process-bento {
+      grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr) !important;
+      gap: 8px !important;
+      align-items: stretch;
+    }
+
+    .aminosan-process-bento [data-process-card] {
+      border-radius: 14px !important;
+    }
+
+    .aminosan-process-card--long {
+      grid-column: 1 !important;
+      grid-row: 1 / span 2 !important;
+      padding: 14px !important;
+    }
+
+    .aminosan-process-card--long > p:first-child {
+      font-size: 15px !important;
+      line-height: 1.15 !important;
+    }
+
+    .aminosan-process-card--long > p:nth-child(2) {
+      margin-top: 9px !important;
+      font-size: 10.5px !important;
+      line-height: 1.35 !important;
+    }
+
+    .aminosan-process-card--long > p:nth-child(3) {
+      margin-top: 9px !important;
+      font-size: 11px !important;
+      line-height: 1.38 !important;
+    }
+
+    .aminosan-process-card--short,
+    .aminosan-process-card--contents {
+      grid-column: 2 !important;
+      padding: 12px !important;
+    }
+
+    .aminosan-process-card--short {
+      grid-row: 1 !important;
+    }
+
+    .aminosan-process-card--contents {
+      grid-row: 2 !important;
+    }
+
+    .aminosan-process-card--short > p:first-child,
+    .aminosan-process-card--contents > p:first-child {
+      font-size: 12px !important;
+      line-height: 1.18 !important;
+    }
+
+    .aminosan-process-card--short > p:nth-child(2),
+    .aminosan-process-card--contents > p:nth-child(2) {
+      margin-top: 7px !important;
+      font-size: 10px !important;
+      line-height: 1.35 !important;
+    }
+
+    .aminosan-process-card--cta-link {
+      border-radius: 14px !important;
+      grid-column: 1 / -1 !important;
+      grid-row: 3 !important;
+      padding: 12px 16px !important;
+      font-size: 13px !important;
+    }
+
+    .aminosan-process-card--cta {
+      grid-column: 1 / -1 !important;
+      grid-row: 3 !important;
+    }
+  }
+
+  /* ------------------------------------------- crescimento do vídeo Aminosan */
+  /* A janela começa antes da caixa no fluxo pela metade do espaço vertical
+     livre. Assim a moldura aparece imediatamente depois de Process, mas o
+     sticky só encosta no topo quando o vídeo já está centralizado. */
+  .video-growth-stage {
+    --video-rest-w: min(762px, 78vw);
+    position: relative;
+    padding-bottom: clamp(48px, 6vw, 96px);
+  }
+
+  .video-growth-window {
+    display: grid;
+    place-items: center;
+  }
+
+  .video-growth-frame {
+    width: var(--video-rest-w);
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    border-radius: clamp(10px, 1vw, 16px);
+  }
+
+  .video-growth-stage[data-scene] {
+    --video-rest-h: calc(var(--video-rest-w) * 9 / 16);
+    --video-center-offset: max(0px, calc((100lvh - var(--video-rest-h)) / 2));
+    --video-growth-run: clamp(420px, 70svh, 760px);
+    height: calc(100lvh + var(--video-growth-run));
+    margin-top: calc(-1 * var(--video-center-offset));
+    padding-bottom: 0;
+  }
+
+  .video-growth-stage[data-scene] .video-growth-window {
+    position: sticky;
+    top: 0;
+    height: 100lvh;
+    overflow: clip;
+  }
+
+  .video-growth-stage[data-scene] .video-growth-frame {
+    will-change: transform;
+  }
+
+  @media (max-width: 860px) {
+    /* Respiro entre o CTA do bento e o primeiro estado do vídeo. A versão
+       animada usa margem negativa para centralizar a moldura; por isso o
+       espaço precisa ser somado à própria compensação do sticky. */
+    .video-growth-stage {
+      margin-top: 32px;
+    }
+
+    .video-growth-stage[data-scene] {
+      margin-top: calc(-1 * var(--video-center-offset) + 32px);
+    }
+  }
+
   .hero-sky {
     position: absolute;
     inset: 0;
@@ -1859,8 +2166,6 @@
     max-height: 240px;
     overflow-y: auto;
     overscroll-behavior: contain;
-    scrollbar-color: var(--color-lime) transparent;
-    scrollbar-width: thin;
     -webkit-overflow-scrolling: touch;
     padding: 6px;
     border: 1px solid color-mix(in srgb, var(--color-muted-dark) 55%, transparent);
@@ -2556,5 +2861,58 @@ html[data-proof-overlap] .expertise-layer--dark .expertise-bg {
       font-size: clamp(15px, 0.9vw, 16.5px);
       line-height: 1.42;
     }
+  }
+}
+
+
+/* ==========================================================================
+   Barra de scroll customizada - sem borda, apenas a barra verde escura
+   ========================================================================== */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--color-green-deep, #002C1B);
+  border-radius: 9999px;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-green-brand, #004C25);
+}
+
+*::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: var(--color-green-deep, #002C1B);
+  border-radius: 9999px;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-green-brand, #004C25);
+}
+
+@supports not selector(::-webkit-scrollbar) {
+  html, * {
+    scrollbar-color: var(--color-green-deep, #002C1B) transparent;
+    scrollbar-width: thin;
   }
 }
