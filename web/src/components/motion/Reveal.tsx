@@ -43,6 +43,12 @@ type RevealProps = {
    */
   replay?: boolean;
   /**
+   * Reverte também quando o bloco deixa a viewport pelo topo. É o ciclo
+   * completo usado nas sections da home: entra, sai, e repete nos dois
+   * sentidos da rolagem.
+   */
+  exit?: boolean;
+  /**
    * Elemento que decide a hora de entrar, quando ele não é o próprio bloco.
    *
    * Serve para blocos cuja posição de layout não é a posição em que eles
@@ -80,6 +86,7 @@ export function Reveal({
   stagger,
   targetSelector,
   replay = false,
+  exit = false,
   trigger,
   start,
 }: RevealProps) {
@@ -135,9 +142,14 @@ export function Reveal({
               scrollTrigger: {
                 trigger: (trigger && document.querySelector(trigger)) || scope.current,
                 start: start ?? START,
+                ...(exit ? { end: "bottom 22%" } : {}),
                 /* `reverse` desfaz a entrada ao subir — animado, e não
                    apagando o conteúdo de um quadro para o outro. */
-                ...(replay ? { toggleActions: "play none none reverse" } : { once: true }),
+                ...(exit
+                  ? { toggleActions: "play reverse play reverse" }
+                  : replay
+                    ? { toggleActions: "play none none reverse" }
+                    : { once: true }),
               },
             })
             .fromTo(
@@ -149,7 +161,7 @@ export function Reveal({
         },
       );
     },
-    { scope, dependencies: [delay, y, x, blur, scaleX, stagger, replay, trigger, start] },
+    { scope, dependencies: [delay, y, x, blur, scaleX, stagger, replay, exit, trigger, start] },
   );
 
   return (
