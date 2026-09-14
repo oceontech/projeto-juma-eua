@@ -175,8 +175,9 @@ export function AminoAcidDelivery() {
   return (
     <section
       id="delivery"
-      className="relative overflow-hidden bg-[#eaf5fd] py-[clamp(64px,6vw,104px)]"
+      className="aminosan-delivery-transition relative overflow-hidden py-[clamp(64px,6vw,104px)]"
     >
+      <div aria-hidden className="aminosan-delivery-backdrop">
         <Image
           src="/img/aminosan/hero-aminosan-sky.png"
           alt=""
@@ -193,6 +194,7 @@ export function AminoAcidDelivery() {
           sizes="100vw"
           className="pointer-events-none absolute inset-x-0 bottom-0 h-auto w-full"
         />
+      </div>
 
         <Reveal exit y={22} blur={8} className="wrap relative text-center">
           <p className="font-display text-[clamp(11px,0.9vw,16px)] font-semibold tracking-[0.3em] text-[#004c26] uppercase">
