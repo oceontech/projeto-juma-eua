@@ -42,6 +42,10 @@ export function TrialStrip() {
 
   useGSAP(
     () => {
+      const rootEl = root.current;
+      const stageEl = stickyStage.current;
+      if (!rootEl || !stageEl) return;
+
       const mm = gsap.matchMedia();
 
       mm.add(
@@ -59,12 +63,12 @@ export function TrialStrip() {
             reduce: boolean;
           };
 
-          const intro = root.current?.querySelector<HTMLElement>("[data-trial-intro]");
+          const intro = rootEl.querySelector<HTMLElement>("[data-trial-intro]");
 
           // Seleciona elementos estritamente dentro do container do breakpoint ativo
           const stageContainer = desktop
-            ? root.current?.querySelector<HTMLElement>("[data-stage-desktop]")
-            : root.current?.querySelector<HTMLElement>("[data-stage-mobile]");
+            ? rootEl.querySelector<HTMLElement>("[data-stage-desktop]")
+            : rootEl.querySelector<HTMLElement>("[data-stage-mobile]");
 
           if (!stageContainer) return;
 
@@ -97,7 +101,7 @@ export function TrialStrip() {
                 duration: 0.5,
                 ease: "power2.out",
                 scrollTrigger: {
-                  trigger: root.current,
+                  trigger: intro,
                   start: "top 85%",
                   toggleActions: "play none none reverse",
                 },
@@ -110,16 +114,16 @@ export function TrialStrip() {
           // Timeline mestra com scrub travado na rolagem:
           const tl = gsap.timeline({
             scrollTrigger: {
-              trigger: root.current,
+              trigger: rootEl,
               start: "top top",
               end: () =>
                 "+=" +
                 Math.max(
                   1,
-                  (root.current?.offsetHeight ?? 0) -
-                    (stickyStage.current?.offsetHeight ?? 0),
+                  rootEl.offsetHeight - stageEl.offsetHeight,
                 ),
               scrub: desktop ? 0.35 : true,
+              invalidateOnRefresh: true,
             },
           });
 
@@ -318,8 +322,6 @@ export function TrialStrip() {
           tl.to({}, { duration: 0.5 }); // Buffer final para leitura confortável do último passo
         },
       );
-
-      return () => mm.revert();
     },
     { scope: root },
   );
