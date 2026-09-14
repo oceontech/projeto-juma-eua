@@ -4,11 +4,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRef } from "react";
 import { cx } from "@/components/ui";
-import { products, type Product } from "@/content/home";
+import type { Product } from "@/content/home";
+import { useContent } from "@/components/layout/LocaleProvider";
 import { gsap, useGSAP } from "@/lib/gsap";
-
-/* O layout escreve "VER PRODUTO"; o site é para os EUA. */
-const CTA_LABEL = "View product";
 
 /**
  * Marcas do percurso, em fracções do curso de rolagem do palco. Somam 1: o
@@ -314,6 +312,7 @@ function Flora({ id }: { id: Product["id"] }) {
 
 /** Uma faixa. As duas têm a mesma marcação; o espelho é só CSS. */
 function Slide({ product }: { product: Product }) {
+  const { productCard } = useContent().home;
   const kmep = product.id === "kmep";
 
   return (
@@ -358,7 +357,7 @@ function Slide({ product }: { product: Product }) {
         <Link
           data-slide-part
           href={product.href}
-          aria-label={`Watch the ${product.title} video`}
+          aria-label={`${productCard.watch.before}${product.title}${productCard.watch.after}`}
           className="product-slide__video"
         >
           <span aria-hidden className="product-slide__play">
@@ -371,7 +370,7 @@ function Slide({ product }: { product: Product }) {
           href={product.href}
           className="product-slide__cta"
         >
-          <span>{CTA_LABEL}</span>
+          <span>{productCard.cta}</span>
           <i aria-hidden>&#8594;</i>
         </Link>
       </div>
@@ -408,6 +407,7 @@ function Slide({ product }: { product: Product }) {
  * diferentes, ou a de baixo andando mais, e uma faixa entraria na outra.
  */
 export function Products() {
+  const { products } = useContent().home;
   const root = useRef<HTMLElement>(null);
 
   useGSAP(

@@ -3,7 +3,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { SmartLink } from "@/components/ui/SmartLink";
-import { nav } from "@/content/home";
+import { languages } from "@/content";
+import { switchLocale, useContent, useLocale } from "./LocaleProvider";
 import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
 import { BurgerButton, MobileMenu } from "./MobileNav";
 
@@ -43,11 +44,6 @@ const HIDE_AFTER = 160;
  */
 const TONE_LINE = 0.5;
 
-const languages = [
-  { src: "/img/flag-br.png", label: "Português (Brasil)", active: false },
-  { src: "/img/flag-us.png", label: "English (United States)", active: true },
-];
-
 /* Sublinhado que entra pela esquerda e sai pela direita — a origem troca no
    hover, então o traço nunca recua pelo mesmo lado por onde entrou. O lima
    funciona nos dois tons, e é a única cor que não precisa de variante. */
@@ -76,6 +72,8 @@ const compactLinkClass = [
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
+  const locale = useLocale();
+  const { nav } = useContent().home;
   const header = useRef<HTMLElement>(null);
 
   /* A leitura do scroll roda fora do React; estes refs são a ponte entre ela
@@ -238,12 +236,13 @@ export function SiteHeader() {
             >
               {languages.map((language) => (
                 <button
-                  key={language.label}
+                  key={language.locale}
                   type="button"
-                  aria-pressed={language.active}
+                  aria-pressed={language.locale === locale}
                   aria-label={language.label}
+                  onClick={() => language.locale !== locale && switchLocale(language.locale)}
                   className={
-                    language.active
+                    language.locale === locale
                       ? "cursor-pointer rounded-full bg-white p-[3px] leading-none shadow-[0_1px_2px_rgba(12,12,14,0.12)] transition-colors duration-400 group-data-[theme=dark]:bg-white/20 group-data-[theme=dark]:shadow-none"
                       : "cursor-pointer rounded-full p-[3px] leading-none opacity-35 grayscale transition duration-300 hover:opacity-90 hover:grayscale-0 group-data-[theme=dark]:opacity-45"
                   }

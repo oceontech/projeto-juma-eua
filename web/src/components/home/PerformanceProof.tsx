@@ -4,10 +4,11 @@ import { SplitLines } from "@/components/motion/SplitLines";
 import { Rule, SectionIntro } from "@/components/ui";
 import { ImageCompare } from "./ImageCompare";
 import { ProofStage } from "./ProofStage";
-import { proof } from "@/content/home";
+import { getContent } from "@/lib/locale";
 
 /** A prova de campo: o comparador antes/depois e os três benefícios. */
-export function PerformanceProof() {
+export async function PerformanceProof() {
+  const { proof } = (await getContent()).home;
   return (
     <section id="proof" data-nav-theme="dark" className="bg-black pb-sec">
       <div className="wrap">

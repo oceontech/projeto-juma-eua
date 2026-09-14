@@ -4,16 +4,18 @@ import { ImageStreamHero, type CorridorPath } from "@/components/ui/image-stream
 import { Reveal } from "@/components/motion/Reveal";
 import { CropRegions } from "@/components/home/CropRegions";
 import { Rule, SectionIntro } from "@/components/ui";
-import { crops } from "@/content/home";
+import { getContent } from "@/lib/locale";
+import { cropCorridorImages } from "@/content/crop-corridor";
+import surfaceStyles from "./BeneathSurface.module.css";
 
-const IMAGES = crops.cards.map((crop) => ({ src: crop.image, alt: crop.name }));
 const PILLAR_ICONS = [Microscope, SprayCan, Handshake, ClipboardCheck];
 
 // No retrato a largura é pouca: cartas maiores na saída e menos cartas por
 // trilho, para cada foto ter espaço de ser vista.
 const MOBILE_PATH: CorridorPath = { exitHeight: 84, birthHeight: 5, railExit: 30 };
 
-function CorridorOverlay() {
+async function CorridorOverlay() {
+  const { crops } = (await getContent()).home;
   return (
     <>
       <div
@@ -37,7 +39,8 @@ function CorridorOverlay() {
  * Culturas atendidas nos EUA: corredor de imagens, culturas por região e
  * motivos para o produtor escolher a Juma.
  */
-export function CropSelection() {
+export async function CropSelection() {
+  const { crops } = (await getContent()).home;
   return (
     <section id="crops" className="relative overflow-hidden bg-white pt-sec">
       <Reveal className="wrap relative z-2">
@@ -53,7 +56,7 @@ export function CropSelection() {
       </Reveal>
 
       <ImageStreamHero
-        images={IMAGES}
+        images={cropCorridorImages}
         cards={7}
         speed={22}
         axis={48}
@@ -63,7 +66,7 @@ export function CropSelection() {
         <CorridorOverlay />
       </ImageStreamHero>
       <ImageStreamHero
-        images={IMAGES}
+        images={cropCorridorImages}
         speed={20}
         axis={50}
         className="mt-[clamp(24px,2vw,40px)] hidden h-[clamp(480px,40vw,720px)] bg-white min-[861px]:block"
@@ -104,34 +107,19 @@ export function CropSelection() {
         </Reveal>
       </div>
 
-      {/* O Figma usa só a faixa central da foto; o resto é névoa suave nas bordas. */}
-      <div className="relative mt-[28px] aspect-[444/250] overflow-hidden bg-white min-[861px]:mt-0 min-[861px]:aspect-[1918/629]">
-        <Image
-          src="/img/crop-field.webp"
-          alt=""
-          aria-hidden
-          width={2880}
-          height={945}
-          quality={100}
-          sizes="100vw"
-          className="h-full w-full object-[center_62%] object-cover min-[861px]:object-center"
-        />
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-x-0 top-0 z-1 h-[48%]"
-          style={{
-            background:
-              "linear-gradient(to bottom, #ffffff 0%, rgba(255, 255, 255, 0.95) 15%, rgba(255, 255, 255, 0.78) 32%, rgba(255, 255, 255, 0.45) 55%, rgba(255, 255, 255, 0.15) 78%, transparent 100%)",
-          }}
-        />
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-x-0 bottom-0 z-1 h-[36%]"
-          style={{
-            background:
-              "linear-gradient(to top, #ffffff 0%, rgba(255, 255, 255, 0.92) 18%, rgba(255, 255, 255, 0.65) 45%, rgba(255, 255, 255, 0.2) 75%, transparent 100%)",
-          }}
-        />
+      {/* The canopy fades into the same deep green as the leaf section. */}
+      <div className={surfaceStyles.fieldTransition} aria-hidden="true">
+        <picture>
+          <source media="(max-width: 860px)" srcSet="/img/surface-v2/field-mobile.webp" />
+          <Image
+            src="/img/surface-v2/field.webp"
+            alt=""
+            width={2048}
+            height={688}
+            unoptimized
+            className="h-full w-full object-cover"
+          />
+        </picture>
       </div>
     </section>
   );

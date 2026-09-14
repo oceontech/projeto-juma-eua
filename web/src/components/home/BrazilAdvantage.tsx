@@ -2,7 +2,8 @@ import Image from "next/image";
 import { Counter } from "@/components/motion/Counter";
 import { Reveal } from "@/components/motion/Reveal";
 import { SplitLines } from "@/components/motion/SplitLines";
-import { brazil } from "@/content/home";
+import { HistoryBottle } from "@/components/home/HistoryBottle";
+import { getContent } from "@/lib/locale";
 
 /**
  * O bloco que assume a origem brasileira em vez de esconder — regra do
@@ -26,7 +27,8 @@ import { brazil } from "@/content/home";
  */
 const enter = { replay: true, trigger: "#brazil", start: "top 40%" } as const;
 
-export function BrazilAdvantage() {
+export async function BrazilAdvantage() {
+  const { brazil } = (await getContent()).home;
   return (
     // `overflow-x: clip` porque os cards entram deslocados na horizontal e o
     // deslocamento é maior que a calha da página nas larguras apertadas —
@@ -56,7 +58,7 @@ export function BrazilAdvantage() {
             delay={0.12}
             x={-44}
             blur={10}
-            className="brazil-card group relative flex flex-col gap-[clamp(14px,1.65vw,32px)] overflow-hidden rounded-[clamp(12px,1.05vw,20px)] bg-linear-[122.93deg,var(--color-night-warm)_2.4%,var(--color-night-deep)_60.23%] p-[clamp(24px,2.6vw,50px)]"
+            className="brazil-card group relative flex flex-col gap-[clamp(14px,1.65vw,32px)] min-[1100px]:pr-[calc(36%+2*clamp(24px,2.6vw,50px))] overflow-hidden rounded-[clamp(12px,1.05vw,20px)] bg-linear-[122.93deg,var(--color-night-warm)_2.4%,var(--color-night-deep)_60.23%] p-[clamp(24px,2.6vw,50px)]"
           >
             {/* Vinheta clara no canto superior esquerdo, como no layout. */}
             <span
@@ -64,7 +66,7 @@ export function BrazilAdvantage() {
               className="brazil-card__glow pointer-events-none absolute -top-[14%] -left-[6%] h-[40%] w-[34%] bg-[radial-gradient(closest-side,rgba(183,199,62,0.16),transparent)]"
             />
 
-            <span className="relative self-start rounded-lg bg-lime p-2.5 text-[clamp(11px,0.9vw,20px)] leading-none tracking-[0.15em] text-white">
+            <span className="relative self-start rounded-lg bg-lime p-2.5 text-[clamp(9px,0.7vw,13px)] leading-none font-semibold tracking-[0.15em] text-night uppercase">
               {brazil.history.badge}
             </span>
 
@@ -83,27 +85,37 @@ export function BrazilAdvantage() {
             <h3 className="relative max-w-[480px] text-h3 font-semibold text-offwhite">
               {brazil.history.title}
             </h3>
-            <p className="relative max-w-[480px] leading-[1.5] font-light text-offwhite">
+            <p className="relative max-w-[480px] text-[0.9em] leading-[1.5] font-light text-offwhite">
               {brazil.history.body}
             </p>
 
-            <div className="relative mt-auto flex items-center gap-[clamp(8px,1.1vw,16px)]">
+            {/* Abaixo de 1100px o frasco entra no fluxo do card e o fundador
+                vira a assinatura que o fecha: desce para depois da imagem,
+                separado por um fio, com retrato e nome em tamanho de leitura
+                — no clamp do desktop eles encolhiam para 29px e 11px. */}
+            <div className="relative mt-auto flex items-center gap-[clamp(8px,1.1vw,16px)] max-[1099px]:order-last max-[1099px]:gap-3.5 max-[1099px]:border-t max-[1099px]:border-offwhite/10 max-[1099px]:pt-5">
               <Image
                 src="/img/julio-matino.jpg"
                 alt=""
                 width={58}
                 height={58}
-                className="size-[clamp(29px,3vw,58px)] rounded-full object-cover"
+                className="size-[clamp(29px,3vw,58px)] rounded-full object-cover max-[1099px]:size-12"
               />
               <div className="leading-none">
-                <strong className="block font-display text-[clamp(11px,1.05vw,20px)] leading-[1.05] font-semibold text-offwhite">
+                <strong className="block font-display text-[clamp(11px,1.05vw,20px)] leading-[1.05] font-semibold text-offwhite max-[1099px]:text-[17px]">
                   {brazil.history.author.name}
                 </strong>
-                <span className="mt-[3px] block text-[clamp(8px,0.73vw,14px)] leading-[1.1] font-extralight text-offwhite/45">
+                <span className="mt-[3px] block text-[clamp(8px,0.73vw,14px)] leading-[1.1] font-extralight text-offwhite/45 max-[1099px]:mt-1 max-[1099px]:text-[13px]">
                   {brazil.history.author.role}
                 </span>
               </div>
             </div>
+
+            <HistoryBottle
+              alt="Frasco original de Aminosan"
+              trigger={enter.trigger}
+              start={enter.start}
+            />
           </Reveal>
 
           {/* Duas linhas iguais, e não `content-start`: era ele que deixava os
@@ -131,7 +143,7 @@ export function BrazilAdvantage() {
                     duration={1.1}
                     className="font-display text-[clamp(34px,3.35vw,64px)] leading-none font-semibold tracking-[-0.02em] tabular-nums text-offwhite"
                   />
-                  <span className="rounded-lg bg-lime px-4 py-[clamp(7px,0.55vw,10px)] text-micro leading-[1.2] tracking-[0.15em] text-night">
+                  <span className="rounded-lg bg-lime px-4 py-[clamp(7px,0.55vw,10px)] text-[clamp(9px,0.7vw,13px)] leading-[1.2] font-semibold tracking-[0.15em] text-night uppercase">
                     {metric.label}
                   </span>
                 </div>

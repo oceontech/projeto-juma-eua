@@ -130,42 +130,42 @@ export function OperationalBenefits() {
         <div data-benefits-deck-entry>
           <div className="aminosan-benefits-cards mt-[clamp(36px,2vw,36px)] flex flex-row items-stretch gap-5 lg:items-start lg:gap-0">
             {operationalBenefits.cards.map((card, i) => (
-            <div
-              key={card.n}
-              data-benefit-card=""
-              className={`aminosan-benefit-card benefit-card-${i + 1} relative flex flex-col overflow-hidden rounded-[17px] bg-gradient-to-b from-[#fbfff2] to-[#d7dfc4] p-[clamp(28px,2.35vw,32px)] shadow-[0_4px_20px_rgba(0,0,0,0.3)]`}
-            >
-              <div className="flex items-baseline gap-1">
-                <span className="font-display text-[24px]" style={{ color: card.accent }}>
-                  {card.n}
-                </span>
-                <span className="text-[18px] text-[#7a7f7e]">/ 04</span>
-              </div>
-              <span className="mt-4 block h-1 w-full max-w-[220px] rounded-full" style={{ background: card.accent }} />
-
-              {card.image ? (
-                <p className="aminosan-benefit-card__heading mt-8 max-w-[300px] font-display text-[clamp(22px,1.9vw,32px)] leading-[1.2] text-ink">
-                  {card.heading}
-                </p>
-              ) : (
-                <p className="aminosan-benefit-card__heading mt-8 max-w-[220px] font-display text-[22px] leading-[1.27] text-ink">
-                  {card.heading}
-                </p>
-              )}
-
-              <p className="aminosan-benefit-card__body mt-5 max-w-[240px] text-[15px] leading-[1.5] text-muted">{card.body}</p>
-
-              {card.icon && (
-                <Image src={card.icon} alt="" width={49} height={49} className="mt-auto h-[49px] w-[49px] object-contain" />
-              )}
-              {card.image && (
-                <div className="relative mt-auto ml-auto h-[160px] w-[220px] lg:h-[237px] lg:w-[327px]">
-                  <Image src={card.image} alt="Aminosan bottle" fill className="object-contain object-bottom" />
+              <div
+                key={card.n}
+                data-benefit-card=""
+                className={`aminosan-benefit-card benefit-card-${i + 1} relative flex flex-col overflow-hidden rounded-[17px] bg-gradient-to-b from-[#fbfff2] to-[#d7dfc4] p-[clamp(28px,2.35vw,32px)] shadow-[0_4px_20px_rgba(0,0,0,0.3)]`}
+              >
+                <div className="flex items-baseline gap-1">
+                  <span className="font-display text-[24px]" style={{ color: card.accent }}>
+                    {card.n}
+                  </span>
+                  <span className="text-[18px] text-[#7a7f7e]">/ 04</span>
                 </div>
-              )}
+                <span className="mt-4 block h-1 w-full max-w-[220px] rounded-full" style={{ background: card.accent }} />
 
-              <span aria-hidden="true" className="aminosan-benefit-card__corner" />
-            </div>
+                {card.image ? (
+                  <p className="aminosan-benefit-card__heading mt-8 max-w-[300px] font-display text-[clamp(22px,1.9vw,32px)] leading-[1.2] text-ink">
+                    {card.heading}
+                  </p>
+                ) : (
+                  <p className="aminosan-benefit-card__heading mt-8 max-w-[220px] font-display text-[22px] leading-[1.27] text-ink">
+                    {card.heading}
+                  </p>
+                )}
+
+                <p className="aminosan-benefit-card__body mt-5 max-w-[240px] text-[15px] leading-[1.5] text-muted">{card.body}</p>
+
+                {card.icon && (
+                  <Image src={card.icon} alt="" width={49} height={49} className="mt-auto h-[49px] w-[49px] object-contain" />
+                )}
+                {card.image && (
+                  <div className="relative mt-auto ml-auto h-[160px] w-[220px] lg:h-[237px] lg:w-[327px]">
+                    <Image src={card.image} alt="Aminosan bottle" fill className="object-contain object-bottom" />
+                  </div>
+                )}
+
+                <span aria-hidden="true" className="aminosan-benefit-card__corner" />
+              </div>
             ))}
           </div>
         </div>

@@ -1,9 +1,10 @@
 import Image from "next/image";
 import { Reveal } from "@/components/motion/Reveal";
 import { Pill, Rule } from "@/components/ui";
-import { economics, trialEvidence, trialResults } from "@/content/aminosan";
+import { getContent } from "@/lib/locale";
 
-export function FieldResults() {
+export async function FieldResults() {
+  const { economics, trialEvidence, trialResults } = (await getContent()).aminosan;
   return (
     <section id="trial-results" className="bg-[#f6f7f2] py-[clamp(56px,7vw,124px)]">
       {/* --------------------------------------------------- Trial Results */}
@@ -90,7 +91,7 @@ export function FieldResults() {
             <div key={card.label} data-evidence-card="" className="overflow-hidden rounded-[20px] border border-[#acacac]">
               <button
                 type="button"
-                aria-label={`Play ${card.label} footage`}
+                aria-label={`${trialEvidence.play.before}${card.label}${trialEvidence.play.after}`}
                 className="flex aspect-video w-full items-center justify-center bg-[#d9d9d9] transition-opacity hover:opacity-90"
               >
                 <Image src="/img/aminosan/icon-play.svg" alt="" width={87} height={87} className="size-[clamp(56px,6vw,87px)]" />

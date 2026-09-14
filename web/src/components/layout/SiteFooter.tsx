@@ -1,9 +1,10 @@
 import Image from "next/image";
 import { SmartLink } from "@/components/ui/SmartLink";
-import { footer } from "@/content/home";
+import { getContent } from "@/lib/locale";
 
 /** Rodapé sobre a paisagem — o último bloco do layout. */
-export function SiteFooter() {
+export async function SiteFooter() {
+  const { footer } = (await getContent()).home;
   return (
     <footer className="relative overflow-hidden bg-white pt-[clamp(34px,3vw,54px)]">
       <Image

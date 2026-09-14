@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
 import { Archivo, DM_Sans, Inter } from "next/font/google";
+import { LocaleProvider } from "@/components/layout/LocaleProvider";
 import { Preloader } from "@/components/layout/Preloader";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { ScrollRefresh } from "@/components/motion/ScrollRefresh";
 import { SmoothAnchors } from "@/components/motion/SmoothAnchors";
 import { SmoothScroll } from "@/components/motion/SmoothScroll";
+import { getLocale } from "@/lib/locale";
 import "./globals.css";
 
 /**
@@ -50,12 +52,14 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  const locale = await getLocale();
+
   return (
     <html
-      lang="en"
+      lang={locale === "pt" ? "pt-BR" : "en"}
       className={`${archivo.variable} ${inter.variable} ${dmSans.variable}`}
     >
       <body suppressHydrationWarning>
@@ -63,9 +67,11 @@ export default function RootLayout({
         <ScrollRefresh />
         <SmoothAnchors />
         <SmoothScroll />
-        <SiteHeader />
-        <main>{children}</main>
-        <SiteFooter />
+        <LocaleProvider locale={locale}>
+          <SiteHeader />
+          <main>{children}</main>
+          <SiteFooter />
+        </LocaleProvider>
       </body>
     </html>
   );

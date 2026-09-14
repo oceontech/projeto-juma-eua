@@ -2,7 +2,7 @@
 
 import { Fragment, useRef } from "react";
 import { gsap, useGSAP } from "@/lib/gsap";
-import { expertise } from "@/content/home";
+import { useContent } from "@/components/layout/LocaleProvider";
 
 /**
  * A frase não espera a própria seção começar: ela aparece DENTRO do preto que
@@ -41,6 +41,8 @@ const FADE_DUR = 1 - FADE_AT;
  * decorativa; leitores de tela recebem somente a primeira.
  */
 function ExpertiseCopy({ light = false }: { light?: boolean }) {
+  const { expertise } = useContent().home;
+
   return (
     <div
       data-expertise-copy
@@ -51,11 +53,16 @@ function ExpertiseCopy({ light = false }: { light?: boolean }) {
           escrevem `transform`, e no mesmo elemento um sobrescreveria o outro —
           aninhados, eles compõem. */}
       <div data-expertise-enter>
-        <h2 className="max-w-[727px] text-[clamp(30px,5.2vw,96px)] leading-[1.06]">
+        {/* Cada item de `headline` é uma linha, e só ela: `nowrap` impede a
+            quebra no meio da frase. Um teto em px não servia — "Uma função
+            cada." é mais longa que "One job each." e passava dele, virando
+            três linhas em português. Com o tamanho em vw, a linha mais longa
+            ocupa ~45% da largura da tela, então cabe em qualquer viewport. */}
+        <h2 className="text-[clamp(30px,5.2vw,96px)] leading-[1.06]">
           {expertise.headline.map((line, i) => (
             <Fragment key={line}>
               {i > 0 && <br />}
-              {line}
+              <span className="whitespace-nowrap">{line}</span>
             </Fragment>
           ))}
         </h2>

@@ -1,3 +1,8 @@
 ~$*
 .DS_Store
 Thumbs.db
+
+# ferramentas locais de agentes (skills instaladas, config do Claude Code)
+.agents/
+.claude/
+skills-lock.json

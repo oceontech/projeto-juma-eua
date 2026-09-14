@@ -3,10 +3,8 @@
 import Image from "next/image";
 import { useActionState, useEffect, useId, useRef, useState } from "react";
 import { submitTrialRequest, type TrialRequestState } from "@/lib/actions";
-import { usOperation } from "@/content/home";
+import { useContent } from "@/components/layout/LocaleProvider";
 import { cx } from "@/components/ui";
-
-const { form } = usOperation;
 
 const INITIAL: TrialRequestState = { status: "idle", message: "", errors: {} };
 
@@ -18,6 +16,7 @@ const INITIAL: TrialRequestState = { status: "idle", message: "", errors: {} };
  * página. O estado de erro volta do servidor, não é revalidado no cliente.
  */
 export function TrialForm() {
+  const { form } = useContent().home.usOperation;
   const [state, action, pending] = useActionState(submitTrialRequest, INITIAL);
   const id = useId();
 
@@ -122,7 +121,7 @@ export function TrialForm() {
         disabled={pending}
         className="mt-[clamp(18px,1.5vw,26px)] inline-flex cursor-pointer items-center gap-2.5 rounded-lg bg-lime px-[clamp(30px,3vw,52px)] py-[clamp(11px,0.8vw,14px)] font-display text-[clamp(15px,1.05vw,20px)] font-semibold text-white transition-colors hover:bg-[#A6B534] disabled:opacity-60"
       >
-        {pending ? "Sending…" : form.submit}
+        {pending ? form.sending : form.submit}
         <Image src="/img/icon-arrow-white.svg" alt="" width={14} height={15} />
       </button>
 

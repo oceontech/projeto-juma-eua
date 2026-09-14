@@ -31,6 +31,8 @@ export const nav = {
     { label: "Aminosan", href: "/aminosan" },
   ] satisfies NavLink[],
   cta: { label: "Get a Free Trial", href: "#us-operation" },
+  openMenu: "Open menu",
+  closeMenu: "Close menu",
 };
 
 export const hero = {
@@ -52,7 +54,7 @@ export const hero = {
 export const brazil = {
   title: "Brazil is the credential, not the caveat.",
   history: {
-    badge: "1988",
+    badge: "Year of the first formula",
     year: "1988",
     title: "The product came first",
     body: "Julio Matino formulated Aminosan before there was a company to sell it. Growers in Sao Paulo bought it because it worked, and the demand built the business.",
@@ -80,6 +82,7 @@ export const proof = {
     afterLabel: "Treated",
     beforeAlt: "Untreated soybean check strip with lighter canopy and more visible soil",
     afterAlt: "Treated soybean strip with deeper green canopy and stronger row closure",
+    handleLabel: "Reveal the treated strip",
   },
   benefits: [
     { title: "Efficiency", body: "More work per pass." },
@@ -121,6 +124,12 @@ export const products: Product[] = [
     image: { src: "/img/pack-aminosan.webp", alt: "Aminosan containers" },
   },
 ];
+
+/* O layout escreve "VER PRODUTO"; o site é para os EUA. */
+export const productCard = {
+  cta: "View product",
+  watch: { before: "Watch the ", after: " video" },
+};
 
 export type Crop = { id: string; name: string; image: string };
 
@@ -210,12 +219,11 @@ export const programs = {
   body: "A product is the end of a process. These are the three programs that run all year and produce: it research, open doors, and a team that meets face to face.",
   cards: [
     {
-      id: "desata",
-      eyebrow: "Research · Since 2021",
-      title: "DESATA Project",
-      body: "Application technology research with UENP and with NITEC, the application technology and agricultural machinery lab at UNESP — wind tunnel work on droplet spectrum, drift and deposition. Application technology is a research program here, not a tagline.",
-      tags: ["UENP", "NITEC/UNESP", "Wind tunnel"],
-      note: "Naming the institutions depends on authorization · [P19]",
+      id: "target",
+      eyebrow: "Research · Application technology",
+      title: "Project Bullseye",
+      body: "Juma’s application technology program: following, in the field, how the spray leaves the nozzle and lands on the plant — droplet spectrum, drift and deposition on the target. The best product only works if it gets where it needs to go. Application technology is a research program here, not a tagline.",
+      tags: ["Droplet spectrum", "Drift", "Deposition"],
     },
     {
       id: "experience",
@@ -255,9 +263,10 @@ export const trialStrip = {
     {
       number: "03",
       title: "Read it at harvest",
-      body: "Yield monitor data, side by side. The number is yours either way — because you ran the trial",
+      body: "Yield monitor data, side by side. The number is yours either way — because you ran the trial.",
     },
   ],
+  goToStep: "Go to step",
 };
 
 export const usOperation = {
@@ -286,6 +295,7 @@ export const usOperation = {
     },
     call: "I’d like a call from an agronomist",
     submit: "Send Request",
+    sending: "Sending…",
     privacy: {
       before: "By sending this, you agree to our ",
       link: "Privacy Policy",
@@ -316,6 +326,34 @@ export const usOperation = {
     ],
     disclaimer:
       "The second option only goes live if the U.S. team includes an agronomist — P11.",
+  },
+};
+
+export const beneath = {
+  eyebrow: "The science of growing",
+  edition: "JUMA FIELD NOTES",
+  title: ["Beneath", "the surface."],
+  description:
+    "Every leaf holds a world of possibility. Get closer to the crop. Discover the thinking behind our foliar nutrition.",
+  viewLabel: "Botanical illustration view",
+  natural: "Natural view",
+  reveal: "Reveal structure",
+  mouseHint: "Move to explore",
+  touchHint: "A closer look at life",
+  product: {
+    label: "Built around the plant",
+    copy: "Free amino acids. Ready to use.",
+    link: "Explore Aminosan",
+  },
+  notes: {
+    title: "The leaf is just the beginning.",
+    focus: { term: "Our focus", value: "Foliar nutrition" },
+    roots: { term: "Our roots", value: "Brazilian agronomy" },
+    next: { term: "Your next step", value: "Try it on your acres" },
+  },
+  footer: {
+    left: "Botanical visualization",
+    right: "Rooted in science. Grown in the field.",
   },
 };
 
