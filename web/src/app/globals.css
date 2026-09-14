@@ -2371,7 +2371,9 @@ html[data-proof-overlap] .expertise-layer--dark .expertise-bg {
   }
 
   .programs-intro__title {
-    font-size: clamp(25px, min(7vw, 4.7svh), 30px);
+    /* Mantém o mesmo ritmo tipográfico dos demais títulos de section. */
+    font-size: var(--text-h2);
+    text-align: left;
   }
 
   .programs-intro__copy {
