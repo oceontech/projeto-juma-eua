@@ -2599,8 +2599,11 @@ html[data-proof-overlap] .expertise-layer--dark .expertise-bg {
     aspect-ratio: 1080 / 1100;
   }
 
+  /* Um pouco abaixo do pé do palco: em telas estreitas e baixas o fim do
+     parágrafo encostava na cabine. As folhas (-40px) e o underfill cobrem o
+     que desce. */
   .hero-tractor {
-    bottom: 0;
+    bottom: -24px;
     height: 100%;
   }
 
@@ -2652,7 +2655,7 @@ html[data-proof-overlap] .expertise-layer--dark .expertise-bg {
   .hero-copy {
     height: max(38%, calc(100% - var(--stage-h)));
     justify-content: flex-start;
-    padding-top: 112px;
+    padding-top: 96px;
   }
 
   /* Curso mais curto: a tela é menor, o gesto atravessa menos espaço, e um
@@ -2668,11 +2671,16 @@ html[data-proof-overlap] .expertise-layer--dark .expertise-bg {
 
   /* No mobile o Figma corta o comparador na horizontal. */
   .compare {
-    aspect-ratio: 360 / 376;
+    /* Altura explícita em vez de proporção: com `aspect-ratio` e o teto em
+       `svh`, quando a altura batia no teto a largura encolhia junto e o
+       comparador deixava um vão à direita do card. */
+    aspect-ratio: auto;
+    width: 100%;
+    height: calc(38svh + var(--open, 0) * 24svh);
     /* Mais baixa em repouso do que no desktop, e por causa do gesto: com os
        benefícios empilhados o card já nasce alto, e se ele ocupasse a tela
        inteira parado não sobraria diferença para a abertura mostrar. */
-    max-height: calc(38svh + var(--open, 0) * 24svh);
+    max-height: none;
     cursor: ns-resize;
   }
 
