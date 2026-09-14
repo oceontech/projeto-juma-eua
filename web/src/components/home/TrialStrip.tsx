@@ -171,8 +171,6 @@ export function TrialStrip() {
           tl.set({}, {}, TOTAL);
         },
       );
-
-      return () => mm.revert();
     },
     { scope: root },
   );

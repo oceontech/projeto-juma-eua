@@ -157,6 +157,130 @@
     margin-inline: auto;
   }
 
+  /* Cards da operação: no desktop formam uma única faixa em camadas. O
+     primeiro é mais largo e os seguintes descem alguns pixels, como no
+     layout de referência; no mobile a ordem volta a ser linear. */
+  .aminosan-benefits-cards {
+    position: relative;
+  }
+
+  .aminosan-benefit-card {
+    min-width: 0;
+    will-change: transform, opacity;
+  }
+
+  .aminosan-benefit-card__corner {
+    display: none;
+  }
+
+  /* No celular, os quatro cards formam um baralho horizontal já pronto para
+     ser animado pelo scroll: o primeiro fica em foco e os demais deixam
+     faixas visíveis à direita, sem ultrapassar a largura da tela. */
+  @media (max-width: 1023px) {
+    .aminosan-benefits-cards {
+      flex-direction: row;
+      gap: 0;
+      overflow: visible;
+      isolation: isolate;
+    }
+
+    .aminosan-benefit-card {
+      flex: 0 0 82%;
+      height: clamp(420px, 120vw, 480px);
+    }
+
+    .aminosan-benefit-card + .aminosan-benefit-card {
+      margin-top: 0;
+      /* 82% de largura - 72% de sobreposição = uma nova faixa de 10% por
+         card. A pilha completa fecha exatamente nos 100% do container. */
+      margin-left: -72%;
+    }
+
+    .aminosan-benefit-card:first-child { z-index: 4; }
+    .aminosan-benefit-card:nth-child(2) { z-index: 3; }
+    .aminosan-benefit-card:nth-child(3) { z-index: 2; }
+    .aminosan-benefit-card:nth-child(4) { z-index: 1; }
+  }
+
+  @media (min-width: 1024px) {
+    .aminosan-benefits-section {
+      padding-bottom: 20px;
+    }
+
+    .aminosan-benefits-cards {
+      position: relative;
+      left: 50%;
+      width: min(1718px, calc(100vw - 2 * var(--spacing-gut)));
+      margin-inline: 0;
+      translate: -50% 0;
+    }
+
+    .aminosan-benefit-card {
+      /* Todas as peças têm a mesma caixa. A largura extra compensa as
+         sobreposições para que a faixa ainda ocupe todo o container. */
+      --aminosan-benefit-overlap: clamp(96px, 9vw, 180px);
+      flex: 0 0 calc((100% + (3 * var(--aminosan-benefit-overlap))) / 4);
+      height: clamp(480px, 36vw, 690px);
+      margin-left: calc(-1 * var(--aminosan-benefit-overlap));
+    }
+
+    .aminosan-benefit-card:first-child {
+      margin-left: 0;
+      z-index: 4;
+    }
+
+    .aminosan-benefit-card:nth-child(2) {
+      z-index: 3;
+    }
+
+    .aminosan-benefit-card:nth-child(3) {
+      z-index: 2;
+    }
+
+    .aminosan-benefit-card:nth-child(4) {
+      z-index: 1;
+    }
+
+    /* Os cards 02–04 são maiores nesta composição; a tipografia acompanha a
+       escala para preencher melhor a superfície sem alterar o card-produto. */
+    .aminosan-benefit-card:nth-child(n + 2) > div:first-child > span:first-child {
+      font-size: clamp(30px, 2vw, 38px);
+    }
+
+    .aminosan-benefit-card:nth-child(n + 2) > div:first-child > span:nth-child(2) {
+      font-size: clamp(21px, 1.35vw, 26px);
+    }
+
+    .aminosan-benefit-card:nth-child(n + 2) .aminosan-benefit-card__heading {
+      max-width: 100% !important;
+      font-size: clamp(34px, 2.2vw, 38px) !important;
+      line-height: 1.14 !important;
+    }
+
+    .aminosan-benefit-card:nth-child(n + 2) .aminosan-benefit-card__body {
+      max-width: 380px;
+      font-size: clamp(18px, 1.35vw, 24px);
+      line-height: 1.42;
+    }
+
+    .aminosan-benefit-card__corner {
+      display: block;
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      width: 42%;
+      height: 28%;
+      clip-path: polygon(100% 0, 100% 100%, 0 100%);
+      background: #0f522a;
+      pointer-events: none;
+    }
+
+    .benefit-card-2 .aminosan-benefit-card__corner,
+    .benefit-card-4 .aminosan-benefit-card__corner {
+      background: #b7c73e;
+    }
+  }
+
   /* -------------------------------------------------- cards da credencial */
   /* O toque de vida no repouso: o card sobe um fio e o brilho lima cresce.
      `translate` e `scale` são propriedades próprias, não `transform` — os
