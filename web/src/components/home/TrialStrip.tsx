@@ -7,9 +7,9 @@ import { Pill, Rule } from "@/components/ui";
 import { useContent } from "@/components/layout/LocaleProvider";
 
 const STEP_IMAGES = [
-  { src: "/img/trial-v2/step-1-pass.webp", position: "50% 48%" },
-  { src: "/img/trial-v2/step-2-check.webp", position: "50% 50%" },
-  { src: "/img/trial-v2/step-3-harvest.webp", position: "55% 50%" },
+  { src: "/img/step-1-pass.webp", mobileSrc: "/img/step-1-pass-mobile.webp", position: "50% 48%" },
+  { src: "/img/step-2-check.webp", mobileSrc: "/img/step-2-check-mobile.webp", position: "50% 50%" },
+  { src: "/img/step-3-harvest.webp", mobileSrc: "/img/step-3-harvest-mobile.webp", position: "55% 50%" },
 ] as const;
 
 /*
@@ -59,6 +59,7 @@ export function TrialStrip() {
       const boom = q("[data-boom]")[0];
       const fills = q("[data-fill]");
       const counter = q("[data-counter]")[0];
+      const exitContent = q("[data-exit-content]")[0];
       const headline = section.querySelector<HTMLElement>("[data-trial-headline]");
       const introRest = section.querySelectorAll<HTMLElement>("[data-trial-intro]");
 
@@ -71,10 +72,11 @@ export function TrialStrip() {
         },
         (ctx) => {
           const { motion, mobile } = ctx.conditions as { motion: boolean; mobile: boolean };
+          let headlineSplit: SplitText | undefined;
 
           /* ---- cabeçalho: linhas sobem de dentro de uma máscara */
           if (motion && headline) {
-            SplitText.create(headline, {
+            headlineSplit = SplitText.create(headline, {
               type: "lines",
               mask: "lines",
               autoSplit: true,
@@ -87,6 +89,7 @@ export function TrialStrip() {
                   scrollTrigger: { trigger: headline, start: START, toggleActions: "play none none reverse" },
                 }),
             });
+
             gsap.from(introRest, {
               autoAlpha: 0,
               y: 18,
@@ -108,6 +111,41 @@ export function TrialStrip() {
                 scrollTrigger: { trigger: el, start: "top 85%", end: "top top", scrub: true },
               },
             );
+
+            gsap.fromTo(
+              exitContent,
+              { autoAlpha: 1 },
+              {
+                autoAlpha: 0,
+                ease: "none",
+                scrollTrigger: {
+                  trigger: el,
+                  start: "bottom 160%",
+                  end: "bottom 100%",
+                  scrub: true,
+                },
+              },
+            );
+
+            // Saída da cena: depois da última etapa, a moldura se fecha
+            // novamente enquanto o sticky se aproxima do fim da section.
+            // O intervalo antecipado mantém a animação visível antes de o
+            // elemento sticky ser liberado pelo track.
+            gsap.fromTo(
+              frame,
+              { clipPath: FRAME_TO },
+              {
+                clipPath: mobile ? FRAME_FROM_MOBILE : FRAME_FROM_DESKTOP,
+                ease: "none",
+                scrollTrigger: {
+                  trigger: el,
+                  start: "bottom 160%",
+                  end: "bottom 100%",
+                  scrub: true,
+                },
+              },
+            );
+
             gsap.fromTo(imgs[0], { scale: 1.18 }, {
               scale: 1.06,
               ease: "none",
@@ -169,6 +207,11 @@ export function TrialStrip() {
           });
 
           tl.set({}, {}, TOTAL);
+
+          // `autoSplit` instala observers próprios. Reverter a instância
+          // também remove esses observers e o ScrollTrigger retornado pelo
+          // `onSplit`, evitando redivisões sobre uma cena já desmontada.
+          return () => headlineSplit?.revert();
         },
       );
     },
@@ -221,16 +264,19 @@ export function TrialStrip() {
                 style={i === 0 ? undefined : { clipPath: "inset(0% 100% 0% 0%)" }}
               >
                 <div data-media-img className="absolute inset-0 will-change-transform">
-                  <Image
-                    src={STEP_IMAGES[i].src}
-                    alt=""
-                    fill
-                    sizes="(max-width: 860px) 1600px, 100vw"
-                    quality={90}
-                    priority={i === 0}
-                    className="object-cover"
-                    style={{ objectPosition: STEP_IMAGES[i].position }}
-                  />
+                  <picture className="absolute inset-0 block">
+                    <source media="(max-width: 860px)" srcSet={STEP_IMAGES[i].mobileSrc} />
+                    <Image
+                      src={STEP_IMAGES[i].src}
+                      alt=""
+                      fill
+                      sizes="(max-width: 860px) 100vw, 100vw"
+                      quality={90}
+                      priority={i === 0}
+                      className="object-cover"
+                      style={{ objectPosition: STEP_IMAGES[i].position }}
+                    />
+                  </picture>
                 </div>
               </div>
             ))}
@@ -247,7 +293,7 @@ export function TrialStrip() {
               className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_top,rgba(0,22,13,0.92)_0%,rgba(0,22,13,0.55)_32%,rgba(0,22,13,0)_62%),linear-gradient(to_bottom,rgba(0,22,13,0.45)_0%,rgba(0,22,13,0)_22%)]"
             />
 
-            <div className="wrap absolute inset-x-0 bottom-0 flex flex-col gap-[clamp(20px,3vw,48px)] pb-[clamp(24px,5svh,72px)] min-[861px]:flex-row min-[861px]:items-end min-[861px]:justify-between">
+            <div data-exit-content className="wrap absolute inset-x-0 bottom-0 flex flex-col gap-[clamp(20px,3vw,48px)] pb-[clamp(24px,5svh,72px)] min-[861px]:flex-row min-[861px]:items-end min-[861px]:justify-between">
               {/* Textos das etapas, empilhados na mesma célula */}
               <div className="grid max-w-[640px] grid-cols-1 text-white">
                 {trialStrip.steps.map((step, i) => (
