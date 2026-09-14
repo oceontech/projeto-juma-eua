@@ -4,6 +4,7 @@ import { PerformanceProof } from "@/components/home/PerformanceProof";
 import { Expertise } from "@/components/home/Expertise";
 import { Products } from "@/components/home/Products";
 import { CropSelection } from "@/components/home/CropSelection";
+import { BeneathSurface } from "@/components/home/BeneathSurface";
 import { Programs } from "@/components/home/Programs";
 import { TrialStrip } from "@/components/home/TrialStrip";
 import { USOperation } from "@/components/home/USOperation";
@@ -24,6 +25,7 @@ export default function HomePage() {
       <Expertise />
       <Products />
       <CropSelection />
+      <BeneathSurface />
       <Programs />
       <TrialStrip />
       <USOperation />

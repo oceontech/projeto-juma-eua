@@ -1,0 +1,182 @@
+"use client";
+
+import { useRef, useState } from "react";
+import Link from "next/link";
+import { gsap, useGSAP } from "@/lib/gsap";
+import styles from "./BeneathSurface.module.css";
+
+function Arrow() {
+  return <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" /></svg>;
+}
+
+/** Botanical exploration: both images share one camera to keep the reveal aligned. */
+export function BeneathSurface() {
+  const root = useRef<HTMLElement>(null);
+  const [revealed, setRevealed] = useState(false);
+
+  useGSAP(() => {
+    const section = root.current!;
+    const camera = section.querySelector<HTMLElement>("[data-surface-camera]")!;
+    const spotlight = section.querySelector<HTMLElement>("[data-surface-spotlight]")!;
+    const cursor = section.querySelector<HTMLElement>("[data-surface-cursor]")!;
+    let frame = 0;
+    let clientX = 0;
+    let clientY = 0;
+
+    // Backgrounds download shortly before this section reaches the viewport.
+    const loadMedia = () => section.setAttribute("data-loaded", "true");
+    const loader = typeof IntersectionObserver !== "undefined"
+      ? new IntersectionObserver((entries) => {
+          if (entries.some((entry) => entry.isIntersecting)) {
+            loadMedia();
+            loader?.disconnect();
+          }
+        }, { rootMargin: "800px" })
+      : null;
+    if (loader) loader.observe(section);
+    else loadMedia();
+
+    const media = gsap.matchMedia();
+    media.add("(prefers-reduced-motion: no-preference)", () => {
+      // The camera, text entrances and exit wrapper each own their transforms.
+      gsap.timeline({
+        scrollTrigger: {
+          id: "surface-entrance", trigger: section,
+          start: "top 88%", end: "top 12%", scrub: 0.65,
+        },
+      })
+        .fromTo(camera, { scale: 1.12, opacity: 0.35 }, { scale: 1, opacity: 1, duration: 1.3, ease: "power2.out" }, 0)
+        .fromTo("[data-surface-line]", { yPercent: 110 }, { yPercent: 0, duration: 0.8, stagger: 0.12, ease: "power3.out" }, 0.16)
+        .fromTo("[data-surface-enter]", { y: 22, opacity: 0 }, { y: 0, opacity: 1, duration: 0.65, stagger: 0.08, ease: "power2.out" }, 0.38);
+
+      gsap.timeline({
+        scrollTrigger: {
+          id: "surface-exit", trigger: section,
+          start: "bottom 65%", end: "bottom top", scrub: 0.55,
+        },
+      })
+        .fromTo("[data-surface-exit]", { y: 0, opacity: 1 }, { y: -36, opacity: 0, duration: 1, ease: "power1.in" }, 0)
+        .fromTo("[data-surface-shade]", { opacity: 0 }, { opacity: 0.94, duration: 1, ease: "power1.inOut" }, 0);
+    });
+
+    const renderPointer = () => {
+      frame = 0;
+      // Convert viewport coordinates into the scaled image's coordinate space.
+      const bounds = camera.getBoundingClientRect();
+      const scale = bounds.width / camera.offsetWidth;
+      const x = (clientX - bounds.left) / scale;
+      const y = (clientY - bounds.top) / scale;
+      const radius = (window.innerWidth < 480 ? 120 : window.innerWidth < 720 ? 160 : 260) / scale;
+      const mask = `radial-gradient(circle ${radius}px at ${x}px ${y}px, #fff 0%, #fff 40%, rgba(255,255,255,.75) 60%, rgba(255,255,255,.4) 75%, rgba(255,255,255,.12) 88%, transparent 100%)`;
+      spotlight.style.maskImage = mask;
+      spotlight.style.webkitMaskImage = mask;
+      const sectionBounds = section.getBoundingClientRect();
+      cursor.style.transform = `translate3d(${clientX - sectionBounds.left}px, ${clientY - sectionBounds.top}px, 0)`;
+    };
+
+    const move = (event: PointerEvent) => {
+      // Touch keeps native vertical scrolling; the buttons offer a full reveal.
+      if (event.pointerType === "touch") return;
+      const target = event.target;
+      const overControl = target instanceof Element && !!target.closest("a, button");
+      section.dataset.exploring = overControl ? "false" : "true";
+      clientX = event.clientX;
+      clientY = event.clientY;
+      if (!frame) frame = requestAnimationFrame(renderPointer);
+    };
+    const leave = () => {
+      section.dataset.exploring = "false";
+      if (frame) cancelAnimationFrame(frame);
+      frame = 0;
+    };
+    section.addEventListener("pointermove", move, { passive: true });
+    section.addEventListener("pointerleave", leave);
+    section.addEventListener("pointercancel", leave);
+
+    return () => {
+      media.revert();
+      loader?.disconnect();
+      if (frame) cancelAnimationFrame(frame);
+      section.removeEventListener("pointermove", move);
+      section.removeEventListener("pointerleave", leave);
+      section.removeEventListener("pointercancel", leave);
+    };
+  }, { scope: root });
+
+  return (
+    <section
+      ref={root} id="beneath-the-surface" className={styles.section}
+      data-nav-theme="dark" data-revealed={revealed}
+      aria-labelledby="surface-title"
+    >
+      <div className={styles.camera} data-surface-camera aria-hidden="true">
+        <div className={`${styles.image} ${styles.base}`} />
+        <div className={`${styles.image} ${styles.spotlight}`} data-surface-spotlight />
+        <div className={`${styles.image} ${styles.fullReveal}`} />
+      </div>
+      <div className={styles.scrim} aria-hidden="true" />
+      <div className={styles.exitShade} data-surface-shade aria-hidden="true" />
+
+      <div className={styles.ui} data-surface-exit>
+        <div className={styles.topline} data-surface-enter>
+          <p className={styles.eyebrow}><span />The science of growing</p>
+          <span className={styles.edition}>JUMA FIELD NOTES <span>/ 01</span></span>
+        </div>
+
+        <div className={styles.copy}>
+          <h2 id="surface-title" className={styles.title}>
+            <span className={styles.line}><span data-surface-line>Beneath</span></span>{" "}
+            <span className={styles.line}><span data-surface-line>the surface.</span></span>
+          </h2>
+          <p className={styles.description} data-surface-enter>
+            Every leaf holds a world of possibility. Get closer to the crop.
+            Discover the thinking behind our foliar nutrition.
+          </p>
+          <div className={styles.controls} role="group" aria-label="Botanical illustration view" data-surface-enter>
+            <button type="button" aria-pressed={!revealed} onClick={() => setRevealed(false)}>
+              <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M15.5 3.5c-8-1-12 3-10 9 6 2 10-2 10-9ZM4 16 12 8" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+              Natural view
+            </button>
+            <button type="button" aria-pressed={revealed} onClick={() => setRevealed(true)}>
+              <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M3 7V3h4m6 0h4v4m0 6v4h-4m-6 0H3v-4" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" /><circle cx="10" cy="10" r="3" stroke="currentColor" strokeWidth="1.2" /></svg>
+              Reveal structure
+            </button>
+          </div>
+        </div>
+
+        <div className={styles.exploreHint} data-surface-enter aria-hidden="true">
+          <span className={styles.target}><i /><i /></span>
+          <span className={styles.mouseHint}>Move to explore</span>
+          <span className={styles.touchHint}>A closer look at life</span>
+        </div>
+
+        <div className={styles.bottom}>
+          <article className={styles.product} data-surface-enter>
+            <div className={styles.thumb} aria-hidden="true" />
+            <div>
+              <p className={styles.productLabel}>Built around the plant</p>
+              <h3>Aminosan<sup>®</sup></h3>
+              <p className={styles.productCopy}>Free amino acids. Ready to use.</p>
+              <Link href="/aminosan" className={styles.productLink}>Explore Aminosan <Arrow /></Link>
+            </div>
+          </article>
+
+          <div className={styles.notes} data-surface-enter>
+            <h3>The leaf is just the beginning.</h3>
+            <dl>
+              <div><dt>Our focus</dt><dd>Foliar nutrition</dd></div>
+              <div><dt>Our roots</dt><dd>Brazilian agronomy</dd></div>
+              <div><dt>Your next step</dt><dd><a href="#us-operation">Try it on your acres <Arrow /></a></dd></div>
+            </dl>
+          </div>
+        </div>
+
+        <div className={styles.footer} data-surface-enter>
+          <span>Botanical visualization</span>
+          <span className={styles.footerRight}>Rooted in science. Grown in the field.<span>↓</span></span>
+        </div>
+      </div>
+      <div className={styles.cursor} data-surface-cursor aria-hidden="true"><span>+</span></div>
+    </section>
+  );
+}

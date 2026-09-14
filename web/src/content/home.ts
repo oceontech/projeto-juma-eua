@@ -122,45 +122,77 @@ export const products: Product[] = [
   },
 ];
 
-export type Crop = { id: string; name: string; body: string; image: string };
+export type Crop = { id: string; name: string; image: string };
+
+export type CropRegion = {
+  id: string;
+  tag: string;
+  name: string;
+  body: string;
+  crops: string[];
+};
 
 export const crops = {
-  headline: "Find the right crop for your state.",
-  body: "Explore the crops we support across different growing conditions. Hover a card to bring it forward and see the crop in focus.",
-  /* A ordem é a do leque, da esquerda para a direita. A carta do meio é a
-     que abre em foco. */
+  eyebrow: "Crops we serve",
+  headline: "Nutrition built around the crop you grow.",
+  body: "Row crops, specialty crops, pasture and beyond. Our foliar programs follow each crop through its critical stages — more efficiency out of the pass you already make, and more yield out of the stand you already have.",
+  corridorLabel: "Row crops · Specialty crops · And more",
+  more: {
+    text: "These are just some of the crops we work with. Growing something else?",
+    cta: "Talk to our agronomy team",
+  },
+  /* A ordem é a do corredor de imagens: as frutas de maior valor abrem a fila. */
   cards: [
-    {
-      id: "cotton",
-      name: "Cotton",
-      body: "A major source of sugar and renewable products.",
-      image: "/img/crop-cotton.webp",
-    },
-    {
-      id: "corn",
-      name: "Corn",
-      body: "Cultivated in tropical regions around the world.",
-      image: "/img/crop-corn.webp",
-    },
-    {
-      id: "soybean",
-      name: "Soybean",
-      body: "Versatile, resistant, and essential to feeding the world.",
-      image: "/img/crop-soybean.webp",
-    },
-    {
-      id: "coffee",
-      name: "Coffee",
-      body: "Cultivated in tropical regions around the world.",
-      image: "/img/crop-coffee.webp",
-    },
-    {
-      id: "sugarcane",
-      name: "Sugarcane",
-      body: "A major source of sugar and renewable products.",
-      image: "/img/crop-sugarcane.webp",
-    },
+    { id: "tomato", name: "Tomato", image: "/img/crops/tomato.webp" },
+    { id: "strawberry", name: "Strawberry", image: "/img/crops/strawberry.webp" },
+    { id: "blueberry", name: "Blueberry", image: "/img/crops/blueberry.webp" },
+    { id: "bell-pepper", name: "Bell Pepper", image: "/img/crops/bell-pepper.webp" },
+    { id: "watermelon", name: "Watermelon", image: "/img/crops/watermelon.webp" },
+    { id: "citrus", name: "Citrus", image: "/img/crops/citrus.webp" },
+    { id: "vegetables", name: "Vegetables", image: "/img/crops/vegetables.webp" },
+    { id: "ornamentals", name: "Ornamentals", image: "/img/crops/ornamentals.webp" },
+    { id: "pasture", name: "Pasture", image: "/img/crops/pasture.webp" },
+    { id: "corn", name: "Corn", image: "/img/crop-corn.webp" },
+    { id: "soybean", name: "Soybean", image: "/img/crop-soybean.webp" },
+    { id: "cotton", name: "Cotton", image: "/img/crop-cotton.webp" },
   ] satisfies Crop[],
+  regions: [
+    {
+      id: "north-florida",
+      tag: "Berries & melons",
+      name: "North Florida",
+      body: "Support for bloom, fruit set and sizing on sandy, fast-draining soils.",
+      crops: ["blueberry", "watermelon", "vegetables"],
+    },
+    {
+      id: "central-florida",
+      tag: "Strawberry & citrus",
+      name: "Central Florida",
+      body: "Steady nutrition through long winter harvests and heat on the groves.",
+      crops: ["strawberry", "blueberry", "citrus", "vegetables"],
+    },
+    {
+      id: "south-florida",
+      tag: "Fresh market",
+      name: "South Florida",
+      body: "Year-round vegetables, nurseries and pasture under constant heat.",
+      crops: ["tomato", "bell-pepper", "vegetables", "ornamentals", "pasture"],
+    },
+    {
+      id: "southeast",
+      tag: "Row crops",
+      name: "Southeast",
+      body: "Programs backed by 38 years of trials in two and three crops a year.",
+      crops: ["corn", "soybean", "cotton"],
+    },
+  ] satisfies CropRegion[],
+  pillarsTitle: "Why growers choose Juma",
+  pillars: [
+    "38 years of field trials",
+    "Fits the passes you already make",
+    "Agronomic support on your acres",
+    "Free trial strip",
+  ],
 };
 
 export type Program = {
