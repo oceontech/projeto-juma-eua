@@ -2640,12 +2640,13 @@ html[data-proof-overlap] .expertise-layer--dark .expertise-bg {
     height: 100%;
   }
 
-  /* O grupo do chão desce um pouco abaixo do pé do palco: em telas estreitas
-     o fim do parágrafo encostava na cabine. É o grupo, e não só a foto, para
-     o véu das bandeiras e o underfill continuarem casando com o horizonte da
+  /* O grupo do chão desce abaixo do pé do palco o quanto for preciso para o
+     texto não encostar na cabine. Quanto é medido no Hero.tsx e chega aqui
+     como `--hero-drop` (24px até o JS rodar). É o grupo, e não só a foto,
+     para o véu das bandeiras e o underfill casarem com o horizonte da
      imagem. `inset` e não transform: o GSAP escreve o transform deste nó. */
   .hero-ground {
-    inset: 24px 0 -24px;
+    inset: var(--hero-drop, 24px) 0 calc(-1 * var(--hero-drop, 24px));
   }
 
   /* 40px abaixo do pé do palco: é a posição de repouso, não um deslocamento
@@ -2659,11 +2660,11 @@ html[data-proof-overlap] .expertise-layer--dark .expertise-bg {
 
   /* As bandeiras no mobile: imponentes e generosas em tamanho (66% de largura),
      ladeando o palco vertical sem se tocarem no centro. */
-  /* As bandeiras descem o mesmo que o grupo do chão (24px): é o véu dele que
+  /* As bandeiras descem o mesmo que o grupo do chão (--hero-drop): é o véu dele que
      apaga o pé delas, e os dois precisam andar juntos. */
   .hero-flag--br {
     left: -14%;
-    top: calc(4% + 24px);
+    top: calc(4% + var(--hero-drop, 24px));
     width: 66%;
     height: auto;
   }
@@ -2671,7 +2672,7 @@ html[data-proof-overlap] .expertise-layer--dark .expertise-bg {
   .hero-flag--us {
     left: auto;
     right: -14%;
-    top: 24px;
+    top: var(--hero-drop, 24px);
     width: 66%;
     height: auto;
   }
@@ -2895,7 +2896,7 @@ html[data-proof-overlap] .expertise-layer--dark .expertise-bg {
 /* O palco do mobile é medido pela largura, então num aparelho baixo (SE,
    320×640) a faixa de céu acima do trator encolhe e o fim do parágrafo caía
    em cima da cabine. Aqui o bloco começa mais alto, o título perde um pouco
-   de corpo e o grupo do chão desce mais — as folhas (-40px) cobrem o pé dele.
+   de corpo, para sobrar menos texto; quanto o chão desce é medido no Hero.tsx.
    Fora de `@layer`, e de propósito: as regras de mobile do hero também são
    soltas, e CSS sem camada vence qualquer camada — dentro de `utilities`
    o padding e o trator perdiam para elas. Solto e depois delas no arquivo,
@@ -2917,17 +2918,5 @@ html[data-proof-overlap] .expertise-layer--dark .expertise-bg {
     margin-top: 12px;
     font-size: 13px;
     line-height: 1.38;
-  }
-
-  .hero-ground {
-    inset: 84px 0 -84px;
-  }
-
-  .hero-flag--br {
-    top: calc(4% + 84px);
-  }
-
-  .hero-flag--us {
-    top: 84px;
   }
 }

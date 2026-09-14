@@ -1,6 +1,6 @@
 "use client";
 
-import { Fragment, useRef } from "react";
+import { Fragment, useEffect, useRef } from "react";
 import Image from "next/image";
 import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
 import { booted } from "@/lib/boot";
@@ -48,6 +48,13 @@ import { useContent } from "@/components/layout/LocaleProvider";
 
 /** Atraso do `scrub`, em segundos. Também mede a espera da flutuação. */
 const SCRUB = 1;
+
+/** Queda mínima do chão no estreito, em px — a mesma do fallback em globals.css. */
+const MIN_DROP = 24;
+
+/** Onde a máquina começa dentro de hero-tractor-mobile.webp: as pontas dos
+    escapamentos ficam a 0,8% da altura da foto. Arredondado para cima. */
+const TRACTOR_TOP = 0.01;
 
 export function Hero() {
   const { hero } = useContent().home;
@@ -479,6 +486,73 @@ export function Hero() {
     },
     { scope: root },
   );
+
+  /* Folga entre o texto e o trator no estreito. O palco é medido pela largura
+     da tela e o texto pela altura das próprias linhas, então nenhum número
+     fixo serve em todo aparelho — com as barras do Safari, um iPhone de 369px
+     fica com 637 de altura e o fim do parágrafo caía na cabine. Aqui se mede o
+     pé do parágrafo e o topo da máquina, e o grupo do chão (com as bandeiras)
+     desce só o que falta para a folga, via `--hero-drop`.
+
+     Tudo em offsets, que ignoram transform: a entrada e a travessia do GSAP
+     escrevem transform nessas mesmas camadas e continuam compondo por cima.
+     A queda não mexe na altura da seção, então o ScrollTrigger não precisa
+     remedir. */
+  useEffect(() => {
+    const section = root.current;
+    const win = section?.querySelector<HTMLElement>(".hero-window");
+    const sub = section?.querySelector<HTMLElement>("[data-hero-sub]");
+    const tractor = section?.querySelector<HTMLElement>(".hero-tractor");
+    if (!section || !win || !sub || !tractor) return;
+
+    const narrow = window.matchMedia("(max-width: 860px)");
+
+    const topIn = (el: HTMLElement) => {
+      let y = 0;
+      let node: HTMLElement | null = el;
+      while (node && node !== win) {
+        y += node.offsetTop;
+        node = node.offsetParent as HTMLElement | null;
+      }
+      return y;
+    };
+
+    let frame = 0;
+    const fit = () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        if (!narrow.matches) {
+          section.style.removeProperty("--hero-drop");
+          return;
+        }
+        const current =
+          parseFloat(getComputedStyle(section).getPropertyValue("--hero-drop")) || MIN_DROP;
+        const textBottom = topIn(sub) + sub.offsetHeight;
+        const machineTop = topIn(tractor) + tractor.offsetHeight * TRACTOR_TOP;
+        /* Folga proporcional à tela, com piso e teto. */
+        const gap = Math.min(48, Math.max(28, win.offsetHeight * 0.045));
+        /* Teto: descer mais que 40% da foto esconderia a máquina atrás das
+           folhas — aí o que resolve é tipografia, não posição. */
+        const max = tractor.offsetHeight * 0.4;
+        const drop = Math.min(max, Math.max(MIN_DROP, current + textBottom + gap - machineTop));
+        section.style.setProperty("--hero-drop", `${Math.round(drop)}px`);
+      });
+    };
+
+    fit();
+    const observer = new ResizeObserver(fit);
+    observer.observe(win);
+    observer.observe(sub);
+    narrow.addEventListener("change", fit);
+    document.fonts?.ready.then(fit);
+
+    return () => {
+      cancelAnimationFrame(frame);
+      observer.disconnect();
+      narrow.removeEventListener("change", fit);
+      section.style.removeProperty("--hero-drop");
+    };
+  }, []);
 
   return (
     <section ref={root} className="hero">
