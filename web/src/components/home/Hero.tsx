@@ -626,7 +626,7 @@ export function Hero() {
                  proporção sem tirar nada do texto. A margem extra estreita a
                  medida além da coluna: linhas mais curtas, bloco mais alto e
                  estreito, que é o desenho que o título grande pede ao lado. */
-              "max-[860px]:text-[13.5px] max-[860px]:leading-[1.42] max-[860px]:px-[7vw]",
+              "max-[860px]:text-[13.5px] max-[860px]:leading-[1.42] max-[860px]:px-[4vw] max-[860px]:text-pretty",
             ].join(" ")}
           >
             {hero.subheadline}
