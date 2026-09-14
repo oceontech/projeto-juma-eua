@@ -3,7 +3,7 @@
 import { useCallback, useRef } from "react";
 import { getImageProps } from "next/image";
 import { Pill } from "@/components/ui";
-import { proof } from "@/content/home";
+import { useContent } from "@/components/layout/LocaleProvider";
 import { gsap, useGSAP, type ScrollTrigger } from "@/lib/gsap";
 
 /** Onde o corte assenta depois que o scroll termina de abri-lo. */
@@ -89,6 +89,7 @@ export function ImageCompare({
   start = "top 88%",
   end = "top 34%",
 }: ImageCompareProps = {}) {
+  const { proof } = useContent().home;
   const box = useRef<HTMLDivElement>(null);
   const slider = useRef<HTMLInputElement>(null);
   const reveal = useRef<ScrollTrigger | null>(null);
@@ -227,7 +228,7 @@ export function ImageCompare({
           takeOver();
           apply(Number(e.currentTarget.value));
         }}
-        aria-label="Reveal the treated strip"
+        aria-label={proof.compare.handleLabel}
       />
     </div>
   );

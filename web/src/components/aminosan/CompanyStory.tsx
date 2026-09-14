@@ -1,15 +1,16 @@
 import Image from "next/image";
 import { Reveal } from "@/components/motion/Reveal";
-import { companyStory } from "@/content/aminosan";
+import { getContent } from "@/lib/locale";
 
-export function CompanyStory() {
+export async function CompanyStory() {
+  const { companyStory } = (await getContent()).aminosan;
   return (
     <section className="bg-[#0f522a] py-[clamp(56px,7vw,124px)]">
       <Reveal y={18} className="wrap max-w-[1158px] text-center">
         <p className="font-display text-[16px] font-semibold tracking-[0.3em] text-lime uppercase">
           {companyStory.eyebrow}
         </p>
-        <h2 className="mt-3 font-display text-[clamp(30px,3.4vw,48px)] text-white">{companyStory.heading}</h2>
+        <h2 className="mt-3 text-h2 leading-[1.1] text-white">{companyStory.heading}</h2>
         <p className="mx-auto mt-6 max-w-[68ch] leading-[1.55] text-offwhite/90">{companyStory.body[0]}</p>
         <p className="mx-auto mt-4 max-w-[68ch] leading-[1.55] text-offwhite/90">{companyStory.body[1]}</p>
 

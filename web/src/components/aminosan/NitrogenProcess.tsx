@@ -2,7 +2,7 @@ import Image from "next/image";
 import { Reveal } from "@/components/motion/Reveal";
 import { SplitLines } from "@/components/motion/SplitLines";
 import { Pill, Rule } from "@/components/ui";
-import { process } from "@/content/aminosan";
+import { getContent } from "@/lib/locale";
 
 /**
  * Um gatilho comum preserva a ordem da entrada quando a seção chega depois
@@ -19,7 +19,8 @@ const enter = {
  * Process: Rota curta vs rota longa e diferenciais técnicos do Aminosan®.
  * Surge com o fundo preto contínuo (#0C0C0E) após a transição da hero / folha.
  */
-export function NitrogenProcess() {
+export async function NitrogenProcess() {
+  const { process } = (await getContent()).aminosan;
   return (
     <div className="pt-[clamp(40px,5vw,72px)] pb-[clamp(28px,3vw,44px)]">
       <div className="wrap">
@@ -28,7 +29,7 @@ export function NitrogenProcess() {
           y={16}
           className="mb-[clamp(14px,1.2vw,22px)] flex items-center gap-[clamp(12px,1.2vw,20px)]"
         >
-          <Pill dark>Process</Pill>
+          <Pill dark>{process.pill}</Pill>
           <Rule short />
         </Reveal>
 

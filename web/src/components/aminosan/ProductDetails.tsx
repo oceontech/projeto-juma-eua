@@ -1,8 +1,9 @@
 import Image from "next/image";
 import { Reveal } from "@/components/motion/Reveal";
-import { growthStages, guaranteedAnalysis, productAnalysis } from "@/content/aminosan";
+import { getContent } from "@/lib/locale";
 
-export function ProductDetails() {
+export async function ProductDetails() {
+  const { growthStages, guaranteedAnalysis, productAnalysis } = (await getContent()).aminosan;
   const { vegetative, reproductive, spritePosition } = growthStages.timeline;
 
   return (

@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import Image from "next/image";
 import { cn } from "@/lib/utils";
 
 /* ── the corridor ────────────────────────────────────────────────
@@ -127,8 +128,8 @@ export type StreamImage = {
 
 export type ImageStreamHeroProps = {
   /**
-   * Images cycled onto the rails. Both rails run the same sequence, so the
-   * corridor reads as one mirrored stream. Fewer than `cards` simply repeat.
+   * Images alternate between rails. Supply at least `cards * 2` unique
+   * images to avoid duplicates across both sides; shorter lists repeat.
    */
   images: StreamImage[];
   /**
@@ -192,11 +193,10 @@ export function ImageStreamHero({
       <style>{css}</style>
 
       <div aria-hidden className="pointer-events-none absolute inset-0 isolate">
-        {[right, left].map((name) =>
+        {[right, left].map((name, railIndex) =>
           Array.from({ length: cards }, (_, i) => {
-            // Both rails walk the same sequence, so the left side mirrors
-            // the right at every depth.
-            const img = images[i % Math.max(images.length, 1)];
+            // Each depth takes a distinct pair instead of mirroring a photo.
+            const img = images[(i * 2 + railIndex) % Math.max(images.length, 1)];
             return (
               <div
                 key={`${name}-${i}`}
@@ -217,9 +217,12 @@ export function ImageStreamHero({
                 }}
               >
                 {img ? (
-                  <img
+                  <Image
                     src={img.src}
                     alt={img.alt ?? ""}
+                    width={576}
+                    height={800}
+                    unoptimized
                     loading="lazy"
                     decoding="async"
                     className="h-full w-full object-cover"

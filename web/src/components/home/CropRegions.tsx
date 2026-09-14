@@ -2,18 +2,17 @@
 
 import { useRef } from "react";
 import { gsap, useGSAP, START } from "@/lib/gsap";
-import { cx } from "@/components/ui";
 import { SmartLink } from "@/components/ui/SmartLink";
 import { CropIcon } from "@/components/home/CropIcon";
-import { crops } from "@/content/home";
-
-const NAMES = new Map(crops.cards.map((crop) => [crop.id, crop.name]));
+import { useContent } from "@/components/layout/LocaleProvider";
 
 /**
  * Culturas por região. O card sobe, as linhas entram em sequência e cada
- * ilustração surge com um leve salto, as folhas assentando no fim.
+ * fotografia surge com um leve salto.
  */
 export function CropRegions() {
+  const { crops } = useContent().home;
+  const names = new Map(crops.cards.map((crop) => [crop.id, crop.name]));
   const scope = useRef<HTMLUListElement>(null);
 
   useGSAP(
@@ -54,17 +53,6 @@ export function CropRegions() {
                 stagger: 0.06,
               },
               "<",
-            )
-            .from(
-              card.querySelectorAll("[data-sway]"),
-              {
-                rotation: -14,
-                svgOrigin: "32 58",
-                duration: 1.1,
-                ease: "elastic.out(1, 0.45)",
-                stagger: 0.03,
-              },
-              "-=0.35",
             );
         });
       });
@@ -79,23 +67,14 @@ export function CropRegions() {
         className="mx-[calc(-1*var(--spacing-gut))] mt-[clamp(28px,3vw,56px)] flex snap-x snap-mandatory scroll-px-gut gap-3 overflow-x-auto px-gut pb-2 [scrollbar-width:none] min-[861px]:mx-0 min-[861px]:grid min-[861px]:grid-cols-2 min-[861px]:gap-[clamp(14px,1.2vw,22px)] min-[861px]:overflow-visible min-[861px]:px-0 min-[1100px]:grid-cols-4"
       >
         {crops.regions.map((region, index) => {
-          const dark = region.id === "southeast";
           return (
             <li
               key={region.id}
-              className={cx(
-                "crop-region flex w-[84%] max-w-[360px] shrink-0 snap-start flex-col rounded-[clamp(12px,1vw,18px)] p-[clamp(20px,1.6vw,30px)] min-[861px]:w-auto min-[861px]:max-w-none",
-                dark
-                  ? "bg-linear-[149.8deg,var(--color-night-warm)_2.4%,var(--color-night-deep)_60.23%] text-offwhite"
-                  : "border border-[#E6E8E0] bg-white text-ink",
-              )}
+              className="crop-region flex w-[84%] max-w-[360px] shrink-0 snap-start flex-col rounded-[clamp(12px,1vw,18px)] bg-linear-[149.8deg,var(--color-night-warm)_2.4%,var(--color-night-deep)_60.23%] p-[clamp(20px,1.6vw,30px)] text-offwhite min-[861px]:w-auto min-[861px]:max-w-none"
             >
               <div className="flex items-center justify-between gap-3">
                 <span
-                  className={cx(
-                    "inline-flex items-center gap-[0.7em] text-micro leading-none font-semibold tracking-[0.14em] uppercase",
-                    dark ? "text-lime" : "text-green-brand",
-                  )}
+                  className="inline-flex items-center gap-[0.7em] text-micro leading-none font-semibold tracking-[0.14em] text-lime uppercase"
                 >
                   <span
                     aria-hidden
@@ -105,10 +84,7 @@ export function CropRegions() {
                 </span>
                 <span
                   aria-hidden
-                  className={cx(
-                    "text-micro leading-none tabular-nums",
-                    dark ? "text-muted-dark" : "text-[#9A9C94]",
-                  )}
+                  className="text-micro leading-none text-muted-dark tabular-nums"
                 >
                   {String(index + 1).padStart(2, "0")}
                 </span>
@@ -118,10 +94,7 @@ export function CropRegions() {
                 {region.name}
               </h3>
               <p
-                className={cx(
-                  "mt-[0.4em] text-small leading-snug",
-                  dark ? "text-muted-dark" : "text-muted",
-                )}
+                className="mt-[0.4em] text-small leading-snug text-muted-dark"
               >
                 {region.body}
               </p>
@@ -130,10 +103,7 @@ export function CropRegions() {
                 {region.crops.map((id) => (
                   <li
                     key={id}
-                    className={cx(
-                      "crop-region__row group flex items-center gap-[14px] border-t py-[clamp(9px,0.7vw,12px)]",
-                      dark ? "border-offwhite/10" : "border-[#EEF0E8]",
-                    )}
+                    className="crop-region__row group flex items-center gap-[14px] border-t border-offwhite/10 py-[clamp(9px,0.7vw,12px)]"
                   >
                     <span className="crop-region__icon grid size-[clamp(38px,2.7vw,48px)] shrink-0 place-items-center">
                       <CropIcon
@@ -142,7 +112,7 @@ export function CropRegions() {
                       />
                     </span>
                     <span className="text-[clamp(14px,0.95vw,16px)] leading-tight font-medium transition-transform duration-300 group-hover:translate-x-1">
-                      {NAMES.get(id)}
+                      {names.get(id)}
                     </span>
                   </li>
                 ))}

@@ -2,10 +2,11 @@ import Image from "next/image";
 import { Reveal } from "@/components/motion/Reveal";
 import { Pill, Rule } from "@/components/ui";
 import { TrialForm } from "./TrialForm";
-import { usOperation } from "@/content/home";
+import { getContent } from "@/lib/locale";
 
 /** Onde o lead entra: formulário à esquerda, contato dos EUA à direita. */
-export function USOperation() {
+export async function USOperation() {
+  const { usOperation } = (await getContent()).home;
   return (
     <section id="us-operation" className="bg-white py-[clamp(48px,6vw,88px)]">
       <div className="wrap grid grid-cols-1 gap-[clamp(28px,4vw,84px)] min-[1101px]:grid-cols-[900fr_325fr]">

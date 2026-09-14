@@ -1,20 +1,52 @@
+/* Both sides of the section boundary use the same opaque endpoint. */
+.fieldTransition, .section { --surface-bridge: #07110b; }
+.fieldTransition {
+  position: relative;
+  aspect-ratio: 1918 / 629;
+  overflow: hidden;
+  background: var(--surface-bridge);
+}
+.fieldTransition picture { display: block; width: 100%; height: 100%; }
+.fieldTransition::before, .fieldTransition::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+.fieldTransition::before {
+  top: 0;
+  height: 42%;
+  background: linear-gradient(180deg, #fff 0%, rgb(255 255 255 / .94) 12%, rgb(255 255 255 / .66) 38%, rgb(255 255 255 / .22) 72%, transparent 100%);
+}
+.fieldTransition::after {
+  bottom: -1px;
+  height: 58%;
+  background: linear-gradient(180deg, rgb(7 17 11 / 0) 0%, rgb(7 17 11 / .12) 22%, rgb(7 17 11 / .42) 48%, rgb(7 17 11 / .78) 74%, var(--surface-bridge) 99%);
+}
 .section {
   position: relative;
   isolation: isolate;
   width: 100%;
   min-height: max(760px, 100svh);
   overflow: hidden;
-  background: #07110b;
+  background: var(--surface-bridge);
   color: var(--color-offwhite);
   --surface-muted: #b7c2ae;
   --surface-line: rgb(246 255 238 / .18);
 }
 
-.camera, .image, .scrim, .exitShade { position: absolute; inset: 0; pointer-events: none; }
+.camera, .image, .scrim, .entryBlend, .exitShade { position: absolute; inset: 0; pointer-events: none; }
+.entryBlend {
+  bottom: auto;
+  height: clamp(100px, 12vw, 220px);
+  z-index: 1;
+  background: linear-gradient(180deg, var(--surface-bridge) 0%, rgb(7 17 11 / .97) 10%, rgb(7 17 11 / .72) 36%, rgb(7 17 11 / .28) 70%, rgb(7 17 11 / 0) 100%);
+}
 .camera { transform-origin: 65% 45%; }
 .image { background-size: cover; background-position: center; }
-.section[data-loaded="true"] .base { background-image: url('/img/surface-leaf.webp'); }
-.section[data-loaded="true"] :is(.spotlight, .fullReveal) { background-image: url('/img/surface-veins.webp'); }
+.section[data-loaded="true"] .base { background-image: url('/img/surface-v2/leaf.webp'); }
+.section[data-loaded="true"] :is(.spotlight, .fullReveal) { background-image: url('/img/surface-v2/structure.webp'); }
 .spotlight {
   -webkit-mask-image: radial-gradient(circle 0px at -999px -999px, #fff, transparent);
   mask-image: radial-gradient(circle 0px at -999px -999px, #fff, transparent);
@@ -117,6 +149,9 @@
   .product { width: 325px; gap: 14px; }
   .edition { font-size: 9px; }
 }
+@media (max-width: 860px) {
+  .fieldTransition { margin-top: 28px; aspect-ratio: 444 / 250; }
+}
 @media (max-width: 768px) {
   .section, .ui { min-height: max(880px, 100svh); }
   .ui { padding: max(80px, env(safe-area-inset-top)) max(22px, env(safe-area-inset-right)) max(24px, env(safe-area-inset-bottom)) max(22px, env(safe-area-inset-left)); }
@@ -130,8 +165,8 @@
 @media (max-width: 720px) {
   .section, .ui { min-height: 100svh; }
   .ui { padding: max(76px, env(safe-area-inset-top)) max(20px, env(safe-area-inset-right)) max(24px, env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left)); }
-  .section[data-loaded="true"] .base { background-image: url('/img/surface-leaf-mobile.webp'); }
-  .section[data-loaded="true"] :is(.spotlight, .fullReveal) { background-image: url('/img/surface-veins-mobile.webp'); }
+  .section[data-loaded="true"] .base { background-image: url('/img/surface-v2/leaf-mobile.webp'); }
+  .section[data-loaded="true"] :is(.spotlight, .fullReveal) { background-image: url('/img/surface-v2/structure-mobile.webp'); }
   .camera { bottom: auto; height: 810px; transform-origin: 65% 45%; }
   .image { background-position: 66% center; }
   .scrim { background: linear-gradient(180deg, #07110b 0%, rgb(7 17 11 / .96) 17%, rgb(7 17 11 / .62) 30%, rgb(7 17 11 / .12) 48%, #07110b 76%); }

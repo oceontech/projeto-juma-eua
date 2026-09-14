@@ -3,7 +3,8 @@
 import { useEffect, useRef } from "react";
 import Image from "next/image";
 import { SmartLink } from "@/components/ui/SmartLink";
-import { nav } from "@/content/home";
+import { languages } from "@/content";
+import { switchLocale, useContent, useLocale } from "./LocaleProvider";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { scroller } from "@/components/motion/SmoothScroll";
 
@@ -17,16 +18,6 @@ import { scroller } from "@/components/motion/SmoothScroll";
  * As duas peças moram no mesmo arquivo porque compartilham o estado `open` do
  * SiteHeader e nunca aparecem uma sem a outra.
  */
-
-/* Ordem do painel ≠ ordem da barra: no desktop os links se dividem à volta do
-   logo; aqui viram uma lista só, e "Contact us" fecha por ser o destino de
-   conversão. */
-const menuItems = [nav.left[0], ...nav.right, ...nav.left.slice(1)];
-
-const languages = [
-  { src: "/img/flag-br.png", label: "Português (Brasil)", active: false },
-  { src: "/img/flag-us.png", label: "English (United States)", active: true },
-];
 
 /* ------------------------------------------------------------------ botão */
 
@@ -42,6 +33,7 @@ export function BurgerButton({
   open: boolean;
   onToggle: () => void;
 }) {
+  const { nav } = useContent().home;
   const svg = useRef<SVGSVGElement>(null);
   const tl = useRef<gsap.core.Timeline | null>(null);
 
@@ -73,7 +65,7 @@ export function BurgerButton({
       type="button"
       aria-expanded={open}
       aria-controls="mobile-menu"
-      aria-label={open ? "Close menu" : "Open menu"}
+      aria-label={open ? nav.closeMenu : nav.openMenu}
       onClick={onToggle}
       className="absolute top-1/2 right-0 -mr-1.5 -translate-y-1/2 cursor-pointer p-1.5 text-ink transition-colors duration-400 group-data-[theme=dark]:text-offwhite group-data-[open]:text-offwhite nav:hidden"
     >
@@ -104,6 +96,14 @@ export function MobileMenu({
   open: boolean;
   onClose: () => void;
 }) {
+  const locale = useLocale();
+  const { nav } = useContent().home;
+
+  /* Ordem do painel ≠ ordem da barra: no desktop os links se dividem à volta
+     do logo; aqui viram uma lista só, e "Contact us" fecha por ser o destino
+     de conversão. */
+  const menuItems = [nav.left[0], ...nav.right, ...nav.left.slice(1)];
+
   const root = useRef<HTMLDivElement>(null);
   const tl = useRef<gsap.core.Timeline | null>(null);
 
@@ -252,12 +252,13 @@ export function MobileMenu({
           >
             {languages.map((language) => (
               <button
-                key={language.label}
+                key={language.locale}
                 type="button"
-                aria-pressed={language.active}
+                aria-pressed={language.locale === locale}
                 aria-label={language.label}
+                onClick={() => language.locale !== locale && switchLocale(language.locale)}
                 className={
-                  language.active
+                  language.locale === locale
                     ? "cursor-pointer rounded-full bg-white/15 p-[5px] leading-none"
                     : "cursor-pointer rounded-full p-[5px] leading-none opacity-55 grayscale transition duration-300 hover:opacity-100 hover:grayscale-0"
                 }

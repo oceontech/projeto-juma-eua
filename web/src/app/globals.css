@@ -238,7 +238,7 @@
     transform: translateY(-2px);
   }
 
-  .programs-card--desata:hover .programs-card__orbit {
+  .programs-card--target:hover .programs-card__orbit {
     opacity: 0.95;
     transition: opacity 0.35s ease;
   }
@@ -249,7 +249,7 @@
     transition: opacity 0.4s ease, transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
-  .programs-card--desata {
+  .programs-card--target {
     grid-column: 1 / -1;
     display: flex;
     align-items: center;
@@ -277,6 +277,21 @@
 
   .programs-card__globe-inner {
     transform-origin: bottom right;
+  }
+
+  .programs-card__art {
+    position: absolute;
+    right: 4%;
+    bottom: 6%;
+    width: clamp(170px, 42%, 330px);
+    aspect-ratio: 360 / 160;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .programs-card--experience .programs-card__body {
+    position: relative;
+    z-index: 2;
   }
 
   .programs-card--juma360 .programs-card__body {
@@ -2221,7 +2236,7 @@ html[data-proof-overlap] .expertise-layer--dark .expertise-bg {
     padding: clamp(9px, min(2.8vw, 1.9svh), 12px);
   }
 
-  .programs-card--desata {
+  .programs-card--target {
     display: flex;
     grid-column: 1 / -1;
     align-items: center;
@@ -2263,6 +2278,11 @@ html[data-proof-overlap] .expertise-layer--dark .expertise-bg {
     max-width: 100%;
   }
 
+  /* no celular o card é estreito demais para a rota caber sem cobrir o texto */
+  .programs-card__art {
+    display: none;
+  }
+
   .programs-card__body {
     gap: clamp(3px, .75svh, 5px);
   }
@@ -2291,16 +2311,16 @@ html[data-proof-overlap] .expertise-layer--dark .expertise-bg {
     font-size: clamp(7.5px, min(2.15vw, 1.45svh), 9.5px);
   }
 
-  .programs-card--desata .programs-card__eyebrow,
-  .programs-card--desata .programs-card__meta {
+  .programs-card--target .programs-card__eyebrow,
+  .programs-card--target .programs-card__meta {
     font-size: clamp(7.5px, min(2.2vw, 1.45svh), 9.5px);
   }
 
-  .programs-card--desata .programs-card__title {
+  .programs-card--target .programs-card__title {
     font-size: clamp(14px, min(4vw, 2.65svh), 18px);
   }
 
-  .programs-card--desata .programs-card__copy {
+  .programs-card--target .programs-card__copy {
     font-size: clamp(8px, min(2.3vw, 1.55svh), 10px);
     line-height: 1.3;
   }

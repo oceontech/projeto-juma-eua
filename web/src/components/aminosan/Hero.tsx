@@ -4,7 +4,7 @@ import { useRef, useState, useEffect } from "react";
 import Image from "next/image";
 import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
 import { booted } from "@/lib/boot";
-import { hero, nitrogen } from "@/content/aminosan";
+import { useContent } from "@/components/layout/LocaleProvider";
 
 const STAT_ICON = {
   years: "/img/aminosan/icon-stat-years.svg",
@@ -52,6 +52,7 @@ function StepIndicator({ label }: { label: string }) {
  *   Camada 7 (blackout): Transição para tela toda preta ao rolar, dando entrada à próxima seção.
  */
 export function Hero() {
+  const { hero, nitrogen } = useContent().aminosan;
   const root = useRef<HTMLElement>(null);
 
   /* Estado da pilha animada de estatísticas (transição automática a cada 2 segundos) */
@@ -658,7 +659,7 @@ export function Hero() {
             <div data-hero="nitrogen-copy" className="max-w-[560px]">
               <h2
                 data-hero="nitrogen-copy-line"
-                className="font-display text-[clamp(28px,3.5vw,52px)] font-semibold leading-[1.14] text-white tracking-[-0.01em]"
+                className="text-h2 leading-[1.1] text-white"
               >
                 {nitrogen.heading}
               </h2>

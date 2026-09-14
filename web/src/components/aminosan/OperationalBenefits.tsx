@@ -1,12 +1,13 @@
 import Image from "next/image";
 import { Reveal } from "@/components/motion/Reveal";
-import { operationalBenefits } from "@/content/aminosan";
+import { getContent } from "@/lib/locale";
 
 /** Alturas em cascata, como no Figma — decoração de "bento", não dado. */
 const CARD_HEIGHT = ["lg:h-[601px]", "lg:h-[565px]", "lg:h-[533px]", "lg:h-[497px]"];
 const CARD_WIDTH = ["lg:w-[471px]", "lg:w-[283px]", "lg:w-[283px]", "lg:w-[283px]"];
 
-export function OperationalBenefits() {
+export async function OperationalBenefits() {
+  const { operationalBenefits } = (await getContent()).aminosan;
   return (
     <section className="bg-[#0f522a] py-[clamp(56px,7vw,124px)]">
       <div className="wrap">

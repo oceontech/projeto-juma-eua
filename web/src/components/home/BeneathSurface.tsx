@@ -2,6 +2,7 @@
 
 import { useRef, useState } from "react";
 import Link from "next/link";
+import { useContent } from "@/components/layout/LocaleProvider";
 import { gsap, useGSAP } from "@/lib/gsap";
 import styles from "./BeneathSurface.module.css";
 
@@ -11,6 +12,7 @@ function Arrow() {
 
 /** Botanical exploration: both images share one camera to keep the reveal aligned. */
 export function BeneathSurface() {
+  const { beneath } = useContent().home;
   const root = useRef<HTMLElement>(null);
   const [revealed, setRevealed] = useState(false);
 
@@ -115,65 +117,65 @@ export function BeneathSurface() {
         <div className={`${styles.image} ${styles.fullReveal}`} />
       </div>
       <div className={styles.scrim} aria-hidden="true" />
+      <div className={styles.entryBlend} aria-hidden="true" />
       <div className={styles.exitShade} data-surface-shade aria-hidden="true" />
 
       <div className={styles.ui} data-surface-exit>
         <div className={styles.topline} data-surface-enter>
-          <p className={styles.eyebrow}><span />The science of growing</p>
-          <span className={styles.edition}>JUMA FIELD NOTES <span>/ 01</span></span>
+          <p className={styles.eyebrow}><span />{beneath.eyebrow}</p>
+          <span className={styles.edition}>{beneath.edition} <span>/ 01</span></span>
         </div>
 
         <div className={styles.copy}>
           <h2 id="surface-title" className={styles.title}>
-            <span className={styles.line}><span data-surface-line>Beneath</span></span>{" "}
-            <span className={styles.line}><span data-surface-line>the surface.</span></span>
+            <span className={styles.line}><span data-surface-line>{beneath.title[0]}</span></span>{" "}
+            <span className={styles.line}><span data-surface-line>{beneath.title[1]}</span></span>
           </h2>
           <p className={styles.description} data-surface-enter>
-            Every leaf holds a world of possibility. Get closer to the crop.
-            Discover the thinking behind our foliar nutrition.
+            {beneath.description}
           </p>
-          <div className={styles.controls} role="group" aria-label="Botanical illustration view" data-surface-enter>
+          <div className={styles.controls} role="group" aria-label={beneath.viewLabel} data-surface-enter>
             <button type="button" aria-pressed={!revealed} onClick={() => setRevealed(false)}>
               <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M15.5 3.5c-8-1-12 3-10 9 6 2 10-2 10-9ZM4 16 12 8" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" /></svg>
-              Natural view
+              {beneath.natural}
             </button>
             <button type="button" aria-pressed={revealed} onClick={() => setRevealed(true)}>
               <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M3 7V3h4m6 0h4v4m0 6v4h-4m-6 0H3v-4" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" /><circle cx="10" cy="10" r="3" stroke="currentColor" strokeWidth="1.2" /></svg>
-              Reveal structure
+              {beneath.reveal}
             </button>
           </div>
         </div>
 
         <div className={styles.exploreHint} data-surface-enter aria-hidden="true">
           <span className={styles.target}><i /><i /></span>
-          <span className={styles.mouseHint}>Move to explore</span>
-          <span className={styles.touchHint}>A closer look at life</span>
+          <span className={styles.mouseHint}>{beneath.mouseHint}</span>
+          <span className={styles.touchHint}>{beneath.touchHint}</span>
         </div>
 
         <div className={styles.bottom}>
           <article className={styles.product} data-surface-enter>
             <div className={styles.thumb} aria-hidden="true" />
             <div>
-              <p className={styles.productLabel}>Built around the plant</p>
+              <p className={styles.productLabel}>{beneath.product.label}</p>
               <h3>Aminosan<sup>®</sup></h3>
-              <p className={styles.productCopy}>Free amino acids. Ready to use.</p>
-              <Link href="/aminosan" className={styles.productLink}>Explore Aminosan <Arrow /></Link>
+              <p className={styles.productCopy}>{beneath.product.copy}</p>
+              <Link href="/aminosan" className={styles.productLink}>{beneath.product.link} <Arrow /></Link>
             </div>
           </article>
 
           <div className={styles.notes} data-surface-enter>
-            <h3>The leaf is just the beginning.</h3>
+            <h3>{beneath.notes.title}</h3>
             <dl>
-              <div><dt>Our focus</dt><dd>Foliar nutrition</dd></div>
-              <div><dt>Our roots</dt><dd>Brazilian agronomy</dd></div>
-              <div><dt>Your next step</dt><dd><a href="#us-operation">Try it on your acres <Arrow /></a></dd></div>
+              <div><dt>{beneath.notes.focus.term}</dt><dd>{beneath.notes.focus.value}</dd></div>
+              <div><dt>{beneath.notes.roots.term}</dt><dd>{beneath.notes.roots.value}</dd></div>
+              <div><dt>{beneath.notes.next.term}</dt><dd><a href="#us-operation">{beneath.notes.next.value} <Arrow /></a></dd></div>
             </dl>
           </div>
         </div>
 
         <div className={styles.footer} data-surface-enter>
-          <span>Botanical visualization</span>
-          <span className={styles.footerRight}>Rooted in science. Grown in the field.<span>↓</span></span>
+          <span>{beneath.footer.left}</span>
+          <span className={styles.footerRight}>{beneath.footer.right}<span>↓</span></span>
         </div>
       </div>
       <div className={styles.cursor} data-surface-cursor aria-hidden="true"><span>+</span></div>

@@ -1,17 +1,19 @@
 "use client";
 
 import { Fragment, useRef } from "react";
-import Image from "next/image";
+import { ExperienceArt, Juma360Art, TargetArt } from "./ProgramArt";
 import { gsap, useGSAP, START } from "@/lib/gsap";
 import { SectionIntro } from "@/components/ui";
-import { programs } from "@/content/home";
+import type { Program } from "@/content/home";
+import { useContent } from "@/components/layout/LocaleProvider";
 
 const CARD =
   "programs-card relative overflow-hidden rounded-[clamp(16px,1.55vw,30px)] bg-linear-[149.8deg,var(--color-night-warm)_2.4%,var(--color-night-deep)_60.23%] text-white";
 
 /** As três frentes que rodam o ano todo: pesquisa, portas abertas e time. */
 export function Programs() {
-  const [desata, experience, juma360] = programs.cards;
+  const { programs } = useContent().home;
+  const [target, experience, juma360] = programs.cards;
   const sectionRef = useRef<HTMLElement>(null);
 
   useGSAP(
@@ -22,27 +24,28 @@ export function Programs() {
       const introTitle = section.querySelector(".programs-intro__title");
       const introCopy = section.querySelector(".programs-intro__copy");
 
-      const cardDesata = section.querySelector<HTMLElement>('[data-card="desata"]');
+      const cardTarget = section.querySelector<HTMLElement>('[data-card="target"]');
       const cardExp = section.querySelector<HTMLElement>('[data-card="experience"]');
       const card360 = section.querySelector<HTMLElement>('[data-card="juma360"]');
 
-      if (!cardDesata || !cardExp || !card360) return;
+      if (!cardTarget || !cardExp || !card360) return;
 
-      const cards = [cardDesata, cardExp, card360];
+      const cards = [cardTarget, cardExp, card360];
 
       // Card 1 internal items
-      const desataOrbit = cardDesata.querySelector(".programs-card__orbit-inner");
-      const desataEyebrow = cardDesata.querySelector(".programs-card__eyebrow");
-      const desataTitle = cardDesata.querySelector(".programs-card__title");
-      const desataCopy = cardDesata.querySelector(".programs-card__copy");
-      const desataTags = cardDesata.querySelectorAll(".programs-card__tag");
-      const desataMeta = cardDesata.querySelector(".programs-card__meta");
+      const targetOrbit = cardTarget.querySelector(".programs-card__orbit-inner");
+      const targetEyebrow = cardTarget.querySelector(".programs-card__eyebrow");
+      const targetTitle = cardTarget.querySelector(".programs-card__title");
+      const targetCopy = cardTarget.querySelector(".programs-card__copy");
+      const targetTags = cardTarget.querySelectorAll(".programs-card__tag");
+      const targetMeta = cardTarget.querySelector(".programs-card__meta");
 
       // Card 2 internal items
       const expEyebrow = cardExp.querySelector(".programs-card__eyebrow");
       const expTitle = cardExp.querySelector(".programs-card__title");
       const expCopy = cardExp.querySelector(".programs-card__copy");
       const expClosing = cardExp.querySelector(".programs-card__closing");
+      const expArt = cardExp.querySelector(".programs-card__art-inner");
 
       // Card 3 internal items
       const jumaGlobe = card360.querySelector(".programs-card__globe-inner");
@@ -67,16 +70,17 @@ export function Programs() {
                 introTitle,
                 introCopy,
                 ...cards,
-                desataOrbit,
-                desataEyebrow,
-                desataTitle,
-                desataCopy,
-                desataMeta,
-                ...desataTags,
+                targetOrbit,
+                targetEyebrow,
+                targetTitle,
+                targetCopy,
+                targetMeta,
+                ...targetTags,
                 expEyebrow,
                 expTitle,
                 expCopy,
                 expClosing,
+                expArt,
                 jumaGlobe,
                 jumaEyebrow,
                 jumaTitle,
@@ -91,16 +95,17 @@ export function Programs() {
           // Initial state: hide inner items so they only appear after each card lands
           gsap.set(
             [
-              desataOrbit,
-              desataEyebrow,
-              desataTitle,
-              desataCopy,
-              desataMeta,
-              ...desataTags,
+              targetOrbit,
+              targetEyebrow,
+              targetTitle,
+              targetCopy,
+              targetMeta,
+              ...targetTags,
               expEyebrow,
               expTitle,
               expCopy,
               expClosing,
+              expArt,
               jumaGlobe,
               jumaEyebrow,
               jumaTitle,
@@ -137,9 +142,9 @@ export function Programs() {
           );
 
           // 2. Bento Cards Entrance - Staggered Slide In with Opacity Gain
-          // Card 1 (DESATA): starts at 0.15s
+          // Card 1 (Olho no Alvo): starts at 0.15s
           tl.fromTo(
-            cardDesata,
+            cardTarget,
             { opacity: 0, y: 48, scale: 0.96 },
             {
               opacity: 1,
@@ -152,12 +157,12 @@ export function Programs() {
           );
 
           // Card 1 Inner Components: cascade in after Card 1 arrives into position
-          if (desataOrbit) {
+          if (targetOrbit) {
             tl.fromTo(
-              desataOrbit,
+              targetOrbit,
               { opacity: 0, scale: 0.76, rotate: -22 },
               {
-                opacity: 0.75,
+                opacity: 1,
                 scale: 1,
                 rotate: 0,
                 duration: 0.65,
@@ -168,7 +173,7 @@ export function Programs() {
           }
 
           tl.fromTo(
-            [desataEyebrow, desataTitle, desataCopy].filter(Boolean),
+            [targetEyebrow, targetTitle, targetCopy].filter(Boolean),
             { opacity: 0, y: 16 },
             {
               opacity: 1,
@@ -180,9 +185,9 @@ export function Programs() {
             0.58
           );
 
-          if (desataTags.length > 0) {
+          if (targetTags.length > 0) {
             tl.fromTo(
-              desataTags,
+              targetTags,
               { opacity: 0, y: 12, scale: 0.9 },
               {
                 opacity: 1,
@@ -196,9 +201,9 @@ export function Programs() {
             );
           }
 
-          if (desataMeta) {
+          if (targetMeta) {
             tl.fromTo(
-              desataMeta,
+              targetMeta,
               { opacity: 0, y: 10 },
               {
                 opacity: 1,
@@ -237,6 +242,15 @@ export function Programs() {
             },
             0.72
           );
+
+          if (expArt) {
+            tl.fromTo(
+              expArt,
+              { opacity: 0, y: 18 },
+              { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" },
+              0.8
+            );
+          }
 
           if (expClosing) {
             tl.fromTo(
@@ -336,41 +350,33 @@ export function Programs() {
 
         <div className="programs-grid">
           <article
-            data-card="desata"
-            className={`${CARD} programs-card--desata`}
+            data-card="target"
+            className={`${CARD} programs-card--target`}
           >
             <div
               aria-hidden
               className="programs-card__orbit"
             >
               <div className="programs-card__orbit-inner h-full w-full">
-                <Image
-                  src="/img/orbit.svg"
-                  alt=""
-                  width={420}
-                  height={360}
-                  className="h-full w-full object-contain"
-                />
+                <TargetArt />
               </div>
             </div>
-            <ProgramBody program={desata} />
+            <ProgramBody program={target} />
           </article>
 
           <article data-card="experience" className={`${CARD} programs-card--experience`}>
+            <div aria-hidden className="programs-card__art">
+              <div className="programs-card__art-inner h-full w-full">
+                <ExperienceArt />
+              </div>
+            </div>
             <ProgramBody program={experience} />
           </article>
 
           <article data-card="juma360" className={`${CARD} programs-card--juma360`}>
             <div className="programs-card__globe pointer-events-none absolute">
               <div className="programs-card__globe-inner h-full w-full">
-                <Image
-                  src="/img/globe.svg"
-                  alt=""
-                  aria-hidden
-                  width={420}
-                  height={420}
-                  className="h-full w-full object-contain"
-                />
+                <Juma360Art />
               </div>
             </div>
             <ProgramBody program={juma360} />
@@ -381,7 +387,7 @@ export function Programs() {
   );
 }
 
-function ProgramBody({ program }: { program: (typeof programs.cards)[number] }) {
+function ProgramBody({ program }: { program: Program }) {
   return (
     <div className="programs-card__body relative flex min-w-0 flex-1 flex-col">
       <p className="programs-card__eyebrow font-display tracking-[0.1em] text-lime-bright uppercase">

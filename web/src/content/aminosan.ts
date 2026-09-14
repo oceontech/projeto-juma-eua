@@ -21,6 +21,7 @@ export const nitrogen = {
 };
 
 export const process = {
+  pill: "Process",
   eyebrow: "Aminosan® delivers free amino acids through the leaf — already in the form the plant uses.",
   heading: "Five steps, or one.",
   cards: {
@@ -68,6 +69,7 @@ export const comparison = {
   tagline: "Free amino acids. Real nutrition. Real results.",
   heading: "Not all amino acids are created equal.",
   columns: { aminosan: "Aminosan", others: "Other products (general category)" },
+  subtitles: { aminosan: "Free amino acids", others: "(General category)" },
   rows: [
     { label: "Origin", aminosan: "Vegetal", others: "Animal Hydrolysate" },
     { label: "Process", aminosan: "Enzymatic Fermentation", others: "Acid Hydrolysis" },
@@ -135,6 +137,7 @@ export const trialResults = {
 };
 
 export const trialEvidence = {
+  play: { before: "Play ", after: " footage" },
   tagline: "Until all numbers can be published, the plots can be shown.",
   cards: [
     {
@@ -282,6 +285,7 @@ export const trialRequest = {
   },
   call: "I'd like a call from an agronomist",
   submit: "Send Request",
+  sending: "Sending…",
   privacy: { before: "By sending this, you agree to our ", link: "Privacy Policy", after: ". We use your information to answer this request and nothing else." },
 };
 

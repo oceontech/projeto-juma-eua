@@ -3,7 +3,7 @@
 import { useRef } from "react";
 import Image from "next/image";
 import { Reveal } from "@/components/motion/Reveal";
-import { comparison, delivery } from "@/content/aminosan";
+import { useContent } from "@/components/layout/LocaleProvider";
 import { gsap, useGSAP } from "@/lib/gsap";
 
 type RouteStep = { formula?: string; icon?: string; label: string };
@@ -170,6 +170,8 @@ function RouteRail({
 }
 
 export function AminoAcidDelivery() {
+  const { comparison, delivery } = useContent().aminosan;
+
   return (
     <section
       id="delivery"
@@ -268,14 +270,14 @@ export function AminoAcidDelivery() {
                 <p className="font-display text-[clamp(18px,1.5vw,26px)] font-semibold leading-none text-lime">
                   {comparison.columns.aminosan.toUpperCase()}
                 </p>
-                <p className="mt-1.5 text-[9px] leading-none tracking-[0.06em] uppercase opacity-90 sm:text-[11px]">Free amino acids</p>
+                <p className="mt-1.5 text-[9px] leading-none tracking-[0.06em] uppercase opacity-90 sm:text-[11px]">{comparison.subtitles.aminosan}</p>
               </div>
               <div aria-hidden />
               <div data-comparison-item="" className="flex min-h-[82px] flex-col items-center justify-center rounded-t-[14px] bg-[#858a89] px-3 py-4 text-center text-white sm:min-h-[96px]">
                 <p className="font-display text-[clamp(15px,1.35vw,23px)] font-semibold leading-none">
                   {comparison.columns.others.split(" (")[0].toUpperCase()}
                 </p>
-                <p className="mt-1.5 text-[9px] leading-none tracking-[0.06em] uppercase opacity-90 sm:text-[11px]">(General category)</p>
+                <p className="mt-1.5 text-[9px] leading-none tracking-[0.06em] uppercase opacity-90 sm:text-[11px]">{comparison.subtitles.others}</p>
               </div>
             </div>
 

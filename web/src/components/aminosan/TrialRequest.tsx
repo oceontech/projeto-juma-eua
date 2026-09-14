@@ -5,13 +5,14 @@ import { useActionState, useId } from "react";
 import { Reveal } from "@/components/motion/Reveal";
 import { cx } from "@/components/ui";
 import { submitTrialRequest, type TrialRequestState } from "@/lib/actions";
-import { trialRequest } from "@/content/aminosan";
+import { useContent } from "@/components/layout/LocaleProvider";
 
 const INITIAL: TrialRequestState = { status: "idle", message: "", errors: {} };
 
 export function TrialRequest() {
   const [state, action, pending] = useActionState(submitTrialRequest, INITIAL);
   const id = useId();
+  const { trialRequest } = useContent().aminosan;
   const { fields } = trialRequest;
 
   return (
@@ -86,7 +87,7 @@ export function TrialRequest() {
             disabled={pending}
             className="mt-[clamp(18px,1.5vw,26px)] inline-flex cursor-pointer items-center gap-2.5 rounded-lg bg-lime px-[clamp(30px,3vw,52px)] py-[clamp(12px,1vw,16px)] font-display text-[clamp(16px,1.2vw,22px)] font-semibold text-white transition-colors hover:bg-[#A6B534] disabled:opacity-60"
           >
-            {pending ? "Sending…" : trialRequest.submit}
+            {pending ? trialRequest.sending : trialRequest.submit}
             <Image src="/img/icon-arrow-white.svg" alt="" width={14} height={15} />
           </button>
 

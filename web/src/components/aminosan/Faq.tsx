@@ -3,9 +3,10 @@
 import Image from "next/image";
 import { useState } from "react";
 import { Reveal } from "@/components/motion/Reveal";
-import { faq } from "@/content/aminosan";
+import { useContent } from "@/components/layout/LocaleProvider";
 
 export function Faq() {
+  const { faq } = useContent().aminosan;
   const [open, setOpen] = useState<number>(faq.items.findIndex((item) => item.openByDefault) ?? 0);
 
   return (

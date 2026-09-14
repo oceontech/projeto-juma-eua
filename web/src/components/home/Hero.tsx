@@ -4,7 +4,7 @@ import { Fragment, useRef } from "react";
 import Image from "next/image";
 import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
 import { booted } from "@/lib/boot";
-import { hero } from "@/content/home";
+import { useContent } from "@/components/layout/LocaleProvider";
 
 /**
  * Hero — a cena do Figma (frame 2688 × 1614) em seis camadas: céu, bandeira
@@ -50,6 +50,7 @@ import { hero } from "@/content/home";
 const SCRUB = 1;
 
 export function Hero() {
+  const { hero } = useContent().home;
   const root = useRef<HTMLElement>(null);
 
   useGSAP(

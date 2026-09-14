@@ -1,0 +1,176 @@
+.art {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.art * {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+/* giros em torno de um ponto do desenho, não do próprio elemento */
+.rotate,
+.rotateSlow,
+.rotateReverse {
+  animation: spin 6s linear infinite;
+}
+
+.rotateSlow {
+  animation-duration: 48s;
+}
+
+.rotateReverse {
+  animation-duration: 14s;
+  animation-direction: reverse;
+}
+
+.art .targetOrigin {
+  transform-box: view-box;
+  transform-origin: 210px 196px;
+}
+
+.art .centerOrigin {
+  transform-box: view-box;
+  transform-origin: 210px 210px;
+}
+
+/* ---- alvo */
+.drop {
+  opacity: 0;
+  transform-box: view-box;
+  animation: drop 1.4s cubic-bezier(0.45, 0, 0.9, 0.6) var(--delay) infinite;
+}
+
+.ripple {
+  animation: ripple 1.4s ease-out infinite;
+}
+
+.glow {
+  animation: glow 2.8s ease-in-out infinite;
+}
+
+.lock {
+  animation: lock 2.8s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+}
+
+/* ---- experiência */
+.trail {
+  stroke-dasharray: 100 100;
+  stroke-dashoffset: 100;
+  animation: trail 8s linear infinite;
+}
+
+.comet {
+  stroke-dasharray: 6 200;
+  stroke-dashoffset: 6;
+  filter: drop-shadow(0 0 4px #a8e63a);
+  animation: comet 8s linear infinite;
+}
+
+.stop {
+  color: #5d6250;
+  animation: stop 8s ease-out var(--delay) infinite;
+}
+
+.stopHalo {
+  opacity: 0;
+  animation: halo 8s ease-out var(--delay) infinite;
+}
+
+/* ---- 360 */
+.pulse {
+  stroke-dasharray: 10 200;
+  stroke-dashoffset: 10;
+  animation: pulse 3.2s cubic-bezier(0.55, 0, 0.7, 1) var(--delay) infinite;
+}
+
+.nodeHalo {
+  opacity: 0;
+  animation: nodeHalo 3.2s ease-out var(--delay) infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes drop {
+  0% { opacity: 0; transform: translate(0, 0) scale(1); }
+  12% { opacity: 1; }
+  88% { opacity: 1; transform: translate(var(--dx), var(--dy)) scale(0.9); }
+  100% { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(0.2); }
+}
+
+@keyframes ripple {
+  0% { opacity: 0.9; transform: scale(0.6); }
+  100% { opacity: 0; transform: scale(4.2); }
+}
+
+@keyframes glow {
+  0%, 100% { opacity: 0.55; }
+  50% { opacity: 1; }
+}
+
+@keyframes lock {
+  0% { opacity: 0.25; transform: scale(1.45); }
+  35%, 80% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0.25; transform: scale(1.45); }
+}
+
+@keyframes trail {
+  0% { stroke-dashoffset: 100; opacity: 1; }
+  75% { stroke-dashoffset: 0; opacity: 1; }
+  92%, 100% { stroke-dashoffset: 0; opacity: 0; }
+}
+
+@keyframes comet {
+  0% { stroke-dashoffset: 6; opacity: 1; }
+  75% { stroke-dashoffset: -100; opacity: 1; }
+  76%, 100% { stroke-dashoffset: -100; opacity: 0; }
+}
+
+@keyframes stop {
+  0% { color: #5d6250; transform: scale(1); }
+  4% { color: #a8e63a; transform: scale(1.14); }
+  12% { transform: scale(1); }
+  40% { color: #a8e63a; }
+  60%, 100% { color: #5d6250; transform: scale(1); }
+}
+
+@keyframes halo {
+  0% { opacity: 0.8; transform: scale(1); }
+  18%, 100% { opacity: 0; transform: scale(1.9); }
+}
+
+@keyframes pulse {
+  0% { stroke-dashoffset: 10; opacity: 1; }
+  85% { stroke-dashoffset: -92; opacity: 1; }
+  100% { stroke-dashoffset: -100; opacity: 0; }
+}
+
+@keyframes nodeHalo {
+  0% { opacity: 0.7; transform: scale(0.7); }
+  40%, 100% { opacity: 0; transform: scale(2); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .art * {
+    animation: none !important;
+  }
+
+  .drop,
+  .comet,
+  .pulse,
+  .ripple {
+    opacity: 0;
+  }
+
+  .trail {
+    stroke-dashoffset: 0;
+  }
+
+  .stop {
+    color: #a8e63a;
+  }
+}
