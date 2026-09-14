@@ -487,12 +487,17 @@ export function Hero() {
     { scope: root },
   );
 
-  /* Folga entre o texto e o trator no estreito. O palco é medido pela largura
-     da tela e o texto pela altura das próprias linhas, então nenhum número
-     fixo serve em todo aparelho — com as barras do Safari, um iPhone de 369px
-     fica com 637 de altura e o fim do parágrafo caía na cabine. Aqui se mede o
-     pé do parágrafo e o topo da máquina, e o grupo do chão (com as bandeiras)
-     desce só o que falta para a folga, via `--hero-drop`.
+  /* O texto no estreito: centrado entre o pé da barra do topo e o topo do
+     trator. O palco é medido pela largura da tela e o texto pela altura das
+     próprias linhas, então nenhum número fixo serve em todo aparelho — com as
+     barras do Safari um iPhone de 369px fica com 637 de altura e o parágrafo
+     caía na cabine, e num celular alto o bloco sobrava colado na barra.
+
+     Duas medidas, nesta ordem:
+       1. se o bloco não cabe no vão com folga em cima e embaixo, o grupo do
+          chão (com as bandeiras) desce o que falta — `--hero-drop`;
+       2. com o vão garantido, o bloco é posto no meio dele — `--hero-copy-top`,
+          que vira o padding do topo.
 
      Tudo em offsets, que ignoram transform: a entrada e a travessia do GSAP
      escrevem transform nessas mesmas camadas e continuam compondo por cima.
@@ -501,9 +506,12 @@ export function Hero() {
   useEffect(() => {
     const section = root.current;
     const win = section?.querySelector<HTMLElement>(".hero-window");
+    const copy = section?.querySelector<HTMLElement>("[data-hero='copy']");
+    const tagline = section?.querySelector<HTMLElement>("[data-hero-tagline]");
     const sub = section?.querySelector<HTMLElement>("[data-hero-sub]");
     const tractor = section?.querySelector<HTMLElement>(".hero-tractor");
-    if (!section || !win || !sub || !tractor) return;
+    const bar = document.querySelector<HTMLElement>("header");
+    if (!section || !win || !copy || !tagline || !sub || !tractor) return;
 
     const narrow = window.matchMedia("(max-width: 860px)");
 
@@ -523,19 +531,40 @@ export function Hero() {
       frame = requestAnimationFrame(() => {
         if (!narrow.matches) {
           section.style.removeProperty("--hero-drop");
+          section.style.removeProperty("--hero-copy-top");
           return;
         }
-        const current =
-          parseFloat(getComputedStyle(section).getPropertyValue("--hero-drop")) || MIN_DROP;
-        const textBottom = topIn(sub) + sub.offsetHeight;
-        const machineTop = topIn(tractor) + tractor.offsetHeight * TRACTOR_TOP;
-        /* Folga proporcional à tela, com piso e teto. */
-        const gap = Math.min(48, Math.max(28, win.offsetHeight * 0.045));
+        const style = getComputedStyle(section);
+        const currentDrop = parseFloat(style.getPropertyValue("--hero-drop")) || MIN_DROP;
+
+        /* A barra é fixa e fica por cima da janela; no topo da página o pé
+           dela é a própria altura. */
+        const barBottom = bar ? Math.max(0, bar.offsetTop) + bar.offsetHeight : 0;
+        /* O bloco vai da tarja ao pé do parágrafo; a altura não depende do
+           padding, só da posição. */
+        const blockHeight = topIn(sub) + sub.offsetHeight - topIn(tagline);
+        /* Onde a máquina começaria com a queda mínima. */
+        const machineAtMin =
+          topIn(tractor) + tractor.offsetHeight * TRACTOR_TOP - currentDrop + MIN_DROP;
+
+        /* 1. Espaço: folga mínima dos dois lados, proporcional à tela. */
+        const gap = Math.min(40, Math.max(20, win.offsetHeight * 0.035));
+        const missing = barBottom + gap + blockHeight + gap - machineAtMin;
         /* Teto: descer mais que 40% da foto esconderia a máquina atrás das
            folhas — aí o que resolve é tipografia, não posição. */
         const max = tractor.offsetHeight * 0.4;
-        const drop = Math.min(max, Math.max(MIN_DROP, current + textBottom + gap - machineTop));
+        const drop = Math.min(max, MIN_DROP + Math.max(0, missing));
+        const machineTop = machineAtMin - MIN_DROP + drop;
+
+        /* 2. Centro: a tarja começa onde o bloco fica no meio do vão. */
+        const blockTop = barBottom + Math.max(0, machineTop - barBottom - blockHeight) / 2;
+        /* `offsetTop` da tarja já inclui o padding atual do bloco: o que conta
+           é só a distância dela até o começo do conteúdo. */
+        const taglineInContent = tagline.offsetTop - parseFloat(getComputedStyle(copy).paddingTop);
+        const paddingTop = blockTop - topIn(copy) - taglineInContent;
+
         section.style.setProperty("--hero-drop", `${Math.round(drop)}px`);
+        section.style.setProperty("--hero-copy-top", `${Math.round(paddingTop)}px`);
       });
     };
 
@@ -543,6 +572,7 @@ export function Hero() {
     const observer = new ResizeObserver(fit);
     observer.observe(win);
     observer.observe(sub);
+    if (bar) observer.observe(bar);
     narrow.addEventListener("change", fit);
     document.fonts?.ready.then(fit);
 
@@ -551,6 +581,7 @@ export function Hero() {
       observer.disconnect();
       narrow.removeEventListener("change", fit);
       section.style.removeProperty("--hero-drop");
+      section.style.removeProperty("--hero-copy-top");
     };
   }, []);
 

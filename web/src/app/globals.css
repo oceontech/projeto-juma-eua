@@ -2701,7 +2701,7 @@ html[data-proof-overlap] .expertise-layer--dark .expertise-bg {
   .hero-copy {
     height: max(38%, calc(100% - var(--stage-h)));
     justify-content: flex-start;
-    padding-top: 96px;
+    padding-top: var(--hero-copy-top, 96px);
   }
 
   /* Curso mais curto: a tela é menor, o gesto atravessa menos espaço, e um
@@ -2905,7 +2905,7 @@ html[data-proof-overlap] .expertise-layer--dark .expertise-bg {
    ganha das duas coisas: do bloco de mobile e das utilidades do JSX. */
 @media (max-width: 860px) and (max-height: 700px) {
   .hero-copy {
-    padding-top: 70px;
+    padding-top: var(--hero-copy-top, 70px);
   }
 
   .hero-copy [data-hero-tagline] {
