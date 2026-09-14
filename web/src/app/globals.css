@@ -1381,15 +1381,32 @@
   }
 
   .video-growth-window {
+    position: relative;
     display: grid;
     place-items: center;
+    isolation: isolate;
+    overflow: clip;
   }
 
   .video-growth-frame {
+    position: relative;
+    z-index: 1;
     width: var(--video-rest-w);
     aspect-ratio: 16 / 9;
     overflow: hidden;
     border-radius: clamp(10px, 1vw, 16px);
+  }
+
+  /* A camada fica atrás do vídeo, então a moldura continua em foco enquanto
+     o fundo preto é varrido pelo branco. O polígono inicial e o final têm a
+     mesma inclinação; só a posição da borda muda durante o scroll. */
+  .video-growth-curtain {
+    position: absolute;
+    z-index: 0;
+    inset: 0;
+    background: #fff;
+    clip-path: polygon(100% 0%, 100% 0%, 100% 100%, 100% 100%);
+    will-change: clip-path;
   }
 
   .video-growth-stage[data-scene] {
@@ -1405,11 +1422,30 @@
     position: sticky;
     top: 0;
     height: 100lvh;
-    overflow: clip;
   }
 
   .video-growth-stage[data-scene] .video-growth-frame {
     will-change: transform;
+  }
+
+  /* A seção anterior termina branca. A base e a imagem de fundo aparecem no
+     mesmo degradê, evitando uma emenda reta entre os dois fundos. O conteúdo
+     fica fora desta camada e preserva contraste desde o início. */
+  .aminosan-delivery-transition {
+    /* Sobrepõe a emenda por 2px para eliminar a linha criada por arredondamento
+       de subpixels entre a janela sticky e a seção que volta ao fluxo. O
+       padding devolve exatamente esse espaço ao conteúdo. */
+    margin-top: -2px;
+    padding-top: calc(clamp(64px, 6vw, 104px) + 2px);
+    background: linear-gradient(to bottom, #fff 0, #fff 8%, #eaf5fd 32%, #eaf5fd 100%);
+  }
+
+  .aminosan-delivery-backdrop {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 24%, #000 100%);
+    mask-image: linear-gradient(to bottom, transparent 0, #000 24%, #000 100%);
   }
 
   @media (max-width: 860px) {
