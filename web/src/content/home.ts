@@ -196,11 +196,13 @@ export const crops = {
     },
   ] satisfies CropRegion[],
   pillarsTitle: "Why growers choose Juma",
+  pillarsLead: "Proven under pressure. Designed to earn its place in the program.",
+  pillarsNote: "A practical partnership for growers who want to see the work before making a bigger commitment.",
   pillars: [
-    "38 years of field trials",
-    "Fits the passes you already make",
-    "Agronomic support on your acres",
-    "Free trial strip",
+    { title: "38 years in the field", detail: "Built in tropical agriculture, where every pass has to count." },
+    { title: "Works with your program", detail: "Made to fit the passes you already have planned." },
+    { title: "Support on your acres", detail: "Agronomy stays close to the field, not just the label." },
+    { title: "Start with a trial strip", detail: "See the program in your own conditions before you decide." },
   ],
 };
 

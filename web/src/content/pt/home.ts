@@ -156,11 +156,13 @@ export const crops: typeof en.crops = {
     },
   ],
   pillarsTitle: "Por que os produtores escolhem a Juma",
+  pillarsLead: "Comprovada sob pressão. Feita para conquistar seu lugar no programa.",
+  pillarsNote: "Uma parceria prática para quem quer ver o trabalho antes de assumir um compromisso maior.",
   pillars: [
-    "38 anos de ensaios de campo",
-    "Cabe nas passadas que você já faz",
-    "Suporte agronômico na sua lavoura",
-    "Faixa de teste gratuita",
+    { title: "38 anos no campo", detail: "Construída na agricultura tropical, onde cada passada precisa valer." },
+    { title: "Funciona no seu programa", detail: "Feita para caber nas passadas que você já planejou." },
+    { title: "Suporte na sua lavoura", detail: "A agronomia fica perto do campo, não apenas no rótulo." },
+    { title: "Comece com uma faixa de teste", detail: "Veja o programa nas suas condições antes de decidir." },
   ],
 };
 

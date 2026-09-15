@@ -1,14 +1,12 @@
 import Image from "next/image";
-import { ClipboardCheck, Handshake, Microscope, SprayCan } from "lucide-react";
 import { ImageStreamHero, type CorridorPath } from "@/components/ui/image-stream-hero";
 import { Reveal } from "@/components/motion/Reveal";
 import { CropRegions } from "@/components/home/CropRegions";
+import { CropPillars } from "@/components/home/CropPillars";
 import { Rule, SectionIntro } from "@/components/ui";
 import { getContent } from "@/lib/locale";
 import { cropCorridorImages } from "@/content/crop-corridor";
 import surfaceStyles from "./BeneathSurface.module.css";
-
-const PILLAR_ICONS = [Microscope, SprayCan, Handshake, ClipboardCheck];
 
 // No retrato a largura é pouca: cartas maiores na saída e menos cartas por
 // trilho, para cada foto ter espaço de ser vista.
@@ -77,34 +75,7 @@ export async function CropSelection() {
       <div className="wrap relative z-2">
         <CropRegions />
 
-        {/* Pilares estratégicos. */}
-        <Reveal
-          className="mt-[clamp(20px,1.8vw,32px)] rounded-[clamp(14px,1.1vw,20px)] bg-green-deep px-[clamp(16px,2vw,36px)] py-[clamp(18px,1.6vw,28px)] text-offwhite"
-        >
-          <div className="flex flex-col gap-4 min-[1100px]:flex-row min-[1100px]:items-center min-[1100px]:gap-8">
-            <p className="shrink-0 text-micro font-semibold tracking-[0.15em] text-lime uppercase">
-              {crops.pillarsTitle}
-            </p>
-            <ul className="grid flex-1 grid-cols-2 gap-x-4 gap-y-4 min-[861px]:grid-cols-4 min-[861px]:gap-0">
-              {crops.pillars.map((pillar, i) => {
-                const Icon = PILLAR_ICONS[i];
-                return (
-                  <li
-                    key={pillar}
-                    className="flex items-center gap-3 min-[861px]:justify-center min-[861px]:border-l min-[861px]:border-offwhite/15 min-[861px]:px-3 min-[861px]:first:border-l-0"
-                  >
-                    <span className="grid size-[clamp(34px,2.6vw,46px)] shrink-0 place-items-center rounded-full border border-offwhite/30">
-                      <Icon aria-hidden className="size-[55%]" strokeWidth={1.6} />
-                    </span>
-                    <span className="text-[clamp(12px,0.9vw,16px)] leading-tight font-semibold tracking-[0.06em] uppercase">
-                      {pillar}
-                    </span>
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
-        </Reveal>
+        <CropPillars title={crops.pillarsTitle} lead={crops.pillarsLead} note={crops.pillarsNote} pillars={crops.pillars} />
       </div>
 
       {/* The canopy fades into the same deep green as the leaf section. */}
