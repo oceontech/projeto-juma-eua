@@ -221,6 +221,8 @@ export const usOperation: typeof en.usOperation = {
   headline: "Faça uma faixa de teste na sua própria lavoura. Nós fornecemos o produto.",
   body: "Escolha um talhão. Deixe uma faixa testemunha sem tratamento ao lado. Levamos o produto e voltamos na colheita com você. O seu resultado, na sua lavoura, contra a sua própria testemunha.",
   form: {
+    heading: "Conte sobre o seu talhão",
+    caption: "Cerca de dois minutos. Só precisamos do nome e do e-mail para começar.",
     name: { label: "Nome completo", placeholder: "Digite seu nome completo" },
     company: { label: "Fazenda ou empresa", placeholder: "Digite a fazenda ou empresa" },
     state: {
@@ -284,7 +286,7 @@ export const beneath: typeof en.beneath = {
   natural: "Vista natural",
   reveal: "Revelar estrutura",
   mouseHint: "Mova para explorar",
-  touchHint: "Um olhar mais de perto sobre a vida",
+  touchHint: "Arraste a lente para ver por dentro",
   product: {
     label: "Feito em torno da planta",
     copy: "Aminoácidos livres. Prontos para uso.",
@@ -334,4 +336,10 @@ export const footer: typeof en.footer = {
   disclaimer:
     "Os resultados de ensaios exibidos neste site vêm de ensaios de campo conduzidos no Brasil. O desempenho no campo varia conforme clima, solo e manejo. Sempre leia e siga a bula.",
   copyright: "© 2026 Juma-Agro Fertilizer LLC.",
+  cta: {
+    eyebrow: "Faixa de teste gratuita",
+    title: "Veja na sua própria lavoura.",
+    button: "Solicitar faixa de teste",
+  },
+  backToTop: "Voltar ao topo",
 };

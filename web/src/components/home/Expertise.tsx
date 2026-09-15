@@ -58,7 +58,7 @@ function ExpertiseCopy({ light = false }: { light?: boolean }) {
             cada." é mais longa que "One job each." e passava dele, virando
             três linhas em português. Com o tamanho em vw, a linha mais longa
             ocupa ~45% da largura da tela, então cabe em qualquer viewport. */}
-        <h2 className="text-[clamp(30px,5.2vw,96px)] leading-[1.06]">
+        <h2 className="text-[clamp(30px,5.2vw,96px)] leading-[1.06] max-[860px]:text-[clamp(34px,10.5vw,46px)]">
           {expertise.headline.map((line, i) => (
             <Fragment key={line}>
               {i > 0 && <br />}
@@ -66,7 +66,7 @@ function ExpertiseCopy({ light = false }: { light?: boolean }) {
             </Fragment>
           ))}
         </h2>
-        <p className="mx-auto mt-[clamp(18px,1.7vw,32px)] max-w-[465px] text-[clamp(12px,0.95vw,16px)]">
+        <p className="mx-auto mt-[clamp(18px,1.7vw,32px)] max-w-[465px] text-[clamp(12px,0.95vw,16px)] max-[860px]:text-balance">
           {expertise.body}
         </p>
       </div>

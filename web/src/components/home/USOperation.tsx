@@ -1,127 +1,88 @@
 import Image from "next/image";
 import { Reveal } from "@/components/motion/Reveal";
-import { Pill, Rule } from "@/components/ui";
+import { Pill } from "@/components/ui";
 import { TrialForm } from "./TrialForm";
 import { getContent } from "@/lib/locale";
+import s from "./USOperation.module.css";
 
-/** Onde o lead entra: formulário à esquerda, contato dos EUA à direita. */
+/**
+ * Onde o lead entra: um card pai verde sobre a foto da faixa de teste, com a
+ * conversa à esquerda — o que é, onde fica a LLC, outros caminhos — e o
+ * formulário num card branco à direita.
+ */
 export async function USOperation() {
   const { usOperation } = (await getContent()).home;
+  const { contact, alternatives } = usOperation;
+
   return (
-    <section id="us-operation" className="bg-white py-[clamp(48px,6vw,88px)]">
-      <div className="wrap grid grid-cols-1 gap-[clamp(28px,4vw,84px)] min-[1101px]:grid-cols-[900fr_325fr]">
-        <div>
-          <Reveal
-            replay
-            stagger={0.1}
-            targetSelector="[data-us-intro-item]"
-            className="mb-[clamp(24px,3.2vw,56px)]"
-          >
-            <div
-              data-us-intro-item=""
-              className="mb-[clamp(14px,1.2vw,22px)] flex items-center gap-[clamp(12px,1.2vw,20px)]"
-            >
-              <Pill>{usOperation.eyebrow}</Pill>
-              <Rule short />
-            </div>
-            <div className="grid grid-cols-1 items-center gap-[clamp(16px,4vw,68px)] min-[1101px]:grid-cols-[505fr_293fr]">
-              <h2 data-us-intro-item="" className="text-h2 leading-[0.967] text-ink">
-                {usOperation.headline}
-              </h2>
-              <p data-us-intro-item="" className="font-light leading-[1.5] text-muted">
-                {usOperation.body}
+    <section id="us-operation" className={s.section}>
+      <div className={s.card}>
+        <Image
+          src="/img/trial-v2/step-2-check.webp"
+          alt=""
+          aria-hidden
+          fill
+          sizes="(max-width: 860px) 100vw, 1400px"
+          className={s.photo}
+        />
+        <div className={s.shade} aria-hidden />
+
+        <Reveal replay y={26} stagger={0.09} targetSelector="[data-us-item]" className={s.info}>
+          <div data-us-item>
+            <Pill>{usOperation.eyebrow}</Pill>
+          </div>
+          <h2 data-us-item className={s.headline}>
+            {usOperation.headline}
+          </h2>
+          <p data-us-item className={s.body}>
+            {usOperation.body}
+          </p>
+
+          <div data-us-item className={s.contact}>
+            <span aria-hidden className={s.contactIcon}>
+              <svg viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11Z"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinejoin="round"
+                />
+                <circle cx="12" cy="10" r="2.4" stroke="currentColor" strokeWidth="1.5" />
+              </svg>
+            </span>
+            <div>
+              <p className={s.contactName}>{contact.name}</p>
+              <p className={s.contactAddress}>
+                {contact.address.map((line, i) => (
+                  <span key={line}>
+                    {i > 0 && <br />}
+                    {line}
+                  </span>
+                ))}
               </p>
+              <p className={s.contactBody}>{contact.body}</p>
             </div>
-          </Reveal>
-
-          <Reveal
-            replay
-            y={18}
-            stagger={0.045}
-            targetSelector="[data-trial-item]"
-          >
-            <TrialForm />
-          </Reveal>
-        </div>
-
-        <Reveal
-          as="aside"
-          replay
-          y={18}
-          stagger={0.055}
-          targetSelector="[data-us-aside-item]"
-          className="border-t border-ink/15 pt-[clamp(24px,3vw,40px)] min-[1101px]:border-t-0 min-[1101px]:border-l min-[1101px]:pt-0 min-[1101px]:pl-[clamp(20px,2.6vw,44px)]"
-        >
-          <p
-            data-us-aside-item=""
-            className="mb-[clamp(10px,1vw,18px)] font-display text-[clamp(11px,0.9vw,17px)] font-semibold tracking-[0.05em] text-lime uppercase"
-          >
-            {usOperation.eyebrow}
-          </p>
-          <div data-us-aside-item="">
-            <Rule className="mb-[clamp(14px,1.3vw,24px)] w-[47.5px]!" />
           </div>
 
-          <h3
-            data-us-aside-item=""
-            className="mb-[clamp(12px,1.2vw,20px)] text-[clamp(16px,1.1vw,21px)] font-semibold tracking-[-0.02em]"
-          >
-            {usOperation.contact.name}
-          </h3>
-          <p data-us-aside-item="" className="mb-[1em] font-light leading-[1.5] text-muted">
-            {usOperation.contact.address.map((line, i) => (
-              <span key={line}>
-                {i > 0 && <br />}
-                {line}
-              </span>
-            ))}
-          </p>
-          <p data-us-aside-item="" className="mb-[1em] font-light leading-[1.5] text-muted">
-            {usOperation.contact.body}
-          </p>
-
-          <div className="mt-[clamp(24px,3.2vw,54px)] grid gap-[12px]">
-            <p
-              data-us-aside-item=""
-              className="font-display text-[clamp(11px,0.9vw,17px)] font-semibold tracking-[0.05em] text-lime uppercase"
-            >
-              {usOperation.alternatives.title}
-            </p>
-
-            {usOperation.alternatives.actions.map((action) => (
-              <a
-                key={action.id}
-                data-us-aside-item=""
-                href={action.href}
-                className="flex items-center gap-[clamp(14px,1.5vw,24px)] rounded-lg border border-muted-dark p-[clamp(14px,1.2vw,20px)] transition-colors hover:border-lime hover:bg-lime/6"
-              >
-                <Image
-                  src={action.icon}
-                  alt=""
-                  width={45}
-                  height={45}
-                  className="h-auto w-[clamp(36px,2.1vw,40px)] shrink-0"
-                />
-                <span className="flex-1 text-small leading-[1.33] tracking-[-0.02em]">
-                  {action.label}
-                </span>
-                <Image
-                  src="/img/icon-arrow.svg"
-                  alt=""
-                  width={13}
-                  height={15}
-                  className="h-auto w-[13px] shrink-0"
-                />
-              </a>
-            ))}
-
-            <p
-              data-us-aside-item=""
-              className="mt-[clamp(12px,1.5vw,24px)] text-small text-muted"
-            >
-              {usOperation.alternatives.disclaimer}
-            </p>
+          <div data-us-item className={s.alternatives}>
+            <p className={s.altTitle}>{alternatives.title}</p>
+            <div className={s.altActions}>
+              {alternatives.actions.map((action) => (
+                <a key={action.id} href={action.href} className={s.altAction}>
+                  <Image src={action.icon} alt="" width={45} height={45} className={s.altIcon} />
+                  <span>{action.label}</span>
+                  <svg aria-hidden viewBox="0 0 20 20" fill="none">
+                    <path d="M6 14 14 6M7 6h7v7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </a>
+              ))}
+            </div>
+            <p className={s.altNote}>{alternatives.disclaimer}</p>
           </div>
+        </Reveal>
+
+        <Reveal replay y={40} blur={10} delay={0.1} className={s.formCard}>
+          <TrialForm />
         </Reveal>
       </div>
     </section>

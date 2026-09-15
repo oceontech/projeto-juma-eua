@@ -220,3 +220,40 @@
   .camera, .section [data-surface-line], .section [data-surface-enter], .section [data-surface-exit] { transform: none !important; opacity: 1 !important; }
   .exitShade { opacity: 0 !important; }
 }
+
+/* Touch: the lens is a draggable handle. It pulses and nudges until the first
+   touch, then turns lime and shows the structure underneath while it moves. */
+@keyframes lensPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgb(183 199 62 / .5); }
+  60% { box-shadow: 0 0 0 16px rgb(183 199 62 / 0); }
+}
+@keyframes lensNudge {
+  0%, 100% { translate: 0 0; }
+  30% { translate: -10px 6px; }
+  60% { translate: 8px -4px; }
+}
+@media (hover: none), (pointer: coarse) {
+  .target {
+    width: 76px;
+    height: 76px;
+    border-color: rgb(246 255 238 / .75);
+    background: rgb(7 17 11 / .28);
+    pointer-events: auto;
+    touch-action: none;
+    cursor: grab;
+    animation: lensPulse 2.2s ease-out infinite, lensNudge 3.6s ease-in-out infinite;
+  }
+  /* Área de toque maior que o desenho. */
+  .target::after { content: ""; position: absolute; inset: -18px; border-radius: 50%; }
+  .touchHint { transition: opacity .3s ease; }
+  .section[data-exploring="true"] .exploreHint { visibility: visible; }
+  .section[data-exploring="true"] .touchHint { opacity: 0; }
+  .section[data-exploring="true"] .target {
+    animation: none;
+    background: transparent;
+    border-color: var(--color-lime);
+    box-shadow: 0 0 0 1px rgb(183 199 62 / .35), 0 0 30px rgb(183 199 62 / .3);
+  }
+  .section[data-dragging="true"] .target { cursor: grabbing; }
+  .section[data-revealed="true"] .exploreHint { visibility: hidden; }
+}

@@ -1,179 +1,194 @@
 "use client";
 
 import Image from "next/image";
-import { useActionState, useEffect, useId, useRef, useState } from "react";
+import { useActionState, useEffect, useId, useRef, useState, type CSSProperties } from "react";
 import { submitTrialRequest, type TrialRequestState } from "@/lib/actions";
 import { useContent } from "@/components/layout/LocaleProvider";
 import { cx } from "@/components/ui";
+import { CropIcon } from "./CropIcon";
+import s from "./TrialForm.module.css";
 
 const INITIAL: TrialRequestState = { status: "idle", message: "", errors: {} };
+
+/* Ícone por posição: as opções de cultura chegam traduzidas, a ordem é a
+   mesma nos dois idiomas. Sem ícone, a ficha leva um marcador. */
+const CROP_ICONS = ["corn", "soybean", "cotton"];
 
 /**
  * Formulário do pedido de faixa de teste.
  *
  * useActionState liga o form ao Server Action: o envio funciona antes do
  * JavaScript carregar, e depois dele vira uma transição sem recarregar a
- * página. O estado de erro volta do servidor, não é revalidado no cliente.
+ * página. Os nomes dos campos são o contrato com `submitTrialRequest` —
+ * cultura e área viraram fichas e segmentos, mas continuam `crop` e `acres`.
  */
 export function TrialForm() {
   const { form } = useContent().home.usOperation;
   const [state, action, pending] = useActionState(submitTrialRequest, INITIAL);
   const id = useId();
+  const formRef = useRef<HTMLFormElement>(null);
+
+  useEffect(() => {
+    if (state.status === "success") formRef.current?.reset();
+  }, [state]);
 
   return (
-    <form action={action} noValidate>
-      <div className="grid grid-cols-2 gap-x-[clamp(12px,1vw,20px)] gap-y-[clamp(14px,1vw,20px)]">
-        <Field
+    <form ref={formRef} action={action} noValidate className={s.form}>
+      <div data-trial-item className={s.head}>
+        <p className={s.heading}>{form.heading}</p>
+        <p className={s.caption}>{form.caption}</p>
+      </div>
+
+      <div className={s.grid}>
+        <TextField
           id={`${id}-name`}
+          name="name"
           label={form.name.label}
+          placeholder={form.name.placeholder}
+          autoComplete="name"
           error={state.errors.name}
-          className="col-span-2 min-[861px]:col-span-1"
-        >
-          <input
-            id={`${id}-name`}
-            name="name"
-            type="text"
-            autoComplete="name"
-            placeholder={form.name.placeholder}
-            className="field-input"
-          />
-        </Field>
-
-        <Field
-          id={`${id}-company`}
-          label={form.company.label}
-          className="col-span-2 min-[861px]:col-span-1"
-        >
-          <input
-            id={`${id}-company`}
-            name="company"
-            type="text"
-            autoComplete="organization"
-            placeholder={form.company.placeholder}
-            className="field-input"
-          />
-        </Field>
-
-        <Field id={`${id}-state`} label={form.state.label}>
-          <Select id={`${id}-state`} name="state" options={form.state.options} />
-        </Field>
-
-        <Field id={`${id}-crop`} label={form.crop.label}>
-          <Select id={`${id}-crop`} name="crop" options={form.crop.options} />
-        </Field>
-
-        <Field
-          id={`${id}-acres`}
-          label={form.acres.label}
-          className="col-span-2 min-[861px]:col-span-1"
-        >
-          <Select id={`${id}-acres`} name="acres" options={form.acres.options} />
-        </Field>
-
-        <Field
-          id={`${id}-email`}
-          label={form.email.label}
-          error={state.errors.email}
-          className="col-span-2 min-[861px]:col-span-1"
-        >
-          <input
-            id={`${id}-email`}
-            name="email"
-            type="email"
-            autoComplete="email"
-            placeholder={form.email.placeholder}
-            className="field-input"
-          />
-        </Field>
-
-        <Field
-          id={`${id}-problem`}
-          label={form.problem.label}
-          className="col-span-2"
-        >
-          <textarea
-            id={`${id}-problem`}
-            name="problem"
-            placeholder={form.problem.placeholder}
-            className="field-input min-h-[112px] resize-y min-[861px]:min-h-[128px]"
-          />
-        </Field>
-      </div>
-
-      <div
-        data-trial-item=""
-        className="mt-[clamp(18px,1.5vw,26px)] flex items-start gap-3"
-      >
-        <input
-          id={`${id}-call`}
-          name="call"
-          type="checkbox"
-          className="mt-[2px] size-[18px] shrink-0 cursor-pointer appearance-none rounded-[2px] border border-lime bg-[#F0F0F0] checked:bg-lime"
         />
-        <label htmlFor={`${id}-call`} className="text-small text-muted">
-          {form.call}
-        </label>
+        <TextField
+          id={`${id}-company`}
+          name="company"
+          label={form.company.label}
+          placeholder={form.company.placeholder}
+          autoComplete="organization"
+        />
+        <TextField
+          id={`${id}-email`}
+          name="email"
+          type="email"
+          label={form.email.label}
+          placeholder={form.email.placeholder}
+          autoComplete="email"
+          error={state.errors.email}
+        />
+        <div data-trial-item className={s.field}>
+          <label htmlFor={`${id}-state`} className={s.label}>
+            {form.state.label}
+          </label>
+          <Select id={`${id}-state`} name="state" options={form.state.options} />
+        </div>
       </div>
 
-      <button
-        data-trial-item=""
-        type="submit"
-        disabled={pending}
-        className="mt-[clamp(18px,1.5vw,26px)] inline-flex cursor-pointer items-center gap-2.5 rounded-lg bg-lime px-[clamp(30px,3vw,52px)] py-[clamp(11px,0.8vw,14px)] font-display text-[clamp(15px,1.05vw,20px)] font-semibold text-white transition-colors hover:bg-[#A6B534] disabled:opacity-60"
-      >
-        {pending ? form.sending : form.submit}
-        <Image src="/img/icon-arrow-white.svg" alt="" width={14} height={15} />
-      </button>
+      <fieldset data-trial-item className={s.fieldset}>
+        <legend className={s.label}>{form.crop.label}</legend>
+        <div className={s.chips}>
+          {form.crop.options.map((option, i) => (
+            <label key={option} className={s.chip}>
+              <input type="radio" name="crop" value={option} defaultChecked={i === 0} className={s.srOnly} />
+              <span className={s.chipFace}>
+                {CROP_ICONS[i] ? (
+                  <CropIcon id={CROP_ICONS[i]} className={s.chipIcon} />
+                ) : (
+                  <span aria-hidden className={s.chipDot} />
+                )}
+                {option}
+              </span>
+            </label>
+          ))}
+        </div>
+      </fieldset>
 
-      {state.status !== "idle" && (
-        <p
-          role="status"
-          className={cx(
-            "mt-4 text-small",
-            state.status === "success" ? "text-green-brand" : "text-kmep",
-          )}
-        >
-          {state.message}
+      <fieldset data-trial-item className={s.fieldset}>
+        <legend className={s.label}>{form.acres.label}</legend>
+        <div className={s.segments} style={{ "--n": form.acres.options.length } as CSSProperties}>
+          {form.acres.options.map((option, i) => (
+            <label key={option} className={s.segment}>
+              <input type="radio" name="acres" value={option} defaultChecked={i === 0} className={s.srOnly} />
+              <span>{option}</span>
+            </label>
+          ))}
+        </div>
+      </fieldset>
+
+      <div data-trial-item className={s.field}>
+        <label htmlFor={`${id}-problem`} className={s.label}>
+          {form.problem.label}
+        </label>
+        <textarea
+          id={`${id}-problem`}
+          name="problem"
+          placeholder={form.problem.placeholder}
+          className={cx(s.input, s.textarea)}
+        />
+      </div>
+
+      <label data-trial-item className={s.toggle}>
+        <input type="checkbox" name="call" className={s.srOnly} />
+        <span aria-hidden className={s.switch}>
+          <span className={s.knob} />
+        </span>
+        <span className={s.toggleText}>{form.call}</span>
+      </label>
+
+      <div data-trial-item className={s.actions}>
+        <button type="submit" disabled={pending} className={s.submit}>
+          <span>{pending ? form.sending : form.submit}</span>
+          <span aria-hidden className={s.submitArrow}>
+            <svg viewBox="0 0 20 20" fill="none">
+              <path d="M4 10h12M11 5l5 5-5 5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </span>
+        </button>
+
+        {state.status !== "idle" && (
+          <p role="status" className={cx(s.status, state.status === "success" ? s.success : s.failure)}>
+            <span aria-hidden className={s.statusIcon}>
+              {state.status === "success" ? "✓" : "!"}
+            </span>
+            {state.message}
+          </p>
+        )}
+
+        <p className={s.privacy}>
+          {form.privacy.before}
+          <a href="#">{form.privacy.link}</a>
+          {form.privacy.after}
         </p>
-      )}
-
-      <p
-        data-trial-item=""
-        className="mt-[clamp(14px,1.2vw,20px)] max-w-[620px] text-small leading-[1.45] text-muted"
-      >
-        {form.privacy.before}
-        <a href="#" className="text-lime">
-          {form.privacy.link}
-        </a>
-        {form.privacy.after}
-      </p>
+      </div>
     </form>
   );
 }
 
-function Field({
+function TextField({
   id,
+  name,
   label,
+  placeholder,
+  type = "text",
+  autoComplete,
   error,
-  className,
-  children,
 }: {
   id: string;
+  name: string;
   label: string;
+  placeholder: string;
+  type?: string;
+  autoComplete?: string;
   error?: string;
-  className?: string;
-  children: React.ReactNode;
 }) {
   return (
-    <div
-      data-trial-item=""
-      className={cx("flex flex-col gap-[clamp(6px,0.55vw,10px)]", className)}
-    >
-      <label htmlFor={id} className="text-small font-semibold text-muted">
+    <div data-trial-item className={s.field}>
+      <label htmlFor={id} className={s.label}>
         {label}
       </label>
-      {children}
-      {error && <p className="text-small text-kmep">{error}</p>}
+      <input
+        id={id}
+        name={name}
+        type={type}
+        autoComplete={autoComplete}
+        placeholder={placeholder}
+        aria-invalid={error ? true : undefined}
+        aria-describedby={error ? `${id}-error` : undefined}
+        className={s.input}
+      />
+      {error && (
+        <p id={`${id}-error`} className={s.error}>
+          {error}
+        </p>
+      )}
     </div>
   );
 }
@@ -196,11 +211,8 @@ function Select({
 
   useEffect(() => {
     function closeOnOutsidePointer(event: PointerEvent) {
-      if (!rootRef.current?.contains(event.target as Node)) {
-        setOpen(false);
-      }
+      if (!rootRef.current?.contains(event.target as Node)) setOpen(false);
     }
-
     document.addEventListener("pointerdown", closeOnOutsidePointer);
     return () => document.removeEventListener("pointerdown", closeOnOutsidePointer);
   }, []);
@@ -221,19 +233,13 @@ function Select({
     switch (event.key) {
       case "ArrowDown":
         event.preventDefault();
-        if (!open) {
-          openDropdown();
-        } else {
-          setActiveIndex((current) => (current + 1) % options.length);
-        }
+        if (!open) openDropdown();
+        else setActiveIndex((current) => (current + 1) % options.length);
         break;
       case "ArrowUp":
         event.preventDefault();
-        if (!open) {
-          openDropdown();
-        } else {
-          setActiveIndex((current) => (current - 1 + options.length) % options.length);
-        }
+        if (!open) openDropdown();
+        else setActiveIndex((current) => (current - 1 + options.length) % options.length);
         break;
       case "Home":
         if (open) {
@@ -250,11 +256,8 @@ function Select({
       case "Enter":
       case " ":
         event.preventDefault();
-        if (open) {
-          selectOption(activeIndex);
-        } else {
-          openDropdown();
-        }
+        if (open) selectOption(activeIndex);
+        else openDropdown();
         break;
       case "Escape":
         if (open) {
@@ -282,18 +285,12 @@ function Select({
         aria-haspopup="listbox"
         aria-activedescendant={open ? `${id}-option-${activeIndex}` : undefined}
         data-open={open}
-        className="field-input custom-select__trigger"
+        className={cx(s.input, "custom-select__trigger")}
         onClick={() => (open ? setOpen(false) : openDropdown())}
         onKeyDown={handleKeyDown}
       >
         <span className="truncate">{value}</span>
-        <Image
-          src="/img/icon-chevron.svg"
-          alt=""
-          width={13}
-          height={8}
-          className="custom-select__chevron"
-        />
+        <Image src="/img/icon-chevron.svg" alt="" width={13} height={8} className="custom-select__chevron" />
       </button>
 
       <div
@@ -307,8 +304,6 @@ function Select({
       >
         {options.map((option, index) => {
           const selected = option === value;
-          const active = index === activeIndex;
-
           return (
             <button
               key={option}
@@ -316,7 +311,7 @@ function Select({
               type="button"
               role="option"
               aria-selected={selected}
-              data-active={active}
+              data-active={index === activeIndex}
               data-selected={selected}
               tabIndex={-1}
               className="custom-select__option"

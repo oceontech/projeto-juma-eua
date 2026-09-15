@@ -1,0 +1,287 @@
+.footer {
+  --footer-r: clamp(28px, 2.6vw, 48px);
+  position: relative;
+  z-index: 2;
+  overflow: hidden;
+  margin-top: calc(-1 * var(--footer-r));
+  border-radius: var(--footer-r) var(--footer-r) 0 0;
+  background:
+    radial-gradient(90% 60% at 85% 0%, rgb(183 199 62 / 0.08), transparent 60%),
+    #070709;
+  color: var(--color-offwhite);
+}
+
+.inner {
+  width: min(var(--container-wrap, 1360px), calc(100% - 2 * var(--spacing-gut)));
+  margin-inline: auto;
+  padding-top: clamp(56px, 7vw, 112px);
+}
+
+/* ----------------------------------------------------------- chamada */
+.cta {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: clamp(20px, 3vw, 64px);
+  padding-bottom: clamp(40px, 5vw, 80px);
+  border-bottom: 1px solid rgb(246 255 238 / 0.12);
+}
+
+.ctaEyebrow {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-tag);
+  font-size: clamp(10px, 0.8vw, 12px);
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-lime);
+}
+
+.ctaEyebrow > span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  box-shadow: 0 0 14px rgb(183 199 62 / 0.55);
+}
+
+.ctaTitle {
+  max-width: 15ch;
+  font-family: var(--font-display);
+  font-size: clamp(36px, 4.8vw, 88px);
+  font-weight: 400;
+  line-height: 0.98;
+  letter-spacing: -0.035em;
+}
+
+.ctaButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 16px;
+  padding: 8px 8px 8px 26px;
+  border-radius: 999px;
+  background: var(--color-lime);
+  color: #0e0e0d;
+  font-family: var(--font-display);
+  font-size: clamp(15px, 1.05vw, 18px);
+  font-weight: 600;
+  white-space: nowrap;
+  transition: background-color 0.3s ease;
+}
+
+.ctaArrow {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: #0e0e0d;
+  color: var(--color-lime);
+  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.ctaArrow svg,
+.backIcon svg {
+  width: 18px;
+  height: 18px;
+}
+
+.ctaButton:hover {
+  background: #c9d94f;
+}
+
+.ctaButton:hover .ctaArrow {
+  transform: rotate(-45deg);
+}
+
+/* ----------------------------------------------------------- navegação */
+.grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.7fr) repeat(3, minmax(0, 1fr)) auto;
+  gap: clamp(24px, 3vw, 56px);
+  padding-block: clamp(40px, 5vw, 72px);
+}
+
+.logo {
+  width: clamp(96px, 7vw, 124px);
+  height: auto;
+}
+
+.address,
+.parent {
+  max-width: 36ch;
+  margin-top: 18px;
+  font-size: clamp(13px, 0.9vw, 15px);
+  line-height: 1.55;
+  color: rgb(246 255 238 / 0.6);
+}
+
+.parent {
+  margin-top: 8px;
+}
+
+.colTitle {
+  margin-bottom: 18px;
+  font-family: var(--font-tag);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgb(246 255 238 / 0.45);
+}
+
+.links {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.link {
+  position: relative;
+  font-size: clamp(14px, 1vw, 17px);
+  color: var(--color-offwhite);
+  transition: color 0.25s ease;
+}
+
+.link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -3px;
+  height: 1px;
+  background: var(--color-lime);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.link:hover {
+  color: var(--color-lime);
+}
+
+.link:hover::after {
+  transform: scaleX(1);
+}
+
+.top {
+  justify-self: end;
+}
+
+.backToTop {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--color-offwhite);
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.backIcon {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border: 1px solid rgb(246 255 238 / 0.25);
+  border-radius: 50%;
+  transition:
+    border-color 0.3s ease,
+    color 0.3s ease,
+    transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.backToTop:hover .backIcon {
+  border-color: var(--color-lime);
+  color: var(--color-lime);
+  transform: translateY(-3px);
+}
+
+.footer :is(a, button):focus-visible {
+  outline: 2px solid var(--color-lime);
+  outline-offset: 4px;
+  border-radius: 999px;
+}
+
+/* ------------------------------------------------------------- legal */
+.legal {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  padding-block: 24px;
+  border-top: 1px solid rgb(246 255 238 / 0.12);
+  font-size: 12px;
+  line-height: 1.55;
+  color: rgb(246 255 238 / 0.45);
+}
+
+.disclaimer {
+  max-width: 64ch;
+}
+
+.copyright {
+  white-space: nowrap;
+}
+
+/* A marca como assinatura, cortada pelo pé. */
+.wordmark {
+  margin: clamp(4px, 1.5vw, 20px) 0 -0.18em;
+  font-family: var(--font-display);
+  font-size: clamp(64px, 19vw, 360px);
+  line-height: 0.8;
+  letter-spacing: -0.06em;
+  text-align: center;
+  white-space: nowrap;
+  color: transparent;
+  background: linear-gradient(180deg, rgb(246 255 238 / 0.16) 0%, rgb(246 255 238 / 0) 85%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  user-select: none;
+  pointer-events: none;
+}
+
+/* ------------------------------------------------------------- celular */
+@media (max-width: 860px) {
+  .cta {
+    grid-template-columns: 1fr;
+  }
+
+  .ctaAction {
+    justify-self: start;
+  }
+
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    row-gap: 36px;
+  }
+
+  .brand,
+  .top {
+    grid-column: 1 / -1;
+  }
+
+  .top {
+    justify-self: start;
+  }
+
+  .legal {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .copyright {
+    white-space: normal;
+  }
+
+  .wordmark {
+    font-size: 22vw;
+  }
+}

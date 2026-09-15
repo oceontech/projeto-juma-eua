@@ -1,0 +1,390 @@
+/* Três frentes — capítulos em tela cheia sobre uma janela presa (sticky, sem
+   pin spacer, o mesmo contrato do hero e da faixa de teste). O movimento é de
+   Programs.tsx; aqui fica a geometria. */
+
+.section {
+  position: relative;
+  background: #070709;
+  color: var(--color-offwhite);
+}
+
+/* Uma tela de janela + uma tela de curso por frente. */
+.track {
+  position: relative;
+  height: calc((var(--count, 3) + 1) * 100lvh);
+}
+
+.window {
+  --pad-x: max(var(--spacing-gut), calc((100vw - var(--container-wrap, 1360px)) / 2));
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  overflow: clip;
+  isolation: isolate;
+}
+
+@media (min-width: 861px) {
+  .window {
+    height: 100lvh;
+  }
+}
+
+/* ------------------------------------------------------------- capítulo */
+.chapter {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: #070709;
+  will-change: clip-path;
+}
+
+/* Antes do JavaScript só a primeira frente aparece. */
+.chapter + .chapter {
+  clip-path: inset(100% 0% 0% 0%);
+}
+
+.photo {
+  position: absolute;
+  inset: 0;
+  will-change: transform;
+}
+
+.image {
+  object-fit: cover;
+}
+
+.scrim {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(to top, rgb(5 7 6 / 0.94) 0%, rgb(5 7 6 / 0.72) 30%, rgb(5 7 6 / 0) 64%),
+    linear-gradient(to bottom, rgb(5 7 6 / 0.78) 0%, rgb(5 7 6 / 0) 32%),
+    linear-gradient(to right, rgb(5 7 6 / 0.6) 0%, rgb(5 7 6 / 0) 58%);
+}
+
+/* Escurece a frente que está sendo coberta pela seguinte. */
+.dim {
+  position: absolute;
+  inset: 0;
+  background: #070709;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ---------------------------------------------------------------- texto */
+.copy {
+  position: absolute;
+  z-index: 2;
+  left: var(--pad-x);
+  bottom: clamp(44px, 10svh, 116px);
+  width: min(680px, 54vw);
+}
+
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-family: var(--font-tag);
+  font-size: clamp(10px, 0.8vw, 13px);
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-lime-bright);
+}
+
+.index {
+  display: inline-grid;
+  place-items: center;
+  min-width: 40px;
+  height: 26px;
+  padding: 0 10px;
+  border: 1px solid rgb(168 230 58 / 0.5);
+  border-radius: 999px;
+  letter-spacing: 0.08em;
+}
+
+.title {
+  margin-top: clamp(14px, 1.4vw, 22px);
+  font-family: var(--font-display);
+  font-size: clamp(48px, 6.4vw, 116px);
+  font-weight: 400;
+  line-height: 0.95;
+  letter-spacing: -0.035em;
+  color: #fff;
+}
+
+.mask {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.1em;
+  margin-bottom: -0.1em;
+}
+
+.mask > span {
+  display: block;
+}
+
+.body {
+  max-width: 54ch;
+  margin-top: clamp(14px, 1.4vw, 24px);
+  font-size: clamp(14px, 1.02vw, 17px);
+  line-height: 1.6;
+  color: rgb(246 255 238 / 0.8);
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: clamp(16px, 1.5vw, 24px) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tags li {
+  padding: 0.5em 1.05em;
+  border: 1px solid rgb(246 255 238 / 0.28);
+  border-radius: 999px;
+  background: rgb(7 7 9 / 0.35);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  font-size: clamp(12px, 0.85vw, 14px);
+}
+
+.closing {
+  margin-top: clamp(16px, 1.5vw, 24px);
+  font-family: var(--font-display);
+  font-size: clamp(16px, 1.25vw, 22px);
+  line-height: 1.28;
+  color: var(--color-lime-bright);
+}
+
+.note {
+  margin-top: clamp(14px, 1.3vw, 20px);
+  font-family: var(--font-tag);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgb(246 255 238 / 0.5);
+}
+
+/* ----------------------------------------------------------- introdução */
+.intro {
+  position: absolute;
+  z-index: 10;
+  top: clamp(96px, 13svh, 148px);
+  left: var(--pad-x);
+  right: var(--pad-x);
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 32px;
+  pointer-events: none;
+}
+
+.headline {
+  font-family: var(--font-display);
+  font-size: clamp(26px, 2.6vw, 48px);
+  font-weight: 400;
+  line-height: 0.98;
+  letter-spacing: -0.02em;
+  color: #fff;
+}
+
+.lede {
+  max-width: 40ch;
+  font-size: clamp(13px, 0.95vw, 16px);
+  line-height: 1.55;
+  color: rgb(246 255 238 / 0.72);
+}
+
+/* ----------------------------------------------------- trilho de progresso */
+.rail {
+  position: absolute;
+  z-index: 10;
+  right: var(--pad-x);
+  bottom: clamp(44px, 10svh, 116px);
+  display: grid;
+  gap: 6px;
+  width: clamp(220px, 19vw, 300px);
+}
+
+.railItem {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  column-gap: 14px;
+  row-gap: 10px;
+  padding: 10px 0;
+  border: 0;
+  background: none;
+  color: rgb(246 255 238 / 0.45);
+  text-align: left;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.railItem[data-state="active"] {
+  color: #fff;
+}
+
+.railItem:hover {
+  color: var(--color-offwhite);
+}
+
+.railItem:focus-visible {
+  outline: 2px solid var(--color-lime);
+  outline-offset: 4px;
+  border-radius: 6px;
+}
+
+.railNum {
+  font-family: var(--font-tag);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+}
+
+.railTitle {
+  font-family: var(--font-display);
+  font-size: clamp(15px, 1.1vw, 19px);
+}
+
+.railBar {
+  grid-column: 1 / -1;
+  position: relative;
+  height: 2px;
+  overflow: hidden;
+  border-radius: 2px;
+  background: rgb(246 255 238 / 0.18);
+}
+
+.railFill {
+  position: absolute;
+  inset: 0;
+  border-radius: 2px;
+  background: var(--color-lime-bright);
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+
+/* ---------------------------------------------------------------- celular */
+@media (max-width: 860px) {
+  .intro {
+    top: calc(64px + env(safe-area-inset-top, 0px));
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .headline {
+    font-size: clamp(24px, 7vw, 32px);
+  }
+
+  .lede {
+    display: none;
+  }
+
+  .copy {
+    left: 20px;
+    right: 20px;
+    bottom: calc(66px + env(safe-area-inset-bottom, 0px));
+    width: auto;
+  }
+
+  .eyebrow {
+    gap: 10px;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+  }
+
+  .index {
+    min-width: 34px;
+    height: 22px;
+  }
+
+  .title {
+    margin-top: 12px;
+    font-size: clamp(40px, 11.5vw, 60px);
+  }
+
+  .body {
+    margin-top: 12px;
+    font-size: 13.5px;
+    line-height: 1.52;
+  }
+
+  .tags {
+    margin-top: 14px;
+    gap: 6px;
+  }
+
+  .tags li {
+    font-size: 11.5px;
+  }
+
+  .closing {
+    margin-top: 14px;
+    font-size: 15px;
+  }
+
+  .note {
+    margin-top: 12px;
+    font-size: 10px;
+  }
+
+  .rail {
+    left: 20px;
+    right: 20px;
+    bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+    width: auto;
+    grid-template-columns: repeat(var(--count, 3), 1fr);
+    gap: 8px;
+  }
+
+  .railItem {
+    grid-template-columns: 1fr;
+    row-gap: 6px;
+    padding: 6px 0;
+  }
+
+  .railTitle {
+    display: none;
+  }
+
+  .railNum {
+    font-size: 10px;
+  }
+}
+
+/* ---------------------------------------------------- menos movimento */
+@media (prefers-reduced-motion: reduce) {
+  .track {
+    height: auto;
+  }
+
+  .window {
+    position: relative;
+    height: auto;
+    overflow: visible;
+  }
+
+  .chapter {
+    position: relative;
+    min-height: 100svh;
+  }
+
+  .chapter + .chapter {
+    clip-path: none;
+  }
+
+  .intro {
+    position: relative;
+    top: auto;
+    left: auto;
+    right: auto;
+    padding: 96px var(--pad-x) 32px;
+  }
+
+  .rail {
+    display: none;
+  }
+}

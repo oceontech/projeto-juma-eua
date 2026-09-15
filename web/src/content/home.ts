@@ -274,6 +274,8 @@ export const usOperation = {
   headline: "Run a trial strip on your own acres. We supply the product.",
   body: "Pick a field. Leave an untreated check strip beside it. We bring the product and come back at harvest with you. Your result, on your acres, against your own check.",
   form: {
+    heading: "Tell us about your field",
+    caption: "About two minutes. Name and email are all we need to start.",
     name: { label: "Full name", placeholder: "Enter your full name" },
     company: { label: "Farm or company", placeholder: "Enter farm or company" },
     state: {
@@ -339,7 +341,7 @@ export const beneath = {
   natural: "Natural view",
   reveal: "Reveal structure",
   mouseHint: "Move to explore",
-  touchHint: "A closer look at life",
+  touchHint: "Drag the lens to look inside",
   product: {
     label: "Built around the plant",
     copy: "Free amino acids. Ready to use.",
@@ -390,4 +392,10 @@ export const footer = {
   disclaimer:
     "Trial results shown on this site come from field trials conducted in Brazil. Field performance varies with climate, soil and management. Always read and follow the label.",
   copyright: "© 2026 Juma-Agro Fertilizer LLC.",
+  cta: {
+    eyebrow: "Free trial strip",
+    title: "See it on your own acres.",
+    button: "Request a trial strip",
+  },
+  backToTop: "Back to top",
 };

@@ -21,6 +21,7 @@ export function BeneathSurface() {
     const camera = section.querySelector<HTMLElement>("[data-surface-camera]")!;
     const spotlight = section.querySelector<HTMLElement>("[data-surface-spotlight]")!;
     const cursor = section.querySelector<HTMLElement>("[data-surface-cursor]")!;
+    const lens = section.querySelector<HTMLElement>("[data-surface-lens]");
     let frame = 0;
     let clientX = 0;
     let clientY = 0;
@@ -68,7 +69,7 @@ export function BeneathSurface() {
       const scale = bounds.width / camera.offsetWidth;
       const x = (clientX - bounds.left) / scale;
       const y = (clientY - bounds.top) / scale;
-      const radius = (window.innerWidth < 480 ? 120 : window.innerWidth < 720 ? 160 : 260) / scale;
+      const radius = (window.innerWidth < 480 ? 130 : window.innerWidth < 720 ? 160 : 260) / scale;
       const mask = `radial-gradient(circle ${radius}px at ${x}px ${y}px, #fff 0%, #fff 40%, rgba(255,255,255,.75) 60%, rgba(255,255,255,.4) 75%, rgba(255,255,255,.12) 88%, transparent 100%)`;
       spotlight.style.maskImage = mask;
       spotlight.style.webkitMaskImage = mask;
@@ -91,6 +92,52 @@ export function BeneathSurface() {
       if (frame) cancelAnimationFrame(frame);
       frame = 0;
     };
+    // Touch has no hover: the lens is a handle. Dragging it moves the reveal
+    // under the finger, the same structure the mouse uncovers on desktop.
+    let dragging = false;
+    let offX = 0;
+    let offY = 0;
+    let grabX = 0;
+    let grabY = 0;
+    const placeLens = () => {
+      frame = 0;
+      if (!lens) return;
+      lens.style.transform = `translate3d(${offX}px, ${offY}px, 0)`;
+      const bounds = lens.getBoundingClientRect();
+      clientX = bounds.left + bounds.width / 2;
+      clientY = bounds.top + bounds.height / 2;
+      renderPointer();
+    };
+    const lensDown = (event: PointerEvent) => {
+      if (event.pointerType === "mouse" || !lens) return;
+      event.preventDefault();
+      dragging = true;
+      try {
+        lens.setPointerCapture(event.pointerId);
+      } catch {
+        /* sem captura o arraste segue pelos eventos do próprio punho */
+      }
+      grabX = event.clientX - offX;
+      grabY = event.clientY - offY;
+      section.dataset.exploring = "true";
+      section.dataset.dragging = "true";
+      placeLens();
+    };
+    const lensMove = (event: PointerEvent) => {
+      if (!dragging) return;
+      offX = event.clientX - grabX;
+      offY = event.clientY - grabY;
+      if (!frame) frame = requestAnimationFrame(placeLens);
+    };
+    const lensUp = () => {
+      dragging = false;
+      section.dataset.dragging = "false";
+    };
+    lens?.addEventListener("pointerdown", lensDown);
+    lens?.addEventListener("pointermove", lensMove);
+    lens?.addEventListener("pointerup", lensUp);
+    lens?.addEventListener("pointercancel", lensUp);
+
     section.addEventListener("pointermove", move, { passive: true });
     section.addEventListener("pointerleave", leave);
     section.addEventListener("pointercancel", leave);
@@ -102,6 +149,10 @@ export function BeneathSurface() {
       section.removeEventListener("pointermove", move);
       section.removeEventListener("pointerleave", leave);
       section.removeEventListener("pointercancel", leave);
+      lens?.removeEventListener("pointerdown", lensDown);
+      lens?.removeEventListener("pointermove", lensMove);
+      lens?.removeEventListener("pointerup", lensUp);
+      lens?.removeEventListener("pointercancel", lensUp);
     };
   }, { scope: root });
 
@@ -135,7 +186,7 @@ export function BeneathSurface() {
             {beneath.description}
           </p>
           <div className={styles.controls} role="group" aria-label={beneath.viewLabel} data-surface-enter>
-            <button type="button" aria-pressed={!revealed} onClick={() => setRevealed(false)}>
+            <button type="button" aria-pressed={!revealed} onClick={() => { setRevealed(false); if (root.current) root.current.dataset.exploring = "false"; }}>
               <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M15.5 3.5c-8-1-12 3-10 9 6 2 10-2 10-9ZM4 16 12 8" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" /></svg>
               {beneath.natural}
             </button>
@@ -147,7 +198,7 @@ export function BeneathSurface() {
         </div>
 
         <div className={styles.exploreHint} data-surface-enter aria-hidden="true">
-          <span className={styles.target}><i /><i /></span>
+          <span className={styles.target} data-surface-lens><i /><i /></span>
           <span className={styles.mouseHint}>{beneath.mouseHint}</span>
           <span className={styles.touchHint}>{beneath.touchHint}</span>
         </div>

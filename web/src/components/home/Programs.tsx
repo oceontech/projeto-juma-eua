@@ -1,343 +1,234 @@
 "use client";
 
 import { Fragment, useRef } from "react";
-import { ExperienceArt, Juma360Art, TargetArt } from "./ProgramArt";
-import { gsap, useGSAP, START } from "@/lib/gsap";
-import { SectionIntro } from "@/components/ui";
-import type { Program } from "@/content/home";
+import Image from "next/image";
+import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
 import { useContent } from "@/components/layout/LocaleProvider";
+import s from "./Programs.module.css";
 
-const CARD =
-  "programs-card relative overflow-hidden rounded-[clamp(16px,1.55vw,30px)] bg-linear-[149.8deg,var(--color-night-warm)_2.4%,var(--color-night-deep)_60.23%] text-white";
+/** Uma foto por frente, na ordem de `programs.cards`. */
+const PHOTOS = [
+  { src: "/img/programs/bullseye.webp", position: "62% 50%" },
+  { src: "/img/programs/experience.webp", position: "50% 50%" },
+  { src: "/img/programs/juma360.webp", position: "50% 42%" },
+] as const;
 
-/** As três frentes que rodam o ano todo: pesquisa, portas abertas e time. */
+/*
+ * A cena presa conta em unidades: cada frente ocupa uma. A troca começa no
+ * início da unidade seguinte e dura TURN — a foto nova sobe de baixo, com os
+ * cantos de cima redondos, por cima da anterior, e o texto troca por máscara.
+ * O resto da unidade é leitura parada.
+ */
+const TURN = 0.55;
+
+const pad = (n: number) => String(n).padStart(2, "0");
+
+/**
+ * As três frentes que rodam o ano todo, como capítulos em tela cheia — a
+ * mesma linguagem imersiva da hero: foto de ponta a ponta, título grande
+ * subindo de dentro de uma máscara e um trilho de progresso que também navega.
+ */
 export function Programs() {
   const { programs } = useContent().home;
-  const [target, experience, juma360] = programs.cards;
-  const sectionRef = useRef<HTMLElement>(null);
+  const count = programs.cards.length;
+  const root = useRef<HTMLElement>(null);
+  const trigger = useRef<ScrollTrigger | null>(null);
+
+  /* Rola até o meio da leitura de cada frente. */
+  const goTo = (i: number) => {
+    const st = trigger.current;
+    if (!st) {
+      root.current?.querySelectorAll("[data-chapter]")[i]?.scrollIntoView({ behavior: "smooth" });
+      return;
+    }
+    const at = i === 0 ? 0.2 : i + TURN + 0.15;
+    window.scrollTo({ top: st.start + (st.end - st.start) * (at / count), behavior: "smooth" });
+  };
 
   useGSAP(
     () => {
-      const section = sectionRef.current;
+      const section = root.current;
       if (!section) return;
 
-      const introTitle = section.querySelector(".programs-intro__title");
-      const introCopy = section.querySelector(".programs-intro__copy");
-
-      const cardTarget = section.querySelector<HTMLElement>('[data-card="target"]');
-      const cardExp = section.querySelector<HTMLElement>('[data-card="experience"]');
-      const card360 = section.querySelector<HTMLElement>('[data-card="juma360"]');
-
-      if (!cardTarget || !cardExp || !card360) return;
-
-      const cards = [cardTarget, cardExp, card360];
-
-      // Card 1 internal items
-      const targetOrbit = cardTarget.querySelector(".programs-card__orbit-inner");
-      const targetEyebrow = cardTarget.querySelector(".programs-card__eyebrow");
-      const targetTitle = cardTarget.querySelector(".programs-card__title");
-      const targetCopy = cardTarget.querySelector(".programs-card__copy");
-      const targetTags = cardTarget.querySelectorAll(".programs-card__tag");
-      const targetMeta = cardTarget.querySelector(".programs-card__meta");
-
-      // Card 2 internal items
-      const expEyebrow = cardExp.querySelector(".programs-card__eyebrow");
-      const expTitle = cardExp.querySelector(".programs-card__title");
-      const expCopy = cardExp.querySelector(".programs-card__copy");
-      const expClosing = cardExp.querySelector(".programs-card__closing");
-      const expArt = cardExp.querySelector(".programs-card__art-inner");
-
-      // Card 3 internal items
-      const jumaGlobe = card360.querySelector(".programs-card__globe-inner");
-      const jumaEyebrow = card360.querySelector(".programs-card__eyebrow");
-      const jumaTitle = card360.querySelector(".programs-card__title");
-      const jumaCopy = card360.querySelector(".programs-card__copy");
-      const jumaMeta = card360.querySelector(".programs-card__meta");
+      const q = gsap.utils.selector(section);
+      const track = q("[data-programs-track]")[0];
+      const chapters = q("[data-chapter]");
+      const photos = q("[data-photo]");
+      const dims = q("[data-dim]");
+      const fills = q("[data-fill]");
+      const marks = q("[data-mark]");
+      const intro = q("[data-intro]");
+      const lines = (el: Element) => el.querySelectorAll("[data-line]");
+      const fades = (el: Element) => el.querySelectorAll("[data-fade]");
+      if (!track || chapters.length === 0) return;
 
       const mm = gsap.matchMedia();
 
-      mm.add(
-        {
-          animate: "(prefers-reduced-motion: no-preference)",
-          still: "(prefers-reduced-motion: reduce)",
-        },
-        (context) => {
-          const { animate } = context.conditions as { animate: boolean };
-
-          if (!animate) {
-            gsap.set(
-              [
-                introTitle,
-                introCopy,
-                ...cards,
-                targetOrbit,
-                targetEyebrow,
-                targetTitle,
-                targetCopy,
-                targetMeta,
-                ...targetTags,
-                expEyebrow,
-                expTitle,
-                expCopy,
-                expClosing,
-                expArt,
-                jumaGlobe,
-                jumaEyebrow,
-                jumaTitle,
-                jumaCopy,
-                jumaMeta,
-              ].filter(Boolean),
-              { opacity: 1, y: 0, x: 0, scale: 1, rotate: 0 }
-            );
-            return;
-          }
-
-          // Initial state: hide inner items so they only appear after each card lands
-          gsap.set(
-            [
-              targetOrbit,
-              targetEyebrow,
-              targetTitle,
-              targetCopy,
-              targetMeta,
-              ...targetTags,
-              expEyebrow,
-              expTitle,
-              expCopy,
-              expClosing,
-              expArt,
-              jumaGlobe,
-              jumaEyebrow,
-              jumaTitle,
-              jumaCopy,
-              jumaMeta,
-            ].filter(Boolean),
-            { opacity: 0 }
-          );
-
-          const tl = gsap.timeline({
-            scrollTrigger: {
-              trigger: section,
-              start: START,
-              /* A mesma timeline faz os dois sentidos: entra tocando e sai
-                 rebobinando. O fim dispara enquanto a seção ainda mantém uma
-                 faixa visível, para a saída não acontecer fora da tela. */
-              end: "bottom 22%",
-              toggleActions: "play reverse play reverse",
-            },
+      mm.add("(prefers-reduced-motion: no-preference)", () => {
+        let active = -1;
+        const mark = (i: number) => {
+          if (i === active) return;
+          active = i;
+          marks.forEach((m, j) => {
+            m.dataset.state = j === i ? "active" : j < i ? "done" : "next";
+            if (j === i) m.setAttribute("aria-current", "step");
+            else m.removeAttribute("aria-current");
           });
+        };
+        mark(0);
 
-          // 1. Intro Section Header Entrance
-          tl.fromTo(
-            [introTitle, introCopy].filter(Boolean),
-            { opacity: 0, y: 28 },
-            {
-              opacity: 1,
-              y: 0,
-              duration: 0.65,
-              stagger: 0.08,
-              ease: "power3.out",
-            },
-            0
-          );
+        /* Quadro de partida: só a primeira frente existe. */
+        gsap.set(chapters.slice(1), { clipPath: "inset(100% 0% 0% 0% round 48px 48px 0px 0px)" });
+        gsap.set(photos, { scale: 1.22 });
+        gsap.set(dims, { opacity: 0 });
+        gsap.set(fills, { scaleX: 0, transformOrigin: "left center" });
+        chapters.slice(1).forEach((chapter) => {
+          /* `y` junto do `yPercent`, sempre: sem ele o GSAP lê a translação já
+             aplicada como pixels e soma com a porcentagem. */
+          gsap.set(lines(chapter), { y: 0, yPercent: 115 });
+          gsap.set(fades(chapter), { autoAlpha: 0, y: 28 });
+        });
 
-          // 2. Bento Cards Entrance - Staggered Slide In with Opacity Gain
-          // Card 1 (Olho no Alvo): starts at 0.15s
-          tl.fromTo(
-            cardTarget,
-            { opacity: 0, y: 48, scale: 0.96 },
-            {
-              opacity: 1,
-              y: 0,
-              scale: 1,
-              duration: 0.72,
-              ease: "power3.out",
-            },
-            0.15
-          );
+        /* Entrada: enquanto a seção sobe, a primeira frente chega — a foto
+           afasta, o título sobe de dentro do corte e o resto assenta. */
+        gsap
+          .timeline({
+            scrollTrigger: { trigger: track, start: "top 80%", end: "top top", scrub: 0.6 },
+          })
+          .fromTo(photos[0], { scale: 1.4 }, { scale: 1.22, duration: 1, ease: "none" }, 0)
+          .fromTo(intro, { y: 36, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.45, stagger: 0.08, ease: "power2.out" }, 0.1)
+          .fromTo(lines(chapters[0]), { y: 0, yPercent: 115 }, { y: 0, yPercent: 0, duration: 0.55, ease: "power3.out" }, 0.3)
+          .fromTo(fades(chapters[0]), { y: 28, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.45, stagger: 0.06, ease: "power2.out" }, 0.45);
 
-          // Card 1 Inner Components: cascade in after Card 1 arrives into position
-          if (targetOrbit) {
-            tl.fromTo(
-              targetOrbit,
-              { opacity: 0, scale: 0.76, rotate: -22 },
-              {
-                opacity: 1,
-                scale: 1,
-                rotate: 0,
-                duration: 0.65,
-                ease: "power3.out",
-              },
-              0.52
+        /* A cena presa. */
+        const tl = gsap.timeline({
+          defaults: { ease: "none" },
+          scrollTrigger: {
+            trigger: track,
+            start: "top top",
+            end: "bottom bottom",
+            scrub: 0.6,
+            invalidateOnRefresh: true,
+            onUpdate: (self) =>
+              mark(gsap.utils.clamp(0, count - 1, Math.floor(self.progress * count - TURN / 2))),
+          },
+        });
+        trigger.current = tl.scrollTrigger ?? null;
+
+        chapters.forEach((chapter, i) => {
+          /* A foto afasta devagar enquanto a frente está em cena. */
+          tl.fromTo(photos[i], { scale: 1.22 }, { scale: 1.02, duration: i === count - 1 ? 1 : 1 + TURN, immediateRender: false }, i);
+          tl.fromTo(fills[i], { scaleX: 0 }, { scaleX: 1, duration: 1, immediateRender: false }, i);
+          if (i === 0) return;
+
+          const previous = chapters[i - 1];
+          tl
+            /* O texto de quem sai sobe e some antes de a foto nova cobrir. */
+            .to(fades(previous), { y: -24, autoAlpha: 0, duration: TURN * 0.4, stagger: 0.02, ease: "power2.in" }, i)
+            .to(lines(previous), { y: 0, yPercent: -115, duration: TURN * 0.45, ease: "power2.in" }, i)
+            .to(dims[i - 1], { opacity: 0.65, duration: TURN, ease: "power1.in" }, i)
+            /* A foto nova sobe de baixo, com os cantos de cima redondos que
+               se desfazem na chegada. */
+            .fromTo(
+              chapter,
+              { clipPath: "inset(100% 0% 0% 0% round 48px 48px 0px 0px)" },
+              { clipPath: "inset(0% 0% 0% 0% round 0px 0px 0px 0px)", duration: TURN, ease: "power3.inOut", immediateRender: false },
+              i,
+            )
+            .fromTo(lines(chapter), { y: 0, yPercent: 115 }, { y: 0, yPercent: 0, duration: TURN * 0.7, ease: "power3.out", immediateRender: false }, i + TURN * 0.5)
+            .fromTo(
+              fades(chapter),
+              { y: 28, autoAlpha: 0 },
+              { y: 0, autoAlpha: 1, duration: TURN * 0.6, stagger: 0.03, ease: "power2.out", immediateRender: false },
+              i + TURN * 0.65,
             );
-          }
+        });
 
-          tl.fromTo(
-            [targetEyebrow, targetTitle, targetCopy].filter(Boolean),
-            { opacity: 0, y: 16 },
-            {
-              opacity: 1,
-              y: 0,
-              duration: 0.48,
-              stagger: 0.07,
-              ease: "power3.out",
-            },
-            0.58
-          );
+        tl.set({}, {}, count);
 
-          if (targetTags.length > 0) {
-            tl.fromTo(
-              targetTags,
-              { opacity: 0, y: 12, scale: 0.9 },
-              {
-                opacity: 1,
-                y: 0,
-                scale: 1,
-                duration: 0.42,
-                stagger: 0.05,
-                ease: "back.out(1.2)",
-              },
-              0.74
-            );
-          }
+        return () => {
+          trigger.current = null;
+        };
+      });
 
-          if (targetMeta) {
-            tl.fromTo(
-              targetMeta,
-              { opacity: 0, y: 10 },
-              {
-                opacity: 1,
-                y: 0,
-                duration: 0.45,
-                ease: "power3.out",
-              },
-              0.84
-            );
-          }
-
-          // Card 2 (Juma Experience): starts at 0.35s
-          tl.fromTo(
-            cardExp,
-            { opacity: 0, y: 48, scale: 0.96 },
-            {
-              opacity: 1,
-              y: 0,
-              scale: 1,
-              duration: 0.72,
-              ease: "power3.out",
-            },
-            0.35
-          );
-
-          // Card 2 Inner Components: cascade in after Card 2 arrives into position
-          tl.fromTo(
-            [expEyebrow, expTitle, expCopy].filter(Boolean),
-            { opacity: 0, y: 16 },
-            {
-              opacity: 1,
-              y: 0,
-              duration: 0.48,
-              stagger: 0.07,
-              ease: "power3.out",
-            },
-            0.72
-          );
-
-          if (expArt) {
-            tl.fromTo(
-              expArt,
-              { opacity: 0, y: 18 },
-              { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" },
-              0.8
-            );
-          }
-
-          if (expClosing) {
-            tl.fromTo(
-              expClosing,
-              { opacity: 0, y: 14 },
-              {
-                opacity: 1,
-                y: 0,
-                duration: 0.55,
-                ease: "power3.out",
-              },
-              0.9
-            );
-          }
-
-          // Card 3 (Juma 360): starts at 0.55s
-          tl.fromTo(
-            card360,
-            { opacity: 0, y: 48, scale: 0.96 },
-            {
-              opacity: 1,
-              y: 0,
-              scale: 1,
-              duration: 0.72,
-              ease: "power3.out",
-            },
-            0.55
-          );
-
-          // Card 3 Inner Components: cascade in after Card 3 arrives into position
-          if (jumaGlobe) {
-            tl.fromTo(
-              jumaGlobe,
-              { opacity: 0, x: 28, y: 16, scale: 0.92 },
-              {
-                opacity: 0.88,
-                x: 0,
-                y: 0,
-                scale: 1,
-                duration: 0.75,
-                ease: "power3.out",
-              },
-              0.88
-            );
-          }
-
-          tl.fromTo(
-            [jumaEyebrow, jumaTitle, jumaCopy].filter(Boolean),
-            { opacity: 0, y: 16 },
-            {
-              opacity: 1,
-              y: 0,
-              duration: 0.48,
-              stagger: 0.07,
-              ease: "power3.out",
-            },
-            0.92
-          );
-
-          if (jumaMeta) {
-            tl.fromTo(
-              jumaMeta,
-              { opacity: 0, y: 10 },
-              {
-                opacity: 1,
-                y: 0,
-                duration: 0.45,
-                ease: "power3.out",
-              },
-              1.08
-            );
-          }
-        }
-      );
+      return () => mm.revert();
     },
-    { scope: sectionRef }
+    { scope: root },
   );
 
   return (
-    <section ref={sectionRef} id="programs" className="programs-section relative -mt-px bg-white">
-      <div className="programs-wrap wrap">
-        <div className="programs-intro-wrap">
-          <SectionIntro
-            className="programs-intro"
-            aside={<p className="programs-intro__copy text-muted">{programs.body}</p>}
-          >
-            <h2 className="programs-intro__title text-h2 leading-[0.967] text-ink">
+    <section
+      ref={root}
+      id="programs"
+      className={s.section}
+      data-nav-theme="dark"
+      aria-labelledby="programs-title"
+    >
+      <div data-programs-track className={s.track} style={{ ["--count" as string]: count }}>
+        <div className={s.window}>
+          {programs.cards.map((card, i) => (
+            <article
+              key={card.id}
+              data-chapter
+              className={s.chapter}
+              style={{ zIndex: i + 1 }}
+              aria-labelledby={`program-${card.id}`}
+            >
+              <div data-photo className={s.photo}>
+                <Image
+                  src={PHOTOS[i]?.src ?? PHOTOS[0].src}
+                  alt=""
+                  fill
+                  sizes="100vw"
+                  quality={90}
+                  className={s.image}
+                  style={{ objectPosition: PHOTOS[i]?.position }}
+                />
+              </div>
+              <div className={s.scrim} aria-hidden />
+              <div data-dim className={s.dim} aria-hidden />
+
+              <div className={s.copy}>
+                <p data-fade className={s.eyebrow}>
+                  <span className={s.index}>{pad(i + 1)}</span>
+                  {card.eyebrow}
+                </p>
+                <h3 id={`program-${card.id}`} className={s.title}>
+                  <span className={s.mask}>
+                    <span data-line>{card.title}</span>
+                  </span>
+                </h3>
+                <p data-fade className={s.body}>
+                  {card.body}
+                </p>
+                {card.tags && (
+                  <ul data-fade className={s.tags}>
+                    {card.tags.map((tag) => (
+                      <li key={tag}>{tag}</li>
+                    ))}
+                  </ul>
+                )}
+                {card.closing && (
+                  <p data-fade className={s.closing}>
+                    {card.closing.map((line, j) => (
+                      <Fragment key={line}>
+                        {j > 0 && <br />}
+                        {line}
+                      </Fragment>
+                    ))}
+                  </p>
+                )}
+                {card.note && (
+                  <p data-fade className={s.note}>
+                    {card.note}
+                  </p>
+                )}
+              </div>
+            </article>
+          ))}
+
+          <header className={s.intro}>
+            <h2 id="programs-title" data-intro className={s.headline}>
               {programs.headline.map((line, i) => (
                 <Fragment key={line}>
                   {i > 0 && <br />}
@@ -345,88 +236,31 @@ export function Programs() {
                 </Fragment>
               ))}
             </h2>
-          </SectionIntro>
-        </div>
+            <p data-intro className={s.lede}>
+              {programs.body}
+            </p>
+          </header>
 
-        <div className="programs-grid">
-          <article
-            data-card="target"
-            className={`${CARD} programs-card--target`}
-          >
-            <div
-              aria-hidden
-              className="programs-card__orbit"
-            >
-              <div className="programs-card__orbit-inner h-full w-full">
-                <TargetArt />
-              </div>
-            </div>
-            <ProgramBody program={target} />
-          </article>
-
-          <article data-card="experience" className={`${CARD} programs-card--experience`}>
-            <div aria-hidden className="programs-card__art">
-              <div className="programs-card__art-inner h-full w-full">
-                <ExperienceArt />
-              </div>
-            </div>
-            <ProgramBody program={experience} />
-          </article>
-
-          <article data-card="juma360" className={`${CARD} programs-card--juma360`}>
-            <div className="programs-card__globe pointer-events-none absolute">
-              <div className="programs-card__globe-inner h-full w-full">
-                <Juma360Art />
-              </div>
-            </div>
-            <ProgramBody program={juma360} />
-          </article>
+          <nav className={s.rail} aria-label={programs.headline.join(" ")}>
+            {programs.cards.map((card, i) => (
+              <button
+                key={card.id}
+                type="button"
+                data-mark
+                data-state={i === 0 ? "active" : "next"}
+                className={s.railItem}
+                onClick={() => goTo(i)}
+              >
+                <span className={s.railNum}>{pad(i + 1)}</span>
+                <span className={s.railTitle}>{card.title}</span>
+                <span className={s.railBar} aria-hidden>
+                  <span data-fill className={s.railFill} />
+                </span>
+              </button>
+            ))}
+          </nav>
         </div>
       </div>
     </section>
-  );
-}
-
-function ProgramBody({ program }: { program: Program }) {
-  return (
-    <div className="programs-card__body relative flex min-w-0 flex-1 flex-col">
-      <p className="programs-card__eyebrow font-display tracking-[0.1em] text-lime-bright uppercase">
-        {program.eyebrow}
-      </p>
-
-      <h3 className="programs-card__title font-semibold">{program.title}</h3>
-
-      <p className="programs-card__copy text-muted-dark">{program.body}</p>
-
-      {program.tags && (
-        <div className="programs-card__tags flex flex-wrap">
-          {program.tags.map((tag) => (
-            <span
-              key={tag}
-              className="programs-card__tag rounded-full border-[1.3px] border-line-night font-tag leading-[1.5]"
-            >
-              {tag}
-            </span>
-          ))}
-        </div>
-      )}
-
-      {program.closing && (
-        <p className="programs-card__meta programs-card__closing font-display leading-[1.46] text-lime-bright uppercase">
-          {program.closing.map((line, i) => (
-            <Fragment key={line}>
-              {i > 0 && <br />}
-              {line}
-            </Fragment>
-          ))}
-        </p>
-      )}
-
-      {program.note && (
-        <p className="programs-card__meta programs-card__note font-display tracking-[0.02em] text-muted-dark uppercase">
-          {program.note}
-        </p>
-      )}
-    </div>
   );
 }
