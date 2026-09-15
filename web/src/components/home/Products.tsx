@@ -1110,10 +1110,19 @@ export function Products() {
       frame = requestAnimationFrame(() => {
         const bodies = Array.from(stage.querySelectorAll<HTMLElement>(".product-slide__body"));
         if (!narrow.matches) {
-          bodies.forEach((body) => body.style.removeProperty("--fit"));
+          bodies.forEach((body) => {
+            body.style.removeProperty("--fit");
+            body.style.removeProperty("--fit-shot");
+          });
           return;
         }
         const visible = probe.offsetHeight;
+        /* O vídeo cede a maior parte do espaço; o pack metade do que o vídeo
+           cede, com piso — é ele que dá a cara da faixa e passa por cima dela. */
+        const apply = (body: HTMLElement, f: number) => {
+          body.style.setProperty("--fit", f.toFixed(3));
+          body.style.setProperty("--fit-shot", Math.max(0.72, 1 - (1 - f) / 2).toFixed(3));
+        };
         /* Um fator por faixa, e o menor vale para as duas: o texto do KMEP é
            mais longo e pedia um pack menor que o do Aminosan — os dois produtos
            precisam ter o mesmo tamanho. */
@@ -1124,13 +1133,13 @@ export function Products() {
           /* Pé do vídeo contado do topo da faixa: transform do GSAP na faixa
              desloca os dois igualmente e some na diferença. */
           const overflow = (f: number) => {
-            body.style.setProperty("--fit", String(f));
+            apply(body, f);
             const foot = video.getBoundingClientRect().bottom - slide.getBoundingClientRect().top;
             return foot + FOOT - visible;
           };
           if (overflow(1) <= 0) return 1;
           /* Busca binária: o maior fator que cabe. Poucos passos bastam. */
-          let lo = 0.5;
+          let lo = 0.45;
           let hi = 1;
           if (overflow(lo) > 0) return lo; /* nem no mínimo cabe: fica no mínimo */
           for (let i = 0; i < 7; i++) {
@@ -1142,8 +1151,10 @@ export function Products() {
         });
         const shared = Math.min(1, ...fits);
         bodies.forEach((body) => {
-          if (shared >= 1) body.style.removeProperty("--fit");
-          else body.style.setProperty("--fit", shared.toFixed(3));
+          if (shared >= 1) {
+            body.style.removeProperty("--fit");
+            body.style.removeProperty("--fit-shot");
+          } else apply(body, shared);
         });
       });
     };
@@ -1160,7 +1171,10 @@ export function Products() {
       observer.disconnect();
       narrow.removeEventListener("change", fit);
       probe.remove();
-      stage.querySelectorAll<HTMLElement>(".product-slide__body").forEach((body) => body.style.removeProperty("--fit"));
+      stage.querySelectorAll<HTMLElement>(".product-slide__body").forEach((body) => {
+        body.style.removeProperty("--fit");
+        body.style.removeProperty("--fit-shot");
+      });
     };
   }, []);
 

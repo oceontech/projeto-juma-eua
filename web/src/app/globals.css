@@ -2569,12 +2569,16 @@ html[data-proof-overlap] .expertise-layer--dark .expertise-bg {
   .product-slide__shot {
     /* --fit (0,5–1) vem de Products.tsx: encolhe pack e vídeo o quanto for
        preciso para o conjunto caber na altura visível da tela. */
-    width: calc(min(92%, 390px) * var(--fit, 1));
+    width: calc(min(92%, 390px) * var(--fit-shot, 1));
     margin-top: 0;
     /* Mais negativa que antes: é ela que encurta o vão entre o pack e o
        título, sem mexer em onde a arte está desenhada. */
-    margin-bottom: calc(-1 * clamp(50px, 9svh, 104px) * var(--fit, 1));
-    top: calc(-1 * clamp(36px, 6svh, 70px) * var(--fit, 1));
+    /* Recolhe o mesmo que o pack sobe (abaixo): sem isso sobrava um vão entre ele
+       e o título, e o vídeo tinha de ceder o espaço. */
+    margin-bottom: calc(-1 * clamp(50px, 9svh, 104px) * var(--fit-shot, 1) - (1 - var(--fit-shot, 1)) * 110px);
+    /* O quanto o pack passa por cima da faixa não encolhe: quando ele cede
+       tamanho, sobe na mesma medida para continuar vazando o topo. */
+    top: calc(-1 * clamp(36px, 6svh, 70px) - (1 - var(--fit-shot, 1)) * 110px);
   }
 
   /* No estreito a tarja deita no pé da faixa, centrada e acima da barra do
