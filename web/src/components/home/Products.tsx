@@ -992,9 +992,10 @@ export function Products() {
                 start: () =>
                   `top -${Math.round(stage.offsetHeight - 2 * windowEl.offsetHeight)}px`,
                 end: () => "+=" + Math.round(windowEl.offsetHeight),
-                /* Atraso no acompanhamento: a borda continua se mexendo um instante
-                   depois que a rolagem para, como líquido assentando. */
-                scrub: 0.9,
+                /* Atraso curto: suaviza a rolagem por toque sem a borda ficar para
+                   trás e dar a impressão de voltar. */
+                scrub: 0.35,
+                onLeave: () => crops && (crops.style.transform = ""),
                 invalidateOnRefresh: true,
               },
             });
@@ -1022,44 +1023,43 @@ export function Products() {
             const wave = crops?.querySelector<SVGSVGElement>(".crops-wave");
             const wavePath = wave?.querySelector<SVGPathElement>("path");
             if (crops && wave && wavePath) {
-              /* A borda como líquido. Uma curva só, desenhada a cada quadro, em
-                 vez de trocar de forma no meio: três alturas — laterais e centro
-                 — que andam em curvas contínuas sobrepostas, e o SVG liga os três
-                 pontos com tangentes suaves. O centro sobe primeiro em cúpula e
-                 desce enquanto as laterais passam na frente; no fim tudo assenta
-                 reto com uma ondulação amortecida. Um balanço lateral pequeno tira
-                 a simetria perfeita, que lê como máquina. O `scrub` com atraso
-                 (abaixo) dá a inércia de líquido. */
-              const smooth = (a: number, b: number, x: number) => {
-                const k = Math.min(1, Math.max(0, (x - a) / (b - a)));
-                return k * k * (3 - 2 * k);
-              };
+              /* A borda que engole. Nada nela volta: a ponta do centro só sobe, e
+                 cada vez mais rápido. A seção sobe com a rolagem; por cima disso as
+                 laterais seguram um pouco (a seção inteira desce via `transform`) e
+                 aceleram mais que o centro — o centro sai na frente, pontudo, e as
+                 laterais o alcançam no fim, quando a borda fica reta.
+
+                 Em telas: topo da seção sem nada = `vh·(1−s)`; laterais =
+                 `vh·(1−s^2,6)`; ponta = `vh·(1−s^1,15)`. Os dois expoentes maiores
+                 que 1 dão aceleração; o das laterais maior mantém a ponta sempre à
+                 frente, e as três chegam juntas a zero em `s = 1`. */
               const liquid = { p: 0 };
               const draw = () => {
                 const s = liquid.p;
                 /* `getBoundingClientRect` e não `clientWidth`: no Safari o client*
-                   de um <svg> vale 0, e a onda era desenhada achatada e invisível. */
+                   de um <svg> vale 0. Largura e altura também vão como atributos —
+                   o Safari não repinta direito um <svg> sem tamanho próprio. */
                 const box = wave.getBoundingClientRect();
-                const w = box.width;
-                const h = box.height;
+                const w = Math.max(1, Math.round(box.width));
+                const h = Math.max(1, Math.round(box.height));
                 const vh = window.innerHeight;
-                /* Só o centro sobe: uma cúpula que nasce alta e vai achatando até a
-                   borda ficar reta quando a seção cobre a tela — o gesto conhecido
-                   de engolir, sem trocar de forma no caminho. */
-                const peak = Math.min(vh * 0.62, w * 0.5);
-                const center = peak * smooth(0, 0.14, s) * (1 - smooth(0.18, 0.8, s));
+                const lag = vh * (s - Math.pow(s, 2.6));
+                const lead = vh * (s - Math.pow(s, 1.15));
+                crops.style.transform = lag > 0.5 ? `translate3d(0, ${lag.toFixed(1)}px, 0)` : "";
+                /* Altura da ponta sobre as laterais, limitada pela largura para não
+                   virar uma agulha numa tela estreita. */
+                const center = Math.min(Math.max(0, lag - lead), w * 0.55, h);
                 const cx = w / 2;
-                /* Formato de sino: tangentes horizontais nas laterais e no topo,
-                   curtas o bastante para a ponta nascer fina e subir pontuda. Conforme
-                   achata, o mesmo desenho vira uma onda baixa e larga. */
                 const tan = w * 0.24;
                 const base = h + 1;
-                const top = h - Math.max(0, center);
+                const top = h - center;
+                wave.setAttribute("width", String(w));
+                wave.setAttribute("height", String(h));
                 wave.setAttribute("viewBox", `0 0 ${w} ${h}`);
                 wavePath.setAttribute(
                   "d",
-                  `M0 ${base} L0 ${h} C${tan} ${h} ${cx - tan} ${top} ${cx} ${top} ` +
-                    `C${cx + tan} ${top} ${w - tan} ${h} ${w} ${h} L${w} ${base} Z`,
+                  `M0 ${base} L0 ${h} C${tan} ${h} ${cx - tan} ${top.toFixed(1)} ${cx} ${top.toFixed(1)} ` +
+                    `C${cx + tan} ${top.toFixed(1)} ${w - tan} ${h} ${w} ${h} L${w} ${base} Z`,
                 );
               };
               /* O mesmo branco do fundo da seção, lido dela — nunca um valor à parte. */
@@ -1102,6 +1102,7 @@ export function Products() {
     const narrow = window.matchMedia("(max-width: 860px)");
     /* Folga até o pé visível: vídeo, respiro e a tarja deitada embaixo dele. */
     const FOOT = 58;
+    const bar = document.querySelector<HTMLElement>("header");
 
     const probe = document.createElement("div");
     probe.style.cssText = "position:fixed;top:0;left:0;width:0;height:100svh;visibility:hidden;pointer-events:none";
@@ -1123,7 +1124,7 @@ export function Products() {
         /* `f` vai de 0 (tela mínima) a 1 (tudo no tamanho cheio). Vídeo e pack
            cedem juntos e cada um tem piso: nenhum dos dois fica pequeno. */
         const apply = (body: HTMLElement, f: number) => {
-          body.style.setProperty("--fit", (0.8 + 0.2 * f).toFixed(3));
+          body.style.setProperty("--fit", (0.62 + 0.38 * f).toFixed(3));
           body.style.setProperty("--fit-shot", (0.7 + 0.3 * f).toFixed(3));
         };
         /* Um fator por faixa, e o menor vale para as duas: o texto do KMEP é
@@ -1135,8 +1136,25 @@ export function Products() {
           if (!slide || !video) return 1;
           /* Pé do vídeo contado do topo da faixa: transform do GSAP na faixa
              desloca os dois igualmente e some na diferença. */
+          const shotImg = body.querySelector<HTMLElement>(".product-slide__shot img");
           const overflow = (f: number) => {
             apply(body, f);
+            /* O pack não entra embaixo da barra do topo: se a arte (que começa a
+               6,4% da imagem) sobe além do pé da barra mais uma folga, desce só
+               o que passou. Medido do topo da faixa, como o vídeo. */
+            body.style.setProperty("--shot-drop", "0px");
+            if (shotImg) {
+              /* Sem o transform da entrada: antes de a faixa entrar o pack está em
+                 45% do tamanho, e medido assim ele parecia longe da barra. */
+              const shotBox = shotImg.parentElement as HTMLElement;
+              const saved = shotBox.style.transform;
+              shotBox.style.transform = "none";
+              const r = shotImg.getBoundingClientRect();
+              const artTop = r.top + r.height * 0.064 - slide.getBoundingClientRect().top;
+              shotBox.style.transform = saved;
+              const limit = (bar?.offsetHeight ?? 0) + 14;
+              if (artTop < limit) body.style.setProperty("--shot-drop", `${Math.round(limit - artTop)}px`);
+            }
             const foot = video.getBoundingClientRect().bottom - slide.getBoundingClientRect().top;
             return foot + FOOT - visible;
           };

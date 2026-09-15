@@ -2577,10 +2577,12 @@ html[data-proof-overlap] .expertise-layer--dark .expertise-bg {
        título, sem mexer em onde a arte está desenhada. */
     /* Recolhe o mesmo que o pack sobe (abaixo): sem isso sobrava um vão entre ele
        e o título, e o vídeo tinha de ceder o espaço. */
-    margin-bottom: calc(-1 * clamp(50px, 9svh, 104px) * var(--fit-shot, 1) - clamp(22px, 3svh, 26px) - (1 - var(--fit-shot, 1)) * 110px);
+    margin-bottom: calc(-1 * clamp(50px, 9svh, 104px) * var(--fit-shot, 1) - clamp(22px, 3svh, 26px) - (1 - var(--fit-shot, 1)) * 110px + var(--shot-drop, 0px));
     /* O quanto o pack passa por cima da faixa não encolhe: quando ele cede
        tamanho, sobe na mesma medida para continuar vazando o topo. */
-    top: calc(-1 * clamp(58px, 9svh, 96px) - (1 - var(--fit-shot, 1)) * 110px);
+    /* `--shot-drop` (Products.tsx) desce o pack o mínimo para ele não entrar
+       embaixo da barra do topo em telas baixas; a margem abaixo desce junto. */
+    top: calc(-1 * clamp(58px, 9svh, 96px) - (1 - var(--fit-shot, 1)) * 110px + var(--shot-drop, 0px));
   }
 
   /* No estreito a tarja deita no pé da faixa, centrada e acima da barra do
