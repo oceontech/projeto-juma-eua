@@ -1,265 +1,128 @@
 "use client";
 
-import { Fragment, useRef } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { gsap, SplitText, useGSAP, START } from "@/lib/gsap";
 import { useContent } from "@/components/layout/LocaleProvider";
 import s from "./Programs.module.css";
 
-/** Uma foto por frente, na ordem de `programs.cards`. */
 const PHOTOS = [
   { src: "/img/programs/bullseye.webp", position: "62% 50%" },
   { src: "/img/programs/experience.webp", position: "50% 50%" },
   { src: "/img/programs/juma360.webp", position: "50% 42%" },
 ] as const;
 
-/*
- * A cena presa conta em unidades: cada frente ocupa uma. A troca começa no
- * início da unidade seguinte e dura TURN — a foto nova sobe de baixo, com os
- * cantos de cima redondos, por cima da anterior, e o texto troca por máscara.
- * O resto da unidade é leitura parada.
- */
-const TURN = 0.55;
-
 const pad = (n: number) => String(n).padStart(2, "0");
 
-/**
- * As três frentes que rodam o ano todo, como capítulos em tela cheia — a
- * mesma linguagem imersiva da hero: foto de ponta a ponta, título grande
- * subindo de dentro de uma máscara e um trilho de progresso que também navega.
- */
+/** Foto à esquerda, leitura em superfície própria à direita. */
 export function Programs() {
   const { programs } = useContent().home;
-  const count = programs.cards.length;
+  const [activeIndex, setActiveIndex] = useState(0);
   const root = useRef<HTMLElement>(null);
-  const trigger = useRef<ScrollTrigger | null>(null);
+  const hasMounted = useRef(false);
+  const count = programs.cards.length;
+  const card = programs.cards[activeIndex];
+  const photo = PHOTOS[activeIndex] ?? PHOTOS[0];
 
-  /* Rola até o meio da leitura de cada frente. */
-  const goTo = (i: number) => {
-    const st = trigger.current;
-    if (!st) {
-      root.current?.querySelectorAll("[data-chapter]")[i]?.scrollIntoView({ behavior: "smooth" });
-      return;
-    }
-    const at = i === 0 ? 0.2 : i + TURN + 0.15;
-    window.scrollTo({ top: st.start + (st.end - st.start) * (at / count), behavior: "smooth" });
-  };
+  const show = (index: number) => setActiveIndex((index + count) % count);
 
-  useGSAP(
-    () => {
-      const section = root.current;
-      if (!section) return;
+  useGSAP(() => {
+    const section = root.current;
+    if (!section) return;
+    const q = gsap.utils.selector(section);
+    const intro = q("[data-programs-intro]");
+    const headline = q("[data-program-title]")[0];
+    const photoFrame = q("[data-program-photo]")[0];
+    const infoCard = q("[data-program-card]")[0];
+    const copy = q("[data-program-copy]");
+    const controls = q("[data-program-control]");
+    const mm = gsap.matchMedia();
 
-      const q = gsap.utils.selector(section);
-      const track = q("[data-programs-track]")[0];
-      const chapters = q("[data-chapter]");
-      const photos = q("[data-photo]");
-      const dims = q("[data-dim]");
-      const fills = q("[data-fill]");
-      const marks = q("[data-mark]");
-      const intro = q("[data-intro]");
-      const lines = (el: Element) => el.querySelectorAll("[data-line]");
-      const fades = (el: Element) => el.querySelectorAll("[data-fade]");
-      if (!track || chapters.length === 0) return;
-
-      const mm = gsap.matchMedia();
-
-      mm.add("(prefers-reduced-motion: no-preference)", () => {
-        let active = -1;
-        const mark = (i: number) => {
-          if (i === active) return;
-          active = i;
-          marks.forEach((m, j) => {
-            m.dataset.state = j === i ? "active" : j < i ? "done" : "next";
-            if (j === i) m.setAttribute("aria-current", "step");
-            else m.removeAttribute("aria-current");
-          });
-        };
-        mark(0);
-
-        /* Quadro de partida: só a primeira frente existe. */
-        gsap.set(chapters.slice(1), { clipPath: "inset(100% 0% 0% 0% round 48px 48px 0px 0px)" });
-        gsap.set(photos, { scale: 1.22 });
-        gsap.set(dims, { opacity: 0 });
-        gsap.set(fills, { scaleX: 0, transformOrigin: "left center" });
-        chapters.slice(1).forEach((chapter) => {
-          /* `y` junto do `yPercent`, sempre: sem ele o GSAP lê a translação já
-             aplicada como pixels e soma com a porcentagem. */
-          gsap.set(lines(chapter), { y: 0, yPercent: 115 });
-          gsap.set(fades(chapter), { autoAlpha: 0, y: 28 });
+    mm.add("(prefers-reduced-motion: no-preference)", () => {
+      let headlineSplit: SplitText | undefined;
+      if (headline) {
+        headlineSplit = SplitText.create(headline, {
+          type: "lines",
+          mask: "lines",
+          autoSplit: true,
+          onSplit: (self) => gsap.from(self.lines, {
+            yPercent: 108,
+            duration: 0.9,
+            stagger: 0.1,
+            ease: "power3.out",
+            scrollTrigger: { trigger: headline, start: START, toggleActions: "play none none none" },
+          }),
         });
-
-        /* Entrada: enquanto a seção sobe, a primeira frente chega — a foto
-           afasta, o título sobe de dentro do corte e o resto assenta. */
-        gsap
-          .timeline({
-            scrollTrigger: { trigger: track, start: "top 80%", end: "top top", scrub: 0.6 },
-          })
-          .fromTo(photos[0], { scale: 1.4 }, { scale: 1.22, duration: 1, ease: "none" }, 0)
-          .fromTo(intro, { y: 36, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.45, stagger: 0.08, ease: "power2.out" }, 0.1)
-          .fromTo(lines(chapters[0]), { y: 0, yPercent: 115 }, { y: 0, yPercent: 0, duration: 0.55, ease: "power3.out" }, 0.3)
-          .fromTo(fades(chapters[0]), { y: 28, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.45, stagger: 0.06, ease: "power2.out" }, 0.45);
-
-        /* A cena presa. */
-        const tl = gsap.timeline({
-          defaults: { ease: "none" },
-          scrollTrigger: {
-            trigger: track,
-            start: "top top",
-            end: "bottom bottom",
-            scrub: 0.6,
-            invalidateOnRefresh: true,
-            onUpdate: (self) =>
-              mark(gsap.utils.clamp(0, count - 1, Math.floor(self.progress * count - TURN / 2))),
-          },
-        });
-        trigger.current = tl.scrollTrigger ?? null;
-
-        chapters.forEach((chapter, i) => {
-          /* A foto afasta devagar enquanto a frente está em cena. */
-          tl.fromTo(photos[i], { scale: 1.22 }, { scale: 1.02, duration: i === count - 1 ? 1 : 1 + TURN, immediateRender: false }, i);
-          tl.fromTo(fills[i], { scaleX: 0 }, { scaleX: 1, duration: 1, immediateRender: false }, i);
-          if (i === 0) return;
-
-          const previous = chapters[i - 1];
-          tl
-            /* O texto de quem sai sobe e some antes de a foto nova cobrir. */
-            .to(fades(previous), { y: -24, autoAlpha: 0, duration: TURN * 0.4, stagger: 0.02, ease: "power2.in" }, i)
-            .to(lines(previous), { y: 0, yPercent: -115, duration: TURN * 0.45, ease: "power2.in" }, i)
-            .to(dims[i - 1], { opacity: 0.65, duration: TURN, ease: "power1.in" }, i)
-            /* A foto nova sobe de baixo, com os cantos de cima redondos que
-               se desfazem na chegada. */
-            .fromTo(
-              chapter,
-              { clipPath: "inset(100% 0% 0% 0% round 48px 48px 0px 0px)" },
-              { clipPath: "inset(0% 0% 0% 0% round 0px 0px 0px 0px)", duration: TURN, ease: "power3.inOut", immediateRender: false },
-              i,
-            )
-            .fromTo(lines(chapter), { y: 0, yPercent: 115 }, { y: 0, yPercent: 0, duration: TURN * 0.7, ease: "power3.out", immediateRender: false }, i + TURN * 0.5)
-            .fromTo(
-              fades(chapter),
-              { y: 28, autoAlpha: 0 },
-              { y: 0, autoAlpha: 1, duration: TURN * 0.6, stagger: 0.03, ease: "power2.out", immediateRender: false },
-              i + TURN * 0.65,
-            );
-        });
-
-        tl.set({}, {}, count);
-
-        return () => {
-          trigger.current = null;
-        };
+      }
+      gsap.fromTo(intro.filter((item) => item !== headline), { autoAlpha: 0, y: 24 }, {
+        autoAlpha: 1, y: 0, duration: 0.7, stagger: 0.1, ease: "power3.out",
+        scrollTrigger: { trigger: section, start: START, toggleActions: "play none none none" },
       });
+      gsap.timeline({ scrollTrigger: { trigger: section, start: "top 76%", toggleActions: "play none none none" } })
+        .fromTo(photoFrame, { autoAlpha: 0, clipPath: "inset(8% 8% 8% 8% round 36px)", scale: 1.08, x: -28 }, { autoAlpha: 1, clipPath: "inset(0% 0% 0% 0% round 36px)", scale: 1, x: 0, duration: 1, ease: "power3.out" })
+        .fromTo(infoCard, { autoAlpha: 0, clipPath: "inset(0% 12% 0% 0% round 36px)", scale: 0.88, y: 42 }, { autoAlpha: 1, clipPath: "inset(0% 0% 0% 0% round 36px)", scale: 1, y: 0, duration: 0.9, ease: "power3.out" }, 0.16)
+        .fromTo(copy, { autoAlpha: 0, y: 22 }, { autoAlpha: 1, y: 0, duration: 0.55, stagger: 0.08, ease: "power3.out" }, 0.48)
+        .fromTo(controls, { autoAlpha: 0, y: 18 }, { autoAlpha: 1, y: 0, duration: 0.5, stagger: 0.06, ease: "power2.out" }, 0.68);
+      return () => headlineSplit?.revert();
+    });
+    return () => mm.revert();
+  }, { scope: root });
 
-      return () => mm.revert();
-    },
-    { scope: root },
-  );
+  useEffect(() => {
+    if (!hasMounted.current) { hasMounted.current = true; return; }
+    const section = root.current;
+    if (!section || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const context = gsap.context(() => {
+      gsap.timeline()
+        .fromTo("[data-program-image]", { autoAlpha: 0, scale: 1.08 }, { autoAlpha: 1, scale: 1, duration: 0.58, ease: "power2.out" })
+        .fromTo("[data-program-photo]", { scale: 0.975 }, { scale: 1, duration: 0.62, ease: "power3.out" }, 0)
+        .fromTo("[data-program-copy]", { autoAlpha: 0, y: 18 }, { autoAlpha: 1, y: 0, duration: 0.45, stagger: 0.055, ease: "power3.out" }, 0.13);
+    }, section);
+    return () => context.revert();
+  }, [activeIndex]);
 
   return (
-    <section
-      ref={root}
-      id="programs"
-      className={s.section}
-      data-nav-theme="dark"
-      aria-labelledby="programs-title"
-    >
-      <div data-programs-track className={s.track} style={{ ["--count" as string]: count }}>
-        <div className={s.window}>
-          {programs.cards.map((card, i) => (
-            <article
-              key={card.id}
-              data-chapter
-              className={s.chapter}
-              style={{ zIndex: i + 1 }}
-              aria-labelledby={`program-${card.id}`}
-            >
-              <div data-photo className={s.photo}>
-                <Image
-                  src={PHOTOS[i]?.src ?? PHOTOS[0].src}
-                  alt=""
-                  fill
-                  sizes="100vw"
-                  quality={90}
-                  className={s.image}
-                  style={{ objectPosition: PHOTOS[i]?.position }}
-                />
-              </div>
-              <div className={s.scrim} aria-hidden />
-              <div data-dim className={s.dim} aria-hidden />
+    <section ref={root} id="programs" className={s.section} data-nav-theme="dark" aria-labelledby="programs-title">
+      <div className={s.wrap}>
+        <header className={s.intro}>
+          <h2 id="programs-title" data-program-title data-programs-intro className={s.headline}>
+            {programs.headline.map((line, i) => <Fragment key={line}>{i > 0 && <br />}{line}</Fragment>)}
+          </h2>
+          <p data-programs-intro className={s.lede}>{programs.body}</p>
+        </header>
 
-              <div className={s.copy}>
-                <p data-fade className={s.eyebrow}>
-                  <span className={s.index}>{pad(i + 1)}</span>
-                  {card.eyebrow}
-                </p>
-                <h3 id={`program-${card.id}`} className={s.title}>
-                  <span className={s.mask}>
-                    <span data-line>{card.title}</span>
-                  </span>
-                </h3>
-                <p data-fade className={s.body}>
-                  {card.body}
-                </p>
-                {card.tags && (
-                  <ul data-fade className={s.tags}>
-                    {card.tags.map((tag) => (
-                      <li key={tag}>{tag}</li>
-                    ))}
-                  </ul>
-                )}
-                {card.closing && (
-                  <p data-fade className={s.closing}>
-                    {card.closing.map((line, j) => (
-                      <Fragment key={line}>
-                        {j > 0 && <br />}
-                        {line}
-                      </Fragment>
-                    ))}
-                  </p>
-                )}
-                {card.note && (
-                  <p data-fade className={s.note}>
-                    {card.note}
-                  </p>
-                )}
-              </div>
-            </article>
-          ))}
+        <div className={s.stage}>
+          <div data-program-photo className={s.photoFrame}>
+            <div key={photo.src} data-program-image className={s.photo}>
+              <Image src={photo.src} alt="" fill sizes="(max-width: 960px) 100vw, 52vw" quality={90} className={s.image} style={{ objectPosition: photo.position }} priority={activeIndex === 0} />
+            </div>
+            <div className={s.photoShade} aria-hidden />
+          </div>
 
-          <header className={s.intro}>
-            <h2 id="programs-title" data-intro className={s.headline}>
-              {programs.headline.map((line, i) => (
-                <Fragment key={line}>
-                  {i > 0 && <br />}
-                  {line}
-                </Fragment>
-              ))}
-            </h2>
-            <p data-intro className={s.lede}>
-              {programs.body}
-            </p>
-          </header>
+          <article data-program-card className={s.card} aria-labelledby={`program-${card.id}`}>
+            <div key={card.id} className={s.cardInner}>
+              <p data-program-copy className={s.eyebrow}>{card.eyebrow}</p>
+              <h3 data-program-copy id={`program-${card.id}`} className={s.title}>{card.title}</h3>
+              <p data-program-copy className={s.body}>{card.body}</p>
+              {card.tags && <ul data-program-copy className={s.tags}>{card.tags.map((tag) => <li key={tag}>{tag}</li>)}</ul>}
+              {card.closing && <p data-program-copy className={s.closing}>{card.closing.map((line, i) => <Fragment key={line}>{i > 0 && <br />}{line}</Fragment>)}</p>}
+              {card.note && <p data-program-copy className={s.note}>{card.note}</p>}
+            </div>
+          </article>
+        </div>
 
-          <nav className={s.rail} aria-label={programs.headline.join(" ")}>
-            {programs.cards.map((card, i) => (
-              <button
-                key={card.id}
-                type="button"
-                data-mark
-                data-state={i === 0 ? "active" : "next"}
-                className={s.railItem}
-                onClick={() => goTo(i)}
-              >
-                <span className={s.railNum}>{pad(i + 1)}</span>
-                <span className={s.railTitle}>{card.title}</span>
-                <span className={s.railBar} aria-hidden>
-                  <span data-fill className={s.railFill} />
-                </span>
+        <nav className={s.controls} aria-label={programs.controlsLabel}>
+          <button data-program-control type="button" className={s.arrow} onClick={() => show(activeIndex - 1)} aria-label={programs.previous}><ChevronLeft aria-hidden size={20} strokeWidth={1.7} /></button>
+          <div className={s.chapterControls}>
+            {programs.cards.map((program, i) => (
+              <button key={program.id} data-program-control type="button" className={s.chapter} data-active={i === activeIndex || undefined} onClick={() => show(i)} aria-current={i === activeIndex ? "true" : undefined}>
+                <span>{pad(i + 1)}</span><span>{program.title}</span>
               </button>
             ))}
-          </nav>
-        </div>
+          </div>
+          <button data-program-control type="button" className={s.arrow} onClick={() => show(activeIndex + 1)} aria-label={programs.next}><ChevronRight aria-hidden size={20} strokeWidth={1.7} /></button>
+        </nav>
       </div>
     </section>
   );

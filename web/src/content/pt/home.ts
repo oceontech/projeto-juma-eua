@@ -169,6 +169,9 @@ export const crops: typeof en.crops = {
 export const programs: typeof en.programs = {
   headline: ["Três frentes", "por trás do galão."],
   body: "Um produto é o fim de um processo. Estes são os três programas que rodam o ano todo e o sustentam: pesquisa, portas abertas e um time que se encontra cara a cara.",
+  controlsLabel: "Navegar pelos programas da Juma",
+  previous: "Programa anterior",
+  next: "Próximo programa",
   cards: [
     {
       id: "target",
