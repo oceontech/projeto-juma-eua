@@ -241,7 +241,7 @@ export function AminoAcidDelivery() {
               </span>
               <StepCircle mobileCompact step={{ icon: "/img/aminosan/icon-free-amino-acids.svg", label: delivery.shortRoute.stepLabel }} />
               <div data-route-visual="" className="relative h-[82px] w-[100px] shrink-0 sm:h-[124px] sm:w-[170px]">
-                <Image src="/img/aminosan/delivery-aminosan.webp" alt="Aminosan bottle" fill sizes="170px" className="scale-[1.22] object-contain" />
+                <Image src="/img/aminosan/delivery-aminosan-us.webp" alt="Aminosan 2.5 gal jug" fill sizes="170px" className="scale-[1.22] object-contain" />
               </div>
             </div>
             <RouteRail animateOnMobile points={2} showLineOnMobile={false} />

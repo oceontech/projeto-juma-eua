@@ -85,7 +85,7 @@ export const products: typeof en.products = [
     title: "KMEP Ultra®",
     body: "Vai no tanque com o seu inseticida e tira a praga do esconderijo, para que a aplicação que você já pagou chegue de fato até ela.",
     href: "/kmep-ultra",
-    image: { src: "/img/pack-kmep.webp", alt: "Embalagens do KMEP Ultra" },
+    image: { src: "/img/pack-kmep-us.webp", alt: "Galão de 2,5 gal do KMEP Ultra com rótulo americano" },
   },
   {
     id: "aminosan",
@@ -93,7 +93,7 @@ export const products: typeof en.products = [
     title: "Aminosan®",
     body: "Os blocos de construção, entregues prontos para uso. No campo há 40 anos.",
     href: "/aminosan",
-    image: { src: "/img/pack-aminosan.webp", alt: "Embalagens do Aminosan" },
+    image: { src: "/img/pack-aminosan-us.webp", alt: "Galão de 2,5 gal do Aminosan com rótulo americano" },
   },
 ];
 

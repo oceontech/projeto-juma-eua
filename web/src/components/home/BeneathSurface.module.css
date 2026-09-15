@@ -114,7 +114,7 @@
 .bottom { align-items: end; margin-top: auto; padding-top: 56px; }
 .product { display: grid; grid-template-columns: 80px 1fr; align-items: center; gap: 20px; width: 350px; padding: 18px; border: 1px solid var(--surface-line); border-radius: 16px; background: rgb(7 17 11 / .66); -webkit-backdrop-filter: blur(18px); backdrop-filter: blur(18px); pointer-events: auto; }
 .thumb { align-self: stretch; min-height: 108px; border-radius: 9px; background: radial-gradient(ellipse at 50% 80%, rgb(183 199 62 / .17), transparent 75%), #122019; background-size: cover; background-position: center; background-repeat: no-repeat; }
-.section[data-loaded="true"] .thumb { background-image: url('/img/pack-aminosan.webp'), radial-gradient(ellipse at 50% 80%, rgb(183 199 62 / .17), transparent 75%); background-size: 90% auto, cover; }
+.section[data-loaded="true"] .thumb { background-image: url('/img/pack-aminosan-us.webp'), radial-gradient(ellipse at 50% 80%, rgb(183 199 62 / .17), transparent 75%); background-size: 90% auto, cover; }
 .productLabel { color: var(--surface-muted); font-size: 8px; letter-spacing: .12em; }
 .product h3 { margin-top: 4px; font-size: 26px; line-height: 1.1; letter-spacing: -.035em; }
 .product sup { font-size: 12px; top: -.7em; }

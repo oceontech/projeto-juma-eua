@@ -75,7 +75,7 @@ export async function ProductDetails() {
         </Reveal>
 
         <Reveal y={20} delay={0.08} className="relative mt-[clamp(32px,3.6vw,56px)] aspect-[1320/664] w-full overflow-hidden rounded-[19px]">
-          <Image src="/img/aminosan/guaranteed-analysis-product.webp" alt="Aminosan product line" fill className="object-cover" />
+          <Image src="/img/aminosan/guaranteed-analysis-us.webp" alt="Aminosan 2.5 gal jug with U.S. label" fill className="object-cover" />
         </Reveal>
       </div>
 

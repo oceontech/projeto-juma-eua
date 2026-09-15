@@ -86,7 +86,7 @@ export const operationalBenefits = {
       accent: "#257a44",
       heading: "Goes in with the insecticide you already bought",
       body: "Compatible in tank mix. No separate pass, no extra diesel, no new weather window.",
-      image: "/img/aminosan/benefit-product.webp",
+      image: "/img/aminosan/benefit-product-us.webp",
     },
     {
       n: "02",

@@ -80,7 +80,7 @@ export const operationalBenefits: typeof en.operationalBenefits = {
       accent: "#257a44",
       heading: "Vai junto com o inseticida que você já comprou",
       body: "Compatível em mistura de tanque. Sem passada extra, sem diesel a mais, sem nova janela de clima.",
-      image: "/img/aminosan/benefit-product.webp",
+      image: "/img/aminosan/benefit-product-us.webp",
     },
     {
       n: "02",

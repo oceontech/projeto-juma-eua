@@ -112,7 +112,7 @@ export const products: Product[] = [
     title: "KMEP Ultra®",
     body: "It goes in the tank with your insecticide and drives the target out of hiding, so the spray you already paid for actually reaches it.",
     href: "/kmep-ultra",
-    image: { src: "/img/pack-kmep.webp", alt: "KMEP Ultra containers" },
+    image: { src: "/img/pack-kmep-us.webp", alt: "KMEP Ultra 2.5 gal jug with U.S. label" },
   },
   {
     id: "aminosan",
@@ -121,7 +121,7 @@ export const products: Product[] = [
     title: "Aminosan®",
     body: "The building blocks, delivered ready to use. In the field for 40 years.",
     href: "/aminosan",
-    image: { src: "/img/pack-aminosan.webp", alt: "Aminosan containers" },
+    image: { src: "/img/pack-aminosan-us.webp", alt: "Aminosan 2.5 gal jug with U.S. label" },
   },
 ];
 

@@ -160,7 +160,7 @@ export function OperationalBenefits() {
                 )}
                 {card.image && (
                   <div className="relative mt-auto ml-auto h-[160px] w-[220px] lg:h-[237px] lg:w-[327px]">
-                    <Image src={card.image} alt="Aminosan bottle" fill className="object-contain object-bottom" />
+                    <Image src={card.image} alt="Aminosan 2.5 gal jug" fill className="object-contain object-bottom" />
                   </div>
                 )}
 
