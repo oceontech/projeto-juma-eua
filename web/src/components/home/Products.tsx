@@ -652,7 +652,9 @@ export function Products() {
                 Math.max(
                   1,
                   /* Menos uma tela: a última é a da troca com as culturas. */
-                  stage.offsetHeight - 2 * windowEl.offsetHeight + lead(),
+                  /* No estreito o palco tem uma tela a mais: a da seção seguinte
+                     subindo por cima (ver a saída, abaixo). */
+                  stage.offsetHeight - (narrow ? 2 : 1) * windowEl.offsetHeight + lead(),
                 ),
               scrub: true,
               refreshPriority: 4,
@@ -970,111 +972,66 @@ export function Products() {
           timeline.to({}, { duration: 0.001 }, 0.999);
 
           /* --------------------------------------------------------- saída */
-          /* A seção das culturas engole o Aminosan de baixo para cima, na tela
-             extra de curso do palco (globals.css). A subida é a própria
-             rolagem; aqui fica a forma: a borda de cima nasce como uma cúpula
-             alta — centro bem acima das laterais — e vai achatando até virar
-             reta quando cobre a tela. `power2.out` para a curva ceder rápido no
-             começo e assentar devagar, que é o que dá o ar de massa subindo.
+          /* Duas saídas, como na troca entre os produtos.
 
-             Enquanto é coberto, o Aminosan recua um pouco e desfoca, e só perde
-             nitidez de vez quando já está quase todo por baixo. Gatilho próprio,
-             começando onde o timeline principal termina; `scale` e `filter` na
-             faixa com `immediateRender: false`, porque o timeline principal
-             também escreve `filter` nela. */
+             Desktop: quando a janela solta, ela sobe com a página e a seção das
+             culturas entra por baixo — a componente vertical já vem daí. O que
+             falta é a deriva para a esquerda, e é só isso que este trecho faz,
+             em `x` (o timeline usa `xPercent`, e o GSAP soma os dois). Linear,
+             porque a componente vertical é a rolagem, que também é linear.
+
+             Celular: cartões empilhados (o padrão "stacking cards" do
+             ScrollTrigger). O palco trava uma tela a mais e a seção das culturas
+             sobe por cima dele com os cantos redondos (globals.css); enquanto é
+             coberto, o Aminosan recua e esmaece. Só `transform` e `opacity` —
+             nada de SVG, máscara ou filtro, que o Safari do iPhone não pintava
+             direito nesta sobreposição.
+
+             Nos dois, gatilho próprio começando onde o timeline principal
+             termina. */
           {
-            const crops = document.getElementById("crops");
             const exitTimeline = gsap.timeline({
               onUpdate: syncFlora,
               scrollTrigger: {
                 id: "product-stage-exit",
                 trigger: stage,
                 start: () =>
-                  `top -${Math.round(stage.offsetHeight - 2 * windowEl.offsetHeight)}px`,
-                end: () => "+=" + Math.round(windowEl.offsetHeight),
-                /* Atraso curto: suaviza a rolagem por toque sem a borda ficar para
-                   trás e dar a impressão de voltar. */
-                scrub: 0.35,
-                onLeave: () => crops && (crops.style.transform = ""),
+                  `top -${Math.round(stage.offsetHeight - (narrow ? 2 : 1) * windowEl.offsetHeight)}px`,
+                end: () => "+=" + Math.round(windowEl.offsetHeight * (narrow ? 1 : 0.75)),
+                scrub: true,
                 invalidateOnRefresh: true,
               },
             });
-            exitTimeline
-              .fromTo(
+            if (narrow) {
+              exitTimeline
+                .fromTo(
+                  amino,
+                  { scale: 1, transformOrigin: "50% 20%" },
+                  { scale: 0.9, duration: 1, ease: "none", immediateRender: false },
+                  0,
+                )
+                .fromTo(
+                  amino,
+                  { opacity: 1 },
+                  { opacity: 0.2, duration: 0.7, ease: "power1.in", immediateRender: false },
+                  0.3,
+                );
+            } else {
+              exitTimeline.fromTo(
                 amino,
-                { scale: 1, filter: SHARP },
-                {
-                  scale: 0.92,
-                  filter: BLUR,
-                  duration: 0.7,
-                  ease: "power1.in",
-                  immediateRender: false,
-                },
-                0.3,
-              )
-              /* Na saída a flora recua para dentro da faixa em vez de só apagar:
-                 some junto com quem a sustentava. */
-              .fromTo(
-                a.floraExit,
-                { opacity: 1, y: 0 },
-                { opacity: 0, y: 14, duration: 0.55, ease: "power2.inOut" },
+                { x: 0 },
+                { x: () => -amino.offsetWidth, ease: "none", duration: 1 },
                 0,
               );
-            const wave = crops?.querySelector<SVGSVGElement>(".crops-wave");
-            const wavePath = wave?.querySelector<SVGPathElement>("path");
-            if (crops && wave && wavePath) {
-              /* A borda que engole. Nada nela volta: a ponta do centro só sobe, e
-                 cada vez mais rápido. A seção sobe com a rolagem; por cima disso as
-                 laterais seguram um pouco (a seção inteira desce via `transform`) e
-                 aceleram mais que o centro — o centro sai na frente, pontudo, e as
-                 laterais o alcançam no fim, quando a borda fica reta.
-
-                 Em telas: topo da seção sem nada = `vh·(1−s)`; laterais =
-                 `vh·(1−s^2,6)`; ponta = `vh·(1−s^1,15)`. Os dois expoentes maiores
-                 que 1 dão aceleração; o das laterais maior mantém a ponta sempre à
-                 frente, e as três chegam juntas a zero em `s = 1`. */
-              const liquid = { p: 0 };
-              const draw = () => {
-                const s = liquid.p;
-                /* `getBoundingClientRect` e não `clientWidth`: no Safari o client*
-                   de um <svg> vale 0. Largura e altura também vão como atributos —
-                   o Safari não repinta direito um <svg> sem tamanho próprio. */
-                const box = wave.getBoundingClientRect();
-                const w = Math.max(1, Math.round(box.width));
-                const h = Math.max(1, Math.round(box.height));
-                const vh = window.innerHeight;
-                const lag = vh * (s - Math.pow(s, 2.6));
-                const lead = vh * (s - Math.pow(s, 1.15));
-                crops.style.transform = lag > 0.5 ? `translate3d(0, ${lag.toFixed(1)}px, 0)` : "";
-                /* Altura da ponta sobre as laterais, limitada pela largura para não
-                   virar uma agulha numa tela estreita. */
-                const center = Math.min(Math.max(0, lag - lead), w * 0.55, h);
-                const cx = w / 2;
-                const tan = w * 0.24;
-                const base = h + 1;
-                const top = h - center;
-                wave.setAttribute("width", String(w));
-                wave.setAttribute("height", String(h));
-                wave.setAttribute("viewBox", `0 0 ${w} ${h}`);
-                wavePath.setAttribute(
-                  "d",
-                  `M0 ${base} L0 ${h} C${tan} ${h} ${cx - tan} ${top.toFixed(1)} ${cx} ${top.toFixed(1)} ` +
-                    `C${cx + tan} ${top.toFixed(1)} ${w - tan} ${h} ${w} ${h} L${w} ${base} Z`,
-                );
-              };
-              /* O mesmo branco do fundo da seção, lido dela — nunca um valor à parte. */
-              wavePath.setAttribute("fill", getComputedStyle(crops).backgroundColor);
-              draw();
-              exitTimeline
-                .fromTo(liquid, { p: 0 }, { p: 1, duration: 1, ease: "none", onUpdate: draw }, 0)
-                /* O conteúdo só aparece com 37% da subida, saindo do branco. */
-                .fromTo(
-                  crops,
-                  { "--reveal": 0 },
-                  { "--reveal": 1, duration: 0.3, ease: "power2.out" },
-                  0.37,
-                );
             }
+            /* Na saída a flora recua para dentro da faixa em vez de só apagar:
+               some junto com quem a sustentava. */
+            exitTimeline.fromTo(
+              a.floraExit,
+              { opacity: 1, y: 0 },
+              { opacity: 0, y: 14, duration: 0.55, ease: "power2.inOut" },
+              0,
+            );
           }
 
           timeline.progress(0);

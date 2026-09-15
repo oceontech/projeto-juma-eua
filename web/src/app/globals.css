@@ -2957,44 +2957,20 @@ html[data-proof-overlap] .expertise-layer--dark .expertise-bg {
   }
 }
 
-/* Saída do bloco de produtos: a seção das culturas engole a do Aminosan de
-   baixo para cima. O palco trava por uma tela a mais e, nela, as culturas sobem
-   por cima da janela — é a `margin-top` negativa que as põe ali. A borda de
-   cima é uma onda líquida (`.crops-wave`) desenhada por Products.tsx.
+/* Saída do bloco de produtos no celular: cartões empilhados. O palco trava uma
+   tela a mais e a seção das culturas sobe por cima da janela — é a `margin-top`
+   negativa que a põe ali — com os cantos de cima redondos. O recuo do Aminosan
+   é de Products.tsx. No desktop nada disso: a saída é a deriva diagonal.
    Só com movimento: sem ele o palco não trava e as seções seguem em fila. */
-@media (prefers-reduced-motion: no-preference) {
+@media (max-width: 860px) and (prefers-reduced-motion: no-preference) {
   .product-stage {
     height: calc(200lvh + var(--product-run));
   }
 
   #crops {
-    --reveal: 1;
     z-index: 3;
     margin-top: -100lvh;
-    /* A onda mora acima da borda de cima: o corte vertical precisa ficar
-       aberto. O horizontal continua fechado para o corredor de imagens. */
-    overflow: visible;
-    overflow-x: clip;
-  }
-
-  /* A borda líquida: um SVG branco colado no topo da seção, desenhado a cada
-     quadro por Products.tsx. Plano quando a seção está parada. */
-  .crops-wave {
-    position: absolute;
-    left: 0;
-    bottom: 100%;
-    display: block;
-    width: 100%;
-    height: 75lvh;
-    margin-bottom: -1px;
-    overflow: visible;
-    pointer-events: none;
-  }
-
-  /* Até 37% da subida a seção entra branca e sólida; dali o conteúdo aparece
-     com fade e saindo do desfoque. O branco é o fundo da seção, que não some. */
-  #crops .crops-content {
-    opacity: var(--reveal);
-    filter: blur(calc((1 - var(--reveal)) * 16px));
+    border-radius: var(--round-r) var(--round-r) 0 0;
+    box-shadow: 0 -16px 40px rgb(0 0 0 / 0.18);
   }
 }
