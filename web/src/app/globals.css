@@ -487,7 +487,10 @@
      inteira, que é o ponto do efeito. */
   .product-stage {
     --product-run: clamp(1700px, 265svh, 3200px);
-    --slide-r: clamp(18px, 1.6vw, 30px);
+    /* Largura do pack no largo. O padding e a altura mínima da faixa são
+       frações dela, então faixa e pack mudam de tamanho juntos. */
+    --shot-w: clamp(230px, 27vw, 400px);
+    --slide-r: var(--round-r);
     --cta-h: clamp(42px, 3.4vw, 56px);
     position: relative;
     height: calc(100lvh + var(--product-run));
@@ -508,6 +511,9 @@
     grid-area: 1 / 1;
     position: relative;
     align-self: center;
+    /* Abaixo do centro: o pack passa por cima da borda e, centrado, chegava
+       quase no logo da barra. */
+    top: clamp(24px, 5svh, 56px);
     justify-self: start;
     width: calc(100% + 2 * var(--slide-r));
     margin-left: calc(-1 * var(--slide-r));
@@ -742,8 +748,8 @@
     column-gap: clamp(12px, 1.7vw, 38px);
     /* O raio entra no padding para o conteúdo continuar medido pela tela, e
        não pela faixa, que é maior que ela. */
-    padding: clamp(24px, 2.6vw, 40px) calc(var(--slide-r) + var(--spacing-gut));
-    min-height: clamp(248px, 35svh, 372px);
+    padding: calc(0.06 * var(--shot-w)) calc(var(--slide-r) + var(--spacing-gut));
+    min-height: calc(0.62 * var(--shot-w));
   }
 
   /* ------------------------------------------------------- texto da faixa */
@@ -811,10 +817,13 @@
   /* O pack sobe além da borda de cima da faixa, como no layout. Nada corta
      porque quem recorta é a janela, não a faixa. */
   .product-slide__shot {
+    /* Os recuos são frações da largura do pack (--shot-w, no palco): a altura
+       da faixa é puxada por esta caixa, e em proporção o pack fica com a base
+       perto do pé da faixa e cerca de um quarto dele passando por cima. */
     position: relative;
-    width: clamp(210px, 27vw, 380px);
-    margin-top: calc(-1 * clamp(40px, 5vw, 96px));
-    margin-bottom: calc(-1 * clamp(4px, 0.8vw, 14px));
+    width: var(--shot-w);
+    margin-top: calc(-0.277 * var(--shot-w));
+    margin-bottom: calc(-0.068 * var(--shot-w));
   }
 
   /* O arquivo tem cerca de um terço de transparência em volta da arte, então
@@ -824,7 +833,7 @@
   .product-slide__shot img {
     width: 100%;
     height: auto;
-    transform: translateY(-7%) scale(1.2);
+    transform: scale(1.2);
   }
 
   .product-slide__video {
@@ -2493,18 +2502,22 @@ html[data-proof-overlap] .expertise-layer--dark .expertise-bg {
      texto e vira um filete em pé na borda esquerda, como no layout. */
   .product-stage {
     --product-run: clamp(1600px, 255svh, 2900px);
-    --slide-r: 22px;
+    --slide-r: var(--round-r);
     --cta-h: 46px;
     /* O quanto a faixa desce do topo da tela. É essa folga que deixa o pack
        passar por cima da borda, como no desktop, e é ela que faz os cantos de
        cima existirem para poderem ser arredondados. Ela desce quase um quinto
        da tela: a faixa fica mais baixa, o pack ganha o dobro de sobra por
        cima dela e o branco da página continua aparecendo no alto. */
-    --band-top: clamp(92px, 19svh, 176px);
+    /* -20px: sobe faixa, pack, texto e vídeo juntos e abre folga embaixo do
+       vídeo — o corpo cresce com o conteúdo, então padding no pé não subiria nada. */
+    --band-top: calc(clamp(92px, 19svh, 176px) - 20px);
   }
 
   .product-slide {
     align-self: stretch;
+    /* A descida do largo não vale aqui: a faixa é a tela inteira. */
+    top: 0;
     /* Sem a sobra lateral do desktop: aqui nada anda na horizontal, e é a
        ausência dela que traz os cantos de cima para dentro do quadro. */
     width: 100%;
@@ -2554,34 +2567,34 @@ html[data-proof-overlap] .expertise-layer--dark .expertise-bg {
      sobra por cima da borda fica previsível. A margem negativa só encolhe o
      quanto ela pesa na conta da altura. */
   .product-slide__shot {
-    width: min(80%, 340px);
+    /* --fit (0,5–1) vem de Products.tsx: encolhe pack e vídeo o quanto for
+       preciso para o conjunto caber na altura visível da tela. */
+    width: calc(min(92%, 390px) * var(--fit, 1));
     margin-top: 0;
     /* Mais negativa que antes: é ela que encurta o vão entre o pack e o
        título, sem mexer em onde a arte está desenhada. */
-    margin-bottom: calc(-1 * clamp(88px, 15.5svh, 178px));
-    top: calc(-1 * clamp(74px, 12.5svh, 146px));
+    margin-bottom: calc(-1 * clamp(50px, 9svh, 104px) * var(--fit, 1));
+    top: calc(-1 * clamp(36px, 6svh, 70px) * var(--fit, 1));
   }
 
-  /* Deitada no pé da faixa, embaixo do vídeo, e não mais em pé na borda
-     esquerda: a coluna de texto ficou larga e o filete vertical espremia o
-     conteúdo pela lateral. Continua absoluta — assim ela não entra na conta
-     do grid e o corpo segue centrado no que resta da faixa. */
+  /* No estreito a tarja deita no pé da faixa, centrada e acima da barra do
+     navegador: a posição vem da altura visível (100svh) e não do pé da
+     janela (100lvh), que fica escondido. O `--fit` de Products.tsx reserva
+     o espaço dela abaixo do vídeo. */
   .product-slide__eyebrow {
     position: absolute;
-    left: clamp(20px, 6vw, 36px);
-    right: clamp(20px, 6vw, 36px);
-    top: auto;
-    bottom: clamp(16px, 2.8svh, 30px);
+    left: 0;
+    right: 0;
+    top: calc(100svh - 34px);
+    bottom: auto;
+    justify-content: center;
     margin: 0;
     writing-mode: horizontal-tb;
     rotate: none;
-    justify-content: flex-start;
     font-size: 9.5px;
-    letter-spacing: 0.12em;
+    letter-spacing: 0.16em;
   }
 
-  /* Sem o filete: deitado ele viraria um traço solto atravessando o pé da
-     faixa, e o que a linha precisa carregar é o texto. */
   .product-slide__rule {
     display: none;
   }
@@ -2604,7 +2617,8 @@ html[data-proof-overlap] .expertise-layer--dark .expertise-bg {
   /* A largura inteira da coluna: no estreito o vídeo é o segundo assunto da
      faixa, e encolhido dava uma tarja preta pequena no meio do vermelho. */
   .product-slide__video {
-    justify-self: stretch;
+    justify-self: center;
+    width: calc(100% * var(--fit, 1));
     max-width: none;
   }
 
@@ -2920,5 +2934,59 @@ html[data-proof-overlap] .expertise-layer--dark .expertise-bg {
     margin-top: 12px;
     font-size: 13px;
     line-height: 1.38;
+  }
+}
+
+/* ------------------------------------- cantos e saída do bloco de produtos */
+/* Raio das faixas dos produtos. */
+:root {
+  --round-r: clamp(28px, 2.6vw, 48px);
+}
+
+@media (max-width: 860px) {
+  :root {
+    --round-r: 32px;
+  }
+}
+
+/* Saída do bloco de produtos: a seção das culturas engole a do Aminosan de
+   baixo para cima. O palco trava por uma tela a mais e, nela, as culturas sobem
+   por cima da janela — é a `margin-top` negativa que as põe ali. A borda de
+   cima é uma onda líquida (`.crops-wave`) desenhada por Products.tsx.
+   Só com movimento: sem ele o palco não trava e as seções seguem em fila. */
+@media (prefers-reduced-motion: no-preference) {
+  .product-stage {
+    height: calc(200lvh + var(--product-run));
+  }
+
+  #crops {
+    --reveal: 1;
+    z-index: 3;
+    margin-top: -100lvh;
+    /* A onda mora acima da borda de cima: o corte vertical precisa ficar
+       aberto. O horizontal continua fechado para o corredor de imagens. */
+    overflow: visible;
+    overflow-x: clip;
+  }
+
+  /* A borda líquida: um SVG branco colado no topo da seção, desenhado a cada
+     quadro por Products.tsx. Plano quando a seção está parada. */
+  .crops-wave {
+    position: absolute;
+    left: 0;
+    bottom: 100%;
+    display: block;
+    width: 100%;
+    height: 75lvh;
+    margin-bottom: -1px;
+    overflow: visible;
+    pointer-events: none;
+  }
+
+  /* Até 37% da subida a seção entra branca e sólida; dali o conteúdo aparece
+     com fade e saindo do desfoque. O branco é o fundo da seção, que não some. */
+  #crops .crops-content {
+    opacity: var(--reveal);
+    filter: blur(calc((1 - var(--reveal)) * 16px));
   }
 }

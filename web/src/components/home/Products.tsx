@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { cx } from "@/components/ui";
 import type { Product } from "@/content/home";
 import { useContent } from "@/components/layout/LocaleProvider";
@@ -502,6 +502,13 @@ export function Products() {
              O vídeo pode apagar: ele mora inteiro DENTRO da faixa, sobre uma
              cor só, e não tem emenda para deixar aparecer. */
           const SHOT_ORIGIN = "50% 100%";
+          /* De onde o pack parte: bem menor, mais baixo e levemente inclinado,
+             para a entrada ser lida como um objeto chegando, e não como um
+             ajuste de escala. Sem opacidade pelo mesmo motivo de sempre — ele
+             atravessa a borda da faixa e transparência mostraria a emenda. */
+          /* No estreito o pack fica logo acima do título: descer tanto quanto no
+             largo o poria em cima do texto durante a entrada. */
+          const SHOT_FROM = { transformOrigin: SHOT_ORIGIN, scale: 0.45, y: narrow ? 30 : 90, rotation: -10 };
 
           /* Quadro de partida das peças. Escrito à mão e não por `fromTo`
              porque a faixa que ainda não entrou precisa estar armada desde o
@@ -517,7 +524,7 @@ export function Products() {
                encontrado, e o título fica preso fora da máscara. */
             gsap.set(g.title, { y: 0, yPercent: 115 });
             gsap.set(g.lede, { opacity: 0, y: 18 });
-            gsap.set(g.shot, { transformOrigin: SHOT_ORIGIN, scale: 0.84, y: 18 });
+            gsap.set(g.shot, SHOT_FROM);
             gsap.set(g.video, { opacity: 0, scale: 0.94 });
             gsap.set(g.play, { opacity: 0, scale: 0.72 });
             gsap.set(g.cta, { opacity: 0, y: 22 });
@@ -529,7 +536,7 @@ export function Products() {
             gsap.set(g.rule, { scaleX: 1 });
             gsap.set([g.tag, g.lede, g.cta], { opacity: 1, x: 0, y: 0 });
             gsap.set(g.title, { y: 0, yPercent: 0 });
-            gsap.set(g.shot, { transformOrigin: SHOT_ORIGIN, scale: 1, y: 0 });
+            gsap.set(g.shot, { transformOrigin: SHOT_ORIGIN, scale: 1, y: 0, rotation: 0 });
             gsap.set(g.video, { opacity: 1, scale: 1 });
             gsap.set(g.play, { opacity: 1, scale: 1 });
           };
@@ -644,7 +651,8 @@ export function Products() {
                 "+=" +
                 Math.max(
                   1,
-                  stage.offsetHeight - windowEl.offsetHeight + lead(),
+                  /* Menos uma tela: a última é a da troca com as culturas. */
+                  stage.offsetHeight - 2 * windowEl.offsetHeight + lead(),
                 ),
               scrub: true,
               refreshPriority: 4,
@@ -721,15 +729,16 @@ export function Products() {
                 { opacity: 1, y: 0, duration: d(0.38), ease: "power2.out" },
                 t(0.28),
               )
-              /* O pack cresce do pé até o tamanho, com um empurrão para cima
-                 no meio do caminho. Curso longo e `power3.out`: ele é a peça
-                 maior da faixa, e peça grande que assenta rápido demais parece
-                 que caiu ali. */
+              /* O pack cresce do pé até o tamanho, subindo e se endireitando.
+                 Curso mais longo que o gesto e `power2.out`: preso à rolagem,
+                 uma curva que resolve quase tudo no começo faz o crescimento
+                 caber em poucos pixels e passar batido. Espalhado assim ele é
+                 visto crescendo — e ainda assenta devagar. */
               .fromTo(
                 g.shot,
-                { transformOrigin: SHOT_ORIGIN, scale: 0.84, y: 18 },
-                { scale: 1, y: 0, duration: d(0.62), ease: "power3.out" },
-                t(0.12),
+                SHOT_FROM,
+                { scale: 1, y: 0, rotation: 0, duration: d(1.1), ease: "power2.out" },
+                t(0.04),
               )
               /* O vídeo vem atrás, também crescendo — só que de perto de 1,
                  porque ele é uma superfície e não um objeto: exagerar a escala
@@ -943,6 +952,15 @@ export function Products() {
                que se preenche depois. Ninguém vê isto acontecer — ela ainda
                está abaixo do pé da tela. */
             settle(a);
+            /* Menos o pack: ele cresce como o do KMEP na chegada, enquanto a faixa
+               sobe — o mesmo gesto nos dois produtos. */
+            gsap.set(a.shot, SHOT_FROM);
+            timeline.fromTo(
+              a.shot,
+              SHOT_FROM,
+              { scale: 1, y: 0, rotation: 0, duration: SWAP_DUR * 0.9, ease: "power2.out", immediateRender: false },
+              SWAP_AT + SWAP_DUR * 0.2,
+            );
           } else {
             enter(a, SWAP_AT, SWAP_DUR, 0.4);
           }
@@ -952,55 +970,108 @@ export function Products() {
           timeline.to({}, { duration: 0.001 }, 0.999);
 
           /* --------------------------------------------------------- saída */
-          /* Quando a janela solta, ela sobe com a página e a seção das
-             culturas entra por baixo — a componente vertical da saída já vem
-             daí, de graça. O que falta é a deriva para a esquerda, e é só
-             isso que este trecho faz.
-             
-             Fica fora do timeline principal, num gatilho próprio que começa
-             exatamente onde aquele termina, e escreve em `x` — o timeline usa
-             `xPercent`, e o GSAP guarda os dois separados e soma. Assim as
-             duas coisas nunca disputam a mesma propriedade.
+          /* A seção das culturas engole o Aminosan de baixo para cima, na tela
+             extra de curso do palco (globals.css). A subida é a própria
+             rolagem; aqui fica a forma: a borda de cima nasce como uma cúpula
+             alta — centro bem acima das laterais — e vai achatando até virar
+             reta quando cobre a tela. `power2.out` para a curva ceder rápido no
+             começo e assentar devagar, que é o que dá o ar de massa subindo.
 
-             Só no desktop, pela mesma razão de sempre: no celular a faixa é a
-             tela inteira, e sair de lado deixaria meia tela em branco. */
-          if (!narrow) {
+             Enquanto é coberto, o Aminosan recua um pouco e desfoca, e só perde
+             nitidez de vez quando já está quase todo por baixo. Gatilho próprio,
+             começando onde o timeline principal termina; `scale` e `filter` na
+             faixa com `immediateRender: false`, porque o timeline principal
+             também escreve `filter` nela. */
+          {
+            const crops = document.getElementById("crops");
             const exitTimeline = gsap.timeline({
               onUpdate: syncFlora,
               scrollTrigger: {
                 id: "product-stage-exit",
                 trigger: stage,
                 start: () =>
-                  `top -${Math.round(stage.offsetHeight - windowEl.offsetHeight)}px`,
-                end: () => "+=" + Math.round(windowEl.offsetHeight * 0.75),
-                scrub: true,
+                  `top -${Math.round(stage.offsetHeight - 2 * windowEl.offsetHeight)}px`,
+                end: () => "+=" + Math.round(windowEl.offsetHeight),
+                /* Atraso no acompanhamento: a borda continua se mexendo um instante
+                   depois que a rolagem para, como líquido assentando. */
+                scrub: 0.9,
                 invalidateOnRefresh: true,
               },
             });
-            exitTimeline.fromTo(
-              amino,
-              { x: 0 },
-              {
-                x: () => -amino.offsetWidth,
-                /* Linear, e não uma curva. A componente vertical desta saída é
-                   a própria rolagem, que anda 1:1 — pôr uma curva só no
-                   horizontal faz as duas taxas divergirem, e a faixa começa
-                   diagonal e termina praticamente de lado. Com as duas
-                   lineares a direção não muda do começo ao fim, como nos
-                   outros gestos, em que os dois eixos usam a mesma curva. */
-                ease: "none",
-                duration: 1,
-              },
-              0,
-            );
-            /* Na saída da seção a flora recua para dentro da faixa em vez de
-               só apagar: some junto com quem a sustentava. */
-            exitTimeline.fromTo(
-              a.floraExit,
-              { opacity: 1, y: 0 },
-              { opacity: 0, y: 14, duration: 0.55, ease: "power2.inOut" },
-              0,
-            );
+            exitTimeline
+              .fromTo(
+                amino,
+                { scale: 1, filter: SHARP },
+                {
+                  scale: 0.92,
+                  filter: BLUR,
+                  duration: 0.7,
+                  ease: "power1.in",
+                  immediateRender: false,
+                },
+                0.3,
+              )
+              /* Na saída a flora recua para dentro da faixa em vez de só apagar:
+                 some junto com quem a sustentava. */
+              .fromTo(
+                a.floraExit,
+                { opacity: 1, y: 0 },
+                { opacity: 0, y: 14, duration: 0.55, ease: "power2.inOut" },
+                0,
+              );
+            const wave = crops?.querySelector<SVGSVGElement>(".crops-wave");
+            const wavePath = wave?.querySelector<SVGPathElement>("path");
+            if (crops && wave && wavePath) {
+              /* A borda como líquido. Uma curva só, desenhada a cada quadro, em
+                 vez de trocar de forma no meio: três alturas — laterais e centro
+                 — que andam em curvas contínuas sobrepostas, e o SVG liga os três
+                 pontos com tangentes suaves. O centro sobe primeiro em cúpula e
+                 desce enquanto as laterais passam na frente; no fim tudo assenta
+                 reto com uma ondulação amortecida. Um balanço lateral pequeno tira
+                 a simetria perfeita, que lê como máquina. O `scrub` com atraso
+                 (abaixo) dá a inércia de líquido. */
+              const smooth = (a: number, b: number, x: number) => {
+                const k = Math.min(1, Math.max(0, (x - a) / (b - a)));
+                return k * k * (3 - 2 * k);
+              };
+              const liquid = { p: 0 };
+              const draw = () => {
+                const s = liquid.p;
+                const w = wave.clientWidth;
+                const h = wave.clientHeight;
+                const vh = window.innerHeight;
+                /* Só o centro sobe: uma cúpula que nasce alta e vai achatando até a
+                   borda ficar reta quando a seção cobre a tela — o gesto conhecido
+                   de engolir, sem trocar de forma no caminho. */
+                const peak = Math.min(vh * 0.62, w * 0.5);
+                const center = peak * smooth(0, 0.14, s) * (1 - smooth(0.18, 0.8, s));
+                const cx = w / 2;
+                /* Formato de sino: tangentes horizontais nas laterais e no topo,
+                   curtas o bastante para a ponta nascer fina e subir pontuda. Conforme
+                   achata, o mesmo desenho vira uma onda baixa e larga. */
+                const tan = w * 0.24;
+                const base = h + 1;
+                const top = h - Math.max(0, center);
+                wave.setAttribute("viewBox", `0 0 ${w} ${h}`);
+                wavePath.setAttribute(
+                  "d",
+                  `M0 ${base} L0 ${h} C${tan} ${h} ${cx - tan} ${top} ${cx} ${top} ` +
+                    `C${cx + tan} ${top} ${w - tan} ${h} ${w} ${h} L${w} ${base} Z`,
+                );
+              };
+              /* O mesmo branco do fundo da seção, lido dela — nunca um valor à parte. */
+              wavePath.setAttribute("fill", getComputedStyle(crops).backgroundColor);
+              draw();
+              exitTimeline
+                .fromTo(liquid, { p: 0 }, { p: 1, duration: 1, ease: "none", onUpdate: draw }, 0)
+                /* O conteúdo só aparece com 37% da subida, saindo do branco. */
+                .fromTo(
+                  crops,
+                  { "--reveal": 0 },
+                  { "--reveal": 1, duration: 0.3, ease: "power2.out" },
+                  0.37,
+                );
+            }
           }
 
           timeline.progress(0);
@@ -1014,6 +1085,84 @@ export function Products() {
     },
     { scope: root },
   );
+
+  /* No estreito a faixa é a tela inteira e empilha pack, texto, botão e vídeo.
+     A janela tem 100lvh — a área sob a barra do navegador conta — e numa tela
+     baixa o pé do vídeo ficava escondido. Aqui cada faixa mede quanto precisa
+     e encolhe só as duas peças elásticas, pack e vídeo, via `--fit` (0,5–1),
+     até o vídeo terminar a FOOT px da altura visível mínima (100svh). Texto e
+     botão não mudam; em tela alta o fator fica em 1. Não mexe na altura da
+     seção, então o ScrollTrigger não precisa remedir. */
+  useEffect(() => {
+    const stage = root.current;
+    if (!stage) return;
+    const narrow = window.matchMedia("(max-width: 860px)");
+    /* Folga até o pé visível: vídeo, respiro e a tarja deitada embaixo dele. */
+    const FOOT = 58;
+
+    const probe = document.createElement("div");
+    probe.style.cssText = "position:fixed;top:0;left:0;width:0;height:100svh;visibility:hidden;pointer-events:none";
+    document.body.appendChild(probe);
+
+    let frame = 0;
+    const fit = () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        const bodies = Array.from(stage.querySelectorAll<HTMLElement>(".product-slide__body"));
+        if (!narrow.matches) {
+          bodies.forEach((body) => body.style.removeProperty("--fit"));
+          return;
+        }
+        const visible = probe.offsetHeight;
+        /* Um fator por faixa, e o menor vale para as duas: o texto do KMEP é
+           mais longo e pedia um pack menor que o do Aminosan — os dois produtos
+           precisam ter o mesmo tamanho. */
+        const fits = bodies.map((body) => {
+          const slide = body.closest<HTMLElement>(".product-slide");
+          const video = body.querySelector<HTMLElement>(".product-slide__video");
+          if (!slide || !video) return 1;
+          /* Pé do vídeo contado do topo da faixa: transform do GSAP na faixa
+             desloca os dois igualmente e some na diferença. */
+          const overflow = (f: number) => {
+            body.style.setProperty("--fit", String(f));
+            const foot = video.getBoundingClientRect().bottom - slide.getBoundingClientRect().top;
+            return foot + FOOT - visible;
+          };
+          if (overflow(1) <= 0) return 1;
+          /* Busca binária: o maior fator que cabe. Poucos passos bastam. */
+          let lo = 0.5;
+          let hi = 1;
+          if (overflow(lo) > 0) return lo; /* nem no mínimo cabe: fica no mínimo */
+          for (let i = 0; i < 7; i++) {
+            const mid = (lo + hi) / 2;
+            if (overflow(mid) > 0) hi = mid;
+            else lo = mid;
+          }
+          return lo;
+        });
+        const shared = Math.min(1, ...fits);
+        bodies.forEach((body) => {
+          if (shared >= 1) body.style.removeProperty("--fit");
+          else body.style.setProperty("--fit", shared.toFixed(3));
+        });
+      });
+    };
+
+    fit();
+    const observer = new ResizeObserver(fit);
+    observer.observe(stage);
+    observer.observe(probe);
+    narrow.addEventListener("change", fit);
+    document.fonts?.ready.then(fit);
+
+    return () => {
+      cancelAnimationFrame(frame);
+      observer.disconnect();
+      narrow.removeEventListener("change", fit);
+      probe.remove();
+      stage.querySelectorAll<HTMLElement>(".product-slide__body").forEach((body) => body.style.removeProperty("--fit"));
+    };
+  }, []);
 
   return (
     <section ref={root} id="products" className="product-stage">

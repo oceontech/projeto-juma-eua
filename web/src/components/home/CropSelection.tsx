@@ -43,6 +43,13 @@ export async function CropSelection() {
   const { crops } = (await getContent()).home;
   return (
     <section id="crops" className="relative overflow-hidden bg-white pt-sec">
+      {/* Tudo o que aparece enquanto a seção engole o bloco de produtos: some no
+          começo da subida e entra com fade e desfoque (ver `--reveal` em globals.css). */}
+      {/* Borda líquida da subida sobre o bloco de produtos (Products.tsx). */}
+      <svg aria-hidden className="crops-wave" preserveAspectRatio="none">
+        <path />
+      </svg>
+      <div className="crops-content">
       <Reveal className="wrap relative z-2">
         <SectionIntro aside={<p className="text-muted">{crops.body}</p>}>
           <Rule className="mb-[clamp(18px,1.8vw,33px)]" />
@@ -105,6 +112,8 @@ export async function CropSelection() {
             </ul>
           </div>
         </Reveal>
+      </div>
+
       </div>
 
       {/* The canopy fades into the same deep green as the leaf section. */}
