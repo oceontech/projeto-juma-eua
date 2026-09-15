@@ -1037,8 +1037,11 @@ export function Products() {
               const liquid = { p: 0 };
               const draw = () => {
                 const s = liquid.p;
-                const w = wave.clientWidth;
-                const h = wave.clientHeight;
+                /* `getBoundingClientRect` e não `clientWidth`: no Safari o client*
+                   de um <svg> vale 0, e a onda era desenhada achatada e invisível. */
+                const box = wave.getBoundingClientRect();
+                const w = box.width;
+                const h = box.height;
                 const vh = window.innerHeight;
                 /* Só o centro sobe: uma cúpula que nasce alta e vai achatando até a
                    borda ficar reta quando a seção cobre a tela — o gesto conhecido
@@ -1117,11 +1120,11 @@ export function Products() {
           return;
         }
         const visible = probe.offsetHeight;
-        /* O vídeo cede a maior parte do espaço; o pack metade do que o vídeo
-           cede, com piso — é ele que dá a cara da faixa e passa por cima dela. */
+        /* `f` vai de 0 (tela mínima) a 1 (tudo no tamanho cheio). Vídeo e pack
+           cedem juntos e cada um tem piso: nenhum dos dois fica pequeno. */
         const apply = (body: HTMLElement, f: number) => {
-          body.style.setProperty("--fit", f.toFixed(3));
-          body.style.setProperty("--fit-shot", Math.max(0.72, 1 - (1 - f) / 2).toFixed(3));
+          body.style.setProperty("--fit", (0.8 + 0.2 * f).toFixed(3));
+          body.style.setProperty("--fit-shot", (0.7 + 0.3 * f).toFixed(3));
         };
         /* Um fator por faixa, e o menor vale para as duas: o texto do KMEP é
            mais longo e pedia um pack menor que o do Aminosan — os dois produtos
@@ -1139,7 +1142,7 @@ export function Products() {
           };
           if (overflow(1) <= 0) return 1;
           /* Busca binária: o maior fator que cabe. Poucos passos bastam. */
-          let lo = 0.45;
+          let lo = 0;
           let hi = 1;
           if (overflow(lo) > 0) return lo; /* nem no mínimo cabe: fica no mínimo */
           for (let i = 0; i < 7; i++) {

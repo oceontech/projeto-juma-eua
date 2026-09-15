@@ -2542,7 +2542,9 @@ html[data-proof-overlap] .expertise-layer--dark .expertise-bg {
 
   .product-slide__body {
     grid-template-columns: minmax(0, 1fr);
-    align-content: center;
+    /* Pelo topo, e não centrado: o texto do Aminosan é uma linha mais curto, e
+       centrado o bloco dele descia e o pack saía menos da faixa que o do KMEP. */
+    align-content: start;
     justify-items: center;
     row-gap: clamp(8px, 1.4svh, 16px);
     height: 100%;
@@ -2575,10 +2577,10 @@ html[data-proof-overlap] .expertise-layer--dark .expertise-bg {
        título, sem mexer em onde a arte está desenhada. */
     /* Recolhe o mesmo que o pack sobe (abaixo): sem isso sobrava um vão entre ele
        e o título, e o vídeo tinha de ceder o espaço. */
-    margin-bottom: calc(-1 * clamp(50px, 9svh, 104px) * var(--fit-shot, 1) - (1 - var(--fit-shot, 1)) * 110px);
+    margin-bottom: calc(-1 * clamp(50px, 9svh, 104px) * var(--fit-shot, 1) - clamp(22px, 3svh, 26px) - (1 - var(--fit-shot, 1)) * 110px);
     /* O quanto o pack passa por cima da faixa não encolhe: quando ele cede
        tamanho, sobe na mesma medida para continuar vazando o topo. */
-    top: calc(-1 * clamp(36px, 6svh, 70px) - (1 - var(--fit-shot, 1)) * 110px);
+    top: calc(-1 * clamp(58px, 9svh, 96px) - (1 - var(--fit-shot, 1)) * 110px);
   }
 
   /* No estreito a tarja deita no pé da faixa, centrada e acima da barra do
