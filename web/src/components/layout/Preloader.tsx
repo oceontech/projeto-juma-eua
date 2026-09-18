@@ -134,7 +134,7 @@ export function Preloader() {
     <div
       ref={root}
       aria-hidden
-      className="fixed inset-0 z-[200] grid place-items-center overflow-hidden bg-night"
+      className="fixed inset-0 z-[200] grid place-items-center overflow-hidden bg-white"
     >
       {/* A composição é 1920 × 1080 e o player encaixa dentro do palco
           (`meet`), então a proporção precisa estar declarada — sem ela o SVG
