@@ -157,6 +157,18 @@
     margin-inline: auto;
   }
 
+  /* O quadro da molécula não segue a largura de texto do resto do site — é
+     cena cheia, com o texto e a rota abertos até perto da borda da janela.
+     O teto é mais estreito que os 1718px das faixas de benefícios de
+     propósito: aqui texto e cartões precisam alcançar a molécula, para a
+     imagem passar por cima deles quando se sobrepõem (ver z-index do
+     recorte). Um teto largo deixaria os dois longe um do outro e a camada
+     não apareceria. */
+  .aminosan-hero-molecule-wrap {
+    width: min(1500px, calc(100% - 2 * var(--spacing-gut)));
+    margin-inline: auto;
+  }
+
   /* Cards da operação: no desktop formam uma única faixa em camadas. O
      primeiro é mais largo e os seguintes descem alguns pixels, como no
      layout de referência; no mobile a ordem volta a ser linear. */
@@ -958,144 +970,348 @@
   }
 
   /* ---------------------------------------------------- hero do Aminosan */
-  /* O conteúdo desta cena é absoluto, portanto a seção precisa reservar no
-     fluxo tanto a viewport visível quanto o curso da animação. Sem essa
-     geometria, sua altura colapsa para zero e #nitrogen-process começa no
-     topo da página, sendo pintado atrás das camadas da hero. */
+  /* O hero ocupa uma tela. A roda escolhe o próximo quadro narrativo, mas o
+     vídeo percorre o trecho com playback nativo — a rolagem não é timeline. */
   .aminosan-hero {
-    --aminosan-hero-run: 260svh;
     position: relative;
-    height: calc(100svh + var(--aminosan-hero-run));
+    height: 100svh;
     background: #0c0c0e;
   }
 
   .aminosan-hero-window {
-    position: sticky;
-    top: 0;
+    position: relative;
+    z-index: 2;
     height: 100svh;
     min-height: 560px;
     overflow: clip;
     isolation: isolate;
+    background: #0c0c0e;
   }
 
-  .aminosan-hero-ground-picture,
-  .aminosan-hero-ground-img {
+  /* A próxima seção volta ao fluxo normal; ao acabar o último trecho o
+     controlador libera a rolagem e conduz a página até ela. */
+  #nitrogen-process {
+    position: relative;
+    z-index: 1;
+  }
+
+  .aminosan-hero-video {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
     width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    will-change: opacity;
   }
 
-  /* No celular, a leitura da abertura segue uma pilha clara: navegação,
-     estatística, título e proposta de valor. O deck continua dentro do mesmo
-     grupo animado, mas sobe visualmente antes do card principal; o espaço
-     reservado entre os dois acomoda a tipografia que vive em outra camada. */
+  /* Cada cena parada troca o vídeo por duas chapas: o fundo com o assunto
+     apagado e o recorte do assunto — o galão com o campo, a molécula. Somadas
+     em repouso elas dão exatamente aquele quadro — pixel por pixel, porque
+     saíram dele — então entram e saem sem transição nenhuma; não há o que
+     cruzar. Separadas, o recorte desliza sobre o fundo e o assunto ganha
+     profundidade. O fundo precisa vir sem o assunto: com ele, o do vídeo
+     apareceria por trás do recorte assim que este saísse do lugar. */
+  .aminosan-hero-plate,
+  .aminosan-hero-cutout {
+    pointer-events: none;
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  /* Há dois jogos completos de chapas no DOM — um por montagem do vídeo — e
+     só um deles serve a cada tela. O que sai, sai por `display`, e não por
+     visibilidade: um elemento sem caixa não intersecta nada, o carregamento
+     preguiçoso do next/image nunca dispara e o telefone não chega a baixar os
+     recortes da montagem larga (nem o contrário). */
+  .aminosan-hero-cut--tall {
+    display: none;
+  }
+
+  @media (max-width: 860px) and (orientation: portrait) {
+    .aminosan-hero-cut--wide {
+      display: none;
+    }
+
+    .aminosan-hero-cut--tall {
+      display: block;
+    }
+  }
+
+  .aminosan-hero-plate {
+    z-index: 1;
+  }
+
+  .aminosan-hero-cutout {
+    z-index: 3;
+    will-change: transform;
+  }
+
+  /* Folhas do primeiro plano: mesmo enquadramento do recorte (tela cheia,
+     `cover`), para que o pixel de cada uma caia onde caía no quadro. Acima do
+     recorte (3) e abaixo da vinheta (5). A origem da transformação é o
+     centro da tela, a mesma do recorte, e é isso que as mantém casadas. */
+  .aminosan-hero-leaf {
+    pointer-events: none;
+    position: absolute;
+    inset: 0;
+    z-index: 4;
+    will-change: transform;
+  }
+
+  .aminosan-hero-leaf-img {
+    object-fit: cover;
+    object-position: center;
+    will-change: transform;
+  }
+
+  /* Mesma divisão: o recorte da molécula (`.aminosan-hero-cutout`) leva a
+     escala e o parallax; esta imagem, por dentro dele, leva a órbita —
+     giro e vaivém contínuos, em torno do próprio centro. */
+  .aminosan-hero-molecule-orbit {
+    object-fit: cover;
+    object-position: center;
+    will-change: transform;
+  }
+
+  /* Entre a chapa (1) e o recorte (3): o galão passa por cima das letras. O
+     título assenta com a base da fonte dentro do topo do galão — que fica a
+     ~28% da altura no quadro — para o galão morder o pé das letras. */
+  .aminosan-hero-title {
+    pointer-events: none;
+    position: absolute;
+    inset-inline: 0;
+    top: clamp(72px, 12svh, 150px);
+    z-index: 2;
+    text-align: center;
+  }
+
+  /* Azul-marinho denso no topo, clareando até o branco na base das letras. O azul
+     fica opaco e firme por boa parte da altura para contrastar com o céu
+     claro. O gradiente é pintado no próprio texto, então acompanha o
+     tamanho da fonte. */
+  .aminosan-hero-title-fade {
+    background-image: linear-gradient(
+      180deg,
+      #1F4FB8 0%,
+      #1F4FB8 38%,
+      #ffffff 96%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
+
   @media (max-width: 860px) {
-    .aminosan-hero-ground .aminosan-hero-ground-picture {
-      /* A arte mobile tem transparência antes do horizonte. Ampliá-la pelo
-         contêiner preserva sua proporção, mantém o rodapé fechado e faz o
-         campo subir até a região do card/título sem esticar os produtos. */
-      width: min(205%, 92svh) !important;
-      max-width: none;
-      flex: 0 0 auto;
+    .aminosan-hero-title {
+      top: clamp(84px, 14svh, 130px);
+    }
+  }
+
+  /* O corte 9:16 cobre a janela em `object-fit: cover`, e cover tem dois
+     ramos: numa tela estreita e alta sobra largura, o vídeo é cortado nas
+     laterais e a escala vem da altura; numa tela mais baixa e larga — um
+     retrato "baixo", comum numa janela de desktop redimensionada em vez de
+     um telefone de verdade — sobra altura, o corte é em cima e embaixo, e a
+     escala vem da largura. A fórmula de `cover` é a mesma nos dois casos,
+     `escala = max(largura/1080, altura/1920)`, e por isso o título usa ela
+     direto: presa a um só ramo (só o de altura, como estava antes), a regra
+     acertava telas altas e colocava o título perto do topo em qualquer tela
+     mais baixa — direto embaixo dos cartões dos números, já que ali o vídeo
+     entra por cima da janela e a linha da lavoura sobe junto.
+
+     `--v-scale` é essa escala; `--v-offset-y` é quanto o vídeo entra por
+     cima da janela quando ele estoura por baixo (a metade do que sobra de
+     altura renderizada — zero no ramo limitado pela altura, onde nada
+     estoura). A posição de um ponto Y do quadro na tela é sempre
+     `Y·escala + deslocamento`, e a base das letras assenta 14px abaixo de
+     Y=650, onde a lavoura começa: a distância entre a base da caixa de linha
+     e a base da fonte (a Archivo tem ascendente maior que a caixa em
+     `leading-[0.86]`), mais a mordida — o quanto a lavoura come da altura
+     das maiúsculas. */
+  @media (max-width: 860px) and (orientation: portrait) {
+    .aminosan-hero-title {
+      --v-scale: max(calc(100vw / 1080), calc(100svh / 1920));
+      --v-offset-y: calc((100svh - 1920 * var(--v-scale)) / 2);
+      /* Ancorado pela base, não pelo topo: quem precisa cair no lugar certo é
+         o pé das letras, e a altura do bloco muda com a quebra do
+         olho-d'água entre um idioma e outro. Atribuir esse valor a `top`
+         (como esta regra fez numa versão anterior) empurra o bloco inteiro
+         para baixo pela própria altura dele — aqui, ~90px —, o suficiente
+         para sair de trás do céu e entrar atrás do recorte do campo, que
+         cobre o título por inteiro (o recorte vem na frente dele no
+         empilhamento; só a mordida fina do topo é para ficar sob ele). */
+      top: auto;
+      bottom: calc(100svh - 650 * var(--v-scale) - var(--v-offset-y) - 14px);
+    }
+  }
+
+  .aminosan-hero-vignette {
+    pointer-events: none;
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    background:
+      linear-gradient(90deg, rgb(4 10 7 / 0.62) 0%, transparent 42%, transparent 62%, rgb(4 10 7 / 0.3) 100%),
+      linear-gradient(0deg, rgb(4 8 6 / 0.56) 0%, transparent 38%, rgb(4 8 6 / 0.2) 100%);
+  }
+
+  .aminosan-video-hero-layer {
+    position: absolute;
+    inset: 0;
+    z-index: 20;
+  }
+
+  /* Só na cena da molécula, o recorte sobe acima do texto e dos cartões
+     (20) em vez de ficar sob eles (3, junto do resto das chapas). É o que dá
+     a sensação de camada: quando a molécula avança sobre a coluna central,
+     ela passa por cima da informação, não por baixo. */
+  [data-video-hero="cutout-molecule"] {
+    z-index: 21;
+  }
+
+  .aminosan-video-glass {
+    border: 1px solid rgb(255 255 255 / 0.2);
+    background: rgb(6 18 12 / 0.48);
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.16),
+      0 18px 54px rgb(0 0 0 / 0.22);
+    backdrop-filter: blur(18px) saturate(135%);
+  }
+
+  /* As três paradas da rota do nitrogênio, na coluna à direita da molécula.
+     Opacos, ao contrário do vidro do primeiro quadro: aqui eles não ficam
+     sobre a imagem, ficam ao lado dela, e translúcido sobre um fundo quase
+     preto não teria o que embaçar — sumiria. O relevo vem de três coisas: o
+     brilho verde no canto de cima à esquerda, que é a direção de onde a
+     molécula ilumina a cena; o fio de luz na borda superior; e a sombra
+     larga, que descola o cartão do fundo. */
+  .aminosan-step-card {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: clamp(10px, 0.85vw, 14px);
+    border: 1px solid rgb(255 255 255 / 0.1);
+    border-radius: 14px;
+    padding: clamp(11px, 0.95vw, 15px) clamp(13px, 1.05vw, 17px);
+    background:
+      radial-gradient(
+        125% 135% at 0% 0%,
+        color-mix(in srgb, var(--color-lime) 24%, transparent) 0%,
+        color-mix(in srgb, var(--color-lime) 7%, transparent) 38%,
+        transparent 68%
+      ),
+      #07090a;
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.1),
+      0 16px 40px rgb(0 0 0 / 0.5);
+  }
+
+  .aminosan-step-card-icon {
+    display: grid;
+    flex-shrink: 0;
+    place-items: center;
+    width: clamp(34px, 2.5vw, 42px);
+    aspect-ratio: 1;
+    border: 1px solid color-mix(in srgb, var(--color-lime) 34%, transparent);
+    border-radius: 11px;
+    background: color-mix(in srgb, var(--color-lime) 13%, transparent);
+    color: var(--color-lime);
+  }
+
+  /* Nitrato, aminação e proteína são uma sequência, não três itens soltos.
+     O fio curto entre os cartões é o que diz isso agora que as linhas que
+     atravessavam o quadro saíram. */
+  .aminosan-step-link {
+    width: 1px;
+    height: clamp(11px, 1.5vh, 18px);
+    margin-left: clamp(30px, 2.2vw, 38px);
+    transform-origin: 50% 0%;
+    background: linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--color-lime) 55%, transparent),
+      rgb(255 255 255 / 0.07)
+    );
+  }
+
+  @media (max-width: 1023px) {
+    /* No corte vertical, a molécula precisa ficar sem texto por cima. A cópia
+       vira três irmãos do contêiner: introdução no topo, reforço junto aos
+       cards e a rota no rodapé. No desktop a mesma cópia continua sendo uma
+       única coluna à esquerda. */
+    .aminosan-hero-molecule-copy {
+      display: contents;
     }
 
-    .aminosan-hero-window .aminosan-hero-title-wrap {
-      top: clamp(174px, 23svh, 202px) !important;
-      padding-inline: 10px !important;
+    .aminosan-hero-molecule-callout {
+      margin-top: auto;
+      margin-bottom: 12px;
     }
 
-    .aminosan-hero-title-wrap .aminosan-hero-title {
-      font-size: clamp(58px, 16.5vw, 68px) !important;
-      line-height: 0.88 !important;
-      letter-spacing: 0.012em !important;
+    .aminosan-step-link {
+      display: none;
     }
 
-    .aminosan-hero-window .aminosan-hero-copy {
-      top: clamp(72px, 10svh, 88px) !important;
+    .aminosan-step-card {
+      gap: 8px;
+      border-radius: 12px;
+      padding: 10px;
+    }
+  }
+
+  @media (max-width: 860px) {
+    .aminosan-hero-video {
+      object-position: 50% center;
     }
 
-    .aminosan-hero-layout .aminosan-hero-stats {
-      order: -1;
-      align-self: center;
-      width: min(100%, 320px);
-      height: 68px;
+    .aminosan-hero-vignette {
+      background:
+        linear-gradient(0deg, rgb(4 8 6 / 0.76) 0%, transparent 56%, rgb(4 8 6 / 0.42) 100%),
+        linear-gradient(90deg, rgb(4 10 7 / 0.24), transparent 60%);
     }
 
-    .aminosan-hero-layout .aminosan-hero-stat-item {
-      min-height: 58px;
-      padding: 9px 14px;
+    .aminosan-video-glass {
+      max-height: 42svh;
+      overflow: auto;
+      backdrop-filter: blur(13px) saturate(125%);
     }
+  }
 
-    .aminosan-hero-layout .aminosan-hero-stat-icon {
-      width: 34px;
-      height: 34px;
+  /* No retrato os quatro números sobem para o céu, acima do título: é o único
+     vão livre da cena, entre a barra de navegação e o olho-d'água. Por isso
+     ali eles encolhem e deitam o ícone ao lado do texto; em pé, como no
+     desktop, duas fileiras não caberiam. O recuo do topo desce para logo
+     abaixo da barra, que é o que abre o vão — pequeno de propósito, para os
+     cartões não invadirem o olho-d'água nem numa tela baixa (ver a fórmula
+     do título, que agora responde por essa tela também). */
+  @media (max-width: 860px) and (orientation: portrait) {
+    .aminosan-hero-first-col {
+      padding-top: clamp(48px, 6.4svh, 66px);
     }
+  }
 
-    .aminosan-hero-layout .aminosan-hero-card {
-      /* Desce o card e o selo que vem logo depois dele. A fórmula acompanha
-         a altura da viewport, mas trava cedo em telas baixas para o conjunto
-         terminar antes da ponta visível da folha de primeiro plano. */
-      margin-top: clamp(150px, calc(45svh - 105px), 275px);
-      padding: 16px !important;
-    }
+  /* O cartão de texto encosta na base do galão — y=1253 no quadro, 65,3% da
+     janela pela mesma conta que assenta o título — e cresce dali para baixo.
+     Subir até ali é o que libera o rodapé: é lá que estão as folhas, e é o
+     movimento delas que se quer à vista.
 
-    .aminosan-hero-card .aminosan-hero-card-badge {
-      width: 30px !important;
-      height: 30px !important;
-    }
-
-    .aminosan-hero-card .aminosan-hero-card-eyebrow {
-      padding-top: 2px !important;
-      font-size: 9px !important;
-      line-height: 1.25 !important;
-    }
-
-    .aminosan-hero-card .aminosan-hero-card-title {
-      margin-top: 12px !important;
-      font-size: 17px !important;
-      line-height: 1.15 !important;
-    }
-
-    .aminosan-hero-card .aminosan-hero-card-body-wrap {
-      margin-top: 12px !important;
-      padding-top: 12px !important;
-    }
-
-    .aminosan-hero-card .aminosan-hero-card-body {
-      font-size: 11px !important;
-      line-height: 1.35 !important;
-    }
-
-    .aminosan-hero-card .aminosan-hero-card-ctas {
-      margin-top: 14px !important;
-      flex-wrap: nowrap !important;
-      justify-content: flex-end !important;
-      gap: 6px !important;
-    }
-
-    .aminosan-hero-card .aminosan-hero-card-btn {
-      gap: 4px !important;
-      padding: 8px 10px !important;
-      font-size: 10px !important;
-      white-space: nowrap;
-    }
-
-    .aminosan-hero-copy .aminosan-hero-pill {
-      width: 100% !important;
-      gap: 6px !important;
-      margin-top: 10px !important;
-      padding: 8px !important;
-      white-space: nowrap;
-    }
-
-    .aminosan-hero-copy .aminosan-hero-pill img {
-      width: 13px !important;
-      height: auto !important;
-    }
-
-    .aminosan-hero-copy .aminosan-hero-pill p {
-      min-width: 0;
-      font-size: clamp(7.5px, 2.15vw, 8.5px) !important;
-      line-height: 1 !important;
-      letter-spacing: 0 !important;
+     Posicionado pelo topo, e não empurrado por margem: a altura do cartão
+     muda com o idioma, e quem precisa cair no lugar certo é a borda de cima.
+     O teto é o que sobra até a margem de baixo; passando disso o próprio
+     cartão rola por dentro, que o vidro já trata. */
+  @media (max-width: 860px) and (orientation: portrait) and (max-aspect-ratio: 9 / 16) {
+    .aminosan-hero-first-card {
+      position: absolute;
+      inset-inline: var(--spacing-gut);
+      top: 65.3%;
+      margin: 0;
+      max-height: calc(34.7% - clamp(18px, 3svh, 34px));
     }
   }
 
@@ -1715,7 +1931,7 @@
      um irmão no fluxo não faz.
 
      Nasce com o mesmo fundo da barra e com opacidade zero: quem aparece no
-     quadro da troca é um retângulo idêntico ao que já estava ali. O preto
+     quadro da troca é um retângulo idêntico ao que já estava ali. O azul
      pleno entra depois, por `--swallow-black`, conforme ele cresce — o brilho
      quente do canto do gradiente se apaga em vez de trocar de cor de um
      quadro para o outro. */
