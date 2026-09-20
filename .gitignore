@@ -2,6 +2,8 @@
 .DS_Store
 Thumbs.db
 
+/.video-tools/node_modules
+
 # ferramentas locais de agentes (skills instaladas, config do Claude Code)
 .agents/
 .claude/

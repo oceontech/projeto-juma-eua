@@ -1,699 +1,1195 @@
 "use client";
 
-import { useRef, useState, useEffect } from "react";
+import { Fragment, useRef } from "react";
 import Image from "next/image";
-import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
+import { Building2, FlaskConical, Hourglass, Sprout, type LucideIcon } from "lucide-react";
+import { gsap, useGSAP } from "@/lib/gsap";
 import { booted } from "@/lib/boot";
 import { useContent } from "@/components/layout/LocaleProvider";
+import { scroller } from "@/components/motion/SmoothScroll";
 
-const STAT_ICON = {
-  years: "/img/aminosan/icon-stat-years.svg",
-  company: "/img/aminosan/icon-stat-company.svg",
-  fermentation: "/img/aminosan/icon-stat-fermentation.svg",
-  trials: "/img/aminosan/icon-stat-trials.svg",
+/* Duas montagens da mesma cena: a paisagem, e o corte 9:16 do celular. A
+   narrativa é a mesma — galão no campo, molécula, fecho —, mas cada edição
+   tem a sua duração e os seus tempos de parada, então cada uma carrega os
+   próprios quadros. O par ida/volta existe porque o retrocesso é outro
+   arquivo, não o mesmo tocado ao contrário: nenhum navegador reproduz vídeo
+   em marcha a ré. */
+const CUTS = {
+  wide: {
+    forward: "/videos/video-hero-aminosan-scrub.mp4",
+    back: "/videos/video-hero-aminosan-reverse.mp4",
+    /** Os três quadros narrativos. Ajuste aqui quando a edição mudar. */
+    stops: [1.05, 6.05, 8.68],
+    /** Só vale até o arquivo declarar a sua: é a rede que atrasa, não o corte. */
+    length: 8.733,
+  },
+  tall: {
+    forward: "/videos/video-hero-aminosan-mobile-scrub.mp4",
+    back: "/videos/video-hero-aminosan-mobile-reverse.mp4",
+    stops: [1.15, 5.95, 7.1],
+    length: 7.166,
+  },
 } as const;
 
-/** Atraso do `scrub`, em segundos, para a folha responder com mais inércia. */
-const SCRUB = 1.25;
+/* Os SVGs de /img/aminosan/icon-stat-* são discos brancos com o símbolo
+   verde por dentro; forçados a branco pelo filtro, viravam só o disco. Aqui o
+   símbolo vem sozinho, como traço, e o disco é do cartão. */
+const STAT_ICON: Record<"years" | "company" | "fermentation" | "trials", LucideIcon> = {
+  years: Hourglass,
+  company: Building2,
+  fermentation: FlaskConical,
+  trials: Sprout,
+};
 
-/** Traço decorativo dos passos da cadeia de nitrogênio: rótulo + ponto + linha. */
-function StepIndicator({ label }: { label: string }) {
+/* A rota do nitrogênio em três paradas. O desenho carrega o sentido — o íon
+   de nitrato, o grupo amino se ligando, a cadeia montada —, e a fórmula ao
+   lado dele é a mesma em qualquer idioma: o rótulo é a única coisa que o
+   conteúdo traduz. */
+const STEP_MARK = [
+  /* Nitrato: o íon trigonal, um nitrogênio e três oxigênios. */
+  <g key="nitrate">
+    <circle cx="14" cy="14" r="3.3" fill="currentColor" />
+    <g stroke="currentColor" strokeWidth="1.25" fill="none">
+      <path d="M14 10.7V7.1" />
+      <path d="m11.2 15.7-3.1 1.8" />
+      <path d="m16.8 15.7 3.1 1.8" />
+      <circle cx="14" cy="5" r="2.3" />
+      <circle cx="6.1" cy="19.1" r="2.3" />
+      <circle cx="21.9" cy="19.1" r="2.3" />
+    </g>
+  </g>,
+  /* Aminação: o grupo amino chega à cadeia — a seta é o próprio gasto. */
+  <g key="aminate" fill="none" stroke="currentColor" strokeWidth="1.25">
+    <path d="M5.4 20.2 10 15.6l4.6 3 4.4-4.6" strokeLinecap="round" strokeLinejoin="round" />
+    <circle cx="5.4" cy="20.2" r="1.9" />
+    <circle cx="14.6" cy="18.6" r="1.9" />
+    <circle cx="19" cy="14" r="2.6" fill="currentColor" stroke="none" />
+    <path d="M21.4 8.2v3.1" strokeLinecap="round" />
+    <path d="m19.6 10.2 1.8 1.9 1.8-1.9" strokeLinecap="round" strokeLinejoin="round" />
+  </g>,
+  /* Proteína: a cadeia fechada, contas ligadas uma à outra. */
+  <g key="protein" fill="none" stroke="currentColor" strokeWidth="1.25">
+    <path d="M4.6 17.8 10 11.6l5.2 5.4 5.6-6.4" strokeLinecap="round" strokeLinejoin="round" />
+    <circle cx="10" cy="11.6" r="2" />
+    <circle cx="15.2" cy="17" r="2" />
+    <circle cx="4.6" cy="17.8" r="2" fill="currentColor" stroke="none" />
+    <circle cx="21.6" cy="9.8" r="2.4" fill="currentColor" stroke="none" />
+  </g>,
+];
+
+const STEP_FORMULA = ["NO₃⁻", "NH₂", "CO—NH"];
+
+function StepCard({ index, label }: { index: number; label: string }) {
   return (
-    <div className="flex items-center gap-3.5 sm:gap-4">
-      <p className="shrink-0 font-display text-[clamp(15px,1.35vw,22px)] font-bold tracking-[0.08em] text-white uppercase">
-        {label}
-      </p>
-      <div className="flex items-center flex-1">
-        <span
-          data-hero="nitrogen-step-dot"
-          className="size-[7px] shrink-0 rounded-full border border-white/90 bg-transparent"
-        />
-        <span
-          data-hero="nitrogen-step-line"
-          className="h-px w-full origin-left bg-white/35"
-        />
+    <article data-video-hero-step className="aminosan-step-card max-lg:flex-col max-lg:items-start">
+      <span aria-hidden className="aminosan-step-card-icon">
+        <svg viewBox="0 0 28 28" className="size-[62%]" aria-hidden>
+          {STEP_MARK[index]}
+        </svg>
+      </span>
+      <div className="min-w-0">
+        <p className="font-display text-[clamp(12px,0.95vw,15px)] font-bold tracking-[0.12em] text-white uppercase">
+          {label}
+        </p>
+        <p className="mt-0.5 text-[clamp(10px,0.72vw,12px)] tracking-[0.08em] text-lime/85 max-lg:hidden">
+          {STEP_FORMULA[index]}
+        </p>
       </div>
-    </div>
+    </article>
   );
 }
 
-/**
- * Hero Aminosan®
- *
- * Composição em camadas com profundidade física e parallax dinâmico:
- *
- *   Camada 1 (céu): `hero-aminosan-sky.png` no fundo ao entardecer;
- *   Camada 2 (tipografia): "AMINOSAN" monumental posicionado atrás do solo/produtos;
- *   Camada 3 (solo + produto): `hero-aminosan-ground.png` integrando o campo de melancias
- *                             e as embalagens em destaque, sobrepondo o título para relevo 3D;
- *   Camada 4 (cartões): Cartão de valor à esquerda, métricas à direita e selo inferior;
- *   Camada 5 (folha overlay): `hero-aminosan-leaf.png` subindo nítida (sem blur) com véu de contraste;
- *   Camada 6 (nitrogênio): "Nitrogen is not an amino acid" exibido sobre a folha;
- *   Camada 7 (blackout): Transição para tela toda preta ao rolar, dando entrada à próxima seção.
- */
+/** O scroll escolhe o trecho; o próprio decoder reproduz todos os frames. */
 export function Hero() {
   const { hero, nitrogen } = useContent().aminosan;
   const root = useRef<HTMLElement>(null);
-
-  /* Estado da pilha animada de estatísticas (transição automática a cada 2 segundos) */
-  const [activeStatIndex, setActiveStatIndex] = useState(0);
-  const [isStatSwapping, setIsStatSwapping] = useState(false);
-  const totalStats = hero.stats.length;
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      if (typeof document !== "undefined" && document.hidden) return;
-      setIsStatSwapping(true);
-      setTimeout(() => {
-        setActiveStatIndex((prev) => (prev + 1) % totalStats);
-        setIsStatSwapping(false);
-      }, 450);
-    }, 2000);
-
-    return () => clearInterval(timer);
-  }, [totalStats]);
-
-  /* Cálculo de estilo de camada (stacked deck) para cada card da pilha */
-  const getStatCardStyle = (index: number) => {
-    const pos = (index - activeStatIndex + totalStats) % totalStats;
-
-    if (isStatSwapping) {
-      if (pos === 0) {
-        // Card que estava na frente desliza para cima/fora e diminui para passar para trás
-        return {
-          zIndex: 40,
-          transform: "translate3d(0, -20px, 0) scale(0.98) rotate(-1deg)",
-          opacity: 0.25,
-          pointerEvents: "none" as const,
-          transition: "transform 0.45s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease",
-        };
-      }
-      if (pos === 1) {
-        // Card de trás assume o destaque na frente da pilha
-        return {
-          zIndex: 35,
-          transform: "translate3d(0, 0px, 0) scale(1)",
-          opacity: 1,
-          pointerEvents: "auto" as const,
-          boxShadow: "inset 0 1px 1px rgba(255, 255, 255, 0.75), 0 14px 34px -4px rgba(0, 76, 38, 0.12), 0 4px 16px rgba(0, 0, 0, 0.06)",
-          transition: "transform 0.45s cubic-bezier(0.2, 0.9, 0.3, 1), opacity 0.45s ease, box-shadow 0.45s ease",
-        };
-      }
-      if (pos === 2) {
-        // 3º card avança para a 2ª posição da camada
-        return {
-          zIndex: 25,
-          transform: "translate3d(0, 10px, 0) scale(0.96)",
-          opacity: 0.75,
-          pointerEvents: "none" as const,
-          boxShadow: "inset 0 1px 1px rgba(255, 255, 255, 0.5), 0 8px 20px rgba(0, 0, 0, 0.04)",
-          transition: "transform 0.45s cubic-bezier(0.2, 0.9, 0.3, 1), opacity 0.45s ease",
-        };
-      }
-      // 4º card avança para a 3ª posição da camada
-      return {
-        zIndex: 15,
-        transform: "translate3d(0, 20px, 0) scale(0.92)",
-        opacity: 0.45,
-        pointerEvents: "none" as const,
-        transition: "transform 0.45s cubic-bezier(0.2, 0.9, 0.3, 1), opacity 0.45s ease",
-      };
-    }
-
-    // Aspecto de camada em repouso
-    switch (pos) {
-      case 0:
-        return {
-          zIndex: 30,
-          transform: "translate3d(0, 0px, 0) scale(1)",
-          opacity: 1,
-          pointerEvents: "auto" as const,
-          boxShadow: "inset 0 1px 1px rgba(255, 255, 255, 0.75), 0 14px 34px -4px rgba(0, 76, 38, 0.12), 0 4px 16px rgba(0, 0, 0, 0.06)",
-          transition: "transform 0.45s cubic-bezier(0.2, 0.9, 0.3, 1), opacity 0.4s ease, box-shadow 0.4s ease",
-        };
-      case 1:
-        return {
-          zIndex: 20,
-          transform: "translate3d(0, 10px, 0) scale(0.96)",
-          opacity: 0.75,
-          pointerEvents: "none" as const,
-          boxShadow: "inset 0 1px 1px rgba(255, 255, 255, 0.5), 0 8px 20px rgba(0, 0, 0, 0.04)",
-          transition: "transform 0.45s cubic-bezier(0.2, 0.9, 0.3, 1), opacity 0.4s ease",
-        };
-      case 2:
-        return {
-          zIndex: 10,
-          transform: "translate3d(0, 20px, 0) scale(0.92)",
-          opacity: 0.45,
-          pointerEvents: "none" as const,
-          boxShadow: "none",
-          transition: "transform 0.45s cubic-bezier(0.2, 0.9, 0.3, 1), opacity 0.4s ease",
-        };
-      default:
-        return {
-          zIndex: 5,
-          transform: "translate3d(0, 28px, 0) scale(0.88)",
-          opacity: 0.2,
-          pointerEvents: "none" as const,
-          boxShadow: "none",
-          transition: "transform 0.45s cubic-bezier(0.2, 0.9, 0.3, 1), opacity 0.4s ease",
-        };
-    }
-  };
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const reverseVideoRef = useRef<HTMLVideoElement>(null);
 
   useGSAP(
     () => {
       const scene = root.current;
-      if (!scene) return;
+      const video = videoRef.current;
+      const reverseVideo = reverseVideoRef.current;
+      if (!scene || !video || !reverseVideo) return;
+
+      const html = document.documentElement;
+      const firstReveal = scene.querySelector<HTMLElement>("[data-video-hero='first-reveal']");
+      const firstContent = scene.querySelector<HTMLElement>("[data-video-hero='first-content']");
+      const moleculeContent = scene.querySelector<HTMLElement>("[data-video-hero='molecule-content']");
+      const blackout = scene.querySelector<HTMLElement>("[data-video-hero='blackout']");
+      const windowElement = scene.querySelector<HTMLElement>(".aminosan-hero-window");
+      const title = scene.querySelector<HTMLElement>("[data-video-hero='title']");
+      if (!firstReveal || !firstContent || !moleculeContent || !blackout || !windowElement) return;
+      if (!title) return;
 
       const mm = gsap.matchMedia();
 
+      /* A orientação entra junto da largura: o corte 9:16 só serve a uma tela
+         em pé. O mesmo telefone deitado tem 390px de altura e a janela volta
+         a ser paisagem — ali quem cabe é a montagem larga. */
       mm.add(
         {
           animate: "(prefers-reduced-motion: no-preference)",
           still: "(prefers-reduced-motion: reduce)",
-          narrow: "(max-width: 860px)",
-          short: "(max-height: 860px)",
+          tall: "(max-width: 860px) and (orientation: portrait)",
         },
         (context) => {
-          const { animate, narrow, short } = context.conditions as {
-            animate: boolean;
-            narrow: boolean;
-            short: boolean;
+          const { animate, tall } = context.conditions as { animate: boolean; tall: boolean };
+
+          /* A fonte entra aqui, e não no JSX, por uma razão de peso: marcada
+             no HTML, o telefone baixaria os 12MB do par paisagem antes de
+             qualquer script descobrir que não é o dele. */
+          const cut = tall ? CUTS.tall : CUTS.wide;
+          const attach = (element: HTMLVideoElement, src: string) => {
+            if (element.getAttribute("src") === src) return;
+            element.src = src;
+            element.load();
           };
-          if (!animate) return;
+          attach(video, cut.forward);
+          attach(reverseVideo, cut.back);
 
-          const html = document.documentElement;
-          const next = document.querySelector<HTMLElement>("#nitrogen-process");
+          /* Cada montagem tem o seu jogo de chapas: elas saem quadro a quadro
+             do vídeo a que pertencem, e as da paisagem não casam com nenhum
+             enquadramento do 9:16. Os dois jogos moram no DOM e o CSS tira do
+             ar o que não é desta tela — por `display`, e não por visibilidade,
+             que é o que faz o navegador nem chegar a baixar o jogo que não vai
+             mostrar. */
+          const layer = (name: string) =>
+            scene.querySelector<HTMLElement>(`[data-video-hero='${name}${tall ? "-tall" : ""}']`);
 
-          const leaves = scene.querySelector<HTMLElement>("[data-hero='leaves-img']");
+          const productPlate = layer("plate-product");
+          const productCutout = layer("cutout-product");
+          const moleculePlate = layer("plate-molecule");
+          const moleculeCutout = layer("cutout-molecule");
+          const moleculeOrbit = layer("molecule-orbit");
+          if (!productPlate || !productCutout || !moleculePlate || !moleculeCutout) return;
+          if (!moleculeOrbit) return;
 
-          const moving = Array.from(
-            scene.querySelectorAll<HTMLElement>(
-              "[data-hero='sky'], [data-hero='ground'], [data-hero='title-wrap'], " +
-              "[data-hero='leaves'], [data-hero='nitrogen']",
-            ),
-          );
+          const leafLeft = layer("leaf-left");
+          const leafRight = layer("leaf-right");
+          const swingLeft = layer("leaf-left-swing");
+          const swingRight = layer("leaf-right-swing");
+          if (!leafLeft || !leafRight || !swingLeft || !swingRight) return;
 
-          /* ------------------------------------------------------ entrada */
-          const intro = gsap
-            .timeline({
-              paused: true,
-              defaults: { duration: 2.1, ease: "power2.out" },
-            })
-            /* O céu assenta suavemente sem distorção de escala */
-            .fromTo(
-              "[data-hero='sky']",
-              { opacity: 0.95 },
-              { opacity: 1, duration: 1.8 },
-              0,
-            )
-            /* O solo com os produtos surge de baixo para cima lentamente com peso */
-            .fromTo(
-              "[data-hero='ground']",
-              { y: 0, yPercent: narrow ? 16 : 14 },
-              { y: 0, yPercent: 0, duration: 2.3, ease: "power2.out" },
-              0.25,
-            )
-            /* A tipografia monumental entra atrás do solo/produtos */
-            .fromTo(
-              "[data-hero='title-wrap']",
-              { opacity: 0, y: 22 },
-              { opacity: 1, y: 0, duration: 1.1 },
-              0.55,
-            )
-            /* A ponta da folha assenta no rodapé, exibindo as pontas orgânicas intactas */
-            .fromTo(
-              "[data-hero='leaves']",
-              { y: 0, yPercent: 96 },
-              { y: 0, yPercent: narrow ? 76 : short ? 89.5 : 86, duration: 2.2 },
-              0.35,
-            )
-            /* Cartão de valor, métricas e selo final entram escalonados */
-            .fromTo(
-              "[data-hero-card]",
-              { opacity: 0, y: 24 },
-              { opacity: 1, y: 0, duration: 1.05 },
-              0.85,
-            )
-            .fromTo(
-              "[data-hero-stats]",
-              { opacity: 0, y: 18 },
-              { opacity: 1, y: 0, duration: 0.95 },
-              1.05,
-            )
-            .fromTo(
-              "[data-hero-pill]",
-              { opacity: 0, y: 14 },
-              { opacity: 1, y: 0, duration: 0.9 },
-              1.35,
+          if (!animate) {
+            const showStill = () => {
+              if (video.readyState >= 1) video.currentTime = cut.stops[0];
+              /* As chapas são o mesmo quadro, e uma imagem aparece onde um
+                 vídeo buscado pode não pintar nada. Paradas, aqui. */
+              gsap.set([productPlate, title, productCutout, leafLeft, leafRight, firstReveal], {
+                autoAlpha: 1,
+              });
+            };
+
+            if (video.readyState >= 1) showStill();
+            else video.addEventListener("loadedmetadata", showStill, { once: true });
+
+            return () => video.removeEventListener("loadedmetadata", showStill);
+          }
+
+          let disposed = false;
+          let frame = 0;
+          let playing = false;
+          let direction: 1 | -1 = 1;
+          let settledIndex = -1;
+          let destinationIndex = 0;
+          let touchY = 0;
+          let lastGesture = 0;
+          /* Cada chamada de playTo abre uma corrida e aposenta a anterior. As
+             promessas de play() e os quadros de monitor carregam a senha da
+             sua: uma play() que só falha depois — abortada pelo gesto
+             seguinte — não tem mais como parar a cena no lugar errado. */
+          let run = 0;
+          const stops = cut.stops;
+
+          const clamp = (value: number, max: number) => Math.max(0, Math.min(max, value));
+
+          const duration = () =>
+            Number.isFinite(video.duration) && video.duration > 0 ? video.duration : cut.length;
+
+          /* O reverso é outro arquivo e pode ter uns quadros de diferença. A
+             conversão é proporcional, não uma subtração seca: meio segundo de
+             folga na duração viraria meio segundo de salto na troca. */
+          const reverseDuration = () =>
+            Number.isFinite(reverseVideo.duration) && reverseVideo.duration > 0
+              ? reverseVideo.duration
+              : duration();
+
+          const toReverse = (time: number) =>
+            clamp(reverseDuration() * (1 - clamp(time, duration()) / duration()), reverseDuration());
+
+          const fromReverse = (time: number) =>
+            clamp(duration() * (1 - clamp(time, reverseDuration()) / reverseDuration()), duration());
+
+          /* Onde a cena está agora, no relógio do vídeo de ida. Quem responde
+             é o vídeo que está tocando: perguntar ao outro devolve um tempo
+             velho — zero, enquanto ele nunca andou —, e zero no reverso é o
+             fim da cena. Era daí que vinha o salto para o final. */
+          const forwardTime = () =>
+            direction === 1 ? clamp(video.currentTime, duration()) : fromReverse(reverseVideo.currentTime);
+
+          const stopCopy = () => {
+            gsap.killTweensOf([firstReveal, firstContent, moleculeContent, title]);
+            gsap.killTweensOf("[data-video-hero-card]");
+            gsap.killTweensOf("[data-video-hero-title-part]");
+            gsap.killTweensOf("[data-video-hero-step]");
+            gsap.killTweensOf("[data-video-hero-step-link]");
+            gsap.killTweensOf("[data-video-hero-molecule-line]");
+          };
+
+          const hideCopy = () => {
+            stopCopy();
+            gsap.to([firstContent, moleculeContent, title], {
+              autoAlpha: 0,
+              y: -18,
+              duration: 0.28,
+              ease: "power2.in",
+              overwrite: true,
+            });
+          };
+
+          /* ----------------------------------------------- as chapas paradas */
+          /* Cada parada tem seu par: o fundo com o assunto apagado e o recorte
+             do assunto — o galão com o campo, a molécula. Somados no repouso
+             dão exatamente o quadro em que o vídeo parou, porque saíram dele.
+             Por isso entram e saem sem transição: não há o que cruzar, o pixel
+             é o mesmo. O que os separa é o movimento.
+
+             A escala em repouso é 1, e não a de trabalho: é ela que garante a
+             troca invisível. O recorte cresce depois que a cena para, e volta
+             a 1 antes de sair — o crescer é o próprio afastamento da câmera,
+             e é ele que dá ao recorte a folga para deslizar sem descolar da
+             borda da janela.
+
+             No produto o recorte vai de borda a borda — é o campo inteiro — e
+             ali `lift` precisa cobrir `sway`: a folga de cada lado vale
+             (lift - 1) / 2 / lift, 2,8% contra 1,35% de balanço. Por isso o
+             balanço é medido na própria chapa e não em pixels; fixo, uma
+             janela estreita esgotaria a folga e a borda apareceria.
+
+             A molécula não tem essa amarra: flutua longe das bordas e o resto
+             da chapa é transparente, então anda quase o dobro. O que a limita
+             é outra coisa — o buraco que ela deixa na chapa de trás, que ela
+             precisa continuar cobrindo. */
+          /* Cada camada tem o seu balanço: quanto mais perto de quem olha, mais
+             ela anda contra o ponteiro. É essa diferença — campo 1,35%, folhas
+             2,1% — que lê como profundidade. A escala, ao contrário, é uma só
+             para todas: a que as mantém casadas no repouso.
+
+             As folhas têm o limite mais apertado: chegam à borda da tela, e
+             balanço mais balanço ocioso não pode passar da folga que a escala
+             abre (2,8% da largura, 2,8% da altura). 2,1% + 5px no eixo x e
+             1,6% + 6px no y ficam dentro nas larguras usuais.
+
+             Além do ponteiro, cada folha respira sozinha: um giro curto em
+             torno da base, mais um vai e vem nos dois eixos, em períodos
+             diferentes para os três nunca fecharem o ciclo juntos. */
+          const PLATES = [
+            {
+              plate: productPlate,
+              lift: 1.06,
+              layers: [
+                { el: productCutout, swayX: 1.35, swayY: 1.2 },
+                { el: leafLeft, swayX: 2.1, swayY: 1.6 },
+                { el: leafRight, swayX: 2.1, swayY: 1.6 },
+              ],
+              idle: [
+                { el: swingLeft, origin: "0% 100%", rot: 1.1, x: 5, y: -6, spin: 4.6, driftX: 6.2, driftY: 5.1 },
+                { el: swingRight, origin: "100% 100%", rot: -1.3, x: -5, y: -5, spin: 5.4, driftX: 7.1, driftY: 4.4 },
+              ],
+              orbitCalm: false,
+            },
+            {
+              plate: moleculePlate,
+              lift: 1.04,
+              layers: [{ el: moleculeCutout, swayX: 1.8, swayY: 1.9 }],
+              /* A molécula flutua sozinha — sem base para girar em torno,
+                 então o "giro" mora nos dois eixos, em períodos próximos mas
+                 não iguais, o que é o que faz o vaivém ler como órbita em vez
+                 de balanço linear. */
+              idle: [
+                { el: moleculeOrbit, origin: "50% 50%", rot: 1.2, x: 9, y: 7, spin: 12, driftX: 9.5, driftY: 8 },
+              ],
+              /* Único caso que acalma sozinho: a molécula ocupa o centro da
+                 cena e é onde o parallax do ponteiro mexe mais. Some as duas
+                 fontes de movimento no pique máximo de ambas e a órbita vira
+                 tremor; por isso ela desacelera assim que o ponteiro entra
+                 em jogo, em vez de somar as duas. */
+              orbitCalm: true,
+            },
+          ];
+          const RECOIL = 0.22;
+
+          let raised: (typeof PLATES)[number] | null = null;
+          let aimX = 0;
+          let aimY = 0;
+          let driftX = 0;
+          let driftY = 0;
+          let chase = 0.07;
+          let recoil: gsap.core.Tween | null = null;
+          let restingSince = 0;
+          let breathing: gsap.core.Tween[] = [];
+          let calm = 1;
+
+          const layersOf = (set: (typeof PLATES)[number]) => set.layers.map((layer) => layer.el);
+          const swingsOf = (set: (typeof PLATES)[number]) => set.idle.map((swing) => swing.el);
+
+          /* O ponteiro dá o alvo, o tique persegue. O atraso é o efeito: sem
+             ele o recorte gruda no cursor e vira um adesivo. */
+          const drift = () => {
+            if (!raised) return;
+            driftX += (aimX - driftX) * chase;
+            driftY += (aimY - driftY) * chase;
+            /* Contra o ponteiro: é assim que o perto anda em relação ao longe
+               quando quem olha se desloca. A favor viraria empurrão. */
+            for (const layer of raised.layers) {
+              gsap.set(layer.el, {
+                xPercent: -driftX * layer.swayX,
+                yPercent: -driftY * layer.swayY,
+              });
+            }
+
+            /* A órbita não para quando o ponteiro entra em jogo — só fica
+               mais devagar, para as duas fontes de movimento (o parallax e a
+               órbita) não se somarem no pique de ambas e virarem tremor. A
+               marcha vem do próprio módulo do parallax: quanto mais perto do
+               centro, mais perto da velocidade normal; quanto mais longe,
+               mais lenta. `calm` persegue o alvo como o próprio parallax
+               persegue o ponteiro, pelo mesmo motivo — sem isso a troca de
+               velocidade seria um corte, não um efeito. */
+            if (raised.orbitCalm && breathing.length) {
+              const intensity = Math.min(1, Math.hypot(driftX, driftY));
+              const target = 1 - intensity * 0.55;
+              calm += (target - calm) * 0.08;
+              for (const tween of breathing) tween.timeScale(calm);
+            }
+          };
+
+          /* Vai e volta entre -amplitude e +amplitude, e começa no meio do
+             caminho — no zero, no centro do repouso —, então nada dá salto na
+             hora de ligar. Períodos distintos por eixo: o movimento não
+             repete um padrão que o olho reconheça. */
+          const swing = (el: HTMLElement, prop: "rotation" | "x" | "y", amp: number, period: number) => {
+            const tween = gsap.fromTo(
+              el,
+              { [prop]: -amp },
+              { [prop]: amp, duration: period / 2, ease: "sine.inOut", yoyo: true, repeat: -1 },
+            );
+            tween.progress(0.5);
+            breathing.push(tween);
+          };
+
+          const startBreathing = (set: (typeof PLATES)[number]) => {
+            for (const s of set.idle) {
+              gsap.set(s.el, { transformOrigin: s.origin, rotation: 0, x: 0, y: 0 });
+              swing(s.el, "rotation", Math.abs(s.rot), s.spin);
+              swing(s.el, "x", Math.abs(s.x), s.driftX);
+              swing(s.el, "y", Math.abs(s.y), s.driftY);
+            }
+          };
+
+          const stopBreathing = () => {
+            for (const tween of breathing) tween.kill();
+            breathing = [];
+          };
+
+          const raisePlates = (index: number) => {
+            const next = PLATES[index];
+            if (!next || raised === next) return;
+            /* Uma parada por vez: o par anterior sempre desce antes. */
+            if (raised) dropPlates();
+            raised = next;
+            restingSince = 0;
+            aimX = 0;
+            aimY = 0;
+            driftX = 0;
+            driftY = 0;
+            calm = 1;
+            chase = 0.07;
+            const layers = layersOf(next);
+            gsap.set([next.plate, ...layers], { autoAlpha: 1 });
+            gsap.set(layers, { xPercent: 0, yPercent: 0, scale: 1 });
+            gsap.to(layers, { scale: next.lift, duration: 1.2, ease: "power2.out", overwrite: true });
+            startBreathing(next);
+          };
+
+          /* O recuo: tudo volta ao repouso — escala 1, sem deslocamento, sem
+             giro — antes de o vídeo andar. Quem sai daqui está idêntico ao
+             quadro que o vídeo mostra, então a troca não tem salto. */
+          const restPlates = () => {
+            if (!raised) return;
+            if (!restingSince) restingSince = performance.now();
+            aimX = 0;
+            aimY = 0;
+            chase = 0.3;
+            stopBreathing();
+            gsap.to(layersOf(raised), { scale: 1, duration: RECOIL, ease: "power2.inOut", overwrite: true });
+            gsap.to(swingsOf(raised), {
+              rotation: 0,
+              x: 0,
+              y: 0,
+              duration: RECOIL,
+              ease: "power2.inOut",
+              overwrite: true,
+            });
+          };
+
+          const dropPlates = () => {
+            if (!raised) return;
+            stopBreathing();
+            const layers = layersOf(raised);
+            gsap.set([raised.plate, ...layers], { autoAlpha: 0 });
+            gsap.set(layers, { xPercent: 0, yPercent: 0, scale: 1 });
+            gsap.set(swingsOf(raised), { rotation: 0, x: 0, y: 0 });
+            raised = null;
+            restingSince = 0;
+          };
+
+          const onPointerMove = (event: PointerEvent) => {
+            if (!raised) return;
+            aimX = (event.clientX / window.innerWidth) * 2 - 1;
+            aimY = (event.clientY / window.innerHeight) * 2 - 1;
+          };
+
+          const showProduct = (immediate = false) => {
+            gsap.set(firstReveal, { autoAlpha: 1 });
+            gsap.set(title, { autoAlpha: 1, y: 0 });
+            gsap.fromTo(
+              "[data-video-hero-title-part]",
+              { opacity: 0, y: 26 },
+              {
+                opacity: 1,
+                y: 0,
+                duration: immediate ? 0 : 0.7,
+                stagger: immediate ? 0 : 0.1,
+                ease: "power3.out",
+              },
+            );
+            /* O contêiner só acende: quem anima são os cartões, um a um. Se o
+               contêiner também subisse, o movimento dele somaria ao de cada
+               cartão e o stagger perderia a leitura. */
+            gsap.set(firstContent, { autoAlpha: 1, y: 0 });
+
+            /* Cada cartão sobe da base e cresce, na ordem de leitura: o texto
+               à esquerda primeiro, depois os quatro números. A opacidade e o
+               deslocamento chegam com uma curva limpa; a escala ganha uma
+               sobra curta no fim, que é o que dá corpo ao "pop" sem virar
+               mola. Nascem depois do título, para a cena se montar de cima
+               para baixo. */
+            const cards = "[data-video-hero-card]";
+            gsap.set(cards, { transformOrigin: "50% 100%" });
+            const lead = immediate ? 0 : 0.32;
+            const step = immediate ? 0 : 0.085;
+            gsap.fromTo(
+              cards,
+              { opacity: 0, y: 36 },
+              { opacity: 1, y: 0, duration: immediate ? 0 : 0.62, delay: lead, stagger: step, ease: "power3.out" },
+            );
+            gsap.fromTo(
+              cards,
+              { scale: 0.82 },
+              { scale: 1, duration: immediate ? 0 : 0.78, delay: lead, stagger: step, ease: "back.out(1.5)" },
+            );
+          };
+
+          const showMolecule = () => {
+            html.dataset.navTheme = "dark";
+            /* Só a visibilidade da camada é daqui — quem move é cada filho:
+               o texto sobe atrás de uma cortina, os cartões entram em linha.
+               Se o contêiner também deslizasse, o movimento dele somaria ao
+               de cada filho e a leitura de "cortina" se perderia. */
+            gsap.fromTo(moleculeContent, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.4, ease: "power2.out" });
+
+            /* O texto entra como se uma cortina subisse: cada linha nasce
+               escondida por baixo do próprio contêiner (`overflow: hidden`
+               no JSX) e sobe para o lugar. Sem blur — só posição —, e cada
+               uma tem seu recorte, então a seguinte não aparece por cima da
+               anterior enquanto ainda sobe. */
+            gsap.fromTo(
+              "[data-video-hero-molecule-line]",
+              { yPercent: 112 },
+              { yPercent: 0, duration: 0.72, stagger: 0.1, ease: "power4.out" },
             );
 
-          intro.progress(0);
+            /* Os cartões entram na ordem da rota, de cima para baixo, e o
+               fio que liga um ao outro cresce junto — a sequência se monta,
+               não aparece pronta. */
+            gsap.set("[data-video-hero-step]", { transformOrigin: "0% 50%" });
+            gsap.fromTo(
+              "[data-video-hero-step]",
+              { opacity: 0, x: 26, scale: 0.94 },
+              {
+                opacity: 1,
+                x: 0,
+                scale: 1,
+                duration: 0.56,
+                delay: 0.16,
+                stagger: 0.09,
+                ease: "power3.out",
+              },
+            );
+            gsap.fromTo(
+              "[data-video-hero-step-link]",
+              { scaleY: 0 },
+              { scaleY: 1, duration: 0.3, delay: 0.3, stagger: 0.09, ease: "power2.out" },
+            );
+          };
 
-          void booted.then(() => {
-            if (!root.current) return;
-            if (window.scrollY > 4) {
-              intro.progress(1);
+          const releasePage = () => {
+            const next = document.querySelector<HTMLElement>("#nitrogen-process");
+            if (!next) return;
+
+            gsap.to(blackout, { opacity: 1, duration: 0.34, ease: "power2.inOut" });
+            delete html.dataset.heroOver;
+            html.dataset.navTheme = "dark";
+
+            const top = window.scrollY + next.getBoundingClientRect().top;
+            const lenis = scroller();
+            lenis?.start();
+            if (lenis) {
+              lenis.scrollTo(top, { duration: 0.8, force: true });
+            } else {
+              window.scrollTo({ top, behavior: "smooth" });
+            }
+          };
+
+          /* A ida e a volta são dois arquivos, e todo passo troca um pelo
+             outro. Pedir o tempo novo e trocar na mesma linha deixa aparecer,
+             por um instante, o quadro onde o outro vídeo tinha parado — outro
+             trecho da cena, congelado. A busca leva alguns milissegundos, e é
+             nessa fresta que a tela ficava parada, sem nada.
+
+             Então quem sai fica no ar até quem entra estar no quadro certo.
+             Nesse ponto os dois mostram exatamente a mesma imagem e a troca
+             não tem o que revelar. O `seeked` é quem avisa; o prazo curto é a
+             rede, para quando o tempo pedido já era o atual e o evento nunca
+             vem. */
+          let swapCall: gsap.core.Tween | null = null;
+          let swapDone: (() => void) | null = null;
+
+          const cancelSwap = () => {
+            swapCall?.kill();
+            swapCall = null;
+            if (swapDone) {
+              video.removeEventListener("seeked", swapDone);
+              reverseVideo.removeEventListener("seeked", swapDone);
+              swapDone = null;
+            }
+          };
+
+          const swapTo = (next: HTMLVideoElement, previous: HTMLVideoElement, time: number) => {
+            cancelSwap();
+            const reveal = () => {
+              cancelSwap();
+              gsap.set(next, { autoAlpha: 1 });
+              gsap.set(previous, { autoAlpha: 0 });
+            };
+            const standing = Math.abs(next.currentTime - time) < 0.02;
+            next.currentTime = time;
+            if (standing) {
+              reveal();
               return;
             }
-            intro.play();
-          });
+            swapDone = reveal;
+            next.addEventListener("seeked", reveal, { once: true });
+            swapCall = gsap.delayedCall(0.25, reveal);
+          };
 
-          /* ---------------------------------------------------- travessia / parallax */
-          gsap
-            .timeline({
-              defaults: { duration: 1, immediateRender: false },
-              scrollTrigger: {
-                id: "hero-exit-aminosan",
-                trigger: scene,
-                start: "top top",
-                end: "bottom bottom",
-                scrub: SCRUB,
-                invalidateOnRefresh: true,
-                refreshPriority: 10,
-                onToggle: (self) => {
-                  const on = self.isActive;
-                  moving.forEach((el) => {
-                    el.style.willChange = on ? "transform" : "";
-                  });
-                  if (leaves) leaves.style.willChange = on ? "filter" : "";
-                  if (on) html.dataset.heroOver = "on";
-                  else delete html.dataset.heroOver;
-                },
-                onRefresh: (self) => {
-                  if (self.isActive) html.dataset.heroOver = "on";
-                  else delete html.dataset.heroOver;
-                },
-                onUpdate: (self) => {
-                  if (self.progress > 0.01 && intro.progress() < 1) {
-                    intro.timeScale(4).play();
-                  }
-                },
-              },
-            })
-            /* A próxima seção permanece invisível até o fechamento da cena.
-               Ela continua no fluxo normal, logo depois da altura da hero. */
-            .set(next, { autoAlpha: 0 }, 0)
-            /* 1. Saída e descida profunda do conteúdo inicial da Hero atrás da folha */
-            .fromTo(
-              "[data-hero='hero-darken']",
-              { opacity: 0 },
-              { opacity: 1, ease: "power1.inOut", duration: 0.62 },
-              0,
-            )
-            .fromTo(
-              "[data-hero='copy']",
-              { y: 0, yPercent: 0 },
-              { y: 0, yPercent: narrow ? 45 : 65, ease: "power1.in", duration: 0.56 },
-              0,
-            )
-            .set("[data-hero='copy']", { visibility: "hidden" }, 0.61)
-            .fromTo(
-              "[data-hero='title-wrap']",
-              { y: 0, yPercent: 0, opacity: 1 },
-              { y: 0, yPercent: 48, opacity: 0, ease: "power1.in", duration: 0.52 },
-              0,
-            )
-            .fromTo(
-              "[data-hero='ground']",
-              { y: 0, yPercent: 0, opacity: 1 },
-              { y: 0, yPercent: narrow ? 26 : 40, opacity: 0, ease: "power1.in", duration: 0.6 },
-              0,
-            )
-            .fromTo(
-              "[data-hero='sky']",
-              { y: 0, yPercent: 0 },
-              { y: 0, yPercent: -12, ease: "power1.in", duration: 0.6 },
-              0,
-            )
-            /* 2. A folha demora a ganhar velocidade e assenta com inércia.
-               O curso mais longo evita que o close pareça saltar sobre a hero. */
-            .fromTo(
-              "[data-hero='leaves']",
-              { y: 0, yPercent: narrow ? 76 : short ? 89.5 : 86, scale: 1 },
-              { y: 0, yPercent: 0, scale: narrow ? 1.35 : 1.15, ease: "power2.inOut", duration: 0.68 },
-              0,
-            )
-            .fromTo(
-              "[data-hero='leaves-img']",
-              { filter: "blur(0px)" },
-              { filter: "blur(10px)", ease: "power2.inOut", duration: 0.68 },
-              0,
-            )
-            /* 3. Entrada do Nitrogênio: um único estado inicial explícito
-               evita que refreshes/reversões do scrub reapliquem from-tweens. */
-            .set("[data-hero='nitrogen-copy-line']", { opacity: 0, x: narrow ? -22 : -38 }, 0.66)
-            .set("[data-hero='nitrogen-step']", { opacity: 0, x: narrow ? 22 : 42 }, 0.66)
-            .set("[data-hero='nitrogen-step-dot']", { scale: 0 }, 0.66)
-            .set("[data-hero='nitrogen-step-line']", { scaleX: 0 }, 0.66)
-            .set("[data-hero='nitrogen-shade']", { opacity: 0 }, 0.66)
-            .set("[data-hero='nitrogen']", { opacity: 1 }, 0.66)
-            .to(
-              "[data-hero='nitrogen-shade']",
-              { opacity: 1, ease: "power2.out", duration: 0.14 },
-              0.66,
-            )
-            .to(
-              "[data-hero='nitrogen-copy-line']",
-              {
-                opacity: 1,
-                x: 0,
-                stagger: { each: 0.04, from: "start" },
-                ease: "power3.out",
-                duration: 0.22,
-              },
-              0.7,
-            )
-            .to(
-              "[data-hero='nitrogen-step']",
-              {
-                opacity: 1,
-                x: 0,
-                stagger: { each: 0.05, from: "start" },
-                ease: "power3.out",
-                duration: 0.22,
-              },
-              0.76,
-            )
-            .to(
-              "[data-hero='nitrogen-step-dot']",
-              {
-                scale: 1,
-                stagger: { each: 0.05, from: "start" },
-                ease: "power3.out",
-                duration: 0.16,
-              },
-              0.78,
-            )
-            .to(
-              "[data-hero='nitrogen-step-line']",
-              {
-                scaleX: 1,
-                stagger: { each: 0.05, from: "start" },
-                ease: "power2.out",
-                duration: 0.24,
-              },
-              0.8,
-            )
-            /* 4. O conteúdo permanece estável depois da entrada. Primeiro a
-               hero fecha completamente; depois há um pequeno respiro só em
-               preto; por fim a seção seguinte nasce desse preto, como na
-               passagem equivalente da home. */
-            .fromTo(
-              "[data-hero='blackout']",
-              { opacity: 0 },
-              { opacity: 1, ease: "power1.inOut", duration: 0.16 },
-              1.16,
-            )
-            .fromTo(
-              next,
-              { autoAlpha: 0 },
-              { autoAlpha: 1, ease: "power2.inOut", duration: 0.22 },
-              1.38,
-            );
+          const settle = (index: number) => {
+            run += 1;
+            playing = false;
+            settledIndex = index;
+            destinationIndex = index;
+            cancelAnimationFrame(frame);
+            const time = stops[index];
+            video.pause();
+            reverseVideo.pause();
 
-          /* Gestão de tom da barra do topo ao escurecer a cena */
-          ScrollTrigger.create({
-            trigger: scene,
-            start: "top top",
-            end: "bottom top",
-            onUpdate: (self) => {
-              if (self.progress > 0.15) {
-                html.dataset.navTheme = "dark";
+            direction = 1;
+            swapTo(video, reverseVideo, time);
+            /* O reverso fica alinhado com a parada: o próximo passo para trás
+               parte daqui sem ter de buscar nada. */
+            reverseVideo.currentTime = toReverse(time);
+
+            /* Quem não é desta parada sai por completo. A saída anterior foi
+               interrompida no meio para o texto poder entrar limpo, e sem
+               este corte a camada da outra cena ficaria pendurada em meia
+               opacidade por cima desta — a tela parada, sem informação. */
+            stopCopy();
+            if (index === 0) {
+              gsap.set(moleculeContent, { autoAlpha: 0, y: 0 });
+              raisePlates(0);
+              showProduct();
+            } else if (index === 1) {
+              gsap.set([firstReveal, firstContent, title], { autoAlpha: 0, y: 0 });
+              raisePlates(1);
+              showMolecule();
+            } else {
+              gsap.set([firstReveal, firstContent, title, moleculeContent], { autoAlpha: 0, y: 0 });
+              releasePage();
+            }
+          };
+
+          const monitor = (token: number) => {
+            if (disposed || !playing || token !== run) return;
+            const time = forwardTime();
+            const target = stops[destinationIndex];
+            const source = direction === 1 ? video : reverseVideo;
+
+            if ((direction === 1 && time >= target) || (direction === -1 && time <= target)) {
+              settle(destinationIndex);
+              return;
+            }
+            /* O arquivo acabou antes do alvo — quadro perdido, alvo no limite
+               da duração. Parar aqui é melhor do que girar num vídeo que não
+               anda mais e deixar a cena presa sem texto. */
+            if (source.ended) {
+              settle(destinationIndex);
+              return;
+            }
+            frame = requestAnimationFrame(() => monitor(token));
+          };
+
+          const playTo = (index: number, nextDirection: 1 | -1) => {
+            if (disposed || index < 0 || index >= stops.length) return;
+            cancelAnimationFrame(frame);
+            recoil?.kill();
+            cancelSwap();
+            hideCopy();
+            gsap.set(blackout, { opacity: 0 });
+            scroller()?.stop();
+
+            /* O quadro de onde partimos, lido com a direção que ainda vale e
+               com os dois vídeos já parados. Depois de virar `direction` a
+               leitura passaria para o outro vídeo, parado num tempo velho —
+               zero, enquanto ele nunca andou, que no reverso é o fim da cena.
+               Era daí que vinha o salto para o final. O recuo das chapas pode
+               atrasar o arranque em 220ms, e o valor continua bom: nada anda
+               nesse meio-tempo. */
+            const from = forwardTime();
+            video.pause();
+            reverseVideo.pause();
+
+            const token = (run += 1);
+            destinationIndex = index;
+            direction = nextDirection;
+            playing = true;
+
+            const begin = () => {
+              if (disposed || token !== run) return;
+
+              /* Uma play() abortada por um gesto mais novo só rejeita depois,
+                 e com a senha vencida não tem mais efeito — era ela que
+                 parava a cena à força no meio de uma navegação em curso. */
+              const fail = () => {
+                if (!disposed && token === run) settle(index);
+              };
+              const tick = () => monitor(token);
+
+              if (nextDirection === 1) {
+                swapTo(video, reverseVideo, from);
+                void video.play().then(tick).catch(fail);
               } else {
-                delete html.dataset.navTheme;
+                swapTo(reverseVideo, video, toReverse(from));
+                void reverseVideo.play().then(tick).catch(fail);
               }
-            },
-            onLeave: () => {
-              html.dataset.navTheme = "dark";
-            },
-            onLeaveBack: () => {
-              delete html.dataset.navTheme;
-            },
+            };
+
+            /* Com as chapas no ar o vídeo espera o recuo. São 220ms, o mesmo
+               tempo em que o texto sai, e o gesto ganha um recolher antes de
+               partir — o vídeo não pode andar embaixo de um quadro parado que
+               ainda cobre a tela, senão a troca corta um pedaço da cena. */
+            if (!raised) {
+              begin();
+              return;
+            }
+
+            /* Se o recuo já estava em curso — o gesto anterior o começou e
+               este virou a direção no meio —, o que falta dele é o que se
+               espera. Recomeçar os 220ms inteiros a cada gesto é o que dava a
+               sensação de controle pesado. */
+            const wait = restingSince
+              ? Math.max(0, RECOIL - (performance.now() - restingSince) / 1000)
+              : RECOIL;
+            restPlates();
+            recoil = gsap.delayedCall(wait, () => {
+              dropPlates();
+              begin();
+            });
+          };
+
+          const navigate = (nextDirection: 1 | -1) => {
+            const now = performance.now();
+            if (now - lastGesture < 180 && (!playing || direction === nextDirection)) return;
+            lastGesture = now;
+
+            if (playing) {
+              if (direction === nextDirection) return;
+              playTo(destinationIndex + nextDirection, nextDirection);
+              return;
+            }
+
+            const next = settledIndex + nextDirection;
+            if (next >= 0 && next < stops.length) playTo(next, nextDirection);
+          };
+
+          const onWheel = (event: WheelEvent) => {
+            if (settledIndex === 2) return;
+            event.preventDefault();
+            if (Math.abs(event.deltaY) > 8) navigate(event.deltaY > 0 ? 1 : -1);
+          };
+
+          const onTouchStart = (event: TouchEvent) => {
+            touchY = event.touches[0]?.clientY ?? 0;
+          };
+
+          const onTouchMove = (event: TouchEvent) => {
+            if (settledIndex === 2) return;
+            event.preventDefault();
+            const y = event.touches[0]?.clientY ?? touchY;
+            const delta = touchY - y;
+            if (Math.abs(delta) > 28) {
+              navigate(delta > 0 ? 1 : -1);
+              touchY = y;
+            }
+          };
+
+          const onKeyDown = (event: KeyboardEvent) => {
+            if (settledIndex === 2) return;
+            if (["ArrowDown", "PageDown", " "].includes(event.key)) {
+              event.preventDefault();
+              navigate(1);
+            } else if (["ArrowUp", "PageUp"].includes(event.key)) {
+              event.preventDefault();
+              navigate(-1);
+            }
+          };
+
+          /* Voltando da seção seguinte: assim que o hero reaparece no topo, a
+             página é ancorada em 0 e o vídeo retrocede para o quadro da
+             molécula, em vez de deixar o fecho preto parado na tela. */
+          let lastScrollY = window.scrollY;
+          const onScroll = () => {
+            const y = window.scrollY;
+            const goingUp = y < lastScrollY;
+            lastScrollY = y;
+            if (settledIndex !== 2 || playing || !goingUp) return;
+            if (y >= scene.offsetHeight - 2) return;
+
+            const lenis = scroller();
+            if (lenis) lenis.scrollTo(0, { immediate: true, force: true });
+            else window.scrollTo(0, 0);
+            lastScrollY = 0;
+            html.dataset.heroOver = "on";
+            html.dataset.navTheme = "dark";
+            /* Sai do estado "liberado" para que roda/teclas voltem a ser do hero. */
+            settledIndex = 1;
+            playTo(1, -1);
+          };
+
+          const startIntro = () => {
+            scroller()?.stop();
+            html.dataset.heroOver = "on";
+            video.currentTime = 0;
+            video.playbackRate = 1;
+            destinationIndex = 0;
+            direction = 1;
+            playing = true;
+            const token = (run += 1);
+            void video
+              .play()
+              .then(() => monitor(token))
+              .catch(() => {
+                if (!disposed && token === run) settle(0);
+              });
+          };
+
+          gsap.set([firstReveal, firstContent, moleculeContent, title, reverseVideo], { autoAlpha: 0 });
+          gsap.set([video, windowElement], { autoAlpha: 1 });
+          window.addEventListener("wheel", onWheel, { passive: false, capture: true });
+          window.addEventListener("touchstart", onTouchStart, { passive: true });
+          window.addEventListener("touchmove", onTouchMove, { passive: false, capture: true });
+          window.addEventListener("keydown", onKeyDown, { capture: true });
+          window.addEventListener("scroll", onScroll, { passive: true });
+          /* Só onde há ponteiro de verdade: no toque o dedo já é a navegação,
+             e não existe posição de repouso para ler. */
+          const fine = window.matchMedia("(pointer: fine)").matches;
+          if (fine) {
+            window.addEventListener("pointermove", onPointerMove, { passive: true });
+            gsap.ticker.add(drift);
+          }
+          void booted.then(() => {
+            if (video.readyState >= 2 && reverseVideo.readyState >= 1) startIntro();
+            else video.addEventListener("canplay", startIntro, { once: true });
           });
 
           return () => {
-            delete html.dataset.navTheme;
+            disposed = true;
+            run += 1;
+            cancelAnimationFrame(frame);
+            recoil?.kill();
+            cancelSwap();
+            stopBreathing();
+            gsap.ticker.remove(drift);
+            window.removeEventListener("pointermove", onPointerMove);
+            video.pause();
+            reverseVideo.pause();
+            video.removeEventListener("canplay", startIntro);
+            window.removeEventListener("wheel", onWheel, { capture: true });
+            window.removeEventListener("touchstart", onTouchStart);
+            window.removeEventListener("touchmove", onTouchMove, { capture: true });
+            window.removeEventListener("keydown", onKeyDown, { capture: true });
+            window.removeEventListener("scroll", onScroll);
+            scroller()?.start();
             delete html.dataset.heroOver;
+            delete html.dataset.navTheme;
           };
         },
       );
+
+      return () => mm.revert();
     },
     { scope: root },
   );
 
   return (
-    <section ref={root} className="aminosan-hero">
+    <section ref={root} className="aminosan-hero" aria-label={hero.heading}>
       <div className="aminosan-hero-window">
-        {/* Camada 1: Céu ao entardecer */}
-        <div
-          data-hero="sky"
-          className="pointer-events-none absolute inset-0 size-full origin-top select-none"
-        >
-          <Image
-            src="/img/aminosan/hero-aminosan-sky.png"
-            alt=""
-            fill
-            priority
-            sizes="100vw"
-            className="object-cover object-center"
-          />
-        </div>
+        <video
+          ref={videoRef}
+          className="aminosan-hero-video"
+          preload="auto"
+          muted
+          playsInline
+          aria-hidden="true"
+        />
+        <video
+          ref={reverseVideoRef}
+          className="aminosan-hero-video invisible opacity-0"
+          preload="auto"
+          muted
+          playsInline
+          aria-hidden="true"
+        />
 
-        {/* Camada 2: Tipografia Monumental (posicionada atrás do solo e das embalagens) */}
+        <Image
+          data-video-hero="plate-product"
+          src="/img/aminosan/hero-product-plate.webp"
+          alt=""
+          fill
+          sizes="100vw"
+          aria-hidden
+          className="aminosan-hero-plate aminosan-hero-cut--wide invisible opacity-0"
+        />
+        <Image
+          data-video-hero="plate-product-tall"
+          src="/img/aminosan/hero-product-plate-mobile.webp"
+          alt=""
+          fill
+          sizes="100vw"
+          aria-hidden
+          className="aminosan-hero-plate aminosan-hero-cut--tall invisible opacity-0"
+        />
+        {/* O título mora entre a chapa e o recorte: fica atrás do galão, que o
+            recorta por cima, e à frente do campo. */}
         <div
-          data-hero="title-wrap"
-          className="aminosan-hero-title-wrap pointer-events-none absolute inset-x-0 top-[clamp(92px,11.5vh,134px)] z-10 px-gut text-center select-none"
+          data-video-hero="title"
+          className="aminosan-hero-title invisible opacity-0"
         >
           <p
-            data-hero-eyebrow
-            className="font-display text-[clamp(9px,1.1vw,15px)] font-bold tracking-[0.26em] text-[#004c26] uppercase drop-shadow-[0_1px_4px_rgba(255,255,255,0.4)]"
+            data-video-hero-title-part
+            className="font-display text-[clamp(9px,0.8vw,12px)] font-bold tracking-[0.25em] text-[#1F4FB8] uppercase"
           >
             {hero.eyebrow}
           </p>
           <h1
-            data-hero-title
-            className="mt-[clamp(2px,0.5vw,8px)] font-display text-[clamp(54px,14.5vw,228px)] font-light md:font-thin leading-[0.88] tracking-[0.03em] text-[#004c26] uppercase drop-shadow-[0_2px_14px_rgba(0,0,0,0.06)] aminosan-hero-title"
+            data-video-hero-title-part
+            className="mt-2 font-display text-[clamp(64px,14.5vw,270px)] font-semibold leading-[0.86] tracking-[0.02em] uppercase aminosan-hero-title-fade"
           >
             {hero.heading}
           </h1>
         </div>
-
-        {/* Camada 3: Solo com a linha de produtos (versão vertical para mobile e panorâmica para desktop) */}
+        <Image
+          data-video-hero="cutout-product"
+          src="/img/aminosan/hero-product-cutout.webp"
+          alt=""
+          fill
+          sizes="100vw"
+          aria-hidden
+          className="aminosan-hero-cutout aminosan-hero-cut--wide invisible opacity-0"
+        />
+        <Image
+          data-video-hero="cutout-product-tall"
+          src="/img/aminosan/hero-product-cutout-mobile.webp"
+          alt=""
+          fill
+          sizes="100vw"
+          aria-hidden
+          className="aminosan-hero-cutout aminosan-hero-cut--tall invisible opacity-0"
+        />
+        {/* As folhas do primeiro plano, soltas do recorte para ganhar
+            animação própria. Ficam acima do galão e abaixo da vinheta. */}
+        {/* Dois elementos por folha, e a divisão é proposital: o de fora leva a
+            escala e o parallax, sempre em torno do centro da tela, como o
+            recorte — é o que a mantém casada com ele. O de dentro leva o
+            balanço, girando em torno da base da folha; se os dois fossem o
+            mesmo elemento, a origem do giro deslocaria a escala. */}
         <div
-          data-hero="ground"
-          className="aminosan-hero-ground pointer-events-none absolute inset-x-0 bottom-0 z-20 flex justify-center w-full select-none"
+          data-video-hero="leaf-left"
+          aria-hidden
+          className="aminosan-hero-leaf aminosan-hero-cut--wide invisible opacity-0"
         >
-          <picture className="aminosan-hero-ground-picture block">
-            <source
-              media="(max-width: 860px)"
-              srcSet="/img/aminosan/hero-aminosan-ground-mobile.png"
-            />
-            <img
-              src="/img/aminosan/hero-aminosan-ground.png"
-              alt="Aminosan crop field with product lineup"
-              width={1916}
-              height={821}
-              className="aminosan-hero-ground-img select-none pointer-events-none"
-              loading="eager"
-            />
-          </picture>
+          <Image
+            data-video-hero="leaf-left-swing"
+            src="/img/aminosan/hero-leaf-left.webp"
+            alt=""
+            fill
+            sizes="100vw"
+            className="aminosan-hero-leaf-img"
+          />
+        </div>
+        <div
+          data-video-hero="leaf-right"
+          aria-hidden
+          className="aminosan-hero-leaf aminosan-hero-cut--wide invisible opacity-0"
+        >
+          <Image
+            data-video-hero="leaf-right-swing"
+            src="/img/aminosan/hero-leaf-right.webp"
+            alt=""
+            fill
+            sizes="100vw"
+            className="aminosan-hero-leaf-img"
+          />
+        </div>
+        {/* As mesmas duas folhas, recortadas do corte 9:16. Aqui elas nascem
+            de um plano inteiro fora de foco — a lavoura da frente, que a
+            lente já separa do resto sozinha —, e o que as divide em duas é o
+            caminho de terra que afina no meio do rodapé. */}
+        <div
+          data-video-hero="leaf-left-tall"
+          aria-hidden
+          className="aminosan-hero-leaf aminosan-hero-cut--tall invisible opacity-0"
+        >
+          <Image
+            data-video-hero="leaf-left-swing-tall"
+            src="/img/aminosan/hero-leaf-left-mobile.webp"
+            alt=""
+            fill
+            sizes="100vw"
+            className="aminosan-hero-leaf-img"
+          />
+        </div>
+        <div
+          data-video-hero="leaf-right-tall"
+          aria-hidden
+          className="aminosan-hero-leaf aminosan-hero-cut--tall invisible opacity-0"
+        >
+          <Image
+            data-video-hero="leaf-right-swing-tall"
+            src="/img/aminosan/hero-leaf-right-mobile.webp"
+            alt=""
+            fill
+            sizes="100vw"
+            className="aminosan-hero-leaf-img"
+          />
+        </div>
+        <Image
+          data-video-hero="plate-molecule"
+          src="/img/aminosan/hero-molecule-plate.webp"
+          alt=""
+          fill
+          sizes="100vw"
+          aria-hidden
+          className="aminosan-hero-plate aminosan-hero-cut--wide invisible opacity-0"
+        />
+        <Image
+          data-video-hero="plate-molecule-tall"
+          src="/img/aminosan/hero-molecule-plate-mobile.webp"
+          alt=""
+          fill
+          sizes="100vw"
+          aria-hidden
+          className="aminosan-hero-plate aminosan-hero-cut--tall invisible opacity-0"
+        />
+        {/* Mesma divisão em duas camadas das folhas: a de fora leva a escala
+            e o parallax do ponteiro, a de dentro leva a órbita — um giro e
+            um vai e vem contínuos, próprios da molécula, sem depender de
+            ninguém tocar a tela. Juntos os dois dão um objeto que paira. */}
+        <div
+          data-video-hero="cutout-molecule"
+          aria-hidden
+          className="aminosan-hero-cutout aminosan-hero-cut--wide invisible opacity-0"
+        >
+          <Image
+            data-video-hero="molecule-orbit"
+            src="/img/aminosan/hero-molecule-cutout.webp"
+            alt=""
+            fill
+            sizes="100vw"
+            className="aminosan-hero-molecule-orbit"
+          />
+        </div>
+        <div
+          data-video-hero="cutout-molecule-tall"
+          aria-hidden
+          className="aminosan-hero-cutout aminosan-hero-cut--tall invisible opacity-0"
+        >
+          <Image
+            data-video-hero="molecule-orbit-tall"
+            src="/img/aminosan/hero-molecule-cutout-mobile.webp"
+            alt=""
+            fill
+            sizes="100vw"
+            className="aminosan-hero-molecule-orbit"
+          />
         </div>
 
-        {/* Camada 4: Cartões de valor, métricas e selo em primeiro plano */}
+        <span className="aminosan-hero-vignette" aria-hidden />
+
         <div
-          data-hero="copy"
-          className="aminosan-hero-copy pointer-events-none absolute inset-x-0 top-[clamp(215px,26.5vh,330px)] z-30 px-gut"
+          data-video-hero="first-reveal"
+          className="aminosan-video-hero-layer invisible opacity-0"
         >
-          <div className="aminosan-hero-layout wrap flex flex-col items-stretch gap-4 lg:flex-row lg:items-start lg:justify-between lg:gap-[clamp(24px,3vw,60px)]">
-            {/* Cartão de benefícios */}
-            <div
-              data-hero-card
-              className="aminosan-hero-card pointer-events-auto rounded-2xl border border-white/50 bg-white/35 p-[clamp(20px,1.8vw,36px)] backdrop-blur-[18px] backdrop-saturate-[180%] shadow-[inset_0_1px_1px_rgba(255,255,255,0.75),0_12px_32px_rgba(0,0,0,0.08)] lg:w-[420px] lg:shrink-0 lg:mt-[clamp(64px,9.5vh,120px)]"
-            >
-              <div className="flex items-start gap-3">
-                <Image
-                  src="/img/aminosan/icon-badge-leaf.svg"
-                  alt=""
-                  width={46}
-                  height={46}
-                  className="aminosan-hero-card-badge size-[clamp(32px,2.8vw,44px)] shrink-0"
-                />
-                <p className="aminosan-hero-card-eyebrow pt-1 text-[clamp(10px,0.85vw,13px)] font-medium leading-snug tracking-[0.02em] text-[#004c26]">
-                  {hero.card.eyebrow}
+          <div data-video-hero="first-content" className="size-full">
+            {/* Uma coluna no celular — os números em cima, o cartão embaixo —, e
+                a mesma faixa de três colunas no desktop. É a ordem visual que
+                muda com a largura, não a ordem do DOM: quem entra primeiro na
+                cena continua sendo o cartão de texto, e é dele que o stagger
+                parte. */}
+            <div className="aminosan-hero-first-col wrap flex h-full flex-col px-gut pb-[clamp(32px,5vh,64px)] pt-[clamp(92px,13vh,140px)] lg:grid lg:grid-cols-[minmax(280px,410px)_1fr_minmax(250px,330px)] lg:content-end lg:items-end lg:gap-5">
+              <article
+                data-video-hero-card
+                className="aminosan-video-glass aminosan-hero-first-card rounded-2xl p-[clamp(18px,1.6vw,28px)] max-lg:order-last max-lg:mt-auto lg:col-start-1"
+              >
+                <p className="font-display text-[clamp(17px,1.45vw,23px)] font-semibold leading-[1.17] text-white">
+                  {hero.card.title}
                 </p>
-              </div>
-
-              <p className="aminosan-hero-card-title mt-4 font-display text-[clamp(19px,1.8vw,26px)] font-medium leading-[1.18] text-ink">
-                {hero.card.title}
-              </p>
-
-              <div className="aminosan-hero-card-body-wrap mt-4 border-t border-[#004c26]/20 pt-4">
-                <p className="aminosan-hero-card-body text-[clamp(12.5px,0.95vw,15px)] leading-[1.42] text-muted">
+                <p className="mt-3 text-[clamp(12px,0.9vw,14px)] leading-[1.5] text-white/72">
                   {hero.card.body}
                 </p>
-              </div>
-
-              <div className="aminosan-hero-card-ctas mt-5 flex flex-wrap gap-2">
-                {hero.card.ctas.map((cta) => (
-                  <a
-                    key={cta.label}
-                    href={cta.href}
-                    className="aminosan-hero-card-btn inline-flex items-center gap-1.5 rounded-lg bg-[#004c26] px-4 py-2.5 text-[13px] font-semibold text-white transition-colors hover:bg-[#003a1d]"
-                  >
-                    {cta.label}
-                    <Image
-                      src="/img/aminosan/icon-cta-arrow.svg"
-                      alt=""
-                      width={10}
-                      height={10}
-                      className="size-[9px]"
-                    />
-                  </a>
-                ))}
-              </div>
-            </div>
-
-            {/* Deck animado de estatísticas em camadas (Stack com transição automática a cada 2s) */}
-            <div
-              data-hero-stats
-              className="aminosan-hero-stats pointer-events-auto relative w-full max-w-[360px] lg:w-[360px] lg:shrink-0 h-[88px] sm:h-[96px] lg:mt-[clamp(160px,20vh,240px)]"
-            >
-              {hero.stats.map((stat, index) => {
-                const pos = (index - activeStatIndex + totalStats) % totalStats;
-                const isFront = pos === 0;
-                return (
-                  <div
-                    key={stat.label}
-                    className="aminosan-hero-stat-item absolute inset-x-0 top-0 flex items-center gap-3.5 rounded-xl border border-white/50 bg-white/35 px-[clamp(14px,1.3vw,22px)] py-[clamp(10px,0.8vw,14px)] backdrop-blur-[18px] backdrop-saturate-[180%] select-none"
-                    style={getStatCardStyle(index)}
-                  >
-                    <div
-                      className={`aminosan-hero-stat-icon size-[clamp(36px,3.2vw,46px)] shrink-0 rounded-full flex items-center justify-center overflow-hidden transition-opacity duration-300 ${
-                        isFront ? "opacity-100" : "opacity-0"
-                      }`}
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {hero.card.ctas.map((cta) => (
+                    <a
+                      key={cta.label}
+                      href={cta.href}
+                      className="inline-flex items-center gap-1.5 rounded-lg bg-lime px-3.5 py-2.5 text-[12px] font-bold text-[#102017] transition-transform duration-300 hover:-translate-y-0.5"
                     >
-                      <Image
-                        src={STAT_ICON[stat.icon]}
-                        alt=""
-                        width={52}
-                        height={52}
-                        className="size-full object-contain"
-                      />
-                    </div>
-                    <div
-                      className={`min-w-0 flex-1 transition-opacity duration-300 ${
-                        isFront ? "opacity-100" : "opacity-0"
-                      }`}
-                    >
-                      <p className="aminosan-hero-stat-val font-display text-[clamp(15px,1.3vw,20px)] font-semibold leading-tight text-ink truncate">
-                        {stat.value}
-                      </p>
-                      <p className="aminosan-hero-stat-lbl text-[clamp(11px,0.8vw,14px)] tracking-[0.02em] text-muted line-clamp-1">
-                        {stat.label}
-                      </p>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Selo / Tagline */}
-          <div
-            data-hero-pill
-            className="aminosan-hero-pill pointer-events-auto mx-auto mt-4 lg:mt-[clamp(14px,2vh,26px)] flex w-fit max-w-full items-center gap-2 rounded-lg border border-white/50 bg-white/35 px-4 py-2 backdrop-blur-[16px] backdrop-saturate-[180%] shadow-[inset_0_1px_1px_rgba(255,255,255,0.7),0_4px_12px_rgba(0,0,0,0.04)]"
-          >
-            <Image
-              src="/img/aminosan/icon-tagline.svg"
-              alt=""
-              width={20}
-              height={24}
-              className="h-[18px] w-[15px] shrink-0"
-            />
-            <p className="font-display text-[clamp(9px,0.8vw,14px)] tracking-[0.08em] text-[#004c26]">
-              {hero.tagline}
-            </p>
-          </div>
-        </div>
-
-        {/* Camada intermediária: escurecimento total do conteúdo da hero atrás da folha */}
-        <span
-          data-hero="hero-darken"
-          className="pointer-events-none absolute inset-0 z-35 bg-[#0C0C0E] opacity-0"
-          aria-hidden
-        />
-
-        {/* Camada 5: Folhas em primeiro plano (sem corte reto: proporção natural da imagem 1536x1024) */}
-        <div
-          data-hero="leaves"
-          className="aminosan-hero-leaves pointer-events-none absolute inset-x-0 bottom-0 z-40 w-full origin-bottom select-none"
-          style={{ transform: "translateY(86%)" }}
-        >
-          <img
-            data-hero="leaves-img"
-            src="/img/aminosan/hero-aminosan-leaf.png"
-            alt=""
-            width={1536}
-            height={1024}
-            className="w-full h-auto block select-none pointer-events-none"
-            loading="eager"
-          />
-        </div>
-
-        {/* Camada 6: Informações de Nitrogênio sobre a folha */}
-        <div
-          data-hero="nitrogen"
-          className="pointer-events-none absolute inset-0 z-45 flex items-center px-gut opacity-0"
-        >
-          <span
-            data-hero="nitrogen-shade"
-            className="pointer-events-none absolute inset-0 bg-black/[0.46] opacity-0"
-            aria-hidden
-          />
-          <div
-            data-hero="nitrogen-content"
-            className="relative z-10 wrap w-full grid grid-cols-1 items-center gap-[clamp(32px,5vw,84px)] lg:grid-cols-[1.15fr_1fr]"
-          >
-            <div data-hero="nitrogen-copy" className="max-w-[560px]">
-              <h2
-                data-hero="nitrogen-copy-line"
-                className="text-h2 leading-[1.1] text-white"
-              >
-                {nitrogen.heading}
-              </h2>
-              <p
-                data-hero="nitrogen-copy-line"
-                className="mt-[clamp(16px,2.2vh,28px)] text-[clamp(14px,1.05vw,17px)] font-normal leading-[1.65] text-white/85"
-              >
-                {nitrogen.body[0]}
-              </p>
-              <p
-                data-hero="nitrogen-copy-line"
-                className="mt-[clamp(14px,1.8vh,24px)] text-[clamp(14px,1.05vw,17px)] font-bold leading-[1.65] text-white"
-              >
-                {nitrogen.body[1]}
-              </p>
-            </div>
-
-            <div
-              data-hero="nitrogen-steps"
-              className="flex flex-col gap-[clamp(32px,5vh,72px)]"
-            >
-              {nitrogen.steps.map((label) => (
-                <div key={label} data-hero="nitrogen-step">
-                  <StepIndicator label={label} />
+                      {cta.label}
+                      <Image src="/img/aminosan/icon-cta-arrow.svg" alt="" width={9} height={9} />
+                    </a>
+                  ))}
                 </div>
+              </article>
+
+              <div
+                className="aminosan-hero-first-stats grid auto-rows-fr grid-cols-2 gap-2 max-lg:order-first max-lg:gap-1 lg:col-start-3"
+              >
+                {hero.stats.map((stat) => {
+                  const Icon = STAT_ICON[stat.icon];
+                  return (
+                    <div
+                      key={stat.label}
+                      data-video-hero-card
+                      className="aminosan-video-glass flex rounded-xl max-lg:items-start max-lg:gap-1.5 max-lg:rounded-lg max-lg:p-[clamp(5px,1.5vw,7px)] lg:flex-col lg:p-3.5"
+                    >
+                      <span
+                        aria-hidden
+                        className="grid shrink-0 place-items-center border border-lime/35 bg-lime/15 text-lime max-lg:size-[clamp(16px,4.4vw,19px)] max-lg:rounded-md lg:mb-3 lg:size-9 lg:rounded-lg"
+                      >
+                        <Icon
+                          className="max-lg:size-[clamp(9px,2.5vw,11px)] lg:size-[18px]"
+                          strokeWidth={1.75}
+                        />
+                      </span>
+                      {/* No desktop este invólucro some da caixa (`contents`)
+                          e os dois parágrafos voltam a ser filhos diretos da
+                          coluna — é o que mantém o rótulo colado na base pelo
+                          `mt-auto`. No celular ele existe, e é o que deixa o
+                          texto ao lado do ícone em vez de embaixo dele. */}
+                      <div className="flex min-w-0 flex-col lg:contents">
+                        <p className="font-display font-semibold text-balance text-white max-lg:text-[clamp(8.5px,2.3vw,10.5px)] max-lg:leading-[1.15] lg:text-[14px] lg:leading-tight">
+                          {stat.value}
+                        </p>
+                        <p className="text-white/60 max-lg:text-[clamp(6.5px,1.8vw,8px)] max-lg:leading-[1.15] lg:mt-auto lg:pt-1.5 lg:text-[10px] lg:leading-tight">
+                          {stat.label}
+                        </p>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div
+          data-video-hero="molecule-content"
+          className="aminosan-video-hero-layer invisible opacity-0"
+        >
+          {/* Texto à esquerda, rota à direita, e no meio uma coluna vazia: é
+              por ela que a molécula aparece. As três linhas antigas cruzavam o
+              quadro inteiro e passavam por cima dela. */}
+          <div className="aminosan-hero-molecule-wrap flex h-full flex-col justify-between gap-[clamp(20px,3vh,36px)] px-gut pt-[clamp(88px,13vh,132px)] pb-[clamp(26px,5vh,58px)] max-lg:justify-start lg:grid lg:items-center lg:gap-[clamp(16px,2vw,48px)] lg:py-16 lg:grid-cols-[minmax(0,460px)_minmax(0,1fr)_minmax(0,360px)]">
+            {/* Cada linha mora dentro de uma máscara (`overflow-hidden`) do
+                tamanho exato do seu próprio conteúdo — não uma altura fixa —,
+                e é só o filho que se move. Escondido 112% abaixo, ele sobe
+                para dentro da máscara como se uma cortina se abrisse por
+                baixo do texto; a máscara nunca revela o que ainda não subiu. */}
+            <div className="aminosan-hero-molecule-copy max-w-[520px]">
+              <div className="aminosan-hero-molecule-intro">
+                <div className="overflow-hidden">
+                  <p
+                    data-video-hero-molecule-line
+                    className="font-display text-[10px] font-bold tracking-[0.25em] text-lime uppercase"
+                  >
+                    Aminosan® · Free amino acids
+                  </p>
+                </div>
+                <div className="mt-3 overflow-hidden lg:mt-4">
+                  <h2
+                    data-video-hero-molecule-line
+                    className="text-h2 leading-[1.02] text-white max-lg:text-[clamp(24px,6.5vw,29px)]"
+                  >
+                    {nitrogen.heading}
+                  </h2>
+                </div>
+                <div className="mt-3 overflow-hidden lg:mt-6">
+                  <p
+                    data-video-hero-molecule-line
+                    className="text-[clamp(12px,3.4vw,14px)] leading-[1.5] text-white/72 lg:text-[clamp(14px,1vw,17px)] lg:leading-[1.65]"
+                  >
+                    {nitrogen.body[0]}
+                  </p>
+                </div>
+              </div>
+              <div className="aminosan-hero-molecule-callout mt-4 overflow-hidden max-lg:!mt-auto lg:mt-4">
+                <p
+                  data-video-hero-molecule-line
+                  className="text-[clamp(12px,3.4vw,14px)] font-bold leading-[1.45] text-white lg:text-[clamp(14px,1vw,17px)] lg:leading-[1.6]"
+                >
+                  {nitrogen.body[1]}
+                </p>
+              </div>
+            </div>
+
+            <div aria-hidden className="hidden lg:block" />
+
+            <div className="flex flex-col max-lg:grid max-lg:grid-cols-3 max-lg:gap-2">
+              {nitrogen.steps.map((label, index) => (
+                <Fragment key={label}>
+                  {index > 0 && <span data-video-hero-step-link aria-hidden className="aminosan-step-link" />}
+                  <StepCard index={index} label={label} />
+                </Fragment>
               ))}
             </div>
           </div>
         </div>
 
-        {/* Camada 7: Lâmina de blackout na reta final do percurso (transição para tela toda preta) */}
         <span
-          data-hero="blackout"
-          className="pointer-events-none absolute inset-0 -bottom-[2px] z-50 bg-[#0C0C0E] opacity-0"
+          data-video-hero="blackout"
+          className="pointer-events-none absolute inset-0 z-[60] bg-[#0C0C0E] opacity-0"
           aria-hidden
         />
       </div>
