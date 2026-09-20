@@ -1,30 +1,5 @@
-/* Both sides of the section boundary use the same opaque endpoint. */
-.fieldTransition, .section { --surface-bridge: #07110b; }
-.fieldTransition {
-  position: relative;
-  aspect-ratio: 1918 / 629;
-  overflow: hidden;
-  background: var(--surface-bridge);
-}
-.fieldTransition picture { display: block; width: 100%; height: 100%; }
-.fieldTransition::before, .fieldTransition::after {
-  content: "";
-  position: absolute;
-  inset-inline: 0;
-  pointer-events: none;
-  z-index: 1;
-}
-.fieldTransition::before {
-  top: 0;
-  height: 42%;
-  background: linear-gradient(180deg, #fff 0%, rgb(255 255 255 / .94) 12%, rgb(255 255 255 / .66) 38%, rgb(255 255 255 / .22) 72%, transparent 100%);
-}
-.fieldTransition::after {
-  bottom: -1px;
-  height: 58%;
-  background: linear-gradient(180deg, rgb(7 17 11 / 0) 0%, rgb(7 17 11 / .12) 22%, rgb(7 17 11 / .42) 48%, rgb(7 17 11 / .78) 74%, var(--surface-bridge) 99%);
-}
 .section {
+  --surface-bridge: #070709;
   position: relative;
   isolation: isolate;
   width: 100%;
@@ -36,17 +11,18 @@
   --surface-line: rgb(246 255 238 / .18);
 }
 
-.camera, .image, .scrim, .entryBlend, .exitShade { position: absolute; inset: 0; pointer-events: none; }
-.entryBlend {
+.camera, .image, .revealBand, .scrim, .entryFade { position: absolute; inset: 0; pointer-events: none; }
+.touchZone { display: none; }
+.entryFade {
   bottom: auto;
-  height: clamp(100px, 12vw, 220px);
-  z-index: 1;
-  background: linear-gradient(180deg, var(--surface-bridge) 0%, rgb(7 17 11 / .97) 10%, rgb(7 17 11 / .72) 36%, rgb(7 17 11 / .28) 70%, rgb(7 17 11 / 0) 100%);
+  z-index: 2;
+  height: clamp(120px, 13vw, 210px);
+  background: linear-gradient(180deg, #fff 0%, rgb(255 255 255 / .96) 16%, rgb(255 255 255 / .7) 44%, rgb(255 255 255 / .24) 74%, transparent 100%);
 }
 .camera { transform-origin: 65% 45%; }
 .image { background-size: cover; background-position: center; }
-.section[data-loaded="true"] .base { background-image: url('/img/surface-v2/leaf.webp'); }
-.section[data-loaded="true"] :is(.spotlight, .fullReveal) { background-image: url('/img/surface-v2/structure.webp'); }
+.section[data-loaded="true"] .base { background-image: url('/img/surface-v2/soy-leaf-natural-desktop.webp'); }
+.section[data-loaded="true"] :is(.spotlight, .fullReveal) { background-image: url('/img/surface-v2/soy-leaf-structure-desktop.webp'); }
 .spotlight {
   -webkit-mask-image: radial-gradient(circle 0px at -999px -999px, #fff, transparent);
   mask-image: radial-gradient(circle 0px at -999px -999px, #fff, transparent);
@@ -57,9 +33,8 @@
 .fullReveal { opacity: 0; transition: opacity .7s ease; }
 .section[data-revealed="true"] .fullReveal { opacity: 1; }
 .scrim {
-  background: linear-gradient(90deg, rgb(5 13 8 / .62), transparent 68%), linear-gradient(0deg, #07110b 0%, rgb(7 17 11 / .82) 12%, transparent 48%, rgb(7 17 11 / .15) 80%, rgb(7 17 11 / .5));
+  background: linear-gradient(180deg, transparent 0%, transparent 68%, rgb(7 7 9 / .18) 76%, rgb(7 7 9 / .7) 91%, #070709 100%);
 }
-.exitShade { z-index: 2; background: #000; opacity: 0; }
 
 .ui {
   position: relative;
@@ -103,9 +78,19 @@
 .section :is(button, a):focus-visible { outline: 2px solid var(--color-offwhite); outline-offset: 5px; }
 
 .exploreHint { position: absolute; left: 72%; top: 42%; display: grid; justify-items: center; gap: 18px; color: #e5efcc; font-size: 9px; letter-spacing: .2em; }
-.target { position: relative; display: grid; place-items: center; width: 66px; height: 66px; border: 1px solid rgb(246 255 238 / .45); border-radius: 50%; }
-.target::before { content: ''; width: 4px; height: 4px; background: var(--color-lime); border-radius: 50%; }
-.target i { position: absolute; width: 10px; height: 1px; background: rgb(246 255 238 / .8); }
+.target {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 66px;
+  height: 66px;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  background: rgb(4 12 7 / .42);
+  box-shadow: 0 0 0 2px rgb(0 0 0 / .62), 0 8px 28px rgb(0 0 0 / .42);
+}
+.target::before { content: ''; width: 6px; height: 6px; border: 2px solid #07110b; border-radius: 50%; background: var(--color-lime); box-shadow: 0 0 0 2px rgb(246 255 238 / .9); }
+.target i { position: absolute; width: 12px; height: 2px; background: #fff; box-shadow: 0 1px 2px rgb(0 0 0 / .8); }
 .target i:first-child { left: -5px; }
 .target i:last-child { right: -5px; }
 .touchHint { display: none; }
@@ -137,6 +122,16 @@
 .section[data-exploring="true"][data-revealed="false"] .cursor { opacity: 1; }
 
 @media (min-width: 1700px) { .image { background-position: center 43%; } }
+@media (min-width: 1025px) {
+  .copy { margin-top: clamp(76px, 9svh, 116px); }
+  .title { line-height: .88; }
+  .scrim {
+    background:
+      radial-gradient(ellipse 50% 40% at 12% 50%, rgb(3 10 6 / .72) 0%, rgb(3 10 6 / .52) 42%, rgb(3 10 6 / .2) 67%, transparent 88%),
+      radial-gradient(ellipse 34% 24% at 88% 86%, rgb(3 10 6 / .72) 0%, rgb(3 10 6 / .5) 44%, rgb(3 10 6 / .18) 68%, transparent 90%),
+      linear-gradient(180deg, transparent 0%, transparent 68%, rgb(7 7 9 / .18) 76%, rgb(7 7 9 / .7) 91%, #070709 100%);
+  }
+}
 @media (max-width: 1024px) {
   .ui { padding: 80px 28px 28px; }
   .title { font-size: clamp(64px, 8.5vw, 88px); }
@@ -149,9 +144,6 @@
   .product { width: 325px; gap: 14px; }
   .edition { font-size: 9px; }
 }
-@media (max-width: 860px) {
-  .fieldTransition { margin-top: 28px; aspect-ratio: 444 / 250; }
-}
 @media (max-width: 768px) {
   .section, .ui { min-height: max(880px, 100svh); }
   .ui { padding: max(80px, env(safe-area-inset-top)) max(22px, env(safe-area-inset-right)) max(24px, env(safe-area-inset-bottom)) max(22px, env(safe-area-inset-left)); }
@@ -163,22 +155,64 @@
   .notes dd { font-size: 11px; }
 }
 @media (max-width: 720px) {
+  .section {
+    --mobile-reveal-top: clamp(108px, 15svh, 132px);
+    --mobile-reveal-bottom: clamp(520px, 68svh, 610px);
+  }
   .section, .ui { min-height: 100svh; }
   .ui { padding: max(76px, env(safe-area-inset-top)) max(20px, env(safe-area-inset-right)) max(24px, env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left)); }
-  .section[data-loaded="true"] .base { background-image: url('/img/surface-v2/leaf-mobile.webp'); }
-  .section[data-loaded="true"] :is(.spotlight, .fullReveal) { background-image: url('/img/surface-v2/structure-mobile.webp'); }
+  .section[data-loaded="true"] .base { background-image: url('/img/surface-v2/soy-leaf-natural-mobile.webp'); }
+  .section[data-loaded="true"] :is(.spotlight, .fullReveal) { background-image: url('/img/surface-v2/soy-leaf-structure-mobile.webp'); }
   .camera { bottom: auto; height: 810px; transform-origin: 65% 45%; }
   .image { background-position: 66% center; }
-  .scrim { background: linear-gradient(180deg, #07110b 0%, rgb(7 17 11 / .96) 17%, rgb(7 17 11 / .62) 30%, rgb(7 17 11 / .12) 48%, #07110b 76%); }
-  .copy { margin-top: 40px; }
-  .title { font-size: clamp(58px, 10.5vw, 76px); }
+  .revealBand {
+    -webkit-mask-image: linear-gradient(
+      180deg,
+      transparent 0,
+      transparent calc(var(--mobile-reveal-top) - 56px),
+      #000 calc(var(--mobile-reveal-top) + 18px),
+      #000 calc(var(--mobile-reveal-bottom) - 38px),
+      transparent calc(var(--mobile-reveal-bottom) + 64px),
+      transparent 100%
+    );
+    mask-image: linear-gradient(
+      180deg,
+      transparent 0,
+      transparent calc(var(--mobile-reveal-top) - 56px),
+      #000 calc(var(--mobile-reveal-top) + 18px),
+      #000 calc(var(--mobile-reveal-bottom) - 38px),
+      transparent calc(var(--mobile-reveal-bottom) + 64px),
+      transparent 100%
+    );
+  }
+  .scrim { bottom: auto; height: 810px; }
+  .entryFade { height: clamp(108px, 18svh, 150px); }
+  .touchZone {
+    position: absolute;
+    top: var(--mobile-reveal-top);
+    right: 0;
+    left: 0;
+    display: block;
+    height: calc(var(--mobile-reveal-bottom) - var(--mobile-reveal-top));
+    pointer-events: none;
+  }
+  .copy { margin-top: clamp(320px, 48svh, 440px); }
+  .title { font-size: clamp(58px, 10.5vw, 76px); line-height: .92; }
   .description { max-width: 305px; font-size: 13px; margin-top: 20px; }
   .controls { margin-top: 20px; }
   .edition { font-size: 0; }
   .edition > span { font-size: 10px; margin-left: 0; }
-  .exploreHint { position: relative; left: auto; top: auto; align-self: flex-end; margin: 82px 16% 74px 0; }
+  .exploreHint {
+    z-index: 4;
+    top: calc((var(--mobile-reveal-top) + var(--mobile-reveal-bottom)) / 2);
+    left: 50%;
+    width: 76px;
+    height: 76px;
+    margin: 0;
+    transform: translate(-50%, -50%);
+  }
   .mouseHint { display: none; }
-  .touchHint { display: inline; }
+  .touchHint { position: absolute; top: calc(100% + 14px); display: inline; white-space: nowrap; }
   .bottom { flex-direction: column; align-items: stretch; padding-top: 0; gap: 30px; }
   .product { width: 100%; grid-template-columns: 72px 1fr; gap: 18px; background: rgb(7 17 11 / .78); }
   .thumb { min-height: 100px; }
@@ -197,12 +231,10 @@
   .ui { padding-inline: max(18px, env(safe-area-inset-left)) max(18px, env(safe-area-inset-right)); }
   .eyebrow { font-size: 9px; letter-spacing: .13em; }
   .topline { padding-bottom: 18px; }
-  .copy { margin-top: 34px; }
   .title { font-size: clamp(48px, 12.2vw, 58px); }
   .description { max-width: 290px; font-size: 12px; }
   .controls { gap: 7px; }
   .controls button { padding-inline: 12px; font-size: 10px; }
-  .exploreHint { margin-top: 75px; margin-bottom: 65px; margin-right: 15%; }
   .product { padding: 12px; border-radius: 14px; }
 }
 @media (max-width: 360px) {
@@ -218,7 +250,6 @@
 @media (prefers-reduced-motion: reduce) {
   .section *, .section *::before { animation: none !important; transition: none !important; }
   .camera, .section [data-surface-line], .section [data-surface-enter], .section [data-surface-exit] { transform: none !important; opacity: 1 !important; }
-  .exitShade { opacity: 0 !important; }
 }
 
 /* Touch: the lens is a draggable handle. It pulses and nudges until the first
@@ -236,8 +267,9 @@
   .target {
     width: 76px;
     height: 76px;
-    border-color: rgb(246 255 238 / .75);
-    background: rgb(7 17 11 / .28);
+    border-color: #fff;
+    background: rgb(4 12 7 / .5);
+    box-shadow: 0 0 0 2px rgb(0 0 0 / .72), 0 10px 30px rgb(0 0 0 / .5);
     pointer-events: auto;
     touch-action: none;
     cursor: grab;
@@ -250,9 +282,9 @@
   .section[data-exploring="true"] .touchHint { opacity: 0; }
   .section[data-exploring="true"] .target {
     animation: none;
-    background: transparent;
+    background: rgb(4 12 7 / .42);
     border-color: var(--color-lime);
-    box-shadow: 0 0 0 1px rgb(183 199 62 / .35), 0 0 30px rgb(183 199 62 / .3);
+    box-shadow: 0 0 0 2px #07110b, 0 0 0 4px rgb(183 199 62 / .72), 0 8px 30px rgb(0 0 0 / .55);
   }
   .section[data-dragging="true"] .target { cursor: grabbing; }
   .section[data-revealed="true"] .exploreHint { visibility: hidden; }

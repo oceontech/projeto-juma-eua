@@ -1,65 +1,126 @@
-.section { position: relative; z-index: 1; padding: clamp(42px, 4vw, 68px) 0 clamp(60px, 6vw, 110px); background: #070709; color: var(--color-offwhite); }
+/* Dois layouts genuinamente diferentes: no mobile cada frente é um par de
+   cartões inclinados em sentidos opostos; no desktop o par se abre em duas
+   colunas e o bloco inteiro encosta ora num lado, ora no outro do contêiner.
+ *
+ * Por isso as regras de LAYOUT vivem em media queries mutuamente exclusivas,
+ * e não em cascata mobile-first: seletores como `.front[data-flip] .photoSlot`
+ * têm especificidade maior que `.photoSlot`, e media query não soma
+ * especificidade — o mobile venceria o desktop em qualquer sobreposição. O que
+ * é comum aos dois (tipografia, superfícies, foto) fica na base. */
+
+.section { position: relative; z-index: 1; overflow: clip; padding: clamp(42px, 4vw, 68px) 0 clamp(72px, 7vw, 130px); background: #070709; color: var(--color-offwhite); }
 .wrap { width: min(var(--container-wrap), calc(100% - 2 * var(--spacing-gut))); margin-inline: auto; }
-.intro { display: grid; grid-template-columns: minmax(0, 1.08fr) minmax(280px, 0.7fr); align-items: end; gap: clamp(28px, 7vw, 132px); }
-.headline { max-width: 14ch; font-family: var(--font-display); font-size: var(--text-h2); font-weight: 400; line-height: .97; letter-spacing: -.035em; }
-.lede { max-width: 43ch; color: rgb(246 255 238 / .7); font-size: clamp(14px, 1.05vw, 17px); line-height: 1.6; }
 
-/* A altura do curso é o tempo da cena: duas travessias e três leituras. */
-.track { position: relative; height: 300lvh; }
-.sticky { position: sticky; top: 0; display: grid; height: 100lvh; align-content: center; overflow: clip; }
+.intro { display: grid; gap: 16px; }
+.headline { max-width: 14ch; font-family: var(--font-display); font-size: clamp(30px, 8.8vw, 42px); font-weight: 400; line-height: .97; letter-spacing: -.035em; }
+.lede { max-width: 43ch; color: rgb(246 255 238 / .7); font-size: 13px; line-height: 1.45; }
 
-/* `position: relative` aqui é o que a inversão mede: os deslocamentos saem de
-   offsetLeft/offsetTop relativos ao palco, não à section. */
-.stage { position: relative; display: grid; grid-template-columns: minmax(0, .96fr) minmax(380px, .84fr); align-items: center; height: clamp(410px, 30vw, 470px); }
-.photoFrame { position: relative; z-index: 1; height: 100%; overflow: hidden; border-radius: clamp(24px, 2.4vw, 42px); background: #151614; box-shadow: 0 26px 80px rgb(0 0 0 / .28); will-change: transform, opacity; }
-.photo, .image { position: absolute; inset: 0; }
-.image { object-fit: cover; }
-.photoShade { position: absolute; inset: 0; background: linear-gradient(135deg, rgb(4 10 6 / .04), rgb(4 10 6 / .46)); pointer-events: none; }
-.card { position: relative; z-index: 2; display: grid; box-sizing: border-box; height: clamp(390px, 28vw, 430px); margin-left: clamp(-88px, -6.2vw, -36px); padding: clamp(26px, 2.7vw, 44px); border: 1px solid rgb(246 255 238 / .11); border-radius: clamp(24px, 2.4vw, 42px); background: linear-gradient(145deg, #28291e 0%, #121310 54%, #090a09 100%); box-shadow: 0 30px 90px rgb(0 0 0 / .42); will-change: transform, opacity; }
-/* As três leituras dividem a mesma célula: a que entra nasce onde a outra saiu. */
-.panel { grid-area: 1 / 1; align-self: center; }
-.eyebrow { color: var(--color-lime-bright); font-family: var(--font-tag); font-size: clamp(10px, .8vw, 13px); font-weight: 600; letter-spacing: .14em; text-transform: uppercase; }
-.title { margin-top: clamp(14px, 1.4vw, 22px); color: #fff; font-family: var(--font-display); font-size: clamp(38px, 3.8vw, 62px); font-weight: 400; line-height: .95; letter-spacing: -.04em; }
-.body { max-width: 48ch; margin-top: clamp(14px, 1.4vw, 22px); color: rgb(246 255 238 / .78); font-size: clamp(14px, .92vw, 16px); line-height: 1.56; }
-.tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: clamp(14px, 1.4vw, 20px); padding: 0; list-style: none; }
-.tags li { padding: .48em .9em; border: 1px solid rgb(246 255 238 / .22); border-radius: 999px; color: rgb(246 255 238 / .86); font-size: clamp(11px, .82vw, 13px); }
-.closing { margin-top: clamp(18px, 2vw, 28px); color: var(--color-lime-bright); font-family: var(--font-display); font-size: clamp(18px, 1.5vw, 25px); line-height: 1.24; }
-.note { margin-top: clamp(18px, 2vw, 28px); color: rgb(246 255 238 / .48); font-family: var(--font-tag); font-size: 10px; letter-spacing: .12em; text-transform: uppercase; }
+/* ---------------------------------------------------------------- a trilha */
+/* `auto` nas laterais: o atalho `margin` aqui apagaria o do .wrap e jogaria a
+   trilha inteira contra a borda esquerda. */
+.trail { display: grid; gap: clamp(46px, 11vw, 78px); margin: clamp(30px, 6vw, 48px) auto 0; padding: 0; list-style: none; }
+.front { display: grid; }
+/* As inclinações moram no CSS porque o JS as lê daqui: a entrada gira de 0 até
+   elas, e o repouso continua correto sem JS nenhum. Zero é o padrão; só o
+   layout mobile as declara. */
+.block { display: grid; --tilt-photo: 0deg; --tilt-card: 0deg; }
 
-/* Sem setas: os capítulos são leitura de onde a rolagem está, e atalho para
-   onde ela pode ir. O trilho enche conforme a cena avança. */
-.controls { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(8px, 1.2vw, 20px); margin-top: clamp(18px, 1.8vw, 28px); }
-.chapter { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: baseline; gap: 10px; padding: 9px 0 0; border: 0; background: transparent; color: rgb(246 255 238 / .45); font-family: var(--font-tag); font-size: clamp(11px, .85vw, 13px); letter-spacing: .05em; text-align: left; cursor: pointer; transition: color .3s ease; }
-.chapter:focus-visible { outline: 2px solid var(--color-lime-bright); outline-offset: 4px; }
-.chapter[data-active] { color: #fff; }
-.chapter:hover { color: var(--color-offwhite); }
-.chapterName { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.chapterRail { position: relative; grid-column: 1 / -1; height: 2px; margin-top: 12px; overflow: hidden; border-radius: 999px; background: rgb(246 255 238 / .18); }
-.chapterFill { position: absolute; inset: 0; border-radius: 999px; background: var(--color-lime-bright); transform: scaleX(0); transform-origin: left center; }
+/* Os invólucros carregam a entrada (escala, deslocamento, giro até a
+   inclinação). O conteúdo fica na camada de dentro, livre para a animação de
+   repouso — se as duas dividissem o mesmo transform, uma apagaria a outra.
+ *
+ * Sem `will-change` aqui, de propósito. Promover a camada faria o Chrome
+ * rasterizar o cartão alinhado aos eixos e só então girá-lo no compositor: a
+ * borda arredondada chega à rotação já desenhada dura, e o resultado é a borda
+ * serrilhada. Sem a promoção, cada quadro é rasterizado já rotacionado, com
+ * antialiasing. O JS completa o par desligando o `force3D` do GSAP, que
+ * injetaria a mesma promoção por outro caminho. */
+.photoSlot { position: relative; z-index: 1; display: grid; transform: rotate(var(--tilt-photo)); }
+.cardSlot { position: relative; z-index: 2; display: grid; transform: rotate(var(--tilt-card)); }
 
-@media (max-width: 960px) {
-  .intro { grid-template-columns: 1fr; gap: 16px; }
-  .stage { grid-template-columns: 1fr; gap: 0; height: auto; }
-  .photoFrame { height: auto; min-height: clamp(240px, 34svh, 360px); }
-  .card { height: auto; min-height: 0; margin: clamp(-48px, -9vw, -28px) clamp(12px, 5vw, 36px) 0; }
-  .sticky { height: 100svh; }
+.photoFrame { position: relative; grid-area: 1 / 1; overflow: hidden; border-radius: inherit; background: #151614; }
+/* Folga vertical para o parallax correr sem descobrir a borda. */
+.photo { position: absolute; inset: -6% 0; }
+.image { position: absolute; inset: 0; object-fit: cover; }
+.photoShade { position: absolute; inset: 0; background: linear-gradient(150deg, rgb(4 10 6 / .06) 34%, rgb(4 10 6 / .58)); pointer-events: none; }
+
+.card { position: relative; grid-area: 1 / 1; display: flex; box-sizing: border-box; flex-direction: column; justify-content: center; overflow: hidden; border-radius: inherit; background: linear-gradient(145deg, #28291e 0%, #121310 54%, #090a09 100%); }
+/* A faixa de luz que atravessa a superfície de tempos em tempos. Fica mais
+   alta que o card e inclinada, para cruzar na diagonal. É o único brilho da
+   peça, e mora dentro dela — o `overflow: hidden` do card a recorta. */
+.sheen { position: absolute; top: -60%; bottom: -60%; left: -60%; width: 62%; background: linear-gradient(90deg, rgb(246 255 238 / 0), rgb(246 255 238 / .05) 48%, rgb(168 230 58 / .022) 64%, rgb(246 255 238 / 0)); pointer-events: none; }
+.cardBody { position: relative; }
+
+.eyebrow { color: var(--color-lime-bright); font-family: var(--font-tag); font-size: 9.5px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; }
+.title { margin-top: 10px; color: #fff; font-family: var(--font-display); font-size: clamp(30px, 8.6vw, 42px); font-weight: 400; line-height: .95; letter-spacing: -.04em; }
+.body { max-width: 48ch; margin-top: 12px; color: rgb(246 255 238 / .78); font-size: 13.5px; line-height: 1.5; }
+.tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; padding: 0; list-style: none; }
+.tags li { padding: .48em .9em; border: 1px solid rgb(246 255 238 / .22); border-radius: 999px; color: rgb(246 255 238 / .86); font-size: 11px; }
+.closing { margin-top: 14px; color: var(--color-lime-bright); font-family: var(--font-display); font-size: 17px; line-height: 1.24; }
+.note { margin-top: 14px; color: rgb(246 255 238 / .48); font-family: var(--font-tag); font-size: 9px; letter-spacing: .12em; text-transform: uppercase; }
+
+/* ------------------------------------------------- layout mobile e tablet */
+@media (max-width: 1099px) {
+  .block { grid-template-columns: minmax(0, 1fr); --tilt-photo: -4.6deg; --tilt-card: 2.4deg; }
+  .front[data-flip] .block { --tilt-photo: 4.6deg; --tilt-card: -2.4deg; }
+
+  .photoSlot { width: 80%; min-height: clamp(220px, 34svh, 300px); justify-self: start; border-radius: 26px; }
+  .cardSlot { width: 88%; margin-top: clamp(-64px, -13vw, -42px); justify-self: end; border-radius: 26px; }
+  .front[data-flip] .photoSlot { justify-self: end; }
+  .front[data-flip] .cardSlot { justify-self: start; }
+
+  .card { padding: 24px 22px; }
 }
-@media (max-width: 600px) {
-  .section { padding-top: 28px; padding-bottom: 56px; }
-  .headline { font-size: clamp(30px, 8.8vw, 42px); }
-  .lede { font-size: 13px; line-height: 1.42; }
-  .photoFrame { min-height: clamp(190px, 26svh, 250px); border-radius: 24px; }
-  .card { height: 320px; overflow: hidden; padding: 22px 20px; border-radius: 24px; }
-  .eyebrow { font-size: 9px; letter-spacing: .11em; }
-  .title { margin-top: 10px; font-size: clamp(32px, 9.5vw, 46px); }
-  .body { margin-top: 12px; font-size: 13px; line-height: 1.42; }
-  .tags { margin-top: 12px; gap: 6px; }
-  .tags li { font-size: 10.5px; }
-  .closing, .note { margin-top: 12px; }
-  .closing { font-size: 16px; }
-  .note { font-size: 9px; }
-  .controls { gap: 8px; margin-top: 16px; }
-  .chapter { display: block; font-size: 10px; text-align: center; }
-  .chapterName { display: none; }
+
+@media (min-width: 601px) and (max-width: 1099px) {
+  .headline { font-size: clamp(38px, 5.2vw, 58px); }
+  .lede { font-size: clamp(14px, 1.6vw, 16px); line-height: 1.55; }
+  /* O teto mantém o par compacto quando a coluna cresce, e o recuo alternado
+     continua visível. */
+  .photoSlot { width: 72%; max-width: 560px; border-radius: 30px; }
+  .cardSlot { width: 78%; max-width: 620px; border-radius: 30px; }
+  .card { padding: clamp(26px, 3.6vw, 36px); }
+  .eyebrow { font-size: clamp(10px, 1.1vw, 12px); letter-spacing: .14em; }
+  .title { margin-top: clamp(12px, 1.6vw, 18px); font-size: clamp(38px, 5vw, 52px); }
+  .body { margin-top: clamp(12px, 1.6vw, 18px); font-size: clamp(14px, 1.5vw, 16px); line-height: 1.55; }
+  .tags { margin-top: clamp(14px, 1.8vw, 20px); gap: 8px; }
+  .tags li { font-size: 12px; }
+  .closing, .note { margin-top: clamp(14px, 1.8vw, 22px); }
+  .closing { font-size: clamp(19px, 2.4vw, 24px); }
+  .note { font-size: 10px; }
 }
-@media (prefers-reduced-motion: reduce) { .photo, .photoFrame, .card { will-change: auto; } .chapter { transition: none; } }
+
+/* -------------------------------------------------------- layout desktop */
+@media (min-width: 1100px) {
+  .intro { grid-template-columns: minmax(0, 1.08fr) minmax(280px, .7fr); align-items: end; gap: clamp(28px, 7vw, 132px); }
+  .headline { font-size: var(--text-h2); }
+  .lede { font-size: clamp(14px, 1.05vw, 17px); line-height: 1.6; }
+
+  .trail { gap: clamp(18px, 1.8vw, 30px); margin-top: clamp(36px, 3.6vw, 60px); }
+
+  /* A inclinação aqui é bem menor que a do mobile: as peças são muito mais
+     largas, e o mesmo ângulo que assenta bem num cartão de 300px vira um
+     tombo num de 600px. */
+  .block { width: 72%; grid-template-columns: minmax(0, .98fr) minmax(300px, .82fr); align-items: stretch; justify-self: start; --tilt-photo: -1.5deg; --tilt-card: 1deg; }
+  .front[data-flip] .block { grid-template-columns: minmax(300px, .82fr) minmax(0, .98fr); justify-self: end; --tilt-photo: 1.5deg; --tilt-card: -1deg; }
+
+  .photoSlot { grid-area: 1 / 1; min-height: clamp(320px, 21vw, 400px); border-radius: clamp(20px, 1.9vw, 32px); }
+  .front[data-flip] .photoSlot { grid-area: 1 / 2; }
+
+  /* A leitura é mais baixa que a foto e avança por cima dela, do lado que a
+     inversão pedir. */
+  .cardSlot { grid-area: 1 / 2; margin: clamp(18px, 1.6vw, 30px) 0 clamp(18px, 1.6vw, 30px) clamp(-76px, -5.2vw, -32px); border-radius: clamp(20px, 1.9vw, 32px); }
+  .front[data-flip] .cardSlot { grid-area: 1 / 1; margin: clamp(18px, 1.6vw, 30px) clamp(-76px, -5.2vw, -32px) clamp(18px, 1.6vw, 30px) 0; }
+
+  .card { padding: clamp(28px, 2.4vw, 42px); }
+  .eyebrow { font-size: clamp(10px, .8vw, 13px); letter-spacing: .14em; }
+  .title { margin-top: clamp(14px, 1.2vw, 20px); font-size: clamp(32px, 3vw, 48px); }
+  .body { margin-top: clamp(14px, 1.2vw, 20px); font-size: clamp(13px, .88vw, 16px); line-height: 1.55; }
+  .tags { margin-top: clamp(14px, 1.2vw, 20px); gap: 8px; }
+  .tags li { font-size: clamp(10px, .78vw, 12px); }
+  .closing, .note { margin-top: clamp(16px, 1.5vw, 26px); }
+  .closing { font-size: clamp(17px, 1.4vw, 23px); }
+  .note { font-size: 10px; }
+}
+
+@media (prefers-reduced-motion: reduce) { .sheen { display: none; } }

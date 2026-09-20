@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { ImageStreamHero, type CorridorPath } from "@/components/ui/image-stream-hero";
 import { Reveal } from "@/components/motion/Reveal";
 import { CropRegions } from "@/components/home/CropRegions";
@@ -6,7 +5,6 @@ import { CropPillars } from "@/components/home/CropPillars";
 import { Rule, SectionIntro } from "@/components/ui";
 import { getContent } from "@/lib/locale";
 import { cropCorridorImages } from "@/content/crop-corridor";
-import surfaceStyles from "./BeneathSurface.module.css";
 
 // No retrato a largura é pouca: cartas maiores na saída e menos cartas por
 // trilho, para cada foto ter espaço de ser vista.
@@ -78,20 +76,6 @@ export async function CropSelection() {
         <CropPillars title={crops.pillarsTitle} lead={crops.pillarsLead} note={crops.pillarsNote} pillars={crops.pillars} />
       </div>
 
-      {/* The canopy fades into the same deep green as the leaf section. */}
-      <div className={surfaceStyles.fieldTransition} aria-hidden="true">
-        <picture>
-          <source media="(max-width: 860px)" srcSet="/img/surface-v2/field-mobile.webp" />
-          <Image
-            src="/img/surface-v2/field.webp"
-            alt=""
-            width={2048}
-            height={688}
-            unoptimized
-            className="h-full w-full object-cover"
-          />
-        </picture>
-      </div>
     </section>
   );
 }

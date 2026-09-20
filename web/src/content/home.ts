@@ -219,7 +219,6 @@ export type Program = {
 export const programs = {
   headline: ["Three fronts", "behind the jug."],
   body: "A product is the end of a process. These are the three programs that run all year and produce: it research, open doors, and a team that meets face to face.",
-  controlsLabel: "Browse Juma programs",
   cards: [
     {
       id: "target",

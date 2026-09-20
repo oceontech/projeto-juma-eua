@@ -22,6 +22,7 @@ export function BeneathSurface() {
     const spotlight = section.querySelector<HTMLElement>("[data-surface-spotlight]")!;
     const cursor = section.querySelector<HTMLElement>("[data-surface-cursor]")!;
     const lens = section.querySelector<HTMLElement>("[data-surface-lens]");
+    const touchZone = section.querySelector<HTMLElement>("[data-surface-touch-zone]");
     let frame = 0;
     let clientX = 0;
     let clientY = 0;
@@ -48,7 +49,7 @@ export function BeneathSurface() {
           start: "top 88%", end: "top 12%", scrub: 0.65,
         },
       })
-        .fromTo(camera, { scale: 1.12, opacity: 0.35 }, { scale: 1, opacity: 1, duration: 1.3, ease: "power2.out" }, 0)
+        .fromTo(camera, { scale: 1.12 }, { scale: 1, duration: 1.3, ease: "power2.out" }, 0)
         .fromTo("[data-surface-line]", { yPercent: 110 }, { yPercent: 0, duration: 0.8, stagger: 0.12, ease: "power3.out" }, 0.16)
         .fromTo("[data-surface-enter]", { y: 22, opacity: 0 }, { y: 0, opacity: 1, duration: 0.65, stagger: 0.08, ease: "power2.out" }, 0.38);
 
@@ -58,8 +59,7 @@ export function BeneathSurface() {
           start: "bottom 65%", end: "bottom top", scrub: 0.55,
         },
       })
-        .fromTo("[data-surface-exit]", { y: 0, opacity: 1 }, { y: -36, opacity: 0, duration: 1, ease: "power1.in" }, 0)
-        .fromTo("[data-surface-shade]", { opacity: 0 }, { opacity: 0.94, duration: 1, ease: "power1.inOut" }, 0);
+        .fromTo("[data-surface-exit]", { y: 0, opacity: 1 }, { y: -36, opacity: 0, duration: 1, ease: "power1.in" }, 0);
     });
 
     const renderPointer = () => {
@@ -99,6 +99,8 @@ export function BeneathSurface() {
     let offY = 0;
     let grabX = 0;
     let grabY = 0;
+    let lensBaseLeft = 0;
+    let lensBaseTop = 0;
     const placeLens = () => {
       frame = 0;
       if (!lens) return;
@@ -121,12 +123,23 @@ export function BeneathSurface() {
       grabY = event.clientY - offY;
       section.dataset.exploring = "true";
       section.dataset.dragging = "true";
+      const bounds = lens.getBoundingClientRect();
+      lensBaseLeft = bounds.left - offX;
+      lensBaseTop = bounds.top - offY;
       placeLens();
     };
     const lensMove = (event: PointerEvent) => {
-      if (!dragging) return;
-      offX = event.clientX - grabX;
-      offY = event.clientY - grabY;
+      if (!dragging || !lens) return;
+      const nextX = event.clientX - grabX;
+      const nextY = event.clientY - grabY;
+      const zoneBounds = touchZone?.getBoundingClientRect();
+      if (zoneBounds && zoneBounds.width > 0 && zoneBounds.height > 0) {
+        offX = Math.min(Math.max(nextX, zoneBounds.left - lensBaseLeft), zoneBounds.right - lensBaseLeft - lens.offsetWidth);
+        offY = Math.min(Math.max(nextY, zoneBounds.top - lensBaseTop), zoneBounds.bottom - lensBaseTop - lens.offsetHeight);
+      } else {
+        offX = nextX;
+        offY = nextY;
+      }
       if (!frame) frame = requestAnimationFrame(placeLens);
     };
     const lensUp = () => {
@@ -164,12 +177,14 @@ export function BeneathSurface() {
     >
       <div className={styles.camera} data-surface-camera aria-hidden="true">
         <div className={`${styles.image} ${styles.base}`} />
-        <div className={`${styles.image} ${styles.spotlight}`} data-surface-spotlight />
-        <div className={`${styles.image} ${styles.fullReveal}`} />
+        <div className={styles.revealBand}>
+          <div className={`${styles.image} ${styles.spotlight}`} data-surface-spotlight />
+          <div className={`${styles.image} ${styles.fullReveal}`} />
+        </div>
       </div>
       <div className={styles.scrim} aria-hidden="true" />
-      <div className={styles.entryBlend} aria-hidden="true" />
-      <div className={styles.exitShade} data-surface-shade aria-hidden="true" />
+      <div className={styles.entryFade} aria-hidden="true" />
+      <div className={styles.touchZone} data-surface-touch-zone aria-hidden="true" />
 
       <div className={styles.ui} data-surface-exit>
         <div className={styles.topline} data-surface-enter>
