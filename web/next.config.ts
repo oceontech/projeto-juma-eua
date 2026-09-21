@@ -5,6 +5,13 @@ const nextConfig: NextConfig = {
     /* 75 é o padrão; 90 fica para as fotos em tela cheia, que perdem
        detalhe visível com a compressão padrão. */
     qualities: [75, 90],
+    /* O otimizador guarda cada variante por 4 horas e responde sem olhar o
+       arquivo de origem. Em produção é o que se quer; em desenvolvimento é
+       uma armadilha: trocar uma foto pelo mesmo nome não muda nada na tela —
+       nem com recarga forçada, porque a teimosia é do servidor, não do
+       navegador —, e o cache vive em .next/dev/cache/images. Zero aqui faz
+       ele conferir a origem a cada pedido. */
+    minimumCacheTTL: process.env.NODE_ENV === "development" ? 0 : 14400,
   },
   /**
    * O site não vai ao ar antes da liberação do responsável regulatório da

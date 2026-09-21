@@ -18,18 +18,46 @@ const CUTS = {
   wide: {
     forward: "/videos/video-hero-aminosan-scrub.mp4",
     back: "/videos/video-hero-aminosan-reverse.mp4",
-    /** Os três quadros narrativos. Ajuste aqui quando a edição mudar. */
-    stops: [1.05, 6.05, 8.68],
+    /** Os três quadros narrativos, em segundos — e no MEIO do quadro, nunca
+        na borda dele. Cada still é um quadro exato do arquivo (o 39, o 182 e o
+        260, a 30fps: 1/30 de segundo cada um), e o monitor que persegue a
+        parada erra até meia volta de tela para cada lado. Mirando a borda,
+        esse erro cai no quadro vizinho e a troca dá o salto que se via;
+        mirando o centro sobram 16ms de folga dos dois lados.
+
+        O quadro 39 é o "1:09" do relógio de montagem — um segundo e nove
+        quadros, que em segundos dá 1,300 e não 1,09. Ajuste aqui quando a
+        edição mudar, sempre pelo centro: (quadro + 0,5) / 30. */
+    stops: [1.3167, 6.0833, 8.6833],
     /** Só vale até o arquivo declarar a sua: é a rede que atrasa, não o corte. */
     length: 8.733,
   },
   tall: {
     forward: "/videos/video-hero-aminosan-mobile-scrub.mp4",
     back: "/videos/video-hero-aminosan-mobile-reverse.mp4",
-    stops: [1.15, 5.95, 7.1],
+    /* Mesma regra: 34,5 e 178,5 já caíam no meio dos quadros 34 e 178; 7,1
+       caía exatamente na emenda entre o 212 e o 213. */
+    stops: [1.15, 5.95, 7.1167],
     length: 7.166,
   },
 } as const;
+
+/** Marcha dos trechos entre uma parada e outra, na ida e na volta. Ali o
+    corte está preso a um gesto: quem rola espera a próxima parada, não um
+    plano. A abertura fica de fora — ela não responde a gesto nenhum, é a
+    cena se apresentando, e corre no tempo em que foi montada. O `monitor`
+    para onde deve em qualquer marcha, porque o alvo é o tempo do vídeo e
+    não o relógio. */
+const SPEED = 1.35;
+
+/** Quanto o texto leva para sair de cena. O vídeo só parte depois: em
+    movimento por baixo do título ainda no ar, a troca lê como defeito. */
+const EXIT = 0.22;
+
+/** O fecho. O corte acaba em branco chapado, e é por esse branco que a
+    seção seguinte aparece: a janela esmaece por cima dela em vez de
+    apagar para preto e rolar até lá. */
+const CLOSE = 0.8;
 
 /* Os SVGs de /img/aminosan/icon-stat-* são discos brancos com o símbolo
    verde por dentro; forçados a branco pelo filtro, viravam só o disco. Aqui o
@@ -117,10 +145,9 @@ export function Hero() {
       const firstReveal = scene.querySelector<HTMLElement>("[data-video-hero='first-reveal']");
       const firstContent = scene.querySelector<HTMLElement>("[data-video-hero='first-content']");
       const moleculeContent = scene.querySelector<HTMLElement>("[data-video-hero='molecule-content']");
-      const blackout = scene.querySelector<HTMLElement>("[data-video-hero='blackout']");
       const windowElement = scene.querySelector<HTMLElement>(".aminosan-hero-window");
       const title = scene.querySelector<HTMLElement>("[data-video-hero='title']");
-      if (!firstReveal || !firstContent || !moleculeContent || !blackout || !windowElement) return;
+      if (!firstReveal || !firstContent || !moleculeContent || !windowElement) return;
       if (!title) return;
 
       const mm = gsap.matchMedia();
@@ -166,18 +193,41 @@ export function Hero() {
           if (!productPlate || !productCutout || !moleculePlate || !moleculeCutout) return;
           if (!moleculeOrbit) return;
 
-          const leafLeft = layer("leaf-left");
-          const leafRight = layer("leaf-right");
-          const swingLeft = layer("leaf-left-swing");
-          const swingRight = layer("leaf-right-swing");
-          if (!leafLeft || !leafRight || !swingLeft || !swingRight) return;
+          /* As folhas da frente só existem soltas no retrato. Na paisagem o
+             still da primeira parada é uma imagem só — elas já vêm dentro
+             dela —, e repetir a camada por cima deixaria duas folhas no mesmo
+             lugar: a de baixo parada, a de cima respirando. */
+          type Swing = {
+            el: HTMLElement;
+            origin: string;
+            rot: number;
+            x: number;
+            y: number;
+            spin: number;
+            driftX: number;
+            driftY: number;
+          };
+          const leafLayers: HTMLElement[] = [];
+          const leafSwings: Swing[] = [];
+          if (tall) {
+            const leafLeft = layer("leaf-left");
+            const leafRight = layer("leaf-right");
+            const swingLeft = layer("leaf-left-swing");
+            const swingRight = layer("leaf-right-swing");
+            if (!leafLeft || !leafRight || !swingLeft || !swingRight) return;
+            leafLayers.push(leafLeft, leafRight);
+            leafSwings.push(
+              { el: swingLeft, origin: "0% 100%", rot: 1.1, x: 5, y: -6, spin: 4.6, driftX: 6.2, driftY: 5.1 },
+              { el: swingRight, origin: "100% 100%", rot: -1.3, x: -5, y: -5, spin: 5.4, driftX: 7.1, driftY: 4.4 },
+            );
+          }
 
           if (!animate) {
             const showStill = () => {
               if (video.readyState >= 1) video.currentTime = cut.stops[0];
               /* As chapas são o mesmo quadro, e uma imagem aparece onde um
                  vídeo buscado pode não pintar nada. Paradas, aqui. */
-              gsap.set([productPlate, title, productCutout, leafLeft, leafRight, firstReveal], {
+              gsap.set([productPlate, title, productCutout, ...leafLayers, firstReveal], {
                 autoAlpha: 1,
               });
             };
@@ -243,7 +293,7 @@ export function Hero() {
             gsap.to([firstContent, moleculeContent, title], {
               autoAlpha: 0,
               y: -18,
-              duration: 0.28,
+              duration: EXIT,
               ease: "power2.in",
               overwrite: true,
             });
@@ -272,38 +322,27 @@ export function Hero() {
              da chapa é transparente, então anda quase o dobro. O que a limita
              é outra coisa — o buraco que ela deixa na chapa de trás, que ela
              precisa continuar cobrindo. */
-          /* Cada camada tem o seu balanço: quanto mais perto de quem olha, mais
-             ela anda contra o ponteiro. É essa diferença — campo 1,35%, folhas
-             2,1% — que lê como profundidade. A escala, ao contrário, é uma só
-             para todas: a que as mantém casadas no repouso.
-
-             As folhas têm o limite mais apertado: chegam à borda da tela, e
-             balanço mais balanço ocioso não pode passar da folga que a escala
-             abre (2,8% da largura, 2,8% da altura). 2,1% + 5px no eixo x e
-             1,6% + 6px no y ficam dentro nas larguras usuais.
-
-             Além do ponteiro, cada folha respira sozinha: um giro curto em
-             torno da base, mais um vai e vem nos dois eixos, em períodos
-             diferentes para os três nunca fecharem o ciclo juntos. */
+          /* Cada folha respira sozinha: um giro curto em torno da base, mais
+             um vai e vem nos dois eixos, em períodos diferentes para os três
+             nunca fecharem o ciclo juntos. */
           const PLATES = [
             {
               plate: productPlate,
-              lift: 1.06,
-              layers: [
-                { el: productCutout, swayX: 1.35, swayY: 1.2 },
-                { el: leafLeft, swayX: 2.1, swayY: 1.6 },
-                { el: leafRight, swayX: 2.1, swayY: 1.6 },
-              ],
-              idle: [
-                { el: swingLeft, origin: "0% 100%", rot: 1.1, x: 5, y: -6, spin: 4.6, driftX: 6.2, driftY: 5.1 },
-                { el: swingRight, origin: "100% 100%", rot: -1.3, x: -5, y: -5, spin: 5.4, driftX: 7.1, driftY: 4.4 },
-              ],
-              orbitCalm: false,
+              /* Na paisagem esta parada não anda: são duas chapas do mesmo
+                 quadro — o campo inteiro e o galão recortado —, e o título
+                 mora entre elas. É só para isso que são duas: o galão precisa
+                 passar por cima das letras, e o campo por baixo. Sem
+                 afastamento de câmera nada tem de deslizar, então não há
+                 escala nem folga a reservar. No retrato a montagem antiga
+                 continua inteira. */
+              lift: tall ? 1.06 : 1,
+              layers: tall ? [productCutout, ...leafLayers] : [productCutout],
+              idle: leafSwings,
             },
             {
               plate: moleculePlate,
               lift: 1.04,
-              layers: [{ el: moleculeCutout, swayX: 1.8, swayY: 1.9 }],
+              layers: [moleculeCutout],
               /* A molécula flutua sozinha — sem base para girar em torno,
                  então o "giro" mora nos dois eixos, em períodos próximos mas
                  não iguais, o que é o que faz o vaivém ler como órbita em vez
@@ -311,60 +350,23 @@ export function Hero() {
               idle: [
                 { el: moleculeOrbit, origin: "50% 50%", rot: 1.2, x: 9, y: 7, spin: 12, driftX: 9.5, driftY: 8 },
               ],
-              /* Único caso que acalma sozinho: a molécula ocupa o centro da
-                 cena e é onde o parallax do ponteiro mexe mais. Some as duas
-                 fontes de movimento no pique máximo de ambas e a órbita vira
-                 tremor; por isso ela desacelera assim que o ponteiro entra
-                 em jogo, em vez de somar as duas. */
-              orbitCalm: true,
             },
           ];
           const RECOIL = 0.22;
 
           let raised: (typeof PLATES)[number] | null = null;
-          let aimX = 0;
-          let aimY = 0;
-          let driftX = 0;
-          let driftY = 0;
-          let chase = 0.07;
           let recoil: gsap.core.Tween | null = null;
           let restingSince = 0;
           let breathing: gsap.core.Tween[] = [];
-          let calm = 1;
 
-          const layersOf = (set: (typeof PLATES)[number]) => set.layers.map((layer) => layer.el);
+          const layersOf = (set: (typeof PLATES)[number]) => set.layers;
           const swingsOf = (set: (typeof PLATES)[number]) => set.idle.map((swing) => swing.el);
 
-          /* O ponteiro dá o alvo, o tique persegue. O atraso é o efeito: sem
-             ele o recorte gruda no cursor e vira um adesivo. */
-          const drift = () => {
-            if (!raised) return;
-            driftX += (aimX - driftX) * chase;
-            driftY += (aimY - driftY) * chase;
-            /* Contra o ponteiro: é assim que o perto anda em relação ao longe
-               quando quem olha se desloca. A favor viraria empurrão. */
-            for (const layer of raised.layers) {
-              gsap.set(layer.el, {
-                xPercent: -driftX * layer.swayX,
-                yPercent: -driftY * layer.swayY,
-              });
-            }
-
-            /* A órbita não para quando o ponteiro entra em jogo — só fica
-               mais devagar, para as duas fontes de movimento (o parallax e a
-               órbita) não se somarem no pique de ambas e virarem tremor. A
-               marcha vem do próprio módulo do parallax: quanto mais perto do
-               centro, mais perto da velocidade normal; quanto mais longe,
-               mais lenta. `calm` persegue o alvo como o próprio parallax
-               persegue o ponteiro, pelo mesmo motivo — sem isso a troca de
-               velocidade seria um corte, não um efeito. */
-            if (raised.orbitCalm && breathing.length) {
-              const intensity = Math.min(1, Math.hypot(driftX, driftY));
-              const target = 1 - intensity * 0.55;
-              calm += (target - calm) * 0.08;
-              for (const tween of breathing) tween.timeScale(calm);
-            }
-          };
+          /* Há conjunto que fica parado — o still de duas chapas da paisagem,
+             sem afastamento nem folha respirando. Para ele o recuo não existe:
+             já está idêntico ao quadro do vídeo, e esperar os 220ms seria
+             segurar o gesto por um movimento que não acontece. */
+          const stirs = (set: (typeof PLATES)[number]) => set.lift > 1 || set.idle.length > 0;
 
           /* Vai e volta entre -amplitude e +amplitude, e começa no meio do
              caminho — no zero, no centro do repouso —, então nada dá salto na
@@ -401,16 +403,12 @@ export function Hero() {
             if (raised) dropPlates();
             raised = next;
             restingSince = 0;
-            aimX = 0;
-            aimY = 0;
-            driftX = 0;
-            driftY = 0;
-            calm = 1;
-            chase = 0.07;
             const layers = layersOf(next);
             gsap.set([next.plate, ...layers], { autoAlpha: 1 });
             gsap.set(layers, { xPercent: 0, yPercent: 0, scale: 1 });
-            gsap.to(layers, { scale: next.lift, duration: 1.2, ease: "power2.out", overwrite: true });
+            if (stirs(next)) {
+              gsap.to(layers, { scale: next.lift, duration: 1.2, ease: "power2.out", overwrite: true });
+            }
             startBreathing(next);
           };
 
@@ -418,21 +416,21 @@ export function Hero() {
              giro — antes de o vídeo andar. Quem sai daqui está idêntico ao
              quadro que o vídeo mostra, então a troca não tem salto. */
           const restPlates = () => {
-            if (!raised) return;
+            if (!raised || !stirs(raised)) return;
             if (!restingSince) restingSince = performance.now();
-            aimX = 0;
-            aimY = 0;
-            chase = 0.3;
             stopBreathing();
             gsap.to(layersOf(raised), { scale: 1, duration: RECOIL, ease: "power2.inOut", overwrite: true });
-            gsap.to(swingsOf(raised), {
-              rotation: 0,
-              x: 0,
-              y: 0,
-              duration: RECOIL,
-              ease: "power2.inOut",
-              overwrite: true,
-            });
+            const swings = swingsOf(raised);
+            if (swings.length) {
+              gsap.to(swings, {
+                rotation: 0,
+                x: 0,
+                y: 0,
+                duration: RECOIL,
+                ease: "power2.inOut",
+                overwrite: true,
+              });
+            }
           };
 
           const dropPlates = () => {
@@ -441,15 +439,10 @@ export function Hero() {
             const layers = layersOf(raised);
             gsap.set([raised.plate, ...layers], { autoAlpha: 0 });
             gsap.set(layers, { xPercent: 0, yPercent: 0, scale: 1 });
-            gsap.set(swingsOf(raised), { rotation: 0, x: 0, y: 0 });
+            const swings = swingsOf(raised);
+            if (swings.length) gsap.set(swings, { rotation: 0, x: 0, y: 0 });
             raised = null;
             restingSince = 0;
-          };
-
-          const onPointerMove = (event: PointerEvent) => {
-            if (!raised) return;
-            aimX = (event.clientX / window.innerWidth) * 2 - 1;
-            aimY = (event.clientY / window.innerHeight) * 2 - 1;
           };
 
           const showProduct = (immediate = false) => {
@@ -536,22 +529,44 @@ export function Hero() {
             );
           };
 
+          /* O fecho não é mais apagar e rolar até a seção seguinte: o corte
+             acaba em branco chapado, a janela esmaece e a seção aparece por
+             trás dela, já no lugar.
+
+             A sobreposição dura só o esmaecimento, e é por isso que ela pode
+             existir aqui sem nenhum árbitro: a janela vira fixa por um
+             instante — cobrindo a tela, como já cobria —, e é debaixo dessa
+             cobertura que a página salta para o topo da seção seguinte. O
+             salto não se vê. Quando o esmaecimento acaba, a janela volta ao
+             fluxo, agora acima da janela de visão, e o documento segue sem
+             ninguém empilhado sobre ninguém. */
           const releasePage = () => {
             const next = document.querySelector<HTMLElement>("#nitrogen-process");
             if (!next) return;
 
-            gsap.to(blackout, { opacity: 1, duration: 0.34, ease: "power2.inOut" });
-            delete html.dataset.heroOver;
-            html.dataset.navTheme = "dark";
-
             const top = window.scrollY + next.getBoundingClientRect().top;
+            gsap.set(windowElement, { position: "fixed", top: 0, left: 0, right: 0, zIndex: 60 });
+
             const lenis = scroller();
             lenis?.start();
-            if (lenis) {
-              lenis.scrollTo(top, { duration: 0.8, force: true });
-            } else {
-              window.scrollTo({ top, behavior: "smooth" });
-            }
+            if (lenis) lenis.scrollTo(top, { immediate: true, force: true });
+            if (Math.abs(window.scrollY - top) > 1) window.scrollTo(0, top);
+            lastScrollY = window.scrollY;
+            delete html.dataset.heroOver;
+            /* A seção que se revela é clara, e daqui em diante quem manda na
+               barra é a rolagem da página outra vez: sai o tom imposto pelo
+               hero e sai a direção imposta por ele. */
+            delete html.dataset.navTheme;
+            delete html.dataset.navHidden;
+
+            gsap.to(windowElement, {
+              autoAlpha: 0,
+              duration: CLOSE,
+              ease: "power2.inOut",
+              onComplete: () => {
+                gsap.set(windowElement, { clearProps: "position,top,left,right,zIndex" });
+              },
+            });
           };
 
           /* A ida e a volta são dois arquivos, e todo passo troca um pelo
@@ -637,7 +652,18 @@ export function Hero() {
             const target = stops[destinationIndex];
             const source = direction === 1 ? video : reverseVideo;
 
-            if ((direction === 1 && time >= target) || (direction === -1 && time <= target)) {
+            /* Meia volta do monitor. Entre dois quadros de tela o vídeo já
+               andou `marcha/60` de segundo, então esperar `passou do alvo`
+               sempre para depois do quadro certo: a chapa entrava atrasada e
+               a cena dava um passo atrás ao aparecer. Com a margem centrada o
+               erro se reparte dos dois lados e a troca cai em cima da parada
+               — 1,09s, aqui. */
+            const slack = source.playbackRate / 120;
+
+            if (
+              (direction === 1 && time >= target - slack) ||
+              (direction === -1 && time <= target + slack)
+            ) {
               settle(destinationIndex);
               return;
             }
@@ -657,7 +683,6 @@ export function Hero() {
             recoil?.kill();
             cancelSwap();
             hideCopy();
-            gsap.set(blackout, { opacity: 0 });
             scroller()?.stop();
 
             /* O quadro de onde partimos, lido com a direção que ainda vale e
@@ -676,6 +701,11 @@ export function Hero() {
             direction = nextDirection;
             playing = true;
 
+            /* A barra do topo some indo adiante e volta ao recuar, como faz no
+               resto da página — só que aqui a página não rola, então o aviso
+               é este. */
+            html.dataset.navHidden = nextDirection === 1 ? "on" : "off";
+
             const begin = () => {
               if (disposed || token !== run) return;
 
@@ -687,33 +717,44 @@ export function Hero() {
               };
               const tick = () => monitor(token);
 
+              /* A marcha vai aqui, e não uma vez na montagem: `load()` devolve
+                 a taxa ao padrão do arquivo, e cada troca de corte recarrega os
+                 dois vídeos. */
               if (nextDirection === 1) {
                 swapTo(video, reverseVideo, from);
+                video.playbackRate = SPEED;
                 void video.play().then(tick).catch(fail);
               } else {
                 swapTo(reverseVideo, video, toReverse(from));
+                reverseVideo.playbackRate = SPEED;
                 void reverseVideo.play().then(tick).catch(fail);
               }
             };
 
-            /* Com as chapas no ar o vídeo espera o recuo. São 220ms, o mesmo
-               tempo em que o texto sai, e o gesto ganha um recolher antes de
-               partir — o vídeo não pode andar embaixo de um quadro parado que
-               ainda cobre a tela, senão a troca corta um pedaço da cena. */
+            /* Tela limpa, nada a esperar: é o caso da abertura, que ainda não
+               levantou chapa nenhuma. */
             if (!raised) {
               begin();
               return;
             }
 
-            /* Se o recuo já estava em curso — o gesto anterior o começou e
-               este virou a direção no meio —, o que falta dele é o que se
-               espera. Recomeçar os 220ms inteiros a cada gesto é o que dava a
-               sensação de controle pesado. */
-            const wait = restingSince
-              ? Math.max(0, RECOIL - (performance.now() - restingSince) / 1000)
-              : RECOIL;
+            /* Duas coisas ainda ocupam a tela: o texto, que leva EXIT para
+               sair, e as chapas que se mexem, que levam o recuo. O gesto
+               espera a mais longa das duas. Uma parada parada não tem recuo
+               nenhum — mas tem texto —, e é por isso que a espera nunca é
+               zero: vídeo andando por baixo do título ainda visível foi
+               exatamente o que apareceu na troca da imagem para o vídeo.
+
+               Do recuo se espera só o que falta dele: se o gesto anterior já
+               o começou e este virou a direção no meio, recomeçar os 220ms
+               inteiros é o que dava a sensação de controle pesado. */
+            const recoilLeft = !stirs(raised)
+              ? 0
+              : restingSince
+                ? Math.max(0, RECOIL - (performance.now() - restingSince) / 1000)
+                : RECOIL;
             restPlates();
-            recoil = gsap.delayedCall(wait, () => {
+            recoil = gsap.delayedCall(Math.max(EXIT, recoilLeft), () => {
               dropPlates();
               begin();
             });
@@ -770,6 +811,42 @@ export function Hero() {
              página é ancorada em 0 e o vídeo retrocede para o quadro da
              molécula, em vez de deixar o fecho preto parado na tela. */
           let lastScrollY = window.scrollY;
+          let pinFrame = 0;
+
+          /* Ancorar a página no topo é o que devolve a cena inteira: parada no
+             meio do caminho, ela toca espremida entre a borda da janela e a
+             seção seguinte — a faixa.
+
+             A ordem aqui não é livre. Numa rolagem rápida para cima o dono da
+             rolagem já grampeou o destino dele em zero — o topo é o limite da
+             página — enquanto a posição animada ainda está lá embaixo. Pedir
+             zero nesse estado não faz nada, porque o alvo já é esse, e o que
+             vinha logo depois era a parada da rolagem, que congela a página
+             onde ela estivesse: era daí que saía a faixa. Parar primeiro
+             desfaz o empate — `stop()` realinha o alvo com a posição real —, e
+             só então o salto tem para onde ir. O `window.scrollTo` responde
+             por quem não tem rolagem suave (o celular), e os quadros seguintes
+             absorvem a inércia que o gesto ainda carregava. */
+          const pinTop = () => {
+            const lenis = scroller();
+            lenis?.stop();
+            lenis?.scrollTo(0, { immediate: true, force: true });
+            if (window.scrollY !== 0) window.scrollTo(0, 0);
+            lastScrollY = 0;
+
+            let left = 3;
+            cancelAnimationFrame(pinFrame);
+            const hold = () => {
+              if (disposed || settledIndex === 2) return;
+              if (window.scrollY !== 0) {
+                window.scrollTo(0, 0);
+                lastScrollY = 0;
+              }
+              if ((left -= 1) > 0) pinFrame = requestAnimationFrame(hold);
+            };
+            pinFrame = requestAnimationFrame(hold);
+          };
+
           const onScroll = () => {
             const y = window.scrollY;
             const goingUp = y < lastScrollY;
@@ -777,19 +854,22 @@ export function Hero() {
             if (settledIndex !== 2 || playing || !goingUp) return;
             if (y >= scene.offsetHeight - 2) return;
 
-            const lenis = scroller();
-            if (lenis) lenis.scrollTo(0, { immediate: true, force: true });
-            else window.scrollTo(0, 0);
-            lastScrollY = 0;
             html.dataset.heroOver = "on";
             html.dataset.navTheme = "dark";
+            /* A janela saiu esmaecida no fecho; voltando, ela é a cena outra
+               vez. */
+            gsap.set(windowElement, { autoAlpha: 1 });
             /* Sai do estado "liberado" para que roda/teclas voltem a ser do hero. */
             settledIndex = 1;
+            pinTop();
             playTo(1, -1);
           };
 
           const startIntro = () => {
-            scroller()?.stop();
+            /* A cena só começa com a página no topo: recarregada no meio do
+               documento, o navegador devolve a rolagem onde estava e a abertura
+               tocaria na mesma faixa. */
+            pinTop();
             html.dataset.heroOver = "on";
             video.currentTime = 0;
             video.playbackRate = 1;
@@ -812,13 +892,6 @@ export function Hero() {
           window.addEventListener("touchmove", onTouchMove, { passive: false, capture: true });
           window.addEventListener("keydown", onKeyDown, { capture: true });
           window.addEventListener("scroll", onScroll, { passive: true });
-          /* Só onde há ponteiro de verdade: no toque o dedo já é a navegação,
-             e não existe posição de repouso para ler. */
-          const fine = window.matchMedia("(pointer: fine)").matches;
-          if (fine) {
-            window.addEventListener("pointermove", onPointerMove, { passive: true });
-            gsap.ticker.add(drift);
-          }
           void booted.then(() => {
             if (video.readyState >= 2 && reverseVideo.readyState >= 1) startIntro();
             else video.addEventListener("canplay", startIntro, { once: true });
@@ -828,11 +901,10 @@ export function Hero() {
             disposed = true;
             run += 1;
             cancelAnimationFrame(frame);
+            cancelAnimationFrame(pinFrame);
             recoil?.kill();
             cancelSwap();
             stopBreathing();
-            gsap.ticker.remove(drift);
-            window.removeEventListener("pointermove", onPointerMove);
             video.pause();
             reverseVideo.pause();
             video.removeEventListener("canplay", startIntro);
@@ -844,6 +916,7 @@ export function Hero() {
             scroller()?.start();
             delete html.dataset.heroOver;
             delete html.dataset.navTheme;
+            delete html.dataset.navHidden;
           };
         },
       );
@@ -873,12 +946,17 @@ export function Hero() {
           aria-hidden="true"
         />
 
+        {/* A chapa é o quadro 39 do vídeo, tal e qual: é isso que faz a troca
+            do vídeo para a parada não ter emenda. Por isso 90 e não a
+            compressão padrão — a 75 a chapa deixa de ser o quadro. O recorte
+            ao lado carrega o miúdo do rótulo, que é o primeiro a sumir. */}
         <Image
           data-video-hero="plate-product"
           src="/img/aminosan/hero-product-plate.webp"
           alt=""
           fill
           sizes="100vw"
+          quality={90}
           aria-hidden
           className="aminosan-hero-plate aminosan-hero-cut--wide invisible opacity-0"
         />
@@ -899,13 +977,13 @@ export function Hero() {
         >
           <p
             data-video-hero-title-part
-            className="font-display text-[clamp(9px,0.8vw,12px)] font-bold tracking-[0.25em] text-[#1F4FB8] uppercase"
+            className="font-display text-[clamp(9px,0.8vw,12px)] font-semibold tracking-[0.25em] text-ink uppercase"
           >
             {hero.eyebrow}
           </p>
           <h1
             data-video-hero-title-part
-            className="mt-2 font-display text-[clamp(64px,14.5vw,270px)] font-semibold leading-[0.86] tracking-[0.02em] uppercase aminosan-hero-title-fade"
+            className="mt-2 font-display text-[clamp(64px,14.5vw,270px)] font-normal leading-[0.86] tracking-[-0.04em] text-ink uppercase"
           >
             {hero.heading}
           </h1>
@@ -916,6 +994,7 @@ export function Hero() {
           alt=""
           fill
           sizes="100vw"
+          quality={90}
           aria-hidden
           className="aminosan-hero-cutout aminosan-hero-cut--wide invisible opacity-0"
         />
@@ -929,44 +1008,19 @@ export function Hero() {
           className="aminosan-hero-cutout aminosan-hero-cut--tall invisible opacity-0"
         />
         {/* As folhas do primeiro plano, soltas do recorte para ganhar
-            animação própria. Ficam acima do galão e abaixo da vinheta. */}
-        {/* Dois elementos por folha, e a divisão é proposital: o de fora leva a
-            escala e o parallax, sempre em torno do centro da tela, como o
+            animação própria. Ficam acima do galão e abaixo da vinheta — e só
+            existem no corte 9:16: na paisagem elas moram dentro do still da
+            primeira parada, que é uma chapa só.
+
+            Dois elementos por folha, e a divisão é proposital: o de fora leva
+            a escala e o parallax, sempre em torno do centro da tela, como o
             recorte — é o que a mantém casada com ele. O de dentro leva o
             balanço, girando em torno da base da folha; se os dois fossem o
-            mesmo elemento, a origem do giro deslocaria a escala. */}
-        <div
-          data-video-hero="leaf-left"
-          aria-hidden
-          className="aminosan-hero-leaf aminosan-hero-cut--wide invisible opacity-0"
-        >
-          <Image
-            data-video-hero="leaf-left-swing"
-            src="/img/aminosan/hero-leaf-left.webp"
-            alt=""
-            fill
-            sizes="100vw"
-            className="aminosan-hero-leaf-img"
-          />
-        </div>
-        <div
-          data-video-hero="leaf-right"
-          aria-hidden
-          className="aminosan-hero-leaf aminosan-hero-cut--wide invisible opacity-0"
-        >
-          <Image
-            data-video-hero="leaf-right-swing"
-            src="/img/aminosan/hero-leaf-right.webp"
-            alt=""
-            fill
-            sizes="100vw"
-            className="aminosan-hero-leaf-img"
-          />
-        </div>
-        {/* As mesmas duas folhas, recortadas do corte 9:16. Aqui elas nascem
-            de um plano inteiro fora de foco — a lavoura da frente, que a
-            lente já separa do resto sozinha —, e o que as divide em duas é o
-            caminho de terra que afina no meio do rodapé. */}
+            mesmo elemento, a origem do giro deslocaria a escala.
+
+            Aqui elas nascem de um plano inteiro fora de foco — a lavoura da
+            frente, que a lente já separa do resto sozinha —, e o que as
+            divide em duas é o caminho de terra que afina no meio do rodapé. */}
         <div
           data-video-hero="leaf-left-tall"
           aria-hidden
@@ -1045,8 +1099,6 @@ export function Hero() {
             className="aminosan-hero-molecule-orbit"
           />
         </div>
-
-        <span className="aminosan-hero-vignette" aria-hidden />
 
         <div
           data-video-hero="first-reveal"
@@ -1187,11 +1239,6 @@ export function Hero() {
           </div>
         </div>
 
-        <span
-          data-video-hero="blackout"
-          className="pointer-events-none absolute inset-0 z-[60] bg-[#0C0C0E] opacity-0"
-          aria-hidden
-        />
       </div>
     </section>
   );

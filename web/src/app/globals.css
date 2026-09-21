@@ -1091,23 +1091,6 @@
     text-align: center;
   }
 
-  /* Azul-marinho denso no topo, clareando até o branco na base das letras. O azul
-     fica opaco e firme por boa parte da altura para contrastar com o céu
-     claro. O gradiente é pintado no próprio texto, então acompanha o
-     tamanho da fonte. */
-  .aminosan-hero-title-fade {
-    background-image: linear-gradient(
-      180deg,
-      #1F4FB8 0%,
-      #1F4FB8 38%,
-      #ffffff 96%
-    );
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    color: transparent;
-  }
-
   @media (max-width: 860px) {
     .aminosan-hero-title {
       top: clamp(84px, 14svh, 130px);
@@ -1150,16 +1133,6 @@
       top: auto;
       bottom: calc(100svh - 650 * var(--v-scale) - var(--v-offset-y) - 14px);
     }
-  }
-
-  .aminosan-hero-vignette {
-    pointer-events: none;
-    position: absolute;
-    inset: 0;
-    z-index: 5;
-    background:
-      linear-gradient(90deg, rgb(4 10 7 / 0.62) 0%, transparent 42%, transparent 62%, rgb(4 10 7 / 0.3) 100%),
-      linear-gradient(0deg, rgb(4 8 6 / 0.56) 0%, transparent 38%, rgb(4 8 6 / 0.2) 100%);
   }
 
   .aminosan-video-hero-layer {
@@ -1270,12 +1243,6 @@
       object-position: 50% center;
     }
 
-    .aminosan-hero-vignette {
-      background:
-        linear-gradient(0deg, rgb(4 8 6 / 0.76) 0%, transparent 56%, rgb(4 8 6 / 0.42) 100%),
-        linear-gradient(90deg, rgb(4 10 7 / 0.24), transparent 60%);
-    }
-
     .aminosan-video-glass {
       max-height: 42svh;
       overflow: auto;
@@ -1325,103 +1292,80 @@
     }
   }
 
-  /* O bento do processo preserva a composição modular também no celular:
-     a rota longa ocupa a coluna principal e os dois resumos se empilham na
-     coluna estreita. O CTA fecha a grade em toda a largura. */
-  .aminosan-process-card--cta-link {
-    transform-origin: center;
-    will-change: transform;
-    transition: transform .35s cubic-bezier(.22, 1, .36, 1),
-      background-color .3s ease !important;
+  /* --------------------------------------------- a passagem para a noite */
+  /* O fecho do hero esmaece um branco chapado sobre esta seção: ela precisa
+     começar branca, ou a revelação vira um corte de cor. Daí ela escurece até
+     o preto em que o resto da página vive. A folha atravessa a emenda — entra
+     ainda no claro e sai já no escuro —, e é ela que dá assunto ao trecho:
+     um degradê sozinho ocupando uma tela é tempo morto. */
+  .aminosan-dawn {
+    position: relative;
+    display: grid;
+    place-items: center;
+    padding-block: clamp(36px, 7svh, 96px) clamp(56px, 11svh, 150px);
+    background: linear-gradient(to bottom, #fff 0, #fff 12%, #000 90%, #000 100%);
   }
 
-  .aminosan-process-card--cta-link:hover {
-    transform: scale(1.04) !important;
-  }
-
-  .aminosan-process-card--cta-link:focus-visible {
-    transform: scale(1.04) !important;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .aminosan-process-card--cta-link {
-      transform: none !important;
-      transition: background-color .3s ease !important;
-    }
+  .aminosan-dawn__leaf {
+    width: min(620px, 58vw);
   }
 
   @media (max-width: 860px) {
-    .aminosan-process-bento {
-      grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr) !important;
-      gap: 8px !important;
-      align-items: stretch;
+    .aminosan-dawn__leaf {
+      width: 84vw;
     }
+  }
 
-    .aminosan-process-bento [data-process-card] {
-      border-radius: 14px !important;
-    }
+  /* -------------------------------------------------- cartões da noite */
+  /* Mesmo gesto dos cartões da home: o cartão sobe um fio no hover e o brilho
+     lima do canto cresce com ele. A cor e o raio ficam nas utilidades, junto
+     da marcação, como lá. */
+  .aminosan-night-card {
+    transition: translate .5s cubic-bezier(.22, 1, .36, 1);
+  }
 
-    .aminosan-process-card--long {
-      grid-column: 1 !important;
-      grid-row: 1 / span 2 !important;
-      padding: 14px !important;
-    }
+  .aminosan-night-card:hover {
+    translate: 0 -4px;
+  }
 
-    .aminosan-process-card--long > p:first-child {
-      font-size: 15px !important;
-      line-height: 1.15 !important;
-    }
+  .aminosan-night-card__glow {
+    transition: scale .7s cubic-bezier(.22, 1, .36, 1), opacity .7s ease;
+    transform-origin: top left;
+  }
 
-    .aminosan-process-card--long > p:nth-child(2) {
-      margin-top: 9px !important;
-      font-size: 10.5px !important;
-      line-height: 1.35 !important;
-    }
+  .aminosan-night-card:hover .aminosan-night-card__glow {
+    scale: 1.35;
+    opacity: .75;
+  }
 
-    .aminosan-process-card--long > p:nth-child(3) {
-      margin-top: 9px !important;
-      font-size: 11px !important;
-      line-height: 1.38 !important;
-    }
+  /* O botão lima: sobe um fio e a seta anda com ele. */
+  .aminosan-cta {
+    transition: translate .35s cubic-bezier(.22, 1, .36, 1), background-color .3s ease;
+  }
 
-    .aminosan-process-card--short,
-    .aminosan-process-card--contents {
-      grid-column: 2 !important;
-      padding: 12px !important;
-    }
+  .aminosan-cta:hover,
+  .aminosan-cta:focus-visible {
+    translate: 0 -2px;
+    background-color: #c6d64a;
+  }
 
-    .aminosan-process-card--short {
-      grid-row: 1 !important;
-    }
+  .aminosan-cta__arrow {
+    transition: translate .35s cubic-bezier(.22, 1, .36, 1);
+  }
 
-    .aminosan-process-card--contents {
-      grid-row: 2 !important;
-    }
+  .aminosan-cta:hover .aminosan-cta__arrow {
+    translate: 4px 0;
+  }
 
-    .aminosan-process-card--short > p:first-child,
-    .aminosan-process-card--contents > p:first-child {
-      font-size: 12px !important;
-      line-height: 1.18 !important;
-    }
-
-    .aminosan-process-card--short > p:nth-child(2),
-    .aminosan-process-card--contents > p:nth-child(2) {
-      margin-top: 7px !important;
-      font-size: 10px !important;
-      line-height: 1.35 !important;
-    }
-
-    .aminosan-process-card--cta-link {
-      border-radius: 14px !important;
-      grid-column: 1 / -1 !important;
-      grid-row: 3 !important;
-      padding: 12px 16px !important;
-      font-size: 13px !important;
-    }
-
-    .aminosan-process-card--cta {
-      grid-column: 1 / -1 !important;
-      grid-row: 3 !important;
+  @media (prefers-reduced-motion: reduce) {
+    .aminosan-night-card,
+    .aminosan-night-card:hover,
+    .aminosan-cta,
+    .aminosan-cta:hover,
+    .aminosan-cta__arrow,
+    .aminosan-cta:hover .aminosan-cta__arrow {
+      translate: none;
+      transition: background-color .3s ease;
     }
   }
 
@@ -1443,15 +1387,6 @@
     overflow: clip;
   }
 
-  .video-growth-frame {
-    position: relative;
-    z-index: 1;
-    width: var(--video-rest-w);
-    aspect-ratio: 16 / 9;
-    overflow: hidden;
-    border-radius: clamp(10px, 1vw, 16px);
-  }
-
   /* A camada fica atrás do vídeo, então a moldura continua em foco enquanto
      o fundo preto é varrido pelo branco. O polígono inicial e o final têm a
      mesma inclinação; só a posição da borda muda durante o scroll. */
@@ -1462,6 +1397,15 @@
     background: #fff;
     clip-path: polygon(100% 0%, 100% 0%, 100% 100%, 100% 100%);
     will-change: clip-path;
+  }
+
+  .video-growth-frame {
+    position: relative;
+    z-index: 1;
+    width: var(--video-rest-w);
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    border-radius: clamp(10px, 1vw, 16px);
   }
 
   .video-growth-stage[data-scene] {

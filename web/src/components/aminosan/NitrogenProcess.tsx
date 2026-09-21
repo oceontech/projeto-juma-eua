@@ -1,139 +1,148 @@
 import Image from "next/image";
 import { Reveal } from "@/components/motion/Reveal";
 import { SplitLines } from "@/components/motion/SplitLines";
-import { Pill, Rule } from "@/components/ui";
+import { Pill, Rule, SectionIntro } from "@/components/ui";
 import { getContent } from "@/lib/locale";
 
 /**
- * Um gatilho comum preserva a ordem da entrada quando a seção chega depois
- * da hero. O topo cruzando 50% da viewport faz o conteúdo nascer do meio da
- * tela, enquanto `replay` mantém a travessia reversível ao voltar o scroll.
+ * Process — a rota longa contra a curta, no registro da home: preto, cartões
+ * em degradê noturno, selos lima e entradas escalonadas por `Reveal`.
+ *
+ * A seção começa clara e escurece: o corte da hero acaba num branco chapado e
+ * a janela dela esmaece por cima desta seção, então o primeiro palmo precisa
+ * ser branco ou a revelação vira um corte de cor. A folha mora dentro dessa
+ * passagem — é ela que dá assunto ao trecho em vez de deixar um degradê vazio
+ * ocupando uma tela inteira.
+ *
+ * Server Component: todo o movimento vive em filhos de cliente.
  */
 const enter = {
   replay: true,
   trigger: "#nitrogen-process",
-  start: "top 50%",
+  start: "top 55%",
 } as const;
 
-/**
- * Process: Rota curta vs rota longa e diferenciais técnicos do Aminosan®.
- * Surge com o fundo preto contínuo (#0C0C0E) após a transição da hero / folha.
- */
+/** O mesmo gatilho para o bento, que fica abaixo da dobra da abertura. */
+const bento = { replay: true, start: "top 78%" } as const;
+
 export async function NitrogenProcess() {
   const { process } = (await getContent()).aminosan;
+  const short = [process.cards.shortWay, process.cards.whatsInIt];
+
   return (
-    <div className="pt-[clamp(40px,5vw,72px)] pb-[clamp(28px,3vw,44px)]">
-      <div className="wrap">
+    <>
+      {/* ---------------------------------------------------- a passagem */}
+      {/* Do branco do vídeo ao preto da página, com a folha atravessando a
+          emenda: ela entra ainda no claro e sai já no escuro, que é o que
+          costura os dois fundos em vez de empilhá-los. */}
+      <div className="aminosan-dawn">
         <Reveal
-          {...enter}
-          y={16}
-          className="mb-[clamp(14px,1.2vw,22px)] flex items-center gap-[clamp(12px,1.2vw,20px)]"
+          y={0}
+          blur={14}
+          className="aminosan-dawn__leaf"
+          start="top 92%"
+          replay
         >
-          <Pill dark>{process.pill}</Pill>
-          <Rule short />
+          <Image
+            src="/img/aminosan/process-leaf.webp"
+            alt=""
+            aria-hidden
+            width={612}
+            height={408}
+            sizes="(min-width: 1100px) 46vw, 88vw"
+            className="h-auto w-full"
+          />
         </Reveal>
+      </div>
 
-        <div className="grid grid-cols-1 items-start gap-[clamp(24px,3vw,50px)] lg:grid-cols-[505fr_293fr]">
-          <SplitLines
-            {...enter}
-            delay={0.08}
-            className="text-h2 leading-[0.98] text-white"
+      {/* ------------------------------------------------------- a seção */}
+      <div data-nav-theme="dark" className="pb-sec">
+        <div className="wrap">
+          <SectionIntro
+            className="mb-[clamp(30px,3vw,56px)]"
+            aside={
+              <Reveal {...enter} delay={0.2} y={18} blur={8}>
+                <p className="font-light text-offwhite/80">{process.eyebrow}</p>
+              </Reveal>
+            }
           >
-            {process.heading}
-          </SplitLines>
-          <Reveal
-            {...enter}
-            delay={0.14}
-            x={44}
-            y={18}
-            blur={10}
-            className="lg:justify-self-end"
-          >
-            <p className="max-w-[46ch] font-light leading-[1.55] text-offwhite/90">
-              {process.eyebrow}
-            </p>
-          </Reveal>
-        </div>
-
-        <div className="mt-[clamp(28px,3vw,44px)] grid grid-cols-1 gap-[clamp(18px,1.5vw,24px)] lg:grid-cols-[1fr_1fr]">
-          <Reveal
-            {...enter}
-            delay={0.22}
-            x={-44}
-            y={20}
-            blur={10}
-            className="relative min-h-[260px] overflow-hidden rounded-[20px] lg:min-h-full"
-          >
-            <Image
-              src="/img/aminosan/process-leaf.webp"
-              alt="Backlit leaf close-up"
-              fill
-              sizes="(min-width: 1024px) 45vw, 100vw"
-              className="object-cover"
-            />
-          </Reveal>
-
-          <Reveal
-            {...enter}
-            x={44}
-            y={20}
-            blur={10}
-            delay={0.3}
-            stagger={0.12}
-            targetSelector="[data-process-card]"
-            className="aminosan-process-bento grid grid-cols-1 gap-[clamp(12px,1vw,18px)] sm:grid-cols-2"
-          >
-            <div
-              data-process-card=""
-              className="aminosan-process-card--long rounded-[20px] p-[clamp(20px,1.4vw,28px)] sm:col-span-2"
-              style={{
-                backgroundImage:
-                  "linear-gradient(143deg, var(--color-night-warm) 2.4%, var(--color-night-deep) 60.2%)",
-              }}
+            <Reveal {...enter} scaleX={0} y={0}>
+              <Rule className="mb-[clamp(18px,1.8vw,33px)]" />
+            </Reveal>
+            <Reveal {...enter} delay={0.06} y={14}>
+              <Pill className="mb-[clamp(14px,1.4vw,26px)]">{process.pill}</Pill>
+            </Reveal>
+            <SplitLines
+              {...enter}
+              delay={0.12}
+              className="text-h2 leading-[0.967] text-white"
             >
-              <p className="font-display text-[clamp(20px,1.5vw,28px)] font-semibold text-white">
+              {process.heading}
+            </SplitLines>
+          </SectionIntro>
+
+          {/* A rota longa ocupa a coluna larga e os dois resumos se empilham na
+              estreita — a mesma divisão do bloco brasileiro na home. */}
+          <div className="grid grid-cols-1 gap-[clamp(16px,1.5vw,20px)] min-[861px]:grid-cols-[785fr_555fr]">
+            <Reveal
+              as="article"
+              {...bento}
+              x={-44}
+              blur={10}
+              className="aminosan-night-card relative flex flex-col gap-[clamp(14px,1.65vw,32px)] overflow-hidden rounded-[clamp(12px,1.05vw,20px)] bg-linear-[122.93deg,var(--color-night-warm)_2.4%,var(--color-night-deep)_60.23%] p-[clamp(24px,2.6vw,50px)]"
+            >
+              <span
+                aria-hidden
+                className="aminosan-night-card__glow pointer-events-none absolute -top-[14%] -left-[6%] h-[40%] w-[34%] bg-[radial-gradient(closest-side,rgba(183,199,62,0.16),transparent)]"
+              />
+              <span className="relative self-start rounded-lg bg-lime p-2.5 text-[clamp(9px,0.7vw,13px)] leading-none font-semibold tracking-[0.15em] text-night uppercase">
                 {process.cards.longWay.label}
-              </p>
-              <p className="mt-[clamp(9px,0.8vw,12px)] font-display text-[clamp(14px,0.9vw,16px)] text-lime-bright">
+              </span>
+              {/* A cadeia é a própria ideia do cartão: cinco paradas antes de
+                  virar aminoácido. Em lima, porque é o que o olho segue. */}
+              <p className="relative font-display text-[clamp(15px,1.45vw,28px)] leading-[1.35] font-semibold text-lime-bright">
                 {process.cards.longWay.formula}
               </p>
-              <p className="mt-[clamp(9px,0.8vw,12px)] text-[clamp(14px,0.9vw,16px)] leading-[1.45] text-muted-dark">
+              <p className="relative mt-auto max-w-[52ch] leading-[1.5] font-light text-offwhite/75">
                 {process.cards.longWay.body}
               </p>
-            </div>
+            </Reveal>
 
-            <div data-process-card="" className="aminosan-process-card--short rounded-[20px] bg-[#07070a] p-[clamp(18px,1.2vw,24px)]">
-              <p className="font-display text-[clamp(17px,1.1vw,20px)] font-semibold text-white">
-                {process.cards.shortWay.label}
-              </p>
-              <p className="mt-2 text-[14px] leading-[1.45] text-muted-dark">
-                {process.cards.shortWay.body}
-              </p>
+            <div className="grid gap-[clamp(16px,1.5vw,20px)] min-[861px]:grid-rows-2">
+              {short.map((card, i) => (
+                <Reveal
+                  key={card.label}
+                  as="article"
+                  {...bento}
+                  delay={0.14 + i * 0.12}
+                  x={44}
+                  blur={10}
+                  className="aminosan-night-card relative flex flex-col justify-between gap-[clamp(14px,1.6vw,28px)] overflow-hidden rounded-[clamp(12px,1.05vw,20px)] bg-night p-[clamp(24px,2.6vw,50px)]"
+                >
+                  <span className="relative self-start rounded-lg bg-lime px-4 py-[clamp(7px,0.55vw,10px)] text-[clamp(9px,0.7vw,13px)] leading-[1.2] font-semibold tracking-[0.15em] text-night uppercase">
+                    {card.label}
+                  </span>
+                  <p className="relative leading-[1.5] font-light text-offwhite/75">
+                    {card.body}
+                  </p>
+                </Reveal>
+              ))}
             </div>
+          </div>
 
-            <div data-process-card="" className="aminosan-process-card--contents rounded-[20px] bg-[#07070a] p-[clamp(18px,1.2vw,24px)]">
-              <p className="font-display text-[clamp(17px,1.1vw,20px)] font-semibold text-white">
-                {process.cards.whatsInIt.label}
-              </p>
-              <p className="mt-2 text-[14px] leading-[1.45] text-muted-dark">
-                {process.cards.whatsInIt.body}
-              </p>
-            </div>
-
-            <div
-              data-process-card=""
-              className="aminosan-process-card--cta sm:col-span-2"
+          <Reveal {...bento} delay={0.34} y={18} className="mt-[clamp(20px,2vw,32px)]">
+            <a
+              href={process.cta.href}
+              className="aminosan-cta inline-flex items-center gap-3 rounded-full bg-lime px-[clamp(22px,2vw,38px)] py-[clamp(14px,1.1vw,20px)] font-display text-[clamp(13px,1vw,17px)] font-semibold tracking-[0.02em] text-night"
             >
-              <a
-                href={process.cta.href}
-                className="aminosan-process-card--cta-link flex w-full items-center justify-center rounded-[18px] bg-lime px-8 py-[clamp(16px,1.2vw,20px)] text-center font-display text-[clamp(16px,1.1vw,20px)] text-ink hover:bg-[#A6B534]"
-              >
-                {process.cta.label}
-              </a>
-            </div>
+              {process.cta.label}
+              <span aria-hidden className="aminosan-cta__arrow">
+                →
+              </span>
+            </a>
           </Reveal>
         </div>
       </div>
-    </div>
+    </>
   );
 }

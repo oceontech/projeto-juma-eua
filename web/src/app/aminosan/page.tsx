@@ -21,13 +21,16 @@ export default function AminosanPage() {
   return (
     <>
       <Hero />
-      <section
-        id="nitrogen-process"
-        data-nav-theme="dark"
-        className="overflow-x-clip bg-[#0C0C0E]"
-      >
+      {/* O hero revela esta seção esmaecendo sobre ela, e o corte dele acaba
+          em branco: por isso a passagem clara fica FORA do trecho escuro — o
+          tom da barra é medido por essas faixas, e uma faixa branca
+          declarada escura deixaria a tipografia dela ilegível no meio da
+          travessia. */}
+      <section id="nitrogen-process" className="overflow-x-clip bg-black">
         <NitrogenProcess />
-        <VideoSection />
+        <div data-nav-theme="dark">
+          <VideoSection />
+        </div>
       </section>
       <AminoAcidDelivery />
       <OperationalBenefits />

@@ -75,7 +75,7 @@ export function CropPillars({
     <section
       ref={scope}
       aria-label={title}
-      className="mt-[clamp(28px,3vw,52px)] overflow-hidden rounded-[clamp(18px,1.55vw,30px)] bg-linear-[149.8deg,var(--color-night-warm)_2.4%,var(--color-night-deep)_60.23%] text-offwhite shadow-[0_18px_42px_rgb(0_0_0/0.18)] will-change-transform"
+      className="mt-[clamp(28px,3vw,52px)] overflow-hidden rounded-[clamp(18px,1.55vw,30px)] bg-linear-[149.8deg,var(--color-night-warm)_2.4%,var(--color-night-deep)_60.23%] text-offwhite will-change-transform"
     >
       <div className="grid gap-6 px-[clamp(22px,3vw,54px)] pt-[clamp(24px,2.8vw,48px)] pb-[clamp(22px,2.4vw,42px)] min-[861px]:grid-cols-[minmax(220px,0.78fr)_minmax(0,1.22fr)] min-[861px]:items-end min-[861px]:gap-[clamp(42px,6vw,112px)]">
         <div>

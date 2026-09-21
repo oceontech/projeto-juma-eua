@@ -26,7 +26,9 @@ import { BurgerButton, MobileMenu } from "./MobileNav";
  *                  escura — ver TONE_LINE abaixo;
  *   direção        rolando para baixo (indo adiante na leitura) ela sai de
  *                  cena; rolando para cima ela volta, que é quando o leitor
- *                  está procurando navegação;
+ *                  está procurando navegação. O hero não rola — avança por
+ *                  gesto, com a página travada —, então ali quem dita a
+ *                  direção é ele, por `data-nav-hidden` no <html>;
  *   data-open      com o painel do mobile aberto o vidro sai e o conteúdo do
  *                  header inverte para o fundo escuro.
  *
@@ -132,6 +134,15 @@ export function SiteHeader() {
         const overHero = root.dataset.heroOver === "on";
         element.dataset.scrolled = !overHero && y > 8 ? "true" : "false";
 
+        /* Uma cena travada avança por gesto, e o scroll não tem o que contar:
+           ali a direção vem dela, por este atributo. Só quem o escreve manda
+           na barra, e enquanto ninguém escrever a regra continua sendo a do
+           ScrollTrigger — é o que mantém o hero da home, que rola de verdade,
+           fora desta conversa. */
+        const heroNav = root.dataset.navHidden;
+        if (!reduce && heroNav) {
+          applyHidden.current(heroNav === "on" && !openRef.current);
+        }
 
         const line = y + toneOffset;
         const overDark = darkRanges.some(([top, bottom]) => line > top && line < bottom);
@@ -144,7 +155,7 @@ export function SiteHeader() {
       const watchHero = new MutationObserver(() => applyChrome(window.scrollY));
       watchHero.observe(root, {
         attributes: true,
-        attributeFilter: ["data-nav-theme", "data-hero-over"],
+        attributeFilter: ["data-nav-theme", "data-hero-over", "data-nav-hidden"],
       });
 
       measure();
