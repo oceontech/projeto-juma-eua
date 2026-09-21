@@ -77,7 +77,7 @@ export function Proof() {
               <dt className="order-2 max-w-[22ch] text-right text-[11px] leading-[1.4] tracking-[0.12em] text-forest/65 uppercase">
                 {stat.label}
               </dt>
-              <dd className="order-1 font-display text-[clamp(44px,4.6vw,84px)] leading-[0.9] tracking-[-0.04em] text-olive">
+              <dd className="order-1 font-display text-[clamp(44px,4.6vw,84px)] leading-[0.9] tracking-[-0.04em] text-forest">
                 <Counter to={stat.value} />
                 {stat.suffix}
               </dd>

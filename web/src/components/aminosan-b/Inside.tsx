@@ -5,7 +5,7 @@ import { useRef } from "react";
 import { useContent } from "@/components/layout/LocaleProvider";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { SplitLines } from "@/components/motion/SplitLines";
-import { Cta, Mark, microCaps } from "./ui";
+import { Cta, microCaps } from "./ui";
 
 /**
  * O que tem na bombona + convite para a faixa de teste. À esquerda, o
@@ -24,7 +24,7 @@ export function Inside() {
       mm.add("(prefers-reduced-motion: no-preference)", () => {
         const pass = { trigger: scope.current, start: "top bottom", end: "bottom top", scrub: 0.6 };
 
-        gsap.fromTo(".in-label", { scale: 1.35, yPercent: 8 }, { scale: 1, yPercent: -4, ease: "none", scrollTrigger: pass });
+        gsap.fromTo(".in-label", { scale: 1.08, yPercent: 4 }, { scale: 1, yPercent: -2, ease: "none", scrollTrigger: pass });
         gsap.fromTo(".in-photo", { scale: 1.2 }, { scale: 1, ease: "none", scrollTrigger: pass });
         gsap.fromTo(".in-note-0", { y: 160 }, { y: -40, ease: "none", scrollTrigger: pass });
         gsap.fromTo(".in-note-1", { y: 280 }, { y: -90, ease: "none", scrollTrigger: pass });
@@ -48,7 +48,7 @@ export function Inside() {
   return (
     <section ref={scope} className="grid bg-cream text-forest lg:grid-cols-2">
       <div className="px-[var(--spacing-gut)] py-[clamp(56px,7vw,110px)] lg:px-[clamp(40px,4vw,80px)]">
-        <SplitLines className="text-[clamp(34px,3.6vw,64px)] leading-[0.98] tracking-[-0.03em] text-olive">
+        <SplitLines className="text-[clamp(34px,3.6vw,64px)] leading-[0.98] tracking-[-0.03em] text-forest">
           {inside.label.heading.map((line) => (
             <span key={line} className="block">
               {line}
@@ -58,14 +58,14 @@ export function Inside() {
         <p className={`${microCaps} mt-5 max-w-[40ch] text-forest/65`}>{inside.label.body}</p>
 
         <div className="mt-10 grid gap-8 sm:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] sm:items-center">
-          <div className="relative aspect-[4/5] overflow-hidden bg-white">
+          <div className="relative aspect-[4/5]">
             <Image
-              src="/img/aminosan-b/inside-label.webp"
+              src="/img/aminosan-b/cut-jug.webp"
               alt={inside.label.alt}
               fill
               quality={90}
               sizes="(min-width: 1024px) 22vw, (min-width: 640px) 40vw, 90vw"
-              className="in-label object-cover"
+              className="in-label object-contain drop-shadow-[0_24px_30px_rgba(22,38,27,0.3)]"
             />
           </div>
 
@@ -94,10 +94,9 @@ export function Inside() {
         {inside.notes.map((note, i) => (
           <aside
             key={note.label}
-            className={`in-note-${i} absolute w-[min(230px,46%)] bg-cream p-5 text-forest ${i === 0 ? "top-[14%] right-[34%]" : "top-[4%] right-0"}`}
+            className={`in-note-${i} absolute w-[min(230px,46%)] bg-cream p-5 text-forest ${i === 0 ? "top-[18%] right-[40%]" : "top-[6%] right-[12%]"}`}
           >
-            <Mark className="text-olive" />
-            <p className="mt-6 font-display text-[18px] leading-[1.15] tracking-[-0.01em]">{note.label}</p>
+            <p className="font-display text-[18px] leading-[1.15] tracking-[-0.01em]">{note.label}</p>
             <p className={`${microCaps} mt-3 text-forest/70`}>{note.body}</p>
           </aside>
         ))}

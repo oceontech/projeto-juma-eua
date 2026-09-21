@@ -22,7 +22,7 @@ const CROP_ICONS = ["corn", "soybean", "cotton"];
  * página. Os nomes dos campos são o contrato com `submitTrialRequest` —
  * cultura e área viraram fichas e segmentos, mas continuam `crop` e `acres`.
  */
-export function TrialForm() {
+export function TrialForm({ source }: { source?: string }) {
   const { form } = useContent().home.usOperation;
   const [state, action, pending] = useActionState(submitTrialRequest, INITIAL);
   const id = useId();
@@ -34,6 +34,7 @@ export function TrialForm() {
 
   return (
     <form ref={formRef} action={action} noValidate className={s.form}>
+      {source && <input type="hidden" name="source" value={source} />}
       <div data-trial-item className={s.head}>
         <p className={s.heading}>{form.heading}</p>
         <p className={s.caption}>{form.caption}</p>

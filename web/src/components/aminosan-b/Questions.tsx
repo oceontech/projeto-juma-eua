@@ -3,8 +3,7 @@
 import Image from "next/image";
 import { useRef } from "react";
 import { useContent } from "@/components/layout/LocaleProvider";
-import { scroller } from "@/components/motion/SmoothScroll";
-import { gsap, useGSAP, type ScrollTrigger } from "@/lib/gsap";
+import { gsap, useGSAP } from "@/lib/gsap";
 import { SplitLines } from "@/components/motion/SplitLines";
 import { microCaps } from "./ui";
 
@@ -12,15 +11,13 @@ import { microCaps } from "./ui";
  * As perguntas como o "latest from the community" da referência: a cena
  * prende sobre a paisagem e o trilho de cartões corre para a esquerda
  * conforme a página rola. Cada cartão é uma foto com a caixa creme
- * sobreposta. As setas não rolam o trilho por conta própria — pedem à
- * página para andar até o cartão seguinte, então scroll e trilho nunca
- * discordam.
+ * sobreposta. O título fica centralizado acima e o trilho corre de ponta
+ * a ponta, só com o scroll — sem setas.
  */
 export function Questions() {
   const { questions } = useContent().aminosanB;
   const scope = useRef<HTMLElement>(null);
   const track = useRef<HTMLDivElement>(null);
-  const trigger = useRef<ScrollTrigger | null>(null);
 
   useGSAP(
     () => {
@@ -33,7 +30,7 @@ export function Questions() {
            margem direita. Medido a cada refresh, porque depende da janela. */
         const distance = () => Math.max(0, el.scrollWidth - el.clientWidth);
 
-        const tween = gsap.to(el, {
+        gsap.to(el, {
           x: () => -distance(),
           ease: "none",
           scrollTrigger: {
@@ -46,7 +43,6 @@ export function Questions() {
             invalidateOnRefresh: true,
           },
         });
-        trigger.current = tween.scrollTrigger ?? null;
 
         gsap.fromTo(
           ".qs-bg",
@@ -62,32 +58,10 @@ export function Questions() {
             },
           },
         );
-
-        return () => {
-          trigger.current = null;
-        };
       });
     },
     { scope },
   );
-
-  const step = (dir: 1 | -1) => {
-    const st = trigger.current;
-    const count = questions.items.length;
-    if (!st) {
-      track.current?.scrollBy({ left: dir * 340, behavior: "smooth" });
-      return;
-    }
-    const at = Math.round(st.progress * (count - 1));
-    const next = Math.min(count - 1, Math.max(0, at + dir));
-    const y = st.start + (st.end - st.start) * (next / (count - 1));
-    const lenis = scroller();
-    if (lenis) lenis.scrollTo(y, { duration: 0.9 });
-    else window.scrollTo({ top: y, behavior: "smooth" });
-  };
-
-  const arrow =
-    "grid size-10 place-items-center bg-cream text-forest transition-colors hover:bg-lime";
 
   return (
     <section ref={scope} data-nav-theme="dark" className="bg-forest text-cream">
@@ -110,11 +84,11 @@ export function Questions() {
         </div>
         <div
           aria-hidden
-          className="absolute inset-0 bg-[linear-gradient(90deg,rgba(22,38,27,0.75)_0%,rgba(22,38,27,0.25)_45%,rgba(22,38,27,0.1)_100%)]"
+          className="absolute inset-0 bg-[linear-gradient(180deg,rgba(22,38,27,0.65)_0%,rgba(22,38,27,0.25)_45%,rgba(22,38,27,0.1)_100%)]"
         />
 
-        <div className="relative flex h-full flex-col gap-8 pt-[clamp(96px,14svh,150px)] pb-[clamp(32px,6svh,64px)] lg:flex-row lg:items-center lg:gap-0 lg:py-0">
-          <div className="flex shrink-0 flex-col px-[var(--spacing-gut)] lg:h-[min(440px,64svh)] lg:w-[34%] lg:pl-[var(--rail-gut)]">
+        <div className="relative flex h-full flex-col justify-center gap-[clamp(28px,5svh,56px)] pt-[clamp(72px,10svh,110px)] pb-[clamp(32px,6svh,64px)]">
+          <div className="px-[var(--spacing-gut)] text-center">
             <SplitLines className="text-[clamp(34px,3.8vw,64px)] leading-[0.98] tracking-[-0.03em]">
               {questions.heading.map((line) => (
                 <span key={line} className="block">
@@ -122,44 +96,25 @@ export function Questions() {
                 </span>
               ))}
             </SplitLines>
-            <div className="mt-auto hidden gap-2 lg:flex">
-              <button
-                type="button"
-                aria-label={questions.prev}
-                className={arrow}
-                onClick={() => step(-1)}
-              >
-                ←
-              </button>
-              <button
-                type="button"
-                aria-label={questions.next}
-                className={arrow}
-                onClick={() => step(1)}
-              >
-                →
-              </button>
-            </div>
           </div>
 
-          {/* O trilho some na borda da coluna do título em vez de passar por
-              cima dele. */}
-          <div className="min-w-0 flex-1 overflow-hidden motion-reduce:overflow-x-auto">
+          {/* O trilho ocupa a largura toda: os cartões correm de ponta a ponta. */}
+          <div className="w-full overflow-hidden motion-reduce:overflow-x-auto">
             <div
               ref={track}
-              className="flex gap-4 px-[var(--spacing-gut)] will-change-transform lg:pl-0"
+              className="flex gap-4 px-[var(--rail-gut)] will-change-transform"
             >
               {questions.items.map((item, i) => (
                 <article
                   key={item.q}
-                  className="relative h-[min(440px,58svh)] w-[min(78vw,340px)] shrink-0"
+                  className="relative h-[min(540px,60svh)] w-[min(82vw,430px)] shrink-0"
                 >
                   <div className="absolute top-0 left-0 h-[72%] w-[64%] overflow-hidden">
                     <Image
                       src={item.image}
                       alt=""
                       fill
-                      sizes="240px"
+                      sizes="300px"
                       className="object-cover"
                     />
                   </div>
@@ -167,7 +122,7 @@ export function Questions() {
                     <span className="font-display text-[11px] tracking-[0.16em] text-moss">
                       {String(i + 1).padStart(2, "0")}
                     </span>
-                    <h3 className="mt-2 font-display text-[15px] leading-[1.2] font-medium tracking-[0.02em] uppercase">
+                    <h3 className="mt-2 font-display text-[17px] leading-[1.2] font-medium tracking-[0.02em] uppercase">
                       {item.q}
                     </h3>
                     <p className={`${microCaps} mt-auto text-forest/70`}>

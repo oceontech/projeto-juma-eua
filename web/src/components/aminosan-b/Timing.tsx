@@ -39,7 +39,7 @@ export function Timing() {
   return (
     <section ref={scope} className="grid bg-cream text-forest lg:min-h-[100svh] lg:grid-cols-2">
       <div className="flex flex-col px-[var(--spacing-gut)] py-[clamp(56px,7vw,110px)] lg:px-[clamp(40px,5vw,96px)]">
-        <SplitLines className="max-w-[12ch] text-[clamp(38px,4.2vw,76px)] leading-[0.96] tracking-[-0.035em] text-olive">
+        <SplitLines className="max-w-[12ch] text-[clamp(38px,4.2vw,76px)] leading-[0.96] tracking-[-0.035em] text-forest">
           {timing.heading}
         </SplitLines>
 
