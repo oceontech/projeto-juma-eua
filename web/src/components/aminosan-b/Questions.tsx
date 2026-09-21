@@ -135,6 +135,14 @@ export function Questions() {
           </div>
         </div>
       </div>
+
+      {/* Fade para o branco da seção seguinte: sobe sobre o pé da paisagem
+          (margem negativa) e usa várias paradas em curva, para a foto se
+          dissolver em vez de acabar num corte reto. */}
+      <div
+        aria-hidden
+        className="pointer-events-none relative -mt-[clamp(160px,22vw,340px)] h-[clamp(160px,22vw,340px)] bg-[linear-gradient(180deg,rgba(255,255,255,0)_0%,rgba(255,255,255,0.04)_18%,rgba(255,255,255,0.16)_38%,rgba(255,255,255,0.4)_58%,rgba(255,255,255,0.72)_78%,rgba(255,255,255,0.93)_92%,#fff_100%)]"
+      />
     </section>
   );
 }
