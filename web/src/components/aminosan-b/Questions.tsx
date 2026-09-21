@@ -9,7 +9,7 @@ import { microCaps } from "./ui";
 
 /**
  * As perguntas como o "latest from the community" da referência: a cena
- * prende sobre a paisagem e o trilho de cartões corre para a esquerda
+ * prende sobre o fundo claro de folhas e o trilho de cartões corre para a esquerda
  * conforme a página rola. Cada cartão é uma foto com a caixa creme
  * sobreposta. O título fica centralizado acima e o trilho corre de ponta
  * a ponta, só com o scroll — sem setas.
@@ -64,7 +64,7 @@ export function Questions() {
   );
 
   return (
-    <section ref={scope} data-nav-theme="dark" className="bg-forest text-cream">
+    <section ref={scope} className="bg-white text-forest">
       <div
         className="qs-stage relative h-[100svh] overflow-hidden"
         style={{
@@ -74,7 +74,7 @@ export function Questions() {
       >
         <div className="qs-bg absolute inset-0">
           <Image
-            src="/img/aminosan-b/questions-pasture.webp"
+            src="/img/aminosan-b/questions-leaves.webp"
             alt=""
             fill
             sizes="100vw"
@@ -82,10 +82,6 @@ export function Questions() {
             className="object-cover"
           />
         </div>
-        <div
-          aria-hidden
-          className="absolute inset-0 bg-[linear-gradient(180deg,rgba(22,38,27,0.65)_0%,rgba(22,38,27,0.25)_45%,rgba(22,38,27,0.1)_100%)]"
-        />
 
         <div className="relative flex h-full flex-col justify-center gap-[clamp(28px,5svh,56px)] pt-[clamp(72px,10svh,110px)] pb-[clamp(32px,6svh,64px)]">
           <div className="px-[var(--spacing-gut)] text-center">
@@ -109,7 +105,7 @@ export function Questions() {
                   key={item.q}
                   className="relative h-[min(540px,60svh)] w-[min(82vw,430px)] shrink-0"
                 >
-                  <div className="absolute top-0 left-0 h-[72%] w-[64%] overflow-hidden">
+                  <div className="absolute top-0 left-0 h-[72%] w-[64%] overflow-hidden rounded-[16px]">
                     <Image
                       src={item.image}
                       alt=""
@@ -118,7 +114,7 @@ export function Questions() {
                       className="object-cover"
                     />
                   </div>
-                  <div className="absolute right-0 bottom-0 flex h-[64%] w-[76%] flex-col bg-cream p-5 text-forest">
+                  <div className="absolute right-0 bottom-0 flex h-[64%] w-[76%] flex-col rounded-[16px] bg-cream p-5 text-forest shadow-[0_18px_40px_-18px_rgba(22,38,27,0.28)]">
                     <span className="font-display text-[11px] tracking-[0.16em] text-moss">
                       {String(i + 1).padStart(2, "0")}
                     </span>
@@ -135,14 +131,6 @@ export function Questions() {
           </div>
         </div>
       </div>
-
-      {/* Fade para o branco da seção seguinte: sobe sobre o pé da paisagem
-          (margem negativa) e usa várias paradas em curva, para a foto se
-          dissolver em vez de acabar num corte reto. */}
-      <div
-        aria-hidden
-        className="pointer-events-none relative -mt-[clamp(160px,22vw,340px)] h-[clamp(160px,22vw,340px)] bg-[linear-gradient(180deg,rgba(255,255,255,0)_0%,rgba(255,255,255,0.04)_18%,rgba(255,255,255,0.16)_38%,rgba(255,255,255,0.4)_58%,rgba(255,255,255,0.72)_78%,rgba(255,255,255,0.93)_92%,#fff_100%)]"
-      />
     </section>
   );
 }

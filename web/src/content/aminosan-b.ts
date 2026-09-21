@@ -33,6 +33,21 @@ export const hero = {
   scroll: "Scroll",
 };
 
+/* A parada da molécula no hero: a câmera acabou de entrar na bombona, então
+   a molécula é o que tem lá dentro — e o assunto é como ela foi feita. A rota
+   do nitrato já está na seção "problem"; aqui não se repete. */
+export const molecule = {
+  eyebrow: "Inside the jug · Free L-amino acids",
+  heading: "Freed by enzymes, not by acid.",
+  body: "Aminosan® starts as plant protein. Enzymes take it apart at mild temperature, bond by bond, until what's left are single amino acids.",
+  callout: "Harsh acid processing can destroy some amino acids and flip others into a mirror-image form plants don't build with. Enzymes leave them intact, in L-form.",
+  steps: [
+    { label: "Plant protein", note: "Vegetal source" },
+    { label: "Enzymes", note: "Mild, precise cuts" },
+    { label: "Free L-amino acids", note: "Ready for the leaf" },
+  ],
+};
+
 export const problem = {
   image: {
     heading: "Most nitrogen arrives unfinished.",
@@ -66,8 +81,8 @@ export const converge = {
       body: "Single L-amino acids, not peptide chains. Nothing left for the plant to cut apart.",
     },
     {
-      title: "Plant-derived",
-      body: "Vegetal raw material, broken down by enzymatic fermentation instead of harsh acid processing.",
+      title: "N, P and K on board",
+      body: "Nitrogen, phosphate and potash ride along in the same spray.",
     },
     {
       title: "Non-hormonal",
@@ -78,8 +93,11 @@ export const converge = {
 
 export const meet = {
   heading: "Meet Aminosan®",
-  intro: "A liquid foliar that does its work in the tank you already fill.",
-  points: [
+  intro: "Follow one pour from the jug to the leaf.",
+  scroll: "Scroll to dive in",
+  /* Cada etapa acompanha um trecho do vídeo tocado pelo scroll (Meet.tsx):
+     derrame, mistura e mergulho, nuvem submersa, partículas, folha. */
+  stages: [
     {
       n: "01",
       title: "Pour it in",
@@ -92,15 +110,45 @@ export const meet = {
     },
     {
       n: "03",
-      title: "Onto the leaf",
-      body: "Foliar, from early vegetative stages through the reproductive ones.",
+      title: "Every drop carries it",
+      body: "100% free-form L-amino acids with N, P and K, spread through the water you already spray.",
     },
     {
       n: "04",
-      title: "Put to work",
-      body: "Free amino acids are taken up through the leaf and used as delivered.",
+      title: "Ready-made",
+      body: "Single amino acids, not peptide chains. Nothing left for the plant to break down.",
+    },
+    {
+      n: "05",
+      title: "Onto the leaf",
+      body: "Sprayed on, taken up through the leaf and used as delivered.",
     },
   ],
+  cta: { label: "See where it fits", href: "#season" },
+};
+
+export const cell = {
+  eyebrow: "Inside the leaf",
+  stages: [
+    {
+      kicker: "Past the surface",
+      title: "Where amino acids go to work.",
+      body: "Every cell in the leaf is building something: enzymes, the proteins that run photosynthesis, the machinery that makes chlorophyll. All of it is assembled from amino acids.",
+    },
+    {
+      kicker: "The building blocks",
+      value: "20",
+      title: "amino acids make up every protein the plant builds.",
+      body: "Aminosan® delivers amino acids free-form, one by one, so they can go straight into the build instead of being made from scratch.",
+    },
+    {
+      kicker: "The right shape",
+      value: "L-",
+      title: "the form found in the plant's own proteins.",
+      body: "Amino acids come in two mirror-image forms, and plant cells build with the L-form. That's the only form in the jug: 100% free-form L-amino acids.",
+    },
+  ],
+  alt: "Macro zoom from a leaf into its cells",
 };
 
 export const proof = {

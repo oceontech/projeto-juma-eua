@@ -25,6 +25,18 @@ export const hero: typeof en.hero = {
   scroll: "Role",
 };
 
+export const molecule: typeof en.molecule = {
+  eyebrow: "Dentro da bombona · L-aminoácidos livres",
+  heading: "Liberados por enzimas, não por ácido.",
+  body: "O Aminosan® começa como proteína vegetal. Enzimas a desmontam em temperatura branda, ligação por ligação, até restarem aminoácidos soltos.",
+  callout: "O processo ácido agressivo pode destruir alguns aminoácidos e inverter outros para uma forma espelhada que a planta não usa para construir. As enzimas os mantêm intactos, na forma L.",
+  steps: [
+    { label: "Proteína vegetal", note: "Origem vegetal" },
+    { label: "Enzimas", note: "Cortes brandos e precisos" },
+    { label: "L-aminoácidos livres", note: "Prontos para a folha" },
+  ],
+};
+
 export const problem: typeof en.problem = {
   image: {
     heading: "A maior parte do nitrogênio chega inacabada.",
@@ -58,8 +70,8 @@ export const converge: typeof en.converge = {
       body: "L-aminoácidos soltos, sem cadeias de peptídeos. Não sobra nada para a planta cortar.",
     },
     {
-      title: "Origem vegetal",
-      body: "Matéria-prima vegetal, quebrada por fermentação enzimática em vez de processo ácido agressivo.",
+      title: "N, P e K juntos",
+      body: "Nitrogênio, fósforo e potássio vão junto na mesma aplicação.",
     },
     {
       title: "Não hormonal",
@@ -70,8 +82,9 @@ export const converge: typeof en.converge = {
 
 export const meet: typeof en.meet = {
   heading: "Conheça o Aminosan®",
-  intro: "Um foliar líquido que começa a trabalhar no tanque que você já enche.",
-  points: [
+  intro: "Acompanhe uma dose, da bombona até a folha.",
+  scroll: "Role para mergulhar",
+  stages: [
     {
       n: "01",
       title: "Despeje no tanque",
@@ -84,15 +97,45 @@ export const meet: typeof en.meet = {
     },
     {
       n: "03",
-      title: "Na folha",
-      body: "Foliar, dos estágios vegetativos iniciais até os reprodutivos.",
+      title: "Cada gota leva",
+      body: "L-aminoácidos 100% livres com N, P e K, espalhados na calda que você já aplica.",
     },
     {
       n: "04",
-      title: "Posto para trabalhar",
-      body: "Os aminoácidos livres entram pela folha e são usados como chegam.",
+      title: "Pronto para usar",
+      body: "Aminoácidos soltos, sem cadeias de peptídeos. Não sobra nada para a planta quebrar.",
+    },
+    {
+      n: "05",
+      title: "Na folha",
+      body: "Aplicado, absorvido pela folha e usado como chega.",
     },
   ],
+  cta: { label: "Veja onde entra", href: "#season" },
+};
+
+export const cell: typeof en.cell = {
+  eyebrow: "Dentro da folha",
+  stages: [
+    {
+      kicker: "Além da superfície",
+      title: "Onde os aminoácidos trabalham.",
+      body: "Cada célula da folha está construindo alguma coisa: enzimas, as proteínas que fazem a fotossíntese, a maquinaria que produz clorofila. Tudo isso é montado a partir de aminoácidos.",
+    },
+    {
+      kicker: "Os blocos de construção",
+      value: "20",
+      title: "aminoácidos formam todas as proteínas que a planta constrói.",
+      body: "O Aminosan® entrega aminoácidos livres, um a um, para entrarem direto na construção em vez de serem produzidos do zero.",
+    },
+    {
+      kicker: "A forma certa",
+      value: "L-",
+      title: "a forma presente nas proteínas da própria planta.",
+      body: "Os aminoácidos existem em duas formas espelhadas, e as células vegetais constroem com a forma L. É a única forma na bombona: L-aminoácidos 100% livres.",
+    },
+  ],
+  alt: "Zoom macro de uma folha até as suas células",
 };
 
 export const proof: typeof en.proof = {

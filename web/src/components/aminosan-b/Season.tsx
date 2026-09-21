@@ -48,7 +48,7 @@ export function Season() {
   );
 
   return (
-    <section ref={scope} className="overflow-hidden bg-cream pt-[clamp(72px,8vw,124px)] pb-[clamp(96px,12vw,200px)] text-forest">
+    <section id="season" ref={scope} className="overflow-hidden bg-cream pt-[clamp(72px,8vw,124px)] pb-[clamp(96px,12vw,200px)] text-forest">
       <div className="wrap grid gap-6 lg:grid-cols-[1fr_380px] lg:items-end">
         <SplitLines className="text-[clamp(34px,3.8vw,68px)] leading-[0.98] tracking-[-0.03em] text-forest">
           {season.heading.map((line) => (

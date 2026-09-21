@@ -3,6 +3,7 @@ import { Hero } from "@/components/aminosan-b/Hero";
 import { Problem } from "@/components/aminosan-b/Problem";
 import { Converge } from "@/components/aminosan-b/Converge";
 import { Meet } from "@/components/aminosan-b/Meet";
+import { Cell } from "@/components/aminosan-b/Cell";
 import { Proof } from "@/components/aminosan-b/Proof";
 import { Timing } from "@/components/aminosan-b/Timing";
 import { Season } from "@/components/aminosan-b/Season";
@@ -22,6 +23,7 @@ export const metadata: Metadata = {
  * LP B do Aminosan — escrita do zero para o teste A/B contra /aminosan.
  * Estrutura e ritmo seguem a referência editorial (hero de produto,
  * problema em tela dividida, convergência, produto com vídeo no scroll,
+ * dentro da folha (lente de microscópio),
  * prova, janela crítica, fichas de cultura, o que tem na bombona, trilho
  * de perguntas, pedido).
  */
@@ -32,6 +34,7 @@ export default function AminosanBPage() {
       <Problem />
       <Converge />
       <Meet />
+      <Cell />
       <Proof />
       <Timing />
       <Season />
