@@ -6,41 +6,6 @@ import { gsap, useGSAP } from "@/lib/gsap";
 import { SplitLines } from "@/components/motion/SplitLines";
 import { Cta, microCaps } from "./ui";
 
-const iconProps = {
-  viewBox: "0 0 24 24",
-  fill: "none",
-  stroke: "currentColor",
-  strokeWidth: 1.5,
-  strokeLinecap: "round",
-  strokeLinejoin: "round",
-  className: "size-28",
-  "aria-hidden": true,
-} as const;
-
-/* Um ícone por card, cada um num canto diferente. */
-const CARD_ICONS = [
-  // molécula única (aminoácido livre)
-  <svg key="free" {...iconProps}>
-    <circle cx="12" cy="12" r="3" />
-    <circle cx="5" cy="6" r="1.8" />
-    <circle cx="19" cy="7" r="1.8" />
-    <circle cx="17" cy="19" r="1.8" />
-    <path d="M9.8 10.2 6.4 7.3M14.8 10.8l2.9-2.6M13.5 14.3l2.2 3.2" />
-  </svg>,
-  // folha
-  <svg key="plant" {...iconProps}>
-    <path d="M5 19C5 10 10 5 20 4c0 10-5 15-13 15" />
-    <path d="M5 19 14 10" />
-  </svg>,
-  // gota cortada (sem hormônio)
-  <svg key="hormone" {...iconProps}>
-    <path d="M12 3.5c3 3.6 5.5 6.4 5.5 9.5a5.5 5.5 0 0 1-11 0c0-3.1 2.5-5.9 5.5-9.5Z" />
-    <path d="M4 4l16 16" />
-  </svg>,
-];
-
-const CARD_ICON_POS = ["-top-6 -right-6", "-top-6 -left-6", "-bottom-6 -right-6"];
-
 /* Gerador com semente: as posições saem iguais no servidor e no cliente,
    senão a hidratação reclamaria de cada círculo. */
 function seeded(seed: number) {
@@ -188,6 +153,17 @@ export function Converge() {
             ease: "expo.out",
             scrollTrigger: { trigger: ".cv-cards", start: "top 88%", once: true },
           });
+
+          /* A linha verde acima de cada título se desenha da esquerda para a
+             direita, logo depois que o card sobe. */
+          gsap.from(".cv-line", {
+            scaleX: 0,
+            stagger: 0.12,
+            duration: 1.1,
+            delay: 0.35,
+            ease: "expo.out",
+            scrollTrigger: { trigger: ".cv-cards", start: "top 88%", once: true },
+          });
         },
       );
     },
@@ -250,23 +226,18 @@ export function Converge() {
         </div>
       </div>
 
-      <div className="wrap cv-cards grid gap-4 pb-[clamp(56px,7vw,110px)] md:grid-cols-3">
+      <div className="wrap cv-cards grid grid-cols-2 gap-3 pb-[clamp(56px,7vw,110px)] md:grid-cols-3 md:gap-4">
         {converge.cards.map((card, i) => (
           <article
             key={card.title}
-            className="cv-card relative flex min-h-44 flex-col overflow-hidden rounded-[clamp(12px,1.05vw,20px)] bg-linear-[122.93deg,var(--color-night-warm)_2.4%,var(--color-night-deep)_60.23%] p-[clamp(20px,1.8vw,28px)] text-offwhite"
+            className={`cv-card relative flex flex-col ${i === 0 ? "col-span-2 md:col-span-1" : ""} overflow-hidden rounded-[clamp(12px,1.05vw,20px)] bg-linear-[122.93deg,var(--color-night-warm)_2.4%,var(--color-night-deep)_60.23%] p-4 text-offwhite md:p-[clamp(20px,1.8vw,28px)]`}
           >
-            <span
-              className={`absolute text-lime ${CARD_ICON_POS[i % CARD_ICON_POS.length]}`}
-            >
-              {CARD_ICONS[i % CARD_ICONS.length]}
-            </span>
-            <h3
-              className={`mt-auto text-[clamp(20px,1.6vw,26px)] leading-[1.1] tracking-[-0.02em] ${i === 2 ? "pr-20" : ""}`}
-            >
-              {card.title}
-            </h3>
-            <p className={`${microCaps} mt-3 text-offwhite/70 ${i === 2 ? "pr-20" : ""}`}>{card.body}</p>
+            {/* w-fit: a linha só alcança a largura que o título ocupa. */}
+            <div className="max-w-full w-fit">
+              <span aria-hidden className="cv-line block h-[2px] w-full origin-left rounded-full bg-lime" />
+              <h3 className="mt-3 text-[clamp(20px,1.6vw,26px)] leading-[1.1] tracking-[-0.02em]">{card.title}</h3>
+            </div>
+            <p className={`${microCaps} mt-3 text-offwhite/70`}>{card.body}</p>
           </article>
         ))}
       </div>
