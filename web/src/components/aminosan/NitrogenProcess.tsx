@@ -1,146 +1,203 @@
 import Image from "next/image";
 import { Reveal } from "@/components/motion/Reveal";
+import { Wipe } from "@/components/motion/Wipe";
 import { SplitLines } from "@/components/motion/SplitLines";
-import { Pill, Rule, SectionIntro } from "@/components/ui";
+import { Rule } from "@/components/ui";
 import { getContent } from "@/lib/locale";
+import { ProcessSeedling } from "./ProcessSeedling";
 
 /**
- * Process — a rota longa contra a curta, no registro da home: preto, cartões
- * em degradê noturno, selos lima e entradas escalonadas por `Reveal`.
+ * Process — a rota longa contra a curta, em duas metades de tela cheia: a
+ * folha e o título de um lado, o diagrama sobre papel do outro.
  *
- * A seção começa clara e escurece: o corte da hero acaba num branco chapado e
- * a janela dela esmaece por cima desta seção, então o primeiro palmo precisa
- * ser branco ou a revelação vira um corte de cor. A folha mora dentro dessa
- * passagem — é ela que dá assunto ao trecho em vez de deixar um degradê vazio
- * ocupando uma tela inteira.
+ * É a primeira coisa que aparece quando a hero se desfaz: o corte dela acaba
+ * num branco chapado, e daqui até o fim do palco do vídeo o fundo é o mesmo
+ * branco — a janela da hero esmaece sobre uma superfície que já é a dela, sem
+ * nenhuma emenda de cor para atravessar.
+ *
+ * As duas metades não levam `data-nav-theme`: a barra atravessa o escuro e o
+ * claro ao mesmo tempo, e declarar um dos dois deixaria a tipografia dela
+ * ilegível na outra. No tom claro o vidro da barra é branco, que é o que
+ * sustenta a leitura também por cima da foto.
  *
  * Server Component: todo o movimento vive em filhos de cliente.
  */
-const enter = {
-  replay: true,
-  trigger: "#nitrogen-process",
-  start: "top 55%",
-} as const;
 
-/** O mesmo gatilho para o bento, que fica abaixo da dobra da abertura. */
-const bento = { replay: true, start: "top 78%" } as const;
+/* A cadeia longa mora numa grade de duas colunas — a cápsula à esquerda, com
+   largura fixa, e o nome do composto à direita. É essa largura que os
+   chevrons usam para cair no eixo das cápsulas. */
+const CHAIN_GRID =
+  "grid grid-cols-[clamp(88px,9.4vw,142px)_1fr] items-center gap-x-[clamp(10px,1vw,18px)]";
+
+/** Seta entre um elo e o seguinte. */
+function Chevron() {
+  return (
+    <svg
+      viewBox="0 0 14 8"
+      aria-hidden
+      className="h-2 w-3.5 text-ink/35"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.4}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M1 1.5L7 6.5L13 1.5" />
+    </svg>
+  );
+}
 
 export async function NitrogenProcess() {
   const { process } = (await getContent()).aminosan;
-  const short = [process.cards.shortWay, process.cards.whatsInIt];
+  const chain = process.longWay.steps;
 
   return (
     <>
-      {/* ---------------------------------------------------- a passagem */}
-      {/* Do branco do vídeo ao preto da página, com a folha atravessando a
-          emenda: ela entra ainda no claro e sai já no escuro, que é o que
-          costura os dois fundos em vez de empilhá-los. */}
-      <div className="aminosan-dawn">
-        <Reveal
-          y={0}
-          blur={14}
-          className="aminosan-dawn__leaf"
-          start="top 92%"
-          replay
-        >
-          <Image
-            src="/img/aminosan/process-leaf.webp"
-            alt=""
-            aria-hidden
-            width={612}
-            height={408}
-            sizes="(min-width: 1100px) 46vw, 88vw"
-            className="h-auto w-full"
-          />
-        </Reveal>
-      </div>
+      {/* --------------------------------------------- as duas metades */}
+      <div className="grid grid-cols-1 items-stretch min-[900px]:grid-cols-2">
+        {/* ------------------------------------------------- a folha */}
+        {/* A foto é descoberta da esquerda para a direita; o texto tem entrada
+            própria, por cima, para não ser varrido junto com ela. */}
+        <div className="relative isolate min-h-[clamp(430px,88vw,620px)] overflow-hidden min-[900px]:min-h-[640px]">
+          <Wipe replay start="top 82%" className="absolute inset-0">
+            <Image
+              src="/img/aminosan/process-corn-leaf.webp"
+              alt=""
+              aria-hidden
+              fill
+              quality={90}
+              sizes="(min-width: 900px) 50vw, 100vw"
+              className="object-cover object-center"
+            />
+            {/* O texto vive no pé da foto: sem esta cortina ele disputaria com
+                o contraluz justamente onde ele é mais forte. */}
+            <span
+              aria-hidden
+              className="pointer-events-none absolute inset-0 bg-linear-to-t from-black/88 via-black/45 to-black/5"
+            />
+          </Wipe>
 
-      {/* ------------------------------------------------------- a seção */}
-      <div data-nav-theme="dark" className="pb-sec">
-        <div className="wrap">
-          <SectionIntro
-            className="mb-[clamp(30px,3vw,56px)]"
-            aside={
-              <Reveal {...enter} delay={0.2} y={18} blur={8}>
-                <p className="font-light text-offwhite/80">{process.eyebrow}</p>
-              </Reveal>
-            }
-          >
-            <Reveal {...enter} scaleX={0} y={0}>
-              <Rule className="mb-[clamp(18px,1.8vw,33px)]" />
-            </Reveal>
-            <Reveal {...enter} delay={0.06} y={14}>
-              <Pill className="mb-[clamp(14px,1.4vw,26px)]">{process.pill}</Pill>
+          <div className="relative flex h-full flex-col justify-end p-[clamp(26px,3.6vw,68px)] pb-[clamp(34px,4vw,74px)]">
+            <Reveal replay start="top 78%" delay={0.35} scaleX={0} y={0}>
+              <Rule short className="mb-[clamp(16px,1.7vw,30px)]" />
             </Reveal>
             <SplitLines
-              {...enter}
-              delay={0.12}
-              className="text-h2 leading-[0.967] text-white"
+              replay
+              start="top 78%"
+              delay={0.42}
+              className="text-h2 leading-[1.02] text-white"
             >
-              {process.heading}
+              {process.heading[0]}
+              <br />
+              {process.heading[1]}
             </SplitLines>
-          </SectionIntro>
-
-          {/* A rota longa ocupa a coluna larga e os dois resumos se empilham na
-              estreita — a mesma divisão do bloco brasileiro na home. */}
-          <div className="grid grid-cols-1 gap-[clamp(16px,1.5vw,20px)] min-[861px]:grid-cols-[785fr_555fr]">
-            <Reveal
-              as="article"
-              {...bento}
-              x={-44}
-              blur={10}
-              className="aminosan-night-card relative flex flex-col gap-[clamp(14px,1.65vw,32px)] overflow-hidden rounded-[clamp(12px,1.05vw,20px)] bg-linear-[122.93deg,var(--color-night-warm)_2.4%,var(--color-night-deep)_60.23%] p-[clamp(24px,2.6vw,50px)]"
-            >
-              <span
-                aria-hidden
-                className="aminosan-night-card__glow pointer-events-none absolute -top-[14%] -left-[6%] h-[40%] w-[34%] bg-[radial-gradient(closest-side,rgba(183,199,62,0.16),transparent)]"
-              />
-              <span className="relative self-start rounded-lg bg-lime p-2.5 text-[clamp(9px,0.7vw,13px)] leading-none font-semibold tracking-[0.15em] text-night uppercase">
-                {process.cards.longWay.label}
-              </span>
-              {/* A cadeia é a própria ideia do cartão: cinco paradas antes de
-                  virar aminoácido. Em lima, porque é o que o olho segue. */}
-              <p className="relative font-display text-[clamp(15px,1.45vw,28px)] leading-[1.35] font-semibold text-lime-bright">
-                {process.cards.longWay.formula}
-              </p>
-              <p className="relative mt-auto max-w-[52ch] leading-[1.5] font-light text-offwhite/75">
-                {process.cards.longWay.body}
+            <Reveal replay start="top 78%" delay={0.62} y={16} blur={6}>
+              <p className="mt-[clamp(14px,1.5vw,26px)] max-w-[46ch] text-[clamp(14px,1.05vw,19px)] leading-[1.55] font-light text-white/85">
+                {process.body}
               </p>
             </Reveal>
+          </div>
+        </div>
 
-            <div className="grid gap-[clamp(16px,1.5vw,20px)] min-[861px]:grid-rows-2">
-              {short.map((card, i) => (
-                <Reveal
-                  key={card.label}
-                  as="article"
-                  {...bento}
-                  delay={0.14 + i * 0.12}
-                  x={44}
-                  blur={10}
-                  className="aminosan-night-card relative flex flex-col justify-between gap-[clamp(14px,1.6vw,28px)] overflow-hidden rounded-[clamp(12px,1.05vw,20px)] bg-night p-[clamp(24px,2.6vw,50px)]"
-                >
-                  <span className="relative self-start rounded-lg bg-lime px-4 py-[clamp(7px,0.55vw,10px)] text-[clamp(9px,0.7vw,13px)] leading-[1.2] font-semibold tracking-[0.15em] text-night uppercase">
-                    {card.label}
-                  </span>
-                  <p className="relative leading-[1.5] font-light text-offwhite/75">
-                    {card.body}
-                  </p>
-                </Reveal>
-              ))}
+        {/* ------------------------------------------------ o diagrama */}
+        <div className="px-[clamp(24px,3.4vw,64px)] pt-[clamp(40px,4.6vw,86px)] pb-[clamp(36px,4vw,72px)]">
+          {/* A linha do chão é a borda de baixo desta grade: ela atravessa as
+              duas colunas, e a muda nasce em cima dela. */}
+          <div className="grid h-full grid-cols-1 gap-[clamp(28px,3vw,52px)] border-b border-[#3F6B2E]/35 min-[900px]:grid-cols-[1fr_1px_1fr] min-[900px]:gap-[clamp(24px,2.6vw,48px)]">
+            {/* ------------------------------------------ caminho longo */}
+            <div className="min-[900px]:pb-[clamp(24px,2.6vw,44px)]">
+              <Reveal replay start="top 82%" y={16} blur={6}>
+                <p className="font-display text-[clamp(11px,0.95vw,15px)] font-semibold tracking-[0.18em] text-ink uppercase">
+                  {process.longWay.label}
+                </p>
+                <p className="mt-[clamp(8px,0.9vw,14px)] max-w-[32ch] text-[clamp(12px,0.92vw,15px)] leading-[1.5] text-muted">
+                  {process.longWay.body}
+                </p>
+              </Reveal>
+
+              <Reveal
+                as="ol"
+                replay
+                start="top 82%"
+                y={14}
+                blur={5}
+                stagger={0.07}
+                targetSelector="[data-chain-row]"
+                className={`${CHAIN_GRID} mt-[clamp(22px,2.4vw,40px)]`}
+              >
+                {chain.map((step, i) => (
+                  <li key={step.name} role="listitem" className="contents">
+                    <span
+                      data-chain-row=""
+                      className={[
+                        "flex h-[clamp(34px,3vw,50px)] items-center justify-center rounded-full px-3 text-center font-display font-semibold",
+                        "text-[clamp(12px,1vw,17px)] leading-none whitespace-nowrap",
+                        /* O último elo é o destino da cadeia: é o único que
+                           muda de cor, e é assim que ele encerra a coluna. */
+                        i === chain.length - 1
+                          ? "bg-[#7C8A57] text-white"
+                          : "bg-[#E3DFD4] text-ink",
+                      ].join(" ")}
+                    >
+                      {step.name}
+                    </span>
+                    <span
+                      data-chain-row=""
+                      className="text-[clamp(11px,0.85vw,14px)] leading-[1.35] text-muted"
+                    >
+                      {step.note}
+                    </span>
+
+                    {i < chain.length - 1 && (
+                      <>
+                        <span
+                          data-chain-row=""
+                          aria-hidden
+                          className="flex justify-center py-[clamp(6px,0.75vw,12px)]"
+                        >
+                          <Chevron />
+                        </span>
+                        <span aria-hidden />
+                      </>
+                    )}
+                  </li>
+                ))}
+              </Reveal>
+            </div>
+
+            {/* O fio entre as colunas vira régua deitada quando elas empilham. */}
+            <span aria-hidden className="hidden bg-ink/12 min-[900px]:block" />
+
+            {/* ------------------------------------------ caminho curto */}
+            <div className="flex flex-col">
+              <Reveal replay start="top 82%" delay={0.1} y={16} blur={6}>
+                <p className="font-display text-[clamp(11px,0.95vw,15px)] font-semibold tracking-[0.18em] text-[#4A7A33] uppercase">
+                  {process.shortWay.label}
+                </p>
+                <p className="mt-[clamp(8px,0.9vw,14px)] max-w-[32ch] text-[clamp(12px,0.92vw,15px)] leading-[1.5] text-muted">
+                  {process.shortWay.body}
+                </p>
+              </Reveal>
+
+              <Reveal
+                replay
+                start="top 82%"
+                delay={0.18}
+                y={14}
+                blur={5}
+                className="mt-[clamp(22px,2.4vw,40px)] flex items-center gap-[clamp(10px,1vw,18px)]"
+              >
+                <span className="flex h-[clamp(34px,3vw,50px)] items-center justify-center rounded-full bg-[#2F5D33] px-[clamp(14px,1.4vw,26px)] font-display text-[clamp(12px,1vw,17px)] leading-none font-semibold whitespace-nowrap text-white">
+                  {process.shortWay.step.name}
+                </span>
+                <span className="text-[clamp(11px,0.85vw,14px)] leading-[1.35] text-muted">
+                  {process.shortWay.step.note}
+                </span>
+              </Reveal>
+
+              <ProcessSeedling caption={process.shortWay.caption} />
             </div>
           </div>
-
-          <Reveal {...bento} delay={0.34} y={18} className="mt-[clamp(20px,2vw,32px)]">
-            <a
-              href={process.cta.href}
-              className="aminosan-cta inline-flex items-center gap-3 rounded-full bg-lime px-[clamp(22px,2vw,38px)] py-[clamp(14px,1.1vw,20px)] font-display text-[clamp(13px,1vw,17px)] font-semibold tracking-[0.02em] text-night"
-            >
-              {process.cta.label}
-              <span aria-hidden className="aminosan-cta__arrow">
-                →
-              </span>
-            </a>
-          </Reveal>
         </div>
       </div>
     </>

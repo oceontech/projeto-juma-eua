@@ -807,10 +807,21 @@ export function Hero() {
             }
           };
 
-          /* Voltando da seção seguinte: assim que o hero reaparece no topo, a
+          /* Voltando da seção seguinte: quando o hero reaparece no topo, a
              página é ancorada em 0 e o vídeo retrocede para o quadro da
-             molécula, em vez de deixar o fecho preto parado na tela. */
+             molécula, em vez de deixar o fecho preto parado na tela.
+
+             Só que "reaparecer" não pode ser um pixel. Com o limite colado na
+             emenda, o quique de um trackpad, o repique de uma rolagem suave ou
+             a correção de quem passou do ponto bastavam para engatar a cena
+             inteira de volta — quem estava lendo o diagrama era levado embora
+             sem ter pedido. Esta é a distância que a rolagem precisa subir,
+             para dentro do hero, antes de a volta valer: o bastante para ser
+             um gesto e não um tremor. */
+          const REENTRY_TRAVEL = 220;
+
           let lastScrollY = window.scrollY;
+          let upTravel = 0;
           let pinFrame = 0;
 
           /* Ancorar a página no topo é o que devolve a cena inteira: parada no
@@ -850,15 +861,28 @@ export function Hero() {
           const onScroll = () => {
             const y = window.scrollY;
             const goingUp = y < lastScrollY;
+            const climbed = lastScrollY - y;
             lastScrollY = y;
-            if (settledIndex !== 2 || playing || !goingUp) return;
-            if (y >= scene.offsetHeight - 2) return;
+            if (settledIndex !== 2 || playing) return;
+
+            /* Fora do hero, ou descendo, o contador zera: o que conta é uma
+               subida contínua, não a soma de idas e vindas. */
+            if (!goingUp || y >= scene.offsetHeight - 2) {
+              upTravel = 0;
+              return;
+            }
+
+            /* Dentro do hero a janela volta a ser visível na hora, mesmo antes
+               de a volta valer — senão a faixa percorrida até o limite seria o
+               fundo vazio da seção. */
+            gsap.set(windowElement, { autoAlpha: 1 });
+
+            upTravel += climbed;
+            if (upTravel < REENTRY_TRAVEL) return;
+            upTravel = 0;
 
             html.dataset.heroOver = "on";
             html.dataset.navTheme = "dark";
-            /* A janela saiu esmaecida no fecho; voltando, ela é a cena outra
-               vez. */
-            gsap.set(windowElement, { autoAlpha: 1 });
             /* Sai do estado "liberado" para que roda/teclas voltem a ser do hero. */
             settledIndex = 1;
             pinTop();

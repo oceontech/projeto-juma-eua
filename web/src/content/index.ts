@@ -1,6 +1,8 @@
 import * as enAminosan from "./aminosan";
+import * as enAminosanB from "./aminosan-b";
 import * as enHome from "./home";
 import * as ptAminosan from "./pt/aminosan";
+import * as ptAminosanB from "./pt/aminosan-b";
 import * as ptHome from "./pt/home";
 
 /**
@@ -14,11 +16,16 @@ export type Locale = "en" | "pt";
 
 export const LOCALE_COOKIE = "locale";
 
-export type Content = { home: typeof enHome; aminosan: typeof enAminosan };
+export type Content = {
+  home: typeof enHome;
+  aminosan: typeof enAminosan;
+  /** LP B do Aminosan, para o teste A/B (rota /aminosan-b). */
+  aminosanB: typeof enAminosanB;
+};
 
 const dictionaries: Record<Locale, Content> = {
-  en: { home: enHome, aminosan: enAminosan },
-  pt: { home: ptHome, aminosan: ptAminosan },
+  en: { home: enHome, aminosan: enAminosan, aminosanB: enAminosanB },
+  pt: { home: ptHome, aminosan: ptAminosan, aminosanB: ptAminosanB },
 };
 
 export const languages: { locale: Locale; src: string; label: string }[] = [

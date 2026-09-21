@@ -22,15 +22,18 @@ export default function AminosanPage() {
     <>
       <Hero />
       {/* O hero revela esta seção esmaecendo sobre ela, e o corte dele acaba
-          em branco: por isso a passagem clara fica FORA do trecho escuro — o
-          tom da barra é medido por essas faixas, e uma faixa branca
-          declarada escura deixaria a tipografia dela ilegível no meio da
-          travessia. */}
-      <section id="nitrogen-process" className="overflow-x-clip bg-black">
+          em branco — o papel do diagrama está a um passo desse branco, então
+          a travessia é um esmaecimento e não um corte de cor.
+
+          O palco do vídeo divide o mesmo branco: da saída da hero até a
+          seção seguinte o fundo não muda uma vez, então a moldura lima cresce
+          sobre a superfície que já estava ali e não há nenhuma travessia de
+          cor para encenar. Nada aqui leva `data-nav-theme`: o trecho é claro
+          inteiro, menos a foto da metade esquerda, e é o vidro claro da barra
+          que sustenta a leitura por cima dela. */}
+      <section id="nitrogen-process" className="overflow-x-clip bg-white">
         <NitrogenProcess />
-        <div data-nav-theme="dark">
-          <VideoSection />
-        </div>
+        <VideoSection />
       </section>
       <AminoAcidDelivery />
       <OperationalBenefits />

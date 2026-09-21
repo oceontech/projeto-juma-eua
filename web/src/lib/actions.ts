@@ -33,6 +33,8 @@ export async function submitTrialRequest(
     email: field("email"),
     problem: field("problem"),
     wantsCall: formData.get("call") === "on",
+    /* Qual página mandou o pedido — separa as versões do teste A/B. */
+    source: field("source"),
   };
 
   const errors: Record<string, string> = {};

@@ -4,12 +4,6 @@ import { useRef } from "react";
 import Image from "next/image";
 import { gsap, useGSAP } from "@/lib/gsap";
 
-/* A expansão termina antes de a cortina começar: assim o vídeo chega ao seu
-   maior enquadramento ainda no fundo escuro, e a troca de cenário ganha um
-   trecho próprio de scroll. */
-const VIDEO_GROWTH_END = 0.62;
-const CURTAIN_END = 1 - VIDEO_GROWTH_END;
-
 /**
  * Placeholder do vídeo institucional. Sem fonte de vídeo real no Figma —
  * quando o asset chegar, troca-se o miolo lima por um <video>/poster real
@@ -25,8 +19,7 @@ export function VideoSection() {
       const stageEl = stage.current;
       const windowEl = windowRef.current;
       const frameEl = frame.current;
-      const curtainEl = stageEl?.querySelector<HTMLElement>("[data-video-curtain]");
-      if (!stageEl || !windowEl || !frameEl || !curtainEl) return;
+      if (!stageEl || !windowEl || !frameEl) return;
 
       const mm = gsap.matchMedia();
 
@@ -75,31 +68,21 @@ export function VideoSection() {
             },
           });
 
-          timeline
-            .fromTo(
-              frameEl,
-              { scale: 1 },
-              {
-                scale: targetScale,
-                duration: VIDEO_GROWTH_END,
-                transformOrigin: "center center",
-              },
-              0,
-            )
-            /* O topo do corte chega antes da base: a linha da cortina inclina
-               para a direita conforme desce, em vez de ficar 100% vertical. */
-            .fromTo(
-              curtainEl,
-              { clipPath: "polygon(100% 0%, 100% 0%, 100% 100%, 100% 100%)" },
-              { clipPath: "polygon(-14% 0%, 100% 0%, 100% 100%, 0% 100%)", duration: CURTAIN_END },
-              VIDEO_GROWTH_END,
-            );
+          /* A expansão ocupa o percurso inteiro do palco. A cortina branca
+             que fechava a cena saiu junto com os fundos de cor: daqui até a
+             seção seguinte tudo é o mesmo branco, e varrer branco com branco
+             é animação que ninguém vê. */
+          timeline.fromTo(
+            frameEl,
+            { scale: 1 },
+            { scale: targetScale, duration: 1, transformOrigin: "center center" },
+            0,
+          );
 
           return () => {
             delete stageEl.dataset.scene;
             frameEl.style.removeProperty("transform");
             frameEl.style.removeProperty("transform-origin");
-            curtainEl.style.removeProperty("clip-path");
           };
         },
       );
@@ -110,7 +93,6 @@ export function VideoSection() {
   return (
     <div ref={stage} className="video-growth-stage">
       <div ref={windowRef} className="video-growth-window">
-        <div data-video-curtain aria-hidden className="video-growth-curtain" />
         <div ref={frame} className="video-growth-frame">
           <button
             type="button"

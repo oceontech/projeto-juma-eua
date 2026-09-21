@@ -15,25 +15,25 @@ export const nitrogen: typeof en.nitrogen = {
 };
 
 export const process: typeof en.process = {
-  pill: "Processo",
-  eyebrow: "O Aminosan® entrega aminoácidos livres pela folha — já na forma que a planta usa.",
-  heading: "Cinco etapas, ou uma.",
-  cards: {
-    longWay: {
-      label: "01 — O caminho longo",
-      formula: "NO₃⁻ → NO₂⁻ → NH₄⁺ → glutamato → aminoácido",
-      body: "Nitrato em nitrito, nitrito em amônio, amônio em glutamato e glutamato no aminoácido de que a planta realmente precisa.",
-    },
-    shortWay: {
-      label: "02 — O caminho curto",
-      body: "Entrega imediata de aminoácidos. Aminoácidos livres aplicados na folha, na forma que a planta usa.",
-    },
-    whatsInIt: {
-      label: "03 — O que tem nele",
-      body: "Aminoácidos livres de origem vegetal com N, P e K. Fermentação enzimática.",
-    },
+  heading: ["Cinco etapas,", "ou uma."],
+  body: "As plantas normalmente convertem o nitrogênio em várias etapas antes de produzir aminoácidos. O Aminosan® entrega aminoácidos livres direto na folha — já na forma que a planta usa.",
+  longWay: {
+    label: "O caminho longo",
+    body: "Os fertilizantes nitrogenados convencionais precisam ser convertidos pela planta.",
+    steps: [
+      { name: "NO₃⁻", note: "Nitrato" },
+      { name: "NO₂⁻", note: "Nitrito" },
+      { name: "NH₄⁺", note: "Amônio" },
+      { name: "Glutamato", note: "Metabolismo intermediário" },
+      { name: "Aminoácido" },
+    ],
   },
-  cta: { label: "Ver os dados técnicos", href: "#product-analysis" },
+  shortWay: {
+    label: "O caminho curto",
+    body: "O Aminosan® fornece aminoácidos livres que a planta usa imediatamente.",
+    step: { name: "Aminoácidos", note: "Prontos para uso" },
+    caption: "Absorção direta pela folha",
+  },
 };
 
 export const delivery: typeof en.delivery = {

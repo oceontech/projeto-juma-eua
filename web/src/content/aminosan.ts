@@ -21,25 +21,25 @@ export const nitrogen = {
 };
 
 export const process = {
-  pill: "Process",
-  eyebrow: "Aminosan® delivers free amino acids through the leaf — already in the form the plant uses.",
-  heading: "Five steps, or one.",
-  cards: {
-    longWay: {
-      label: "01 — The long way",
-      formula: "NO₃⁻ → NO₂⁻ → NH₄⁺ → glutamate → amino acid",
-      body: "Nitrate to nitrite, nitrite to ammonium, ammonium into glutamate, and glutamate into the amino acid the plant actually needs.",
-    },
-    shortWay: {
-      label: "02 — The short way",
-      body: "Immediate amino acid delivery. Free amino acids applied to the leaf, in the form the plant uses.",
-    },
-    whatsInIt: {
-      label: "03 — What's in it",
-      body: "Plant-derived free amino acids with N, P and K. Enzymatic fermentation.",
-    },
+  heading: ["Five steps,", "or one."],
+  body: "Plants normally convert nitrogen through multiple stages before producing amino acids. Aminosan® delivers free amino acids directly to the leaf — already in the form the plant uses.",
+  longWay: {
+    label: "The long way",
+    body: "Conventional nitrogen fertilizers need to be converted by the plant.",
+    steps: [
+      { name: "NO₃⁻", note: "Nitrate" },
+      { name: "NO₂⁻", note: "Nitrite" },
+      { name: "NH₄⁺", note: "Ammonium" },
+      { name: "Glutamate", note: "Intermediate metabolism" },
+      { name: "Amino acid" },
+    ] satisfies { name: string; note?: string }[],
   },
-  cta: { label: "See the technical data", href: "#product-analysis" },
+  shortWay: {
+    label: "The short way",
+    body: "Aminosan® provides free amino acids that the plant can use immediately.",
+    step: { name: "Amino acids", note: "Ready to use" },
+    caption: "Direct absorption through the leaf",
+  },
 };
 
 export const delivery = {

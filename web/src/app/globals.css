@@ -38,6 +38,14 @@
   --color-kmep-light: #FF694E;
   --color-amino: #134777;
 
+  /* LP B do Aminosan (/aminosan-b) — oliva e creme da referência editorial,
+     puxados para a família de verdes da marca. */
+  --color-forest: #16261B;
+  --color-olive: #435630;
+  --color-moss: #6E7D44;
+  --color-sage: #B9C2A0;
+  --color-cream: #EEEBE0;
+
   /* Tipografia --------------------------------------------------------- */
   /* O layout usa Neue Plak, que é licenciada. Archivo é a grotesk livre mais
      próxima em largura e terminais — quando a licença entrar, troque a fonte
@@ -1298,24 +1306,6 @@
      o preto em que o resto da página vive. A folha atravessa a emenda — entra
      ainda no claro e sai já no escuro —, e é ela que dá assunto ao trecho:
      um degradê sozinho ocupando uma tela é tempo morto. */
-  .aminosan-dawn {
-    position: relative;
-    display: grid;
-    place-items: center;
-    padding-block: clamp(36px, 7svh, 96px) clamp(56px, 11svh, 150px);
-    background: linear-gradient(to bottom, #fff 0, #fff 12%, #000 90%, #000 100%);
-  }
-
-  .aminosan-dawn__leaf {
-    width: min(620px, 58vw);
-  }
-
-  @media (max-width: 860px) {
-    .aminosan-dawn__leaf {
-      width: 84vw;
-    }
-  }
-
   /* -------------------------------------------------- cartões da noite */
   /* Mesmo gesto dos cartões da home: o cartão sobe um fio no hover e o brilho
      lima do canto cresce com ele. A cor e o raio ficam nas utilidades, junto
@@ -1387,18 +1377,6 @@
     overflow: clip;
   }
 
-  /* A camada fica atrás do vídeo, então a moldura continua em foco enquanto
-     o fundo preto é varrido pelo branco. O polígono inicial e o final têm a
-     mesma inclinação; só a posição da borda muda durante o scroll. */
-  .video-growth-curtain {
-    position: absolute;
-    z-index: 0;
-    inset: 0;
-    background: #fff;
-    clip-path: polygon(100% 0%, 100% 0%, 100% 100%, 100% 100%);
-    will-change: clip-path;
-  }
-
   .video-growth-frame {
     position: relative;
     z-index: 1;
@@ -1408,12 +1386,14 @@
     border-radius: clamp(10px, 1vw, 16px);
   }
 
+  /* O palco começa onde a seção acaba, sem margem negativa: puxado para
+     cima, ele entrava por baixo do diagrama e a seção parecia descer junto
+     com a moldura. A janela grudada no topo já centraliza o quadro sozinha —
+     e como o fundo é o mesmo branco dos dois lados, não há emenda para
+     esconder. */
   .video-growth-stage[data-scene] {
-    --video-rest-h: calc(var(--video-rest-w) * 9 / 16);
-    --video-center-offset: max(0px, calc((100lvh - var(--video-rest-h)) / 2));
     --video-growth-run: clamp(420px, 70svh, 760px);
     height: calc(100lvh + var(--video-growth-run));
-    margin-top: calc(-1 * var(--video-center-offset));
     padding-bottom: 0;
   }
 
@@ -1448,15 +1428,9 @@
   }
 
   @media (max-width: 860px) {
-    /* Respiro entre o CTA do bento e o primeiro estado do vídeo. A versão
-       animada usa margem negativa para centralizar a moldura; por isso o
-       espaço precisa ser somado à própria compensação do sticky. */
+    /* Respiro entre o fim do diagrama e o primeiro estado do vídeo. */
     .video-growth-stage {
       margin-top: 32px;
-    }
-
-    .video-growth-stage[data-scene] {
-      margin-top: calc(-1 * var(--video-center-offset) + 32px);
     }
   }
 

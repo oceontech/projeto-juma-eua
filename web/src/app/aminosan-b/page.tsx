@@ -1,0 +1,43 @@
+import type { Metadata } from "next";
+import { Hero } from "@/components/aminosan-b/Hero";
+import { Problem } from "@/components/aminosan-b/Problem";
+import { Converge } from "@/components/aminosan-b/Converge";
+import { Meet } from "@/components/aminosan-b/Meet";
+import { Proof } from "@/components/aminosan-b/Proof";
+import { Timing } from "@/components/aminosan-b/Timing";
+import { Season } from "@/components/aminosan-b/Season";
+import { Inside } from "@/components/aminosan-b/Inside";
+import { Questions } from "@/components/aminosan-b/Questions";
+import { Final } from "@/components/aminosan-b/Final";
+
+export const metadata: Metadata = {
+  title: "Aminosan®",
+  description:
+    "100% free-form L-amino acids with N, P and K, straight to the leaf in the pass you already make.",
+  /* Versão B do teste A/B: a canônica continua sendo /aminosan. */
+  alternates: { canonical: "/aminosan" },
+};
+
+/**
+ * LP B do Aminosan — escrita do zero para o teste A/B contra /aminosan.
+ * Estrutura e ritmo seguem a referência editorial (hero de produto,
+ * problema em tela dividida, convergência, produto com vídeo no scroll,
+ * prova, janela crítica, fichas de cultura, o que tem na bombona, trilho
+ * de perguntas, pedido).
+ */
+export default function AminosanBPage() {
+  return (
+    <>
+      <Hero />
+      <Problem />
+      <Converge />
+      <Meet />
+      <Proof />
+      <Timing />
+      <Season />
+      <Inside />
+      <Questions />
+      <Final />
+    </>
+  );
+}
