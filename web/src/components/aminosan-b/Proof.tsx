@@ -50,7 +50,7 @@ export function Proof() {
 
   return (
     <section ref={scope} className="grid bg-cream text-forest lg:grid-cols-2">
-      <div className="pf-photo-wrap relative min-h-[80svh] overflow-hidden lg:min-h-[100svh]">
+      <div className="pf-photo-wrap relative h-[26svh] overflow-hidden lg:h-auto lg:min-h-[100svh]">
         <Image
           src="/img/aminosan-b/proof-farmer.webp"
           alt={proof.alt}
@@ -61,8 +61,8 @@ export function Proof() {
         />
       </div>
 
-      <div className="flex flex-col px-[var(--spacing-gut)] py-[clamp(56px,7vw,110px)] lg:px-[clamp(40px,5vw,96px)]">
-        <SplitLines className="text-[clamp(34px,3.6vw,64px)] leading-[0.98] tracking-[-0.03em]">
+      <div className="flex flex-col px-[var(--spacing-gut)] py-5 lg:px-[clamp(40px,5vw,96px)] lg:py-[clamp(56px,7vw,110px)]">
+        <SplitLines className="text-[clamp(26px,7vw,34px)] leading-[0.98] lg:text-[clamp(34px,3.6vw,64px)] tracking-[-0.03em]">
           {proof.heading.map((line) => (
             <span key={line} className="block">
               {line}
@@ -70,14 +70,14 @@ export function Proof() {
           ))}
         </SplitLines>
 
-        <dl className="pf-list mt-[clamp(40px,6vw,96px)]">
+        <dl className="pf-list mt-3 lg:mt-[clamp(40px,6vw,96px)]">
           {proof.stats.map((stat) => (
-            <div key={stat.label} className="pf-row relative grid grid-cols-[1fr_auto] items-end gap-6 py-5">
+            <div key={stat.label} className="pf-row relative grid grid-cols-[1fr_auto] items-end gap-4 py-2 lg:gap-6 lg:py-5">
               <span aria-hidden className="pf-rule absolute inset-x-0 top-0 h-px bg-forest/20" />
-              <dt className="order-2 max-w-[22ch] text-right text-[11px] leading-[1.4] tracking-[0.12em] text-forest/65 uppercase">
+              <dt className="order-2 max-w-[22ch] text-right text-[10px] leading-[1.3] lg:text-[11px] lg:leading-[1.4] tracking-[0.12em] text-forest/65 uppercase">
                 {stat.label}
               </dt>
-              <dd className="order-1 font-display text-[clamp(44px,4.6vw,84px)] leading-[0.9] tracking-[-0.04em] text-forest">
+              <dd className="order-1 font-display text-[clamp(30px,9vw,40px)] leading-[0.9] lg:text-[clamp(44px,4.6vw,84px)] tracking-[-0.04em] text-forest">
                 <Counter to={stat.value} />
                 {stat.suffix}
               </dd>
@@ -85,7 +85,7 @@ export function Proof() {
           ))}
         </dl>
 
-        <p className={`${microCaps} mt-8 max-w-[56ch] text-forest/60`}>{proof.note}</p>
+        <p className={`${microCaps} mt-3 max-w-[56ch] text-[10px] lg:mt-8 lg:text-[11px] text-forest/60`}>{proof.note}</p>
       </div>
     </section>
   );

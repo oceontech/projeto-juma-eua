@@ -7,20 +7,13 @@ import { gsap, useGSAP } from "@/lib/gsap";
 import { Counter } from "@/components/motion/Counter";
 import { microCaps } from "./ui";
 
-/* Traço do pé de milho: caule, quatro pares de folhas, pendão e chão. Cada
-   caminho leva pathLength=1, então o desenho anda de 0 a 1 sem medir nada. */
-const PLANT = [
-  "M200 470 C 200 380, 203 250, 199 70",
-  "M200 420 C 160 390, 110 392, 44 432",
-  "M200 410 C 244 380, 300 372, 364 402",
-  "M201 340 C 160 292, 116 276, 62 284",
-  "M201 322 C 244 276, 292 258, 344 262",
-  "M200 252 C 176 206, 152 180, 118 164",
-  "M200 238 C 226 196, 252 176, 288 160",
-  "M199 150 C 192 120, 186 98, 176 70",
-  "M199 70 L 188 30 M199 70 L 200 22 M199 70 L 212 30",
-  "M24 470 H 376",
-  "M70 470 l -8 -18 M78 470 l 2 -22 M318 470 l 6 -20 M330 470 l -4 -14",
+/* Centros dos cards (% do palco), formando uma curva em U (onda) sobre a esfera. */
+const CARD_POS: [number, number][] = [
+  [24, 24],
+  [30, 52],
+  [50, 72],
+  [70, 52],
+  [69, 22],
 ];
 
 /**
@@ -38,17 +31,17 @@ export function Problem() {
       const mm = gsap.matchMedia();
       mm.add("(prefers-reduced-motion: no-preference)", () => {
         gsap.fromTo(
-          ".pb-photo",
-          { scale: 1.18, yPercent: -6 },
+          ".pb-bar",
+          { scaleX: 0 },
           {
-            scale: 1,
-            yPercent: 6,
-            ease: "none",
-            scrollTrigger: { trigger: scope.current, start: "top bottom", end: "bottom top", scrub: true },
+            scaleX: 1,
+            duration: 1.3,
+            ease: "power3.out",
+            scrollTrigger: { trigger: ".pb-caption", start: "top 90%", once: true },
           },
         );
 
-        gsap.from(".pb-caption > *", {
+        gsap.from(".pb-caption > *:not(.pb-bar)", {
           y: 30,
           opacity: 0,
           stagger: 0.1,
@@ -56,48 +49,31 @@ export function Problem() {
           scrollTrigger: { trigger: ".pb-caption", start: "top 90%", once: true },
         });
 
-        const draw = gsap.timeline({
-          scrollTrigger: { trigger: ".pb-panel", start: "top 70%", end: "bottom 60%", scrub: 0.6 },
+        gsap.utils.toArray<HTMLElement>(".pb-step").forEach((card, i) => {
+          gsap.to(card, {
+            y: i % 2 ? 9 : -9,
+            x: i % 2 ? -5 : 5,
+            duration: 3 + i * 0.5,
+            ease: "sine.inOut",
+            yoyo: true,
+            repeat: -1,
+            delay: -i * 0.8,
+          });
         });
-        draw
-          .fromTo(".pb-plant path", { strokeDashoffset: 1 }, { strokeDashoffset: 0, stagger: 0.08, ease: "none" }, 0)
-          .fromTo(
-            ".pb-step",
-            { opacity: 0.25 },
-            { opacity: 1, stagger: 0.16, ease: "none" },
-            0.1,
-          )
-          .fromTo(".pb-rail", { scaleX: 0 }, { scaleX: 1, ease: "none", duration: 0.9 }, 0.1);
+
+        gsap.to(".pb-sphere", { rotation: 360, duration: 90, ease: "none", repeat: -1 });
       });
     },
     { scope },
   );
 
   return (
-    <section ref={scope} className="grid bg-cream lg:min-h-[100svh] lg:grid-cols-2">
-      <div className="relative min-h-[88svh] overflow-hidden bg-forest text-cream lg:min-h-0">
-        <Image
-          src="/img/aminosan-b/problem-corn.webp"
-          alt={problem.image.alt}
-          fill
-          sizes="(min-width: 1024px) 50vw, 100vw"
-          quality={90}
-          className="pb-photo object-cover will-change-transform"
-        />
-        <div aria-hidden className="absolute inset-0 bg-[linear-gradient(180deg,rgba(22,38,27,0)_40%,rgba(22,38,27,0.88)_100%)]" />
-        <div className="pb-caption absolute inset-x-0 bottom-0 p-[var(--spacing-gut)] pb-[clamp(32px,5vw,64px)]">
-          <h2 className="max-w-[12ch] text-[clamp(34px,3.6vw,64px)] leading-[0.98] tracking-[-0.03em]">
-            {problem.image.heading}
-          </h2>
-          <p className={`${microCaps} mt-5 max-w-[46ch] text-cream/75`}>{problem.image.body}</p>
-        </div>
-      </div>
-
-      <div className="pb-panel flex flex-col px-[var(--spacing-gut)] py-[clamp(56px,7vw,110px)] text-forest lg:px-[clamp(40px,5vw,96px)]">
-        <div className="flex items-start gap-5">
+    <section ref={scope} className="relative grid bg-cream lg:min-h-[100svh]">
+      <div className="pb-panel relative flex flex-col items-center justify-center text-center px-[var(--spacing-gut)] py-[clamp(56px,7vw,110px)] text-forest lg:px-[clamp(40px,5vw,96px)]">
+        <div className="flex items-start justify-center gap-5 text-left">
           <Counter
             to={problem.stat.value}
-            className="font-display text-[clamp(96px,10vw,180px)] leading-[0.8] tracking-[-0.05em] text-olive"
+            className="font-display text-[clamp(96px,10vw,180px)] leading-[0.8] tracking-[-0.05em] text-forest"
           />
           <p className="max-w-[18ch] pt-2 font-display text-[clamp(22px,2vw,34px)] leading-[1.08] tracking-[-0.02em]">
             {problem.stat.heading}
@@ -105,38 +81,45 @@ export function Problem() {
         </div>
         <p className={`${microCaps} mt-6 text-forest/55`}>{problem.stat.source}</p>
 
-        <svg
-          viewBox="0 0 400 480"
-          aria-hidden
-          className="pb-plant mx-auto mt-auto w-full max-w-[300px] pt-10 text-moss"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.4"
-          strokeLinecap="round"
-        >
-          {PLANT.map((d) => (
-            <path key={d} d={d} pathLength={1} strokeDasharray="1" />
-          ))}
-        </svg>
+        <div className="mt-8 grid w-full lg:grid-cols-[minmax(0,1fr)_minmax(0,860px)_minmax(0,1fr)] lg:items-center lg:gap-8">
+<div className="pb-vee relative mx-auto mt-8 lg:col-start-2 lg:row-start-1 aspect-[10/7.6] w-full max-w-[860px]">
+          <div className="pb-sphere absolute top-[2%] left-1/2 aspect-square w-[62%] -translate-x-1/2 will-change-transform">
+            <Image
+              src="/img/aminosan/leaf-sphere.webp"
+              alt=""
+              fill
+              sizes="(min-width: 1024px) 40vw, 80vw"
+              quality={90}
+              className="object-contain mix-blend-multiply"
+            />
+          </div>
 
-        <ol className="relative mt-8 grid grid-cols-5 gap-2">
-          <span aria-hidden className="pb-rail absolute top-[7px] right-[10%] left-[10%] h-px origin-left bg-forest/30" />
-          {problem.chain.map((step, i) => {
-            const last = i === problem.chain.length - 1;
-            return (
-              <li key={step.name} className="pb-step relative flex flex-col items-center text-center">
-                <span
-                  aria-hidden
-                  className={`size-[15px] rounded-full border ${last ? "border-olive bg-lime" : "border-forest/40 bg-cream"}`}
-                />
-                <span className="mt-3 font-display text-[clamp(15px,1.3vw,20px)] tracking-[-0.01em]">
-                  {step.formula}
-                </span>
-                <span className="mt-1 text-[10px] tracking-[0.12em] text-forest/60 uppercase">{step.name}</span>
-              </li>
-            );
-          })}
-        </ol>
+          <ol>
+            {problem.chain.map((step, i) => {
+              const last = i === problem.chain.length - 1;
+              const [x, y] = CARD_POS[i];
+              return (
+                <li
+                  key={step.name}
+                  style={{ left: `${x}%`, top: `${y}%` }}
+                  className={`pb-step absolute flex min-w-[88px] -translate-x-1/2 -translate-y-1/2 flex-col items-center rounded-[clamp(12px,1.05vw,20px)] border px-[clamp(12px,1.6vw,28px)] py-[clamp(10px,1.2vw,20px)] text-center shadow-[0_8px_30px_-12px_rgba(22,38,27,0.35)] backdrop-blur-md ${last ? "border-forest/30 bg-lime/45" : "border-forest/15 bg-cream/45"}`}
+                >
+                  <span className="font-display text-[clamp(16px,1.7vw,28px)] leading-none tracking-[-0.01em]">{step.formula}</span>
+                  <span className="mt-2 text-[clamp(8px,0.7vw,10px)] tracking-[0.12em] text-forest/70 uppercase">{step.name}</span>
+                </li>
+              );
+            })}
+          </ol>
+        </div>
+
+        <div className="pb-caption mt-4 flex w-fit flex-col items-center lg:col-start-1 lg:row-start-1 lg:mt-0 lg:items-start lg:justify-self-start lg:self-center lg:text-left">
+          <span aria-hidden className="pb-bar mb-6 block h-[2px] w-[92%] origin-left bg-forest" />
+          <h2 className="max-w-[16ch] text-[clamp(30px,3vw,52px)] leading-[0.98] tracking-[-0.03em]">
+            {problem.image.heading}
+          </h2>
+          <p className={`${microCaps} mt-5 max-w-[46ch] text-forest/75`}>{problem.image.body}</p>
+        </div>
+        </div>
       </div>
     </section>
   );

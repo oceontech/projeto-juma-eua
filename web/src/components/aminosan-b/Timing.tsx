@@ -57,7 +57,7 @@ export function Timing() {
         </Reveal>
       </div>
 
-      <div className="relative min-h-[80svh] overflow-hidden lg:min-h-0">
+      <div className="relative order-first min-h-[80svh] overflow-hidden lg:order-0 lg:min-h-0">
         <div className="tm-photo absolute inset-[-12%_0] will-change-transform">
           <Image
             src="/img/aminosan-b/timing-hands.webp"
