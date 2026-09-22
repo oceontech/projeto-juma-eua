@@ -21,9 +21,23 @@ const CROP_ICONS = ["corn", "soybean", "cotton"];
  * JavaScript carregar, e depois dele vira uma transição sem recarregar a
  * página. Os nomes dos campos são o contrato com `submitTrialRequest` —
  * cultura e área viraram fichas e segmentos, mas continuam `crop` e `acres`.
+ *
+ * `compact` é a variante reduzida das LPs: nome, e-mail, estado e cultura.
+ * Os campos que saem chegam vazios ao action, que já os trata como opcionais —
+ * o contrato não muda. `crops` troca as fichas de cultura quando a página
+ * posiciona outras (a ordem continua casando com CROP_ICONS).
  */
-export function TrialForm({ source }: { source?: string }) {
+export function TrialForm({
+  source,
+  compact = false,
+  crops,
+}: {
+  source?: string;
+  compact?: boolean;
+  crops?: readonly string[];
+}) {
   const { form } = useContent().home.usOperation;
+  const cropOptions = crops ?? form.crop.options;
   const [state, action, pending] = useActionState(submitTrialRequest, INITIAL);
   const id = useId();
   const formRef = useRef<HTMLFormElement>(null);
@@ -49,13 +63,15 @@ export function TrialForm({ source }: { source?: string }) {
           autoComplete="name"
           error={state.errors.name}
         />
-        <TextField
-          id={`${id}-company`}
-          name="company"
-          label={form.company.label}
-          placeholder={form.company.placeholder}
-          autoComplete="organization"
-        />
+        {!compact && (
+          <TextField
+            id={`${id}-company`}
+            name="company"
+            label={form.company.label}
+            placeholder={form.company.placeholder}
+            autoComplete="organization"
+          />
+        )}
         <TextField
           id={`${id}-email`}
           name="email"
@@ -76,7 +92,7 @@ export function TrialForm({ source }: { source?: string }) {
       <fieldset data-trial-item className={s.fieldset}>
         <legend className={s.label}>{form.crop.label}</legend>
         <div className={s.chips}>
-          {form.crop.options.map((option, i) => (
+          {cropOptions.map((option, i) => (
             <label key={option} className={s.chip}>
               <input type="radio" name="crop" value={option} defaultChecked={i === 0} className={s.srOnly} />
               <span className={s.chipFace}>
@@ -92,37 +108,43 @@ export function TrialForm({ source }: { source?: string }) {
         </div>
       </fieldset>
 
-      <fieldset data-trial-item className={s.fieldset}>
-        <legend className={s.label}>{form.acres.label}</legend>
-        <div className={s.segments} style={{ "--n": form.acres.options.length } as CSSProperties}>
-          {form.acres.options.map((option, i) => (
-            <label key={option} className={s.segment}>
-              <input type="radio" name="acres" value={option} defaultChecked={i === 0} className={s.srOnly} />
-              <span>{option}</span>
-            </label>
-          ))}
+      {!compact && (
+        <fieldset data-trial-item className={s.fieldset}>
+          <legend className={s.label}>{form.acres.label}</legend>
+          <div className={s.segments} style={{ "--n": form.acres.options.length } as CSSProperties}>
+            {form.acres.options.map((option, i) => (
+              <label key={option} className={s.segment}>
+                <input type="radio" name="acres" value={option} defaultChecked={i === 0} className={s.srOnly} />
+                <span>{option}</span>
+              </label>
+            ))}
+          </div>
+        </fieldset>
+      )}
+
+      {!compact && (
+        <div data-trial-item className={s.field}>
+          <label htmlFor={`${id}-problem`} className={s.label}>
+            {form.problem.label}
+          </label>
+          <textarea
+            id={`${id}-problem`}
+            name="problem"
+            placeholder={form.problem.placeholder}
+            className={cx(s.input, s.textarea)}
+          />
         </div>
-      </fieldset>
+      )}
 
-      <div data-trial-item className={s.field}>
-        <label htmlFor={`${id}-problem`} className={s.label}>
-          {form.problem.label}
+      {!compact && (
+        <label data-trial-item className={s.toggle}>
+          <input type="checkbox" name="call" className={s.srOnly} />
+          <span aria-hidden className={s.switch}>
+            <span className={s.knob} />
+          </span>
+          <span className={s.toggleText}>{form.call}</span>
         </label>
-        <textarea
-          id={`${id}-problem`}
-          name="problem"
-          placeholder={form.problem.placeholder}
-          className={cx(s.input, s.textarea)}
-        />
-      </div>
-
-      <label data-trial-item className={s.toggle}>
-        <input type="checkbox" name="call" className={s.srOnly} />
-        <span aria-hidden className={s.switch}>
-          <span className={s.knob} />
-        </span>
-        <span className={s.toggleText}>{form.call}</span>
-      </label>
+      )}
 
       <div data-trial-item className={s.actions}>
         <button type="submit" disabled={pending} className={s.submit}>

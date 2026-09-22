@@ -20,14 +20,14 @@ export const nav = {
   ] satisfies NavLink[],
   right: [
     { label: "Aminosan®", href: "/aminosan" },
-    { label: "KMEP Ultra®", href: "/kmep-ultra" },
+    { label: "KMEP Ultra®", href: "/kmep" },
   ] satisfies NavLink[],
   /* Só no estreito: os três destinos que valem um toque direto ficam na
      barra, e o resto continua no painel. Rótulos curtos porque a faixa já
      carrega selo e botão do menu — "KMEP Ultra®" não caberia. */
   compact: [
     { label: "Home", href: "/" },
-    { label: "KMEP", href: "/kmep-ultra" },
+    { label: "KMEP", href: "/kmep" },
     { label: "Aminosan", href: "/aminosan" },
   ] satisfies NavLink[],
   cta: { label: "Get a Free Trial", href: "#us-operation" },
@@ -108,10 +108,10 @@ export type Product = {
 export const products: Product[] = [
   {
     id: "kmep",
-    category: "Insecticide partner · Foliar potassium",
+    category: "Spray performance · Foliar potassium",
     title: "KMEP Ultra®",
-    body: "It goes in the tank with your insecticide and drives the target out of hiding, so the spray you already paid for actually reaches it.",
-    href: "/kmep-ultra",
+    body: "It rides in the tank with your insecticide, improves how the spray covers and lands, and carries foliar potassium into grain fill. Six dollars an acre.",
+    href: "/kmep",
     image: { src: "/img/pack-kmep-us.webp", alt: "KMEP Ultra 2.5 gal jug with U.S. label" },
   },
   {
@@ -370,7 +370,7 @@ export const footer = {
     {
       title: "Products",
       links: [
-        { label: "KMEP Ultra®", href: "/kmep-ultra" },
+        { label: "KMEP Ultra®", href: "/kmep" },
         { label: "Aminosan®", href: "/aminosan" },
       ],
     },

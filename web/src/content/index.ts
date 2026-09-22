@@ -1,9 +1,11 @@
 import * as enAminosan from "./aminosan";
 import * as enAminosanB from "./aminosan-b";
 import * as enHome from "./home";
+import * as enKmep from "./kmep";
 import * as ptAminosan from "./pt/aminosan";
 import * as ptAminosanB from "./pt/aminosan-b";
 import * as ptHome from "./pt/home";
+import * as ptKmep from "./pt/kmep";
 
 /**
  * Seleção de idioma — provisória.
@@ -21,11 +23,13 @@ export type Content = {
   aminosan: typeof enAminosan;
   /** LP B do Aminosan, para o teste A/B (rota /aminosan-b). */
   aminosanB: typeof enAminosanB;
+  /** LP do KMEP Ultra (rota /kmep). */
+  kmep: typeof enKmep;
 };
 
 const dictionaries: Record<Locale, Content> = {
-  en: { home: enHome, aminosan: enAminosan, aminosanB: enAminosanB },
-  pt: { home: ptHome, aminosan: ptAminosan, aminosanB: ptAminosanB },
+  en: { home: enHome, aminosan: enAminosan, aminosanB: enAminosanB, kmep: enKmep },
+  pt: { home: ptHome, aminosan: ptAminosan, aminosanB: ptAminosanB, kmep: ptKmep },
 };
 
 export const languages: { locale: Locale; src: string; label: string }[] = [

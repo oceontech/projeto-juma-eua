@@ -12,11 +12,11 @@ export const nav: typeof en.nav = {
   ],
   right: [
     { label: "Aminosan®", href: "/aminosan" },
-    { label: "KMEP Ultra®", href: "/kmep-ultra" },
+    { label: "KMEP Ultra®", href: "/kmep" },
   ],
   compact: [
     { label: "Início", href: "/" },
-    { label: "KMEP", href: "/kmep-ultra" },
+    { label: "KMEP", href: "/kmep" },
     { label: "Aminosan", href: "/aminosan" },
   ],
   cta: { label: "Teste grátis", href: "#us-operation" },
@@ -81,10 +81,10 @@ export const expertise: typeof en.expertise = {
 export const products: typeof en.products = [
   {
     id: "kmep",
-    category: "Parceiro do inseticida · Potássio foliar",
+    category: "Performance de aplicação · Potássio foliar",
     title: "KMEP Ultra®",
-    body: "Vai no tanque com o seu inseticida e tira a praga do esconderijo, para que a aplicação que você já pagou chegue de fato até ela.",
-    href: "/kmep-ultra",
+    body: "Vai no tanque com o seu inseticida, melhora como a calda cobre e deposita, e leva potássio foliar para o enchimento de grãos. Seis dólares por acre.",
+    href: "/kmep",
     image: { src: "/img/pack-kmep-us.webp", alt: "Galão de 2,5 gal do KMEP Ultra com rótulo americano" },
   },
   {
@@ -314,7 +314,7 @@ export const footer: typeof en.footer = {
     {
       title: "Produtos",
       links: [
-        { label: "KMEP Ultra®", href: "/kmep-ultra" },
+        { label: "KMEP Ultra®", href: "/kmep" },
         { label: "Aminosan®", href: "/aminosan" },
       ],
     },
