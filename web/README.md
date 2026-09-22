@@ -127,6 +127,37 @@ GSAP e faz o parallax do hero trepidar. Por isso as âncoras passam pelo ScrollT
 links de âncora usam `<SmartLink>`, que devolve um `<a>` comum: o `next/link` faz o próprio salto e
 atropelaria a animação.
 
+### A cena de partículas da LP B
+
+`/aminosan-b` abre com o hero se desfazendo em pontos, que viram uma planta de soja e depois uma
+molécula de aminoácido. É o único lugar do site com WebGL. As peças:
+
+| Arquivo | O que faz |
+|---|---|
+| `components/aminosan-b/Origin.tsx` | A cena: embrulha o `<Hero>`, trava os dois juntos e liga a linha do tempo aos uniforms |
+| `lib/origin/sample.ts` | Pontilhado por amostragem de rejeição, e o `cover` que repete o enquadramento do CSS |
+| `lib/origin/shapes.ts` | As duas formas, desenhadas em canvas 2D e amostradas pelo mesmo pontilhador |
+| `lib/origin/build.ts` | Monta a nuvem — o mesmo N nos três estados — e desenha o quadro estático do fallback |
+| `lib/origin/field.ts` | O renderizador: um `POINTS` em WebGL2, com o GLSL |
+
+Três coisas que não são óbvias:
+
+1. **O hero vive dentro do `Origin`**, passado como `children` em `app/aminosan-b/page.tsx`. A foto
+   precisa continuar no lugar enquanto se desmancha, e um pin que começasse abaixo dela já a teria
+   empurrado para fora da tela.
+2. **Sem three.js, de propósito.** Não há cena, câmera nem luz — só uma nuvem de pontos com shader
+   próprio, que é justamente o que a biblioteca não escreveria. Ela custaria uns 150 KB comprimidos
+   numa página cujo hero já são cinco imagens grandes.
+3. **Sem WebGL2, ou com `prefers-reduced-motion`,** a cena não se prende ao scroll: o hero fica como
+   está e as duas formas viram seções empilhadas com o pontilhado desenhado uma vez em canvas 2D.
+   Quem acende isso é a classe `.og-still`, e as regras dela ficam **fora de `@layer`** no
+   `globals.css` — precisam vencer os utilitários de posição que o JSX carrega.
+
+Em desenvolvimento a cena abre um painel lil-gui (densidade, tamanho, ruído, velocidade, dispersão,
+cursor e cores) e deixa os uniforms em `window.origin`. Os dois somem do bundle de produção pela
+comparação com `NODE_ENV`. Os controles de `Cena` valem com o scroll parado: assim que ele anda, a
+linha do tempo volta a mandar.
+
 ### Plugins
 
 Todos os plugins do GSAP são gratuitos desde a 3.13, incluindo SplitText, MorphSVG e Flip. Para

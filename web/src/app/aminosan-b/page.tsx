@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Hero } from "@/components/aminosan-b/Hero";
+import { Origin } from "@/components/aminosan-b/Origin";
 import { Problem } from "@/components/aminosan-b/Problem";
 import { Converge } from "@/components/aminosan-b/Converge";
 import { Meet } from "@/components/aminosan-b/Meet";
@@ -22,7 +23,8 @@ export const metadata: Metadata = {
 /**
  * LP B do Aminosan — escrita do zero para o teste A/B contra /aminosan.
  * Estrutura e ritmo seguem a referência editorial (hero de produto com
- * parallax de entrada, problema em tela dividida, convergência, produto com vídeo no scroll,
+ * parallax de entrada que se desfaz em partículas — origem vegetal e forma
+ * do aminoácido —, problema em tela dividida, convergência, produto com vídeo no scroll,
  * dentro da folha (lente de microscópio),
  * prova, janela crítica, fichas de cultura, o que tem na bombona, trilho
  * de perguntas, pedido).
@@ -30,7 +32,11 @@ export const metadata: Metadata = {
 export default function AminosanBPage() {
   return (
     <>
-      <Hero />
+      {/* O hero mora dentro do Origin: os dois travam juntos enquanto a foto
+          se desfaz em partículas e a nuvem vira planta e depois molécula. */}
+      <Origin>
+        <Hero />
+      </Origin>
       <Problem />
       <Converge />
       <Meet />
