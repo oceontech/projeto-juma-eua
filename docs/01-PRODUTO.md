@@ -70,6 +70,16 @@ Vídeo institucional: `youtube.com/watch?v=xuDR_M6-0iI`
 | Culturas BR | Soja, milho, café, feijão, algodão, citros, tomate |
 | Embalagens | 10L, 20L |
 | Posicionamento típico | Milho entre V4 e V6 e nas aplicações dirigidas a cigarrinha |
+| Custo nos EUA | **$6 por acre por aplicação**, na dose de rótulo (folheto americano) |
+| Material oficial nos EUA | [`assets/kmep-ultra-folheto-us.pdf`](assets/kmep-ultra-folheto-us.pdf) |
+
+**Como a Juma já comunica o produto nos EUA.** O folheto impresso da LLC lidera por performance de
+aplicação: *"You won't see the loss… until you harvest"*, e três entregas nomeadas como
+*enhances application efficacy* (cobertura e deposição), *supports consistency* e
+*essential nutrient delivery* (o potássio). Ele **não menciona inseto em nenhum ponto**, o que é uma
+leitura regulatória em si: a peça americana da própria Juma já evita o claim que exigiria registro
+na EPA. A LP foi construída sobre essa porta de entrada, com a hierarquia de entregas que a Juma
+definiu em 01/09/2026. Ver [`05-COPY-KMEP-ULTRA.md`](05-COPY-KMEP-ULTRA.md).
 
 **O problema que resolve (versão BR):** a aplicação foi bem feita, o produto era bom, e dias depois
 a praga está lá de novo — porque parte dela nunca entrou em contato com a calda. Reaplicar custa

@@ -225,6 +225,17 @@ americano. É a pendência **P31**.
 
 Se P31 voltar vazio, a página publica no eixo A e um único bloco troca de conteúdo.
 
+> **Decisão tomada em 22/09/2026, e é ela que vale.** A escolha entre os eixos ficou resolvida por
+> duas fontes que chegaram depois desta análise: a resposta oficial da Juma (01/09/2026), que
+> ordenou as entregas como potássio primeiro, eficiência de aplicação em segundo e desalojamento
+> como vantagem adicional; e o folheto impresso da Juma-Agro Fertilizer LLC
+> ([`assets/kmep-ultra-folheto-us.pdf`](assets/kmep-ultra-folheto-us.pdf)), que já comunica o
+> produto nos EUA por performance de aplicação (*coverage*, *deposition*, *consistency*) e não cita
+> inseto em nenhum ponto. A página combina as duas: abre pelo problema do folheto e entrega os dois
+> trabalhos, com o potássio ganhando a seção maior. Ver
+> [`05-COPY-KMEP-ULTRA.md`](05-COPY-KMEP-ULTRA.md). O folheto também responde P8: **$6 por acre por
+> aplicação**.
+
 **Plano B geral:** se nenhum claim de praga puder ser usado, o KMEP se reposiciona pelo eixo
 nutricional (potássio via foliar na aplicação que o produtor já faz), sem claim de eficácia. A
 página funciona, com narrativa diferente.

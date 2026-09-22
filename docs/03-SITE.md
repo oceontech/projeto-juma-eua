@@ -307,26 +307,21 @@ doses em `fl oz/acre`, relatório do ensaio — é mais concreto que "fale conos
 
 ## LP KMEP Ultra®
 
-**Eixo recomendado:** B (adjuvante de calda) com A (potássio foliar) embutido — ver
-`02-MERCADO-USA.md`. **Cultura padrão do seletor:** milho, é onde está o ensaio.
+> **A copy e o posicionamento desta LP vivem em [`05-COPY-KMEP-ULTRA.md`](05-COPY-KMEP-ULTRA.md).**
+> Aquele arquivo é o canônico: estrutura de dezessete blocos, texto pronto em inglês, mapa de
+> objeções e o que cada bloco depende. A tabela `K1`–`K12` que ficava aqui descrevia o eixo antigo
+> (adjuvante de calda como argumento único) e foi retirada em 22/09/2026 para não competir com ele.
 
-| # | O que esta página diz |
-|---|---|
-| `K1` | *Your insecticide isn't failing. It isn't getting there.* Parceiro de tanque que melhora a deposição. Linha de prova ancorada: `221.3 vs 212.3 bu/ac · Rehagro, Brazil` |
-| `K3` | Quando o dossel fecha, o terço inferior vira outra lavoura — a parte onde a calda chega por último, ou não chega |
-| `K4` | Três passos em linguagem regulatoriamente segura: menor tensão superficial → melhor deposição → mais fundo no dossel |
-| `K5` | Entra no tanque que você já está enchendo · sem passada extra, sem diesel, sem nova janela de clima · um número que você pode conferir |
-| `K6` | `221.3 vs 212.3 bu/ac` · milho · Rehagro, Brasil · +8,9 bu/ac (+4,2%). **Falta o ano do ensaio** |
-| `K7` | A US$ 4,30/bu, 8,9 bu/ac valem US$ 38,27/acre. Custo na dose de rótulo: **[P8]**. A diferença entre os dois números é a decisão inteira |
-| `K8` | A cunha brasileira: dez anos com a cigarrinha, que chegou a 185 condados em 16 estados em 2025. **Citar a estatística pública é seguro; vincular o produto ao controle da praga é HOLD** |
-| `K9` | Milho V4–V6 e na aplicação anterior ao enchimento. Soja R1–R3. Dose **[P4]** |
-| `K11` | Posso misturar? · queima folha em calor alto? · registrado no meu estado? **[P10]** · **qual a diferença para um 0-0-25 ou KTS?** ← eixo B responde, eixo A não |
+**Eixo da página:** entra pelo problema de performance de aplicação, que é como o folheto americano
+da Juma já comunica o produto, e entrega as duas coisas como par: cobertura e deposição no dia da
+aplicação, potássio foliar na janela do enchimento de grãos. A ação desalojante é vantagem
+adicional, isolada num bloco removível (P2). A hierarquia das entregas é a que a Juma definiu na
+resposta oficial de 01/09/2026. **Cultura padrão:** milho, é onde está o ensaio.
 
-**Trilha B (desalojante) permanece escrita e engavetada.** Três blocos trocam de conteúdo se a
-liberação escrita vier: `K1`, `K3`, `K4`. O layout já está desenhado. A animação `AN-08` **não deve
-ser produzida** antes da liberação — produzir o ativo aumenta a chance de ele vazar para produção.
-
----
+**O que esta LP precisa do layout:** hero com faixa de prova ancorada, seção de mecanismo com duas
+animações (AN-02, deposição), bloco de prova com tabela de ensaio, tabela de ROI com três cenários
+de preço, linha do tempo de aplicação (AN-07), FAQ em acordeão e formulário reduzido de quatro
+campos. Animação AN-08 já construída, dentro do bloco que depende de P2.
 
 ## LP Aminosan®
 

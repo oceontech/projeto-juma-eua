@@ -22,7 +22,7 @@ Os três controles (EN/PT, notas de seção, Trilha A/B do KMEP) estão descrito
 site/
 ├── home.html           Home desenhada — implementação dos layouts do Figma
 ├── index.html          Home — 9 seções (S0 a S9), protótipo de copy
-├── kmep-ultra.html     LP KMEP Ultra — 12 seções (K1 a K12), duas trilhas
+├── kmep-ultra.html     LP KMEP Ultra — VERSÃO ANTIGA da copy. A atual está em docs/05-COPY-KMEP-ULTRA.md
 ├── aminosan.html       LP Aminosan — 12 seções (A1 a A12)
 ├── assets/css/styles.css   protótipo de copy
 ├── assets/css/home.css     home desenhada

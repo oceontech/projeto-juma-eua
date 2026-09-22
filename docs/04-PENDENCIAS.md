@@ -39,7 +39,7 @@ projeto, porque muda o que as páginas podem afirmar.
 | **P5** | Mercado-alvo: **row crop × specialty crop** | Diretoria / comercial | Culturas, mapa, CTA, tom da copy — e o design da Home |
 | **P6** | Culturas americanas em que cada produto funciona | Técnico / agronômico | Seção de culturas, mapa e a tabela estado→cultura |
 | **P7** | Modelo de venda: direto, distribuidor, retail ou private label | Comercial | O CTA e possivelmente a premissa de conversão |
-| **P8** | Preço por galão e custo por acre nos EUA | Comercial | A seção de ROI — o argumento que mais converte |
+| ~~**P8**~~ | ~~Preço por galão e custo por acre nos EUA~~ | Comercial | **Respondida em 22/09/2026 pelo folheto americano: $6 por acre por aplicação.** A seção de ROI (`K11`) está destravada. Falta só o preço por galão, para a tabela de embalagens |
 | **P9** | Testemunha dos ensaios de Aminosan (Taquarivaí e Lavras) | Técnico / P&D | Define se o número mais forte da empresa pode ser publicado |
 | **P10** | Registros estaduais ativos como fertilizante, por estado | Regulatório | Quais estados destacar no mapa e onde pode vender hoje |
 | **P11** | Contato da LLC: nome, cargo, e-mail, telefone US, fuso, idiomas | Comercial | Formulário, footer e a honestidade do CTA |
@@ -62,7 +62,7 @@ projeto, porque muda o que as páginas podem afirmar.
 | **P28** | Leitura de concorrência e diferencial declarado | Comercial | Posicionamento e diferenciação da copy |
 | **P29** | Quais são os outros dois produtos e quando entram | Comercial | Não bloqueia a v1; evita refazer o template depois |
 | **P30** | **Por que Lakeland?** Logística, citros ou parceiro comercial | Diretoria | A tese comercial inteira |
-| **P31** | **Dado de deposição, cobertura, espectro de gotas ou tensão superficial do KMEP** | Técnico / P&D | **O eixo de posicionamento de toda a LP KMEP** |
+| **P31** | Dado de deposição, cobertura, espectro de gotas ou tensão superficial do KMEP | Técnico / P&D | Dá número ao bloco `K6`. Deixou de bloquear o eixo da LP em 22/09/2026 |
 | **P32** | Incremento de produtividade exato do artigo da Revista Foco + autorização para citá-lo | Técnico / jurídico | O número está em figura, não em texto, no artigo publicado |
 
 **Sem número:** o **ano do ensaio Rehagro** não consta em nenhum documento auditado. Tabela de
@@ -78,10 +78,10 @@ acompanha a colheita?
 |---|---|---|
 | 1 | **P1 · P2** — Rótulo e validação regulatória | Define toda a copy, dos dois produtos. Item mais urgente do projeto |
 | 2 | **P5 · P30** — Mercado-alvo e a razão de Lakeland | Sem isso não se desenha a Home |
-| 3 | **P31** — Dado de deposição do KMEP | Define o eixo inteiro da LP mais difícil |
+| 3 | **P31** — Dado de deposição do KMEP | Deixou de definir o eixo (ver `05-COPY-KMEP-ULTRA.md`). Agora dá número ao bloco `K6` |
 | 4 | **P3 · P4** — Guaranteed Analysis e dose | Ficha técnica das duas LPs |
 | 5 | **P6 · P7** — Culturas americanas e canal | Seção de culturas, mapa e possivelmente o CTA |
-| 6 | **P8** — Preço e custo por acre | É o argumento que mais converte |
+| 6 | ~~**P8**~~ — Preço e custo por acre | **Respondida:** $6/acre/aplicação, no folheto americano |
 | 7 | **P9 · P19 · P21** — Prova: testemunha, autorização, delineamento | Coração das LPs |
 | 8 | **P11 · P16 · P26** — Contato, domínio, identidade | Bloqueiam formulário, deploy e rodapé |
 | 9 | **P12 · P13 · P14** — Assets e SDS | Bloqueiam design |
@@ -93,13 +93,13 @@ acompanha a colheita?
 
 | ID | Trava | Estado degradado |
 |---|---|---|
-| **P31** | Eixo de posicionamento da LP KMEP | Publica no eixo A (potássio) e `K8` troca de conteúdo |
+| **P31** | Profundidade do bloco de deposição (`K6`) | O eixo não depende mais dele: a página publica com a linguagem de cobertura e deposição que o folheto americano já imprime. Com o dado, `K6` ganha número em vez de descrição |
 | **P2** | `K1` `K3` `K4` Trilha B · revisão de `S6` `A3` `A4` | Publica em Trilha A / eixo B. Perde a cunha da cigarrinha |
 | **P1 · P3** | `K10` `A10` e a tabela comparativa de `A4` | Ficha técnica sai da v1 e entra por deploy posterior |
 | **P4** | `K9` `A9` | Publica só com estágios; CTA vira "peça a tabela de doses" |
 | **P5** | Seletor de cultura, tom geral | Seletor cobre os dois cenários. Some quando a resposta vier |
 | **P6** | `S5` `K2` `A2` `K9` `A9` | Abre com milho e soja; specialty vira captura de lead |
-| **P8** | `K7` `A7` | **Remover as duas seções de ROI.** Meia conta é pior que nenhuma |
+| ~~**P8**~~ | `A11` (só o Aminosan) | Respondida para o KMEP. Para o Aminosan, **remover a seção de ROI.** Meia conta é pior que nenhuma |
 | **P9** | `S2` slot 4 · `A6` `A7` | `A6` publica no estado provisório, que aplica a regra da casa em público |
 | **P10** | `K10` `A10` `K11` `A11` | Convidar o visitante a perguntar pelo estado dele |
 | **P11** | `S0` `S7` `S8` `K12` `A12` | CTA recua de "Talk to an agronomist" para "Request product info" |

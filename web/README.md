@@ -165,8 +165,11 @@ onde entra o e-mail, CRM ou webhook. O contrato de retorno não muda quando isso
 
 ## O que ainda falta
 
-- **As duas LPs.** `/kmep-ultra` e `/aminosan` são esqueletos. A copy validada está no protótipo
-  (`site/kmep-ultra.html`, `site/aminosan.html`); o layout ainda não saiu do Figma.
+- **As duas LPs.** `/kmep-ultra` e `/aminosan` são esqueletos; o layout ainda não saiu do Figma.
+  A copy do **KMEP Ultra** está em [`../docs/05-COPY-KMEP-ULTRA.md`](../docs/05-COPY-KMEP-ULTRA.md),
+  que é o documento canônico da página. A do **Aminosan** está no protótipo `site/aminosan.html`.
+  O protótipo `site/kmep-ultra.html` guarda a versão anterior da copy do KMEP e não vale como
+  posicionamento.
 - **Destino do formulário** — P11.
 - **Geolocalização por IP** reordenando as culturas, e o mapa dos EUA. Estão no escopo da v1 em
   `docs/03-SITE.md`, mas não no layout que chegou.

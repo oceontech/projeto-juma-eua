@@ -54,6 +54,7 @@ Quatro arquivos, cada um respondendo uma pergunta distinta. Leia nesta ordem.
 | [`docs/02-MERCADO-USA.md`](docs/02-MERCADO-USA.md) | O que o mercado americano impõe: posicionamento, FIFRA, culturas, canal |
 | [`docs/03-SITE.md`](docs/03-SITE.md) | O que o site precisa ser: escopo, páginas seção a seção, design system, stack |
 | [`docs/04-PENDENCIAS.md`](docs/04-PENDENCIAS.md) | O que falta a Juma responder, por urgência, e o que cada resposta destrava |
+| [`docs/05-COPY-KMEP-ULTRA.md`](docs/05-COPY-KMEP-ULTRA.md) | **Canônico da LP KMEP Ultra:** posicionamento, arco narrativo e a copy em inglês, seção a seção |
 
 A direção visual original (`Editorial.pdf`) e os wireframes v1 já estão absorvidos no design system
 de `03-SITE.md` e implementados em `site/assets/css/styles.css`. Se precisar dos originais, estão no
