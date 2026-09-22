@@ -24,8 +24,10 @@ import { Cta, microCaps } from "./ui";
 const SETS = {
   /* `mol` é o quadro da segunda parada — o mesmo das chapas da A: o 182 do
      arquivo a 30 qps, 91 aqui a 15; no 9:16, o 178, 89 aqui. */
-  wide: { dir: "/video/aminosan-b/hero/wide", count: 131, stop: 20, mol: 91 },
-  tall: { dir: "/video/aminosan-b/hero/tall", count: 108, stop: 17, mol: 89 },
+  /* AVIF na resolução nativa nas telas largas; webp a 900 no celular, que
+     decodifica rápido o bastante para trocar de quadro a cada gesto. */
+  wide: { dir: "/video/aminosan-b/hero/wide", count: 131, stop: 20, mol: 91, ext: "avif" },
+  tall: { dir: "/video/aminosan-b/hero/tall", count: 108, stop: 17, mol: 89, ext: "webp" },
 } as const;
 
 type Set = (typeof SETS)[keyof typeof SETS];
@@ -80,6 +82,10 @@ export function Hero() {
     const el = canvas.current;
     const ctx = el?.getContext("2d");
     if (!el || !ctx) return;
+    /* O padrão do canvas amplia com a interpolação mais barata; o quadro
+       quase sempre é esticado para a tela, e é aí que ele borrava. */
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = "high";
     const ready = (k: number) => {
       const f = frames.current[k];
       return f && f.complete && f.naturalWidth ? f : null;
@@ -98,13 +104,13 @@ export function Hero() {
      chega em segundo plano. */
   const load = () => {
     set.current = window.matchMedia(TALL).matches ? SETS.tall : SETS.wide;
-    const { dir, count } = set.current;
+    const { dir, count, ext } = set.current;
     frames.current = Array.from({ length: count }, () => null);
     return Promise.all(
       Array.from({ length: count }, (_, i) => i).map((i) => {
         const img = new window.Image();
         img.decoding = "async";
-        img.src = `${dir}/${String(i + 1).padStart(3, "0")}.webp`;
+        img.src = `${dir}/${String(i + 1).padStart(3, "0")}.${ext}`;
         frames.current[i] = img;
         return i <= set.current.stop ? img.decode().catch(() => undefined) : undefined;
       }),

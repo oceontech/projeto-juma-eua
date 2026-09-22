@@ -17,11 +17,19 @@ import { Cta, Mark, microCaps } from "./ui";
  * telas largas e 9:16 para o celular, e só a do aparelho é baixada.
  */
 
-const FRAMES = 240;
+/* Cada sequência no formato que o aparelho decodifica rápido o bastante
+   para trocar de quadro a cada gesto: AVIF na resolução nativa (1920) nas
+   telas largas, webp a 900 no celular — ali com menos quadros, para o peso
+   não dobrar. */
 const SETS = {
-  wide: "/video/aminosan-b/dive/wide",
-  tall: "/video/aminosan-b/dive/tall",
+  wide: { dir: "/video/aminosan-b/dive/wide", count: 240, ext: "avif" },
+  tall: { dir: "/video/aminosan-b/dive/tall", count: 180, ext: "webp" },
 } as const;
+
+type Set = (typeof SETS)[keyof typeof SETS];
+
+const pickSet = (): Set =>
+  window.innerWidth < 1024 && window.innerHeight > window.innerWidth ? SETS.tall : SETS.wide;
 
 /* Onde começa cada etapa no vídeo, em fração do todo — casado com a cena:
    o derrame, as ondas e o mergulho, a nuvem submersa, a dissolução em
@@ -56,6 +64,7 @@ export function Meet() {
   const canvas = useRef<HTMLCanvasElement>(null);
   const frames = useRef<(HTMLImageElement | null)[]>([]);
   const current = useRef(0);
+  const set = useRef<Set>(SETS.wide);
 
   /* Desenha o quadro `i` cobrindo o canvas (object-fit: cover). Se ele ainda
      não chegou, usa o carregado mais próximo, para trás ou para frente. */
@@ -63,12 +72,16 @@ export function Meet() {
     const el = canvas.current;
     const ctx = el?.getContext("2d");
     if (!el || !ctx) return;
+    /* O padrão do canvas amplia com a interpolação mais barata; o quadro
+       quase sempre é esticado para a tela, e é aí que ele borrava. */
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = "high";
     const ready = (k: number) => {
       const f = frames.current[k];
       return f && f.complete && f.naturalWidth ? f : null;
     };
     let img: HTMLImageElement | null = null;
-    for (let d = 0; d < FRAMES && !img; d++) img = ready(i - d) ?? ready(i + d);
+    for (let d = 0; d < set.current.count && !img; d++) img = ready(i - d) ?? ready(i + d);
     if (!img) return;
     const { width: w, height: h } = el;
     const scale = Math.max(w / img.naturalWidth, h / img.naturalHeight);
@@ -85,16 +98,16 @@ export function Meet() {
       ([entry]) => {
         if (!entry.isIntersecting) return;
         io.disconnect();
-        const tall = window.innerWidth < 1024 && window.innerHeight > window.innerWidth;
-        const dir = tall ? SETS.tall : SETS.wide;
-        frames.current = Array.from({ length: FRAMES }, () => null);
-        for (const i of loadOrder(FRAMES)) {
+        set.current = pickSet();
+        const { dir, count, ext } = set.current;
+        frames.current = Array.from({ length: count }, () => null);
+        for (const i of loadOrder(count)) {
           const img = new Image();
           img.decoding = "async";
           img.onload = () => {
             if (Math.abs(i - current.current) <= 8) draw(current.current);
           };
-          img.src = `${dir}/${String(i + 1).padStart(3, "0")}.webp`;
+          img.src = `${dir}/${String(i + 1).padStart(3, "0")}.${ext}`;
           frames.current[i] = img;
         }
       },
@@ -122,6 +135,8 @@ export function Meet() {
   useGSAP(
     () => {
       const mm = gsap.matchMedia();
+
+      set.current = pickSet();
 
       mm.add("(prefers-reduced-motion: no-preference)", () => {
         const stages = gsap.utils.toArray<HTMLElement>(".dv-stage");
@@ -158,7 +173,7 @@ export function Meet() {
         tl.to(
           playhead,
           {
-            frame: FRAMES - 1,
+            frame: () => set.current.count - 1,
             ease: "none",
             duration: 1,
             onUpdate: () => {
@@ -196,8 +211,8 @@ export function Meet() {
       });
 
       mm.add("(prefers-reduced-motion: reduce)", () => {
-        current.current = FRAMES - 1;
-        draw(FRAMES - 1);
+        current.current = set.current.count - 1;
+        draw(current.current);
       });
 
       const redraw = () => draw(current.current);

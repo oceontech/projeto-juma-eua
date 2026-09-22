@@ -49,6 +49,10 @@ export function Cell() {
     const el = canvas.current;
     const ctx = el?.getContext("2d");
     if (!el || !ctx) return;
+    /* O padrão do canvas amplia com a interpolação mais barata; o quadro
+       quase sempre é esticado para a tela, e é aí que ele borrava. */
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = "high";
     const ready = (k: number) => {
       const f = frames.current[k];
       return f && f.complete && f.naturalWidth ? f : null;
