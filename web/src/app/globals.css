@@ -2805,3 +2805,48 @@ html[data-proof-overlap] .expertise-layer--dark .expertise-bg {
     background-image: url("/img/proof-arrows-vertical.svg");
   }
 }
+
+/* ==================================== LP B — a cena de partículas (Origin) */
+/* O caminho sem WebGL2, e o de quem pediu menos movimento: a cena não se
+   prende ao scroll. O hero fica como está, as duas formas viram seções
+   empilhadas e o pontilhado é desenhado uma vez em canvas 2D.
+
+   Fora de `@layer`, de propósito: estas regras precisam vencer os utilitários
+   de posição e altura que o JSX carrega, e CSS sem camada vence CSS em
+   camada. Quem acende a classe é Origin.tsx. */
+.og-frame {
+  display: none;
+}
+
+.og-still .og-stage {
+  height: auto;
+  min-height: 0;
+  overflow: visible;
+}
+
+.og-still .og-live,
+.og-still .og-scrim {
+  display: none;
+}
+
+.og-still .og-hero {
+  position: relative;
+  inset: auto;
+}
+
+.og-still .og-panel {
+  position: relative;
+  inset: auto;
+  opacity: 1;
+  transform: none;
+  padding-block: var(--spacing-sec) calc(var(--spacing-sec) / 2);
+}
+
+/* Largura presa: o desenho é quadrado, e num quadro de tela inteira ele
+   ficaria perdido no meio de dois palmos de papel. */
+.og-still .og-frame {
+  display: block;
+  width: min(100%, 560px);
+  height: clamp(240px, 44vh, 480px);
+  margin-inline: auto;
+}

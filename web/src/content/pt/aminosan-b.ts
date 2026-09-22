@@ -16,6 +16,23 @@ export const hero: typeof en.hero = {
   alt: "Uma bombona de Aminosan® em pé numa lavoura jovem de soja ao nascer do sol",
 };
 
+export const origin: typeof en.origin = {
+  panels: [
+    {
+      eyebrow: "De onde vem",
+      heading: "Começa como planta.",
+      body: "Cada aminoácido da bombona foi construído por uma planta antes. A fermentação enzimática libera um de cada vez, inteiro e na forma livre — origem vegetal do começo ao fim.",
+      caption: "Origem vegetal · fermentação enzimática",
+    },
+    {
+      eyebrow: "O que sai",
+      heading: "Chega como bloco pronto.",
+      body: "Um grupo amino, um grupo ácido, uma cadeia lateral. É a forma de que são feitas as proteínas da própria planta, e a única forma dentro da bombona: L-aminoácidos 100% livres, com nitrogênio, fosfato e potássio junto.",
+      caption: "L-aminoácido · NH₂ — CH(R) — COOH",
+    },
+  ],
+};
+
 export const problem: typeof en.problem = {
   image: {
     heading: "A maior parte do nitrogênio chega inacabada.",

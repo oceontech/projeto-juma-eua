@@ -25,6 +25,31 @@ export const hero = {
   alt: "A jug of Aminosan® standing in a young soybean field at sunrise",
 };
 
+/**
+ * As duas seções que nascem do hero se desfazendo em partículas (Origin.tsx).
+ *
+ * Abertura, não argumento: o Problem e o Converge, logo abaixo, é que fazem
+ * o caso do produto. Aqui só se conta de onde ele vem — origem vegetal e
+ * fermentação enzimática, que hoje só aparecem como linha de tabela em
+ * `inside` — e em que forma ele chega. Nenhum verbo de efeito na planta.
+ */
+export const origin = {
+  panels: [
+    {
+      eyebrow: "Where it comes from",
+      heading: "It begins as a plant.",
+      body: "Every amino acid in the jug was built by a plant first. Enzymatic fermentation releases them one at a time, intact and free-form — plant-derived from start to finish.",
+      caption: "Plant-derived · enzymatic fermentation",
+    },
+    {
+      eyebrow: "What comes out",
+      heading: "It arrives as a building block.",
+      body: "An amino group, an acid group, a side chain. That's the shape a plant's own proteins are built from, and the only shape in the jug: 100% free-form L-amino acids, with nitrogen, phosphate and potash along for the ride.",
+      caption: "L-amino acid · NH₂ — CH(R) — COOH",
+    },
+  ],
+};
+
 export const problem = {
   image: {
     heading: "Most nitrogen arrives unfinished.",
