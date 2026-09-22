@@ -22,7 +22,7 @@ src/
 │   ├── layout.tsx        fontes, metadata, header/footer, os dois providers de motion
 │   ├── page.tsx          Home — só monta as seções na ordem
 │   ├── globals.css       tokens do design (@theme) + os blocos de geometria própria
-│   ├── kmep-ultra/       LP — esqueleto
+│   ├── kmep/             LP do KMEP Ultra (/kmep)
 │   ├── aminosan/         LP — esqueleto
 │   ├── robots.ts · sitemap.ts
 ├── components/
@@ -165,11 +165,12 @@ onde entra o e-mail, CRM ou webhook. O contrato de retorno não muda quando isso
 
 ## O que ainda falta
 
-- **As duas LPs.** `/kmep-ultra` e `/aminosan` são esqueletos; o layout ainda não saiu do Figma.
-  A copy do **KMEP Ultra** está em [`../docs/05-COPY-KMEP-ULTRA.md`](../docs/05-COPY-KMEP-ULTRA.md),
-  que é o documento canônico da página. A do **Aminosan** está no protótipo `site/aminosan.html`.
-  O protótipo `site/kmep-ultra.html` guarda a versão anterior da copy do KMEP e não vale como
-  posicionamento.
+- **LP do KMEP Ultra**, em `/kmep` (`/kmep-ultra` redireciona). Construída sobre
+  [`../docs/05-COPY-KMEP-ULTRA.md`](../docs/05-COPY-KMEP-ULTRA.md), o canônico da copy. O que
+  ainda falta nela são dados da Juma, marcados como `TODO(P…)` em `src/content/kmep.ts`: ano do
+  ensaio (P21), dose e embalagem (P4, P1), autorização para nomear instituições (P19) e as três
+  perguntas comentadas do FAQ. O bloco K8 (`Flush.tsx`) está em HOLD pela P2 e sai com os trechos
+  marcados `HOLD P2`.
 - **Destino do formulário** — P11.
 - **Geolocalização por IP** reordenando as culturas, e o mapa dos EUA. Estão no escopo da v1 em
   `docs/03-SITE.md`, mas não no layout que chegou.
