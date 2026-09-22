@@ -21,8 +21,8 @@ export const metadata: Metadata = {
 
 /**
  * LP B do Aminosan — escrita do zero para o teste A/B contra /aminosan.
- * Estrutura e ritmo seguem a referência editorial (hero de produto,
- * problema em tela dividida, convergência, produto com vídeo no scroll,
+ * Estrutura e ritmo seguem a referência editorial (hero de produto com
+ * parallax de entrada, problema em tela dividida, convergência, produto com vídeo no scroll,
  * dentro da folha (lente de microscópio),
  * prova, janela crítica, fichas de cultura, o que tem na bombona, trilho
  * de perguntas, pedido).

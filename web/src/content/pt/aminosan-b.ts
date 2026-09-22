@@ -6,35 +6,14 @@ import type * as en from "../aminosan-b";
  */
 
 export const hero: typeof en.hero = {
-  heading: ["Aminoácidos,", "prontos."],
+  eyebrow: "L-aminoácidos 100% livres",
+  heading: "Aminoácidos, prontos.",
   aside: {
     heading: ["Direto na folha.", "Pronto para trabalhar."],
     body: "O Aminosan® é um nutriente foliar de L-aminoácidos 100% livres com N, P e K. De origem vegetal, feito por fermentação enzimática e aplicado na passada que você já faz.",
-    cta: { label: "Teste na sua lavoura", href: "#trial-form" },
   },
-  record: {
-    label: "Em cada bombona",
-    items: [
-      "L-aminoácidos 100% livres",
-      "Origem vegetal",
-      "Fermentação enzimática",
-      "N · P · K",
-      "Não hormonal",
-    ],
-  },
-  scroll: "Role",
-};
-
-export const molecule: typeof en.molecule = {
-  eyebrow: "Dentro da bombona · L-aminoácidos livres",
-  heading: "Liberados por enzimas, não por ácido.",
-  body: "O Aminosan® começa como proteína vegetal. Enzimas a desmontam em temperatura branda, ligação por ligação, até restarem aminoácidos soltos.",
-  callout: "O processo ácido agressivo pode destruir alguns aminoácidos e inverter outros para uma forma espelhada que a planta não usa para construir. As enzimas os mantêm intactos, na forma L.",
-  steps: [
-    { label: "Proteína vegetal", note: "Origem vegetal" },
-    { label: "Enzimas", note: "Cortes brandos e precisos" },
-    { label: "L-aminoácidos livres", note: "Prontos para a folha" },
-  ],
+  badge: "nutriente foliar",
+  alt: "Uma bombona de Aminosan® em pé numa lavoura jovem de soja ao nascer do sol",
 };
 
 export const problem: typeof en.problem = {

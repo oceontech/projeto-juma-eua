@@ -14,38 +14,15 @@
  */
 
 export const hero = {
-  heading: ["Amino acids,", "ready-made."],
+  eyebrow: "100% free-form L-amino acids",
+  heading: "Amino acids, ready-made.",
   aside: {
     heading: ["Straight to the leaf.", "Ready to work."],
     body: "Aminosan® is a foliar nutrient of 100% free-form L-amino acids with N, P and K. Plant-derived, made by enzymatic fermentation, and sprayed in the pass you already make.",
-    cta: { label: "Try it on your acres", href: "#trial-form" },
   },
-  record: {
-    label: "In every jug",
-    items: [
-      "100% free-form L-amino acids",
-      "Plant-derived",
-      "Enzymatic fermentation",
-      "N · P · K",
-      "Non-hormonal",
-    ],
-  },
-  scroll: "Scroll",
-};
-
-/* A parada da molécula no hero: a câmera acabou de entrar na bombona, então
-   a molécula é o que tem lá dentro — e o assunto é como ela foi feita. A rota
-   do nitrato já está na seção "problem"; aqui não se repete. */
-export const molecule = {
-  eyebrow: "Inside the jug · Free L-amino acids",
-  heading: "Freed by enzymes, not by acid.",
-  body: "Aminosan® starts as plant protein. Enzymes take it apart at mild temperature, bond by bond, until what's left are single amino acids.",
-  callout: "Harsh acid processing can destroy some amino acids and flip others into a mirror-image form plants don't build with. Enzymes leave them intact, in L-form.",
-  steps: [
-    { label: "Plant protein", note: "Vegetal source" },
-    { label: "Enzymes", note: "Mild, precise cuts" },
-    { label: "Free L-amino acids", note: "Ready for the leaf" },
-  ],
+  /* O selo do canto: a folha com o texto em arco. */
+  badge: "foliar nutrient",
+  alt: "A jug of Aminosan® standing in a young soybean field at sunrise",
 };
 
 export const problem = {
