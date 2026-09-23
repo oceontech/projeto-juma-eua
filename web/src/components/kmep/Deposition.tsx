@@ -14,7 +14,12 @@ const VB_W = 560;
 const VB_H = 720;
 const NOZZLE: [number, number] = [280, 46];
 
-/* A folha: aresta de cima de A até a ponta B, subindo para a direita. */
+/* A folha: aresta de cima de A até a ponta B, subindo para a direita.
+   Nenhuma das duas arestas é reta — a de cima é um arco raso, como o dorso
+   alongado de uma folha de gramínea, e a de baixo é a barriga: cheia perto
+   da base, afinando para um bico fino na ponta. As duas juntas é que dão o
+   ar de folha; uma lâmina com uma aresta reta lê como faca, não como
+   planta. */
 const LEAF_A: [number, number] = [70, 704];
 const LEAF_B: [number, number] = [484, 432];
 const LEN = Math.hypot(LEAF_B[0] - LEAF_A[0], LEAF_B[1] - LEAF_A[1]);
@@ -27,24 +32,71 @@ const along = (t: number, off = 0): [number, number] => [
   fix(LEAF_A[0] + (LEAF_B[0] - LEAF_A[0]) * t + NRM[0] * off, 1),
   fix(LEAF_A[1] + (LEAF_B[1] - LEAF_A[1]) * t + NRM[1] * off, 1),
 ];
-const LEAF_PATH = (() => {
-  const [bx, by] = along(1);
-  const [ax, ay] = along(0);
-  const [c1x, c1y] = along(0.82, 40);
-  const [dx, dy] = along(0, 40);
-  return `M${ax} ${ay} L${bx} ${by} Q${c1x} ${c1y} ${dx} ${dy} Z`;
+const unit = ([x, y]: [number, number]): [number, number] => {
+  const m = Math.hypot(x, y) || 1;
+  return [x / m, y / m];
+};
+/* Normal local de um vetor-tangente, na mesma rotação que gera `NRM` a
+   partir de `DIR` — usada para as arestas curvas, onde a normal muda ponto
+   a ponto em vez de ficar fixa. */
+const localNrm = ([tx, ty]: [number, number]): [number, number] => unit([-ty, tx]);
+
+/* Aresta de cima: um arco quadrático raso, mais alto perto da base. */
+const TOP_CTRL: [number, number] = (() => {
+  const [sx, sy] = along(0.4);
+  return [fix(sx - NRM[0] * 22, 1), fix(sy - NRM[1] * 22, 1)];
 })();
-const MIDRIB = (() => {
-  const [x1, y1] = along(0, 18);
-  const [x2, y2] = along(0.94, 6);
-  return { x1, y1, x2, y2 };
+const qPoint = (p0: [number, number], c: [number, number], p1: [number, number], t: number): [number, number] => {
+  const mt = 1 - t;
+  return [mt * mt * p0[0] + 2 * mt * t * c[0] + t * t * p1[0], mt * mt * p0[1] + 2 * mt * t * c[1] + t * t * p1[1]];
+};
+const qTangent = (p0: [number, number], c: [number, number], p1: [number, number], t: number): [number, number] => [
+  2 * (1 - t) * (c[0] - p0[0]) + 2 * t * (p1[0] - c[0]),
+  2 * (1 - t) * (c[1] - p0[1]) + 2 * t * (p1[1] - c[1]),
+];
+const topPoint = (t: number) => qPoint(LEAF_A, TOP_CTRL, LEAF_B, t);
+const topTangent = (t: number) => qTangent(LEAF_A, TOP_CTRL, LEAF_B, t);
+
+/* Aresta de baixo: uma cúbica de B até A — barriga cheia perto da base
+   (`BOTTOM_BELLY`) fechando num afilar raso perto da ponta (`BOTTOM_TIP`). */
+const BOTTOM_TIP: [number, number] = (() => {
+  const [sx, sy] = along(0.86);
+  return [fix(sx + NRM[0] * 18, 1), fix(sy + NRM[1] * 18, 1)];
 })();
-/* A cera: marcas curtas para fora da aresta, como cristais. */
+const BOTTOM_BELLY: [number, number] = (() => {
+  const [sx, sy] = along(0.28);
+  return [fix(sx + NRM[0] * 86, 1), fix(sy + NRM[1] * 86, 1)];
+})();
+const LEAF_PATH = `M${LEAF_A[0]} ${LEAF_A[1]} Q${TOP_CTRL[0]} ${TOP_CTRL[1]} ${LEAF_B[0]} ${LEAF_B[1]} C${BOTTOM_TIP[0]} ${BOTTOM_TIP[1]} ${BOTTOM_BELLY[0]} ${BOTTOM_BELLY[1]} ${LEAF_A[0]} ${LEAF_A[1]} Z`;
+
+/* A nervura central acompanha a mesma curva da aresta de cima, só que por
+   dentro da lâmina — por isso é um traço, não mais uma reta. */
+const MIDRIB_PATH = (() => {
+  const inward = (t: number, depth: number): [number, number] => {
+    const [x, y] = topPoint(t);
+    const [nx, ny] = localNrm(topTangent(t));
+    return [fix(x + nx * depth, 1), fix(y + ny * depth, 1)];
+  };
+  const [ax, ay] = inward(0.04, 20);
+  const [cx, cy] = inward(0.5, 26);
+  const [bx, by] = inward(0.94, 8);
+  return `M${ax} ${ay} Q${cx} ${cy} ${bx} ${by}`;
+})();
+/* A cera: marcas curtas para fora da aresta de cima, como cristais —
+   perpendiculares à curva em cada ponto, não a uma direção fixa. */
 const WAX = Array.from({ length: 30 }, (_, i) => {
-  const [x1, y1] = along(0.03 + i * 0.032);
-  return { x1, y1, x2: fix(x1 - NRM[0] * 4.5, 1), y2: fix(y1 - NRM[1] * 4.5, 1) };
+  const t = 0.03 + i * 0.032;
+  const [x1, y1] = topPoint(t);
+  const [nx, ny] = localNrm(topTangent(t));
+  return { x1: fix(x1, 1), y1: fix(y1, 1), x2: fix(x1 - nx * 4.5, 1), y2: fix(y1 - ny * 4.5, 1) };
 });
-const LEAF_LABEL = along(0.3, 66);
+const LABEL_T = 0.3;
+const LEAF_LABEL = (() => {
+  const [x, y] = topPoint(LABEL_T);
+  const [nx, ny] = localNrm(topTangent(LABEL_T));
+  return [fix(x + nx * 58, 1), fix(y + ny * 58, 1)];
+})();
+const LABEL_SLOPE = fix((Math.atan2(topTangent(LABEL_T)[1], topTangent(LABEL_T)[0]) * 180) / Math.PI, 3);
 
 /* O arco do sol: 6h à esquerda, 18h à direita, por cima. */
 const SUN = { cx: 470, cy: 116, r: 56 };
@@ -299,7 +351,7 @@ export function Deposition() {
 
                 {/* A folha, inclinada e cerosa. */}
                 <path d={LEAF_PATH} fill="#26371F" stroke="#B9C2A0" strokeOpacity="0.6" />
-                <line {...MIDRIB} stroke="#B9C2A0" strokeOpacity="0.3" />
+                <path d={MIDRIB_PATH} fill="none" stroke="#B9C2A0" strokeOpacity="0.3" />
                 <g stroke="#B9C2A0" strokeOpacity="0.75">
                   {WAX.map((w, i) => (
                     <line key={i} {...w} />
@@ -308,7 +360,7 @@ export function Deposition() {
                 <text
                   x={LEAF_LABEL[0]}
                   y={LEAF_LABEL[1]}
-                  transform={`rotate(${SLOPE} ${LEAF_LABEL[0]} ${LEAF_LABEL[1]})`}
+                  transform={`rotate(${LABEL_SLOPE} ${LEAF_LABEL[0]} ${LEAF_LABEL[1]})`}
                   className="font-display max-lg:hidden"
                   fill="#B9C2A0"
                   fontSize="13"

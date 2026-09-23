@@ -11,10 +11,12 @@ import type * as en from "../kmep";
 export const hero: typeof en.hero = {
   eyebrow: ["Performance de aplicação", "Potássio foliar", "Parceiro de tanque"],
   heading: "Você não vai ver a perda até colher.",
+  aside: { heading: ["Uma passada, dois trabalhos.", "Seis dólares por acre."] },
   body: "Parte de toda aplicação nunca faz o trabalho pelo qual você pagou. O KMEP Ultra® vai no tanque que você já está enchendo. Ele melhora como a calda cobre e deposita, e leva potássio foliar para as semanas em que o enchimento de grãos define a produtividade. Seis dólares por acre.",
+  badge: "potássio foliar",
   cta: { label: "Faça uma faixa de teste na sua área", href: "#trial-form" },
   secondary: { label: "Ver o ensaio", href: "#proof" },
-  alt: "Um pulverizador autopropelido fazendo uma aplicação de inseticida ao nascer do sol",
+  alt: "Uma bombona de KMEP Ultra® num campo jovem de soja ao nascer do sol",
 };
 
 export const proofBand: typeof en.proofBand = {

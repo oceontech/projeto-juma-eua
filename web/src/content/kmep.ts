@@ -37,13 +37,17 @@ export type Question = {
 export const hero = {
   eyebrow: ["Spray performance", "Foliar potassium", "Tank-mix partner"],
   heading: "You won't see the loss until you harvest.",
+  /* O título curto do pé (K1, aside) é a headline da versão 2 do teste
+     A/B — que entra pelo produto —, partida na frase. Não é copy nova. */
+  aside: { heading: ["One pass. Two jobs.", "Six dollars an acre."] },
   body: "Part of every application never does the work you paid for. KMEP Ultra® rides in the tank you are already filling. It improves how the spray covers and lands, and it carries foliar potassium into the weeks when grain fill is setting the yield. Six dollars an acre.",
-  /* Versão 2, para o teste A/B — anotada, sem rota própria:
-     heading: "One pass. Two jobs. Six dollars an acre."
-     body: "KMEP Ultra® goes in with the insecticide you already chose. It improves coverage and deposition on the day you spray, and it puts potassium on the leaf for the window where demand peaks." */
+  /* Sub da versão 2, para o teste A/B — anotada, sem rota própria:
+     "KMEP Ultra® goes in with the insecticide you already chose. It improves coverage and deposition on the day you spray, and it puts potassium on the leaf for the window where demand peaks." */
+  /** O selo do canto: a folha com o texto em arco, como na LP B. */
+  badge: "foliar potassium",
   cta: { label: "Run a trial strip on your acres", href: "#trial-form" },
   secondary: { label: "See the trial", href: "#proof" },
-  alt: "A self-propelled sprayer making an insecticide pass at sunrise",
+  alt: "A jug of KMEP Ultra® standing in a young soybean field at sunrise",
 };
 
 /** K2 — a faixa de prova ancorada no pé do hero. */

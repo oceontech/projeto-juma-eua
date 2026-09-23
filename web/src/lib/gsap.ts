@@ -12,13 +12,14 @@
  */
 
 import { gsap } from "gsap";
+import { MotionPathPlugin } from "gsap/MotionPathPlugin";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ScrollToPlugin } from "gsap/ScrollToPlugin";
 import { SplitText } from "gsap/SplitText";
 import { useGSAP } from "@gsap/react";
 
 /* registerPlugin é idempotente; o módulo é avaliado uma vez por bundle. */
-gsap.registerPlugin(useGSAP, ScrollTrigger, ScrollToPlugin, SplitText);
+gsap.registerPlugin(useGSAP, ScrollTrigger, ScrollToPlugin, SplitText, MotionPathPlugin);
 
 /**
  * No celular, a barra do navegador some e volta durante a rolagem, e cada

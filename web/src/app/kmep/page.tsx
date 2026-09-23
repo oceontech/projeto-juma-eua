@@ -23,8 +23,8 @@ export const metadata: Metadata = {
 };
 
 /**
- * LP do KMEP Ultra® — K1 a K17 em quinze componentes (o hero absorve a faixa
- * de prova K2; o Timing absorve a ficha de dose).
+ * LP do KMEP Ultra® — o hero abre a página sem a antiga faixa de prova K2;
+ * o Timing absorve a ficha de dose.
  *
  * Copy: docs/05-COPY-KMEP-ULTRA.md, o canônico. Plano de execução, gramática
  * visual e regras: docs/06-PROMPT-LP-KMEP.md. O design system e o movimento

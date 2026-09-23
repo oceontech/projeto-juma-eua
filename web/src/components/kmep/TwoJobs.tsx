@@ -70,20 +70,52 @@ export function TwoJobs() {
     () => {
       const mm = gsap.matchMedia();
 
-      /* A linha do tempo da cena, em unidades de 0 a 1. */
+      /* Some com as faíscas no repouso (progresso 0 do scroll): sem isso
+         elas piscam em 0,0 — origem do SVG — antes do timeline pegar. */
+      gsap.set([".tj-spark-in", ".tj-spark-a", ".tj-spark-b"], { opacity: 0 });
+
+      /* A linha do tempo da cena, em unidades de 0 a 1.
+         O traço em si (`strokeDashoffset`) fica em `ease: "none"`: é ele que
+         precisa andar 1:1 com o scroll, senão o desenho descola do gesto do
+         dedo. O que dava a sensação seca não era essa parte — era tudo em
+         volta dela acontecer aos saltos (liga/desliga). A faísca que corre
+         na ponta do traço (`motionPath`, abaixo) e as transições de opacidade
+         mais longas, com `sine`, é o que dá o ar de tinta correndo em vez de
+         barra de progresso enchendo. */
       const build = (tl: gsap.core.Timeline) =>
         tl
           .fromTo(".tj-in", { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 0.25, ease: "none" }, 0)
-          .fromTo(".tj-start", { opacity: 0 }, { opacity: 1, duration: 0.05 }, 0)
+          .fromTo(".tj-start", { opacity: 0, scale: 0.4 }, { opacity: 1, scale: 1, duration: 0.1, ease: "sine.out" }, 0)
+          .fromTo(
+            ".tj-spark-in",
+            { opacity: 1 },
+            { motionPath: { path: PATH_IN, alignOrigin: [0.5, 0.5] }, duration: 0.25, ease: "none" },
+            0,
+          )
           .fromTo(
             ".tj-split",
-            { scale: 0, svgOrigin: `${SPLIT[0]} ${SPLIT[1]}` },
-            { scale: 1, duration: 0.06, ease: "back.out(2)" },
-            0.22,
+            { scale: 0, opacity: 0, svgOrigin: `${SPLIT[0]} ${SPLIT[1]}` },
+            { scale: 1, opacity: 1, duration: 0.1, ease: "sine.out" },
+            0.2,
           )
+          .to(".tj-spark-in", { opacity: 0, duration: 0.05, ease: "sine.in" }, 0.22)
           .fromTo(".tj-a", { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 0.2, ease: "none" }, 0.27)
           .fromTo(".tj-b", { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 0.66, ease: "none" }, 0.27)
-          .fromTo(".tj-dial", { opacity: 0 }, { opacity: 1, duration: 0.06 }, 0.42)
+          .fromTo(
+            ".tj-spark-a",
+            { opacity: 1 },
+            { motionPath: { path: PATH_A, alignOrigin: [0.5, 0.5] }, duration: 0.2, ease: "none" },
+            0.27,
+          )
+          .fromTo(
+            ".tj-spark-b",
+            { opacity: 1 },
+            { motionPath: { path: PATH_B, alignOrigin: [0.5, 0.5] }, duration: 0.66, ease: "none" },
+            0.27,
+          )
+          .to(".tj-spark-a", { opacity: 0, duration: 0.05, ease: "sine.in" }, 0.42)
+          .to(".tj-spark-b", { opacity: 0, duration: 0.05, ease: "sine.in" }, 0.88)
+          .fromTo(".tj-dial", { opacity: 0 }, { opacity: 1, duration: 0.16, ease: "sine.out" }, 0.36)
           /* O mostrador corre inteiro num trecho curto… */
           .fromTo(".tj-arc", { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 0.14, ease: "none" }, 0.47)
           .fromTo(
@@ -92,9 +124,15 @@ export function TwoJobs() {
             { rotation: 0, duration: 0.14, ease: "none" },
             0.47,
           )
-          /* …e a régua da safra acende marca a marca, no compasso longo. */
-          .fromTo(".tj-tick", { opacity: 0.15 }, { opacity: 1, duration: 0.02, stagger: 0.024, ease: "none" }, 0.36)
-          .fromTo(".tj-label", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.08, stagger: 0.05 }, 0.5)
+          /* …e a régua da safra acende marca a marca, num aceso gradual (não
+             num piscar), no compasso longo. */
+          .fromTo(
+            ".tj-tick",
+            { opacity: 0.12, scaleY: 0.35, transformOrigin: "50% 50%" },
+            { opacity: 1, scaleY: 1, duration: 0.05, stagger: 0.022, ease: "sine.out" },
+            0.34,
+          )
+          .fromTo(".tj-label", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.1, stagger: 0.05, ease: "sine.out" }, 0.5)
           .fromTo(".tj-close", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.14, ease: "power2.out" }, 0.8);
 
       mm.add(
@@ -161,6 +199,18 @@ export function TwoJobs() {
 
         <div className="tj-scene wrap">
           <svg viewBox={`0 0 ${W} ${H}`} className="h-auto max-h-[46svh] w-full overflow-visible" aria-hidden>
+            <defs>
+              {/* O brilho da faísca que corre na ponta do traço — sem ele o
+                  ponto é só uma bolinha se movendo, seco igual ao resto. */}
+              <filter id="tj-glow" x="-200%" y="-200%" width="500%" height="500%">
+                <feGaussianBlur stdDeviation="4" result="blur" />
+                <feMerge>
+                  <feMergeNode in="blur" />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
+            </defs>
+
             {/* As rotas em fantasma, para o desenho ter onde correr. */}
             <g fill="none" stroke="#EEEBE0" strokeOpacity="0.14" strokeWidth="1">
               <path d={PATH_IN} />
@@ -172,6 +222,16 @@ export function TwoJobs() {
               <path className="tj-in" d={PATH_IN} pathLength={1} strokeDasharray="1 1" stroke="#EEEBE0" strokeWidth="2" />
               <path className="tj-a" d={PATH_A} pathLength={1} strokeDasharray="1 1" stroke="#B7C73E" strokeWidth="2.5" />
               <path className="tj-b" d={PATH_B} pathLength={1} strokeDasharray="1 1" stroke="#EEEBE0" strokeWidth="1.5" />
+            </g>
+
+            {/* A faísca: a ponta acesa do traço, correndo à frente dele —
+                é o que faz o preenchimento ler como tinta correndo, e não
+                como uma barra de progresso enchendo. Some assim que chega
+                onde o traço seguinte (ou o mostrador/régua) assume. */}
+            <g filter="url(#tj-glow)">
+              <circle className="tj-spark-in" r="4" fill="#EEEBE0" />
+              <circle className="tj-spark-a" r="4.5" fill="#B7C73E" />
+              <circle className="tj-spark-b" r="3.5" fill="#EEEBE0" />
             </g>
 
             <circle className="tj-start" cx="20" cy={SPLIT[1]} r="5" fill="#EEEBE0" />

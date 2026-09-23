@@ -21,7 +21,7 @@ export async function Cost() {
     <section data-nav-theme="dark" className="relative isolate overflow-hidden bg-night py-sec text-offwhite">
       <span
         aria-hidden
-        className="absolute -top-[20%] -right-[10%] -z-10 h-[70%] w-[60%] bg-[radial-gradient(closest-side,rgba(203,53,27,0.14),transparent)]"
+        className="absolute top-[8%] -right-[10%] -z-10 h-[70%] w-[60%] bg-[radial-gradient(closest-side,rgba(203,53,27,0.14),transparent)]"
       />
 
       <div className="wrap grid gap-[clamp(40px,6vw,96px)] lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)]">
