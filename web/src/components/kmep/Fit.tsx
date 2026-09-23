@@ -34,63 +34,80 @@ export function Fit() {
   return (
     <section ref={scope} className="bg-cream pb-sec text-forest">
       <div className="wrap">
-        <div className="rounded-[clamp(24px,2.4vw,44px)] bg-sage/45 px-[clamp(20px,4vw,72px)] py-[clamp(40px,5vw,88px)]">
-          <SplitLines className="text-[clamp(38px,4.6vw,88px)] leading-[0.95] tracking-[-0.04em]">{fit.heading}</SplitLines>
-
-          <div className="ft-cols relative mt-[clamp(32px,4vw,64px)] grid gap-10 lg:grid-cols-2 lg:gap-0">
-            {/* O fio vertical só existe lado a lado; empilhado, a segunda
-                coluna abre com um fio próprio. */}
-            <span aria-hidden className="ft-divider absolute top-0 left-1/2 hidden h-full w-px origin-top bg-forest/30 lg:block" />
-
-            <div className="lg:pr-[clamp(32px,4vw,72px)]">
-              <p className={`${eyebrow} flex items-center gap-3 text-olive`}>
-                <span aria-hidden className="grid size-6 place-items-center rounded-full bg-lime text-forest">
-                  <svg viewBox="0 0 16 16" className="size-3.5">
-                    <path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                </span>
-                {fit.fits.label}
-              </p>
-              <p className="mt-6 font-display text-[clamp(15px,1.2vw,18px)] text-forest/60">{fit.fits.lead}</p>
-              <ul className="mt-2">
-                {fit.fits.items.map((item) => (
-                  <li
-                    key={item}
-                    className="ft-yes border-b border-forest/15 py-4 font-display text-[clamp(20px,1.8vw,30px)] leading-[1.12] tracking-[-0.02em]"
-                  >
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <div className="border-t border-forest/30 pt-10 lg:border-t-0 lg:pt-0 lg:pl-[clamp(32px,4vw,72px)]">
-              <p className={`${eyebrow} flex items-center gap-3 text-kmep`}>
-                <span aria-hidden className="grid size-6 place-items-center rounded-full border border-kmep text-kmep">
-                  <svg viewBox="0 0 16 16" className="size-3">
-                    <path d="M3.5 3.5l9 9M12.5 3.5l-9 9" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                  </svg>
-                </span>
-                {fit.notFit.label}
-              </p>
-              <p className="mt-6 font-display text-[clamp(15px,1.2vw,18px)] text-forest/50">{fit.notFit.lead}</p>
-              <ul className="mt-2">
-                {fit.notFit.items.map((item) => (
-                  <li
-                    key={item}
-                    className="ft-no border-b border-forest/10 py-4 font-display text-[clamp(20px,1.8vw,30px)] leading-[1.12] tracking-[-0.02em] text-forest/50"
-                  >
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </div>
+        <div className="relative isolate overflow-hidden rounded-[clamp(20px,2vw,36px)] bg-night px-[clamp(20px,3.6vw,64px)] py-[clamp(32px,4.2vw,68px)] text-offwhite ring-1 ring-offwhite/10">
+          {/* O selo do produto: os mesmos anéis do bloco de dose (K13), incompletos
+              e girando — aqui em cheio, branco por fora e vermelho por dentro, sobre
+              o preto que o cartão herda da embalagem. */}
+          <div aria-hidden className="pointer-events-none absolute -top-[16%] -right-[10%] z-0 size-[clamp(240px,30vw,460px)] opacity-90">
+            <svg viewBox="0 0 100 100" className="size-full origin-center animate-spin motion-reduce:animate-none [animation-duration:32s]">
+              <circle cx="50" cy="50" r="46" fill="none" strokeWidth="3" strokeLinecap="round" strokeDasharray="205 285" className="stroke-offwhite" />
+            </svg>
+            <svg
+              viewBox="0 0 100 100"
+              className="absolute inset-[11%] size-[78%] origin-center animate-spin motion-reduce:animate-none [animation-direction:reverse] [animation-duration:22s]"
+            >
+              <circle cx="50" cy="50" r="40" fill="none" strokeWidth="4.5" strokeLinecap="round" strokeDasharray="150 264" className="stroke-kmep" />
+            </svg>
           </div>
 
-          <div className="mt-[clamp(40px,5vw,80px)] border-t-2 border-forest pt-[clamp(20px,2.4vw,36px)]">
-            <p className="max-w-[34ch] font-display text-[clamp(24px,2.6vw,46px)] leading-[1.06] tracking-[-0.03em]">
-              {fit.close[0]} <span className="text-forest/60">{fit.close[1]}</span>
-            </p>
+          <div className="relative z-10">
+            <SplitLines className="text-[clamp(26px,3vw,52px)] leading-[0.95] tracking-[-0.04em]">{fit.heading}</SplitLines>
+
+            <div className="ft-cols relative mt-[clamp(28px,3.6vw,52px)] grid gap-10 lg:grid-cols-2 lg:gap-0">
+              {/* O fio vertical só existe lado a lado; empilhado, a segunda
+                  coluna abre com um fio próprio. */}
+              <span aria-hidden className="ft-divider absolute top-0 left-1/2 hidden h-full w-px origin-top bg-offwhite/20 lg:block" />
+
+              <div className="lg:pr-[clamp(28px,3.6vw,64px)]">
+                <p className={`${eyebrow} flex items-center gap-3 text-lime`}>
+                  <span aria-hidden className="grid size-5 place-items-center rounded-full bg-lime text-forest">
+                    <svg viewBox="0 0 16 16" className="size-3">
+                      <path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </span>
+                  {fit.fits.label}
+                </p>
+                <p className="mt-4 font-display text-[clamp(12px,0.95vw,14px)] text-offwhite/60">{fit.fits.lead}</p>
+                <ul className="mt-3">
+                  {fit.fits.items.map((item) => (
+                    <li
+                      key={item}
+                      className="ft-yes border-b border-offwhite/15 py-4 font-display text-[clamp(15px,1.3vw,20px)] leading-[1.12] tracking-[-0.02em]"
+                    >
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="border-t border-offwhite/20 pt-9 lg:border-t-0 lg:pt-0 lg:pl-[clamp(28px,3.6vw,64px)]">
+                <p className={`${eyebrow} flex items-center gap-3 text-kmep-light`}>
+                  <span aria-hidden className="grid size-5 place-items-center rounded-full bg-kmep text-offwhite">
+                    <svg viewBox="0 0 16 16" className="size-2.5">
+                      <path d="M3.5 3.5l9 9M12.5 3.5l-9 9" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" />
+                    </svg>
+                  </span>
+                  {fit.notFit.label}
+                </p>
+                <p className="mt-4 font-display text-[clamp(12px,0.95vw,14px)] text-offwhite/40">{fit.notFit.lead}</p>
+                <ul className="mt-3">
+                  {fit.notFit.items.map((item) => (
+                    <li
+                      key={item}
+                      className="ft-no border-b border-offwhite/10 py-4 font-display text-[clamp(15px,1.3vw,20px)] leading-[1.12] tracking-[-0.02em] text-offwhite/35"
+                    >
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+
+            <div className="mt-[clamp(32px,4vw,56px)] border-t-2 border-kmep pt-[clamp(18px,2.2vw,28px)]">
+              <p className="max-w-[34ch] font-display text-[clamp(16px,1.6vw,26px)] leading-[1.15] tracking-[-0.03em]">
+                {fit.close[0]} <span className="text-offwhite/55">{fit.close[1]}</span>
+              </p>
+            </div>
           </div>
         </div>
       </div>

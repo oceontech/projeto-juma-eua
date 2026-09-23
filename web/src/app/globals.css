@@ -3157,3 +3157,63 @@ html[data-proof-overlap] .expertise-layer--dark .expertise-bg {
   padding: 0 var(--spacing-gut) var(--spacing-sec);
   text-align: right;
 }
+
+/* As bolinhas dos relógios do KMEP flutuam sem disputar o transform do scroll. */
+@keyframes kp-bubble-float {
+  0%, 100% { transform: translate(0, 0); }
+  35% { transform: translate(1.4px, -1px); }
+  70% { transform: translate(-1.1px, 1.2px); }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .kp-bubble-float { animation: kp-bubble-float 3s ease-in-out infinite; }
+}
+
+/* Slider de preço do milho (K11, Economics.tsx). O trilho pinta até o valor
+   com `--fill`, que o componente atualiza a cada movimento. */
+.ec-range {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 28px;
+  background: transparent;
+  cursor: pointer;
+}
+.ec-range::-webkit-slider-runnable-track {
+  height: 6px;
+  border-radius: 999px;
+  background: linear-gradient(to right, var(--color-lime) var(--fill), rgb(246 255 238 / 0.12) var(--fill));
+}
+.ec-range::-moz-range-track {
+  height: 6px;
+  border-radius: 999px;
+  background: rgb(246 255 238 / 0.12);
+}
+.ec-range::-moz-range-progress {
+  height: 6px;
+  border-radius: 999px;
+  background: var(--color-lime);
+}
+.ec-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 26px;
+  height: 26px;
+  margin-top: -10px;
+  border-radius: 999px;
+  background: var(--color-cream);
+  border: 5px solid var(--color-forest);
+  box-shadow: 0 0 0 2px var(--color-lime);
+  transition: transform 0.15s ease;
+}
+.ec-range::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  background: var(--color-cream);
+  border: 5px solid var(--color-forest);
+  box-shadow: 0 0 0 2px var(--color-lime);
+}
+.ec-range:active::-webkit-slider-thumb { transform: scale(1.15); }
+.ec-range:focus-visible { outline: none; }
+.ec-range:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 2px var(--color-lime), 0 0 0 6px rgb(183 199 62 / 0.35); }
+.ec-range:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 2px var(--color-lime), 0 0 0 6px rgb(183 199 62 / 0.35); }

@@ -63,6 +63,22 @@ export default async function RootLayout({
       className={`${archivo.variable} ${inter.variable} ${dmSans.variable}`}
     >
       <body suppressHydrationWarning>
+        {/* Zera a rolagem antes de qualquer hidratação, atrás do véu opaco
+            do <Preloader>. Sem isto, uma recarga com a posição preservada
+            pelo navegador deixa cada seção montar seu próprio ScrollTrigger
+            já rolada fundo — vários nascem com o ponto de partida no
+            passado, e o refresh() do <Preloader> que precisa reconciliar
+            todos de uma vez corrompe a lista interna do ScrollTrigger e
+            derruba a página. `useGSAP` usa `useLayoutEffect`, que dispara
+            antes de qualquer `useEffect` — inclusive o do próprio
+            <Preloader> —, então só um script síncrono, antes da hidratação,
+            chega a tempo. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              'if("scrollRestoration" in history){history.scrollRestoration="manual";}window.scrollTo(0,0);',
+          }}
+        />
         <Preloader />
         <ScrollRefresh />
         <SmoothAnchors />

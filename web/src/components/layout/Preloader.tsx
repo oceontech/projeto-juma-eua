@@ -50,6 +50,11 @@ export function Preloader() {
     const scrollWas = html.style.overflow;
     html.style.overflow = "hidden";
 
+    /* O zero da rolagem já aconteceu — ver o script inline em layout.tsx,
+       que roda antes de qualquer hidratação. useGSAP usa useLayoutEffect, que
+       dispara antes deste useEffect; se o zero morasse aqui, toda seção já
+       teria montado seu ScrollTrigger com a posição antiga. */
+
     const unlock = () => {
       html.style.overflow = scrollWas;
       /* As medidas do ScrollTrigger foram tiradas com a página parada. */

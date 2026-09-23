@@ -1,6 +1,7 @@
 "use client";
 
-import { Fragment, useRef } from "react";
+import Image from "next/image";
+import { useRef } from "react";
 import { useContent } from "@/components/layout/LocaleProvider";
 import { Counter } from "@/components/motion/Counter";
 import { SplitLines } from "@/components/motion/SplitLines";
@@ -12,10 +13,12 @@ import { eyebrow, microCaps } from "./ui";
  * cético para de rolar e lê. Anima menos que as vizinhas.
  *
  * Três camadas, cada uma numa escala de leitura: os dois números com o
- * mesmo peso e a diferença entre eles; as barras numa escala que começa em
- * zero e está rotulada (212 e 221 ficam quase do mesmo tamanho, porque são);
- * e o documento — a tabela do ensaio, com a linha das unidades originais, e o
- * artigo revisado por pares com a autoria declarada.
+ * mesmo peso, dentro de barras verticais numa escala que começa em zero e
+ * está rotulada (212 e 221 ficam quase da mesma altura, porque são), com a
+ * diferença amarrada ao topo do tratado;
+ * e o documento, desenhado em vez de tabelado — a ficha do ensaio com a
+ * conversão de unidades, e o artigo revisado por pares como esquema de
+ * protocolo e cartão de citação, com a autoria declarada.
  *
  * Nada de duas plantas de tamanhos diferentes: o resultado é tipografia.
  */
@@ -31,35 +34,60 @@ export function Proof() {
       mm.add("(prefers-reduced-motion: no-preference)", () => {
         gsap.fromTo(
           ".pr-bar",
-          { scaleX: 0 },
+          { clipPath: "inset(100% 0% 0% 0%)" },
           {
-            scaleX: 1,
+            clipPath: "inset(0% 0% 0% 0%)",
             duration: 1.5,
             ease: "power2.out",
-            stagger: 0.1,
-            scrollTrigger: { trigger: ".pr-bars", start: "top 85%", once: true },
+            stagger: 0.12,
+            scrollTrigger: { trigger: ".pr-bars", start: "top 75%", once: true },
           },
         );
         gsap.fromTo(
-          ".pr-rule",
-          { scaleX: 0 },
+          ".pr-diff",
+          { opacity: 0, x: -10 },
           {
-            scaleX: 1,
-            duration: 1.1,
-            ease: "expo.out",
-            stagger: 0.1,
-            scrollTrigger: { trigger: ".pr-table", start: "top 85%", once: true },
+            opacity: 1,
+            x: 0,
+            duration: 0.8,
+            delay: 1.3,
+            ease: "power2.out",
+            scrollTrigger: { trigger: ".pr-bars", start: "top 75%", once: true },
           },
         );
         gsap.fromTo(
-          ".pr-row",
-          { opacity: 0, y: 14 },
+          ".pr-jug",
+          { opacity: 0, y: 16 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.9,
+            delay: 1.1,
+            ease: "power2.out",
+            scrollTrigger: { trigger: ".pr-bars", start: "top 75%", once: true },
+          },
+        );
+        gsap.fromTo(
+          ".pr-table .pr-tile",
+          { opacity: 0, y: 16 },
           {
             opacity: 1,
             y: 0,
             duration: 0.8,
-            stagger: 0.1,
+            stagger: 0.07,
+            ease: "power2.out",
             scrollTrigger: { trigger: ".pr-table", start: "top 85%", once: true },
+          },
+        );
+        gsap.fromTo(
+          ".pr-dot",
+          { scale: 0 },
+          {
+            scale: 1,
+            duration: 0.45,
+            ease: "back.out(2)",
+            stagger: 0.018,
+            scrollTrigger: { trigger: ".pr-scheme", start: "top 80%", once: true },
           },
         );
       });
@@ -70,152 +98,322 @@ export function Proof() {
   const pct = (v: number) => `${(v / scale.max) * 100}%`;
 
   return (
-    <section id="proof" ref={scope} className="bg-cream py-sec text-forest">
+    <section id="proof" ref={scope} className="bg-cream py-sec text-night">
       <div className="wrap">
         <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,460px)] lg:items-end lg:gap-16">
           <div>
-            <p className={`${eyebrow} text-moss`}>{proof.label}</p>
-            <SplitLines className="mt-4 max-w-[12ch] text-[clamp(44px,5.6vw,108px)] leading-[0.93] tracking-[-0.04em] text-balance">
+            <p className={`${eyebrow} text-kmep`}>{proof.label}</p>
+            <SplitLines className="mt-4 max-w-[16ch] text-[clamp(28px,2.6vw,48px)] leading-[1.02] tracking-[-0.03em] text-balance">
               {proof.heading}
             </SplitLines>
           </div>
-          <p className={`${microCaps} text-[12px] text-forest/75`}>{proof.body}</p>
+          <p className={`${microCaps} text-[12px] text-night/75`}>{proof.body}</p>
         </div>
 
-        {/* Os dois números, com o mesmo peso. */}
-        <dl className="mt-[clamp(44px,6vw,96px)] grid grid-cols-2 border-t border-forest/25 lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)]">
-          <div className="pt-5 pr-4">
-            <dt className={`${microCaps} min-h-[33px] text-moss lg:min-h-0`}>{pair.check.label}</dt>
-            <dd className="mt-3 font-display text-[clamp(44px,8.4vw,164px)] leading-[0.82] tracking-[-0.05em]">
-              <Counter to={pair.check.value} decimals={1} duration={2} />
-              <span className="mt-2 block text-[clamp(13px,1.1vw,18px)] tracking-[0.02em] text-forest/55 sm:mt-0 sm:ml-2 sm:inline">{pair.unit}</span>
-            </dd>
-          </div>
-          <div className="col-span-2 row-start-2 flex items-baseline gap-4 border-t border-forest/15 py-4 lg:col-span-1 lg:row-start-auto lg:flex-col lg:items-center lg:gap-1 lg:border-t-0 lg:border-x lg:px-[clamp(20px,3vw,56px)] lg:pt-5 lg:pb-0">
-            <dt className={`${microCaps} text-moss`}>{pair.diff.label}</dt>
-            <dd className="font-display text-[clamp(26px,2.4vw,44px)] leading-none tracking-[-0.03em]">
+        {/* O gráfico: barras verticais numa escala que começa em zero, com o
+            número dentro de cada barra. 212 e 221 ficam quase da mesma altura,
+            porque são — a diferença aparece em vermelho, no topo do tratado. */}
+        <figure className="pr-bars mt-[clamp(44px,6vw,96px)]">
+          {/* No celular, a diferença vem antes do gráfico. */}
+          <div className="mb-6 flex items-baseline gap-4 border-y border-night/15 py-4 lg:hidden">
+            <p className={`${microCaps} text-kmep`}>{pair.diff.label}</p>
+            <p className="font-display text-[clamp(26px,7vw,40px)] leading-none tracking-[-0.03em] text-kmep">
               {pair.diff.value}
-              <span className="ml-1 text-[0.45em] tracking-[0.02em] text-forest/55">{pair.unit}</span>
-            </dd>
-            <dd className={`${microCaps} text-forest/60`}>{pair.diff.note}</dd>
+              <span className="ml-1 text-[0.45em] tracking-[0.02em] text-night/55">{pair.unit}</span>
+            </p>
+            <p className={`${microCaps} text-night/60`}>{pair.diff.note}</p>
           </div>
-          <div className="relative pt-5 pl-4 lg:pl-[clamp(20px,3vw,56px)]">
-            <span aria-hidden className="absolute top-[-1px] right-0 left-4 h-[2px] bg-lime lg:left-[clamp(20px,3vw,56px)]" />
-            <dt className={`${microCaps} min-h-[33px] text-moss lg:min-h-0`}>{pair.treated.label}</dt>
-            <dd className="mt-3 font-display text-[clamp(44px,8.4vw,164px)] leading-[0.82] tracking-[-0.05em]">
-              <Counter to={pair.treated.value} decimals={1} duration={2} />
-              <span className="mt-2 block text-[clamp(13px,1.1vw,18px)] tracking-[0.02em] text-forest/55 sm:mt-0 sm:ml-2 sm:inline">{pair.unit}</span>
-            </dd>
-          </div>
-        </dl>
 
-        {/* As barras, numa escala que começa em zero. */}
-        <div className="pr-bars mt-[clamp(36px,4vw,64px)]">
-          {[pair.check, pair.treated].map((row, i) => (
-            <div key={row.label} className="grid grid-cols-[minmax(0,1fr)] gap-1 py-2 sm:grid-cols-[180px_minmax(0,1fr)] sm:items-center sm:gap-5">
-              <p className={`${microCaps} text-[10px] text-forest/70`}>{row.label}</p>
-              <div className="relative h-3 bg-forest/[0.06]">
-                <span
-                  className={`pr-bar absolute inset-y-0 left-0 origin-left ${i === 0 ? "bg-forest/35" : "bg-forest"}`}
-                  style={{ width: pct(row.value) }}
-                >
-                  {/* No tratado, o trecho que passa da testemunha, em lima. */}
-                  {i === 1 && (
-                    <span
-                      className="absolute inset-y-0 right-0 bg-lime"
-                      style={{ width: `${((pair.treated.value - pair.check.value) / pair.treated.value) * 100}%` }}
-                    />
-                  )}
-                </span>
-              </div>
-            </div>
-          ))}
-          <div className="grid sm:grid-cols-[180px_minmax(0,1fr)] sm:gap-5">
-            <p className={`${microCaps} order-last mt-3 text-[10px] text-forest/55 sm:order-none sm:mt-0`}>{scale.label}</p>
-            <div className="relative h-8 border-t border-forest/30">
+          <p className={`${microCaps} mb-3 text-[10px] text-night/55`}>{scale.unit}</p>
+          <div className="grid grid-cols-[auto_minmax(0,1fr)] gap-3 sm:gap-4">
+            {/* Eixo Y. */}
+            <div aria-hidden className="relative h-[clamp(400px,46vw,640px)] w-7 sm:w-9">
               {ticks.map((t) => (
                 <span
                   key={t}
-                  className={`absolute top-0 flex flex-col font-display text-[10px] tracking-[0.08em] text-forest/60 ${t === 0 ? "items-start" : t === scale.max ? "-translate-x-full items-end" : "-translate-x-1/2 items-center"}`}
-                  style={{ left: pct(t) }}
+                  className="absolute right-0 translate-y-1/2 font-display text-[10px] tracking-[0.08em] text-night/60"
+                  style={{ bottom: pct(t) }}
                 >
-                  <span className="h-1.5 w-px bg-forest/40" />
-                  <span className="mt-1">{t === scale.max ? `${t} ${scale.unit}` : t}</span>
+                  {t}
                 </span>
               ))}
             </div>
-          </div>
-        </div>
 
-        {/* O documento. */}
+            {/* Área do gráfico. */}
+            <div className="relative h-[clamp(400px,46vw,640px)] border-b border-night/40">
+              {ticks.slice(1).map((t) => (
+                <span key={t} aria-hidden className="absolute inset-x-0 h-px bg-night/10" style={{ bottom: pct(t) }} />
+              ))}
+
+              <dl className="absolute inset-0 grid grid-cols-2 items-end gap-[clamp(10px,3vw,48px)] px-[clamp(6px,2vw,32px)] lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,0.8fr)]">
+                {/* Testemunha. */}
+                <div className="pr-bar relative flex flex-col bg-[#DAD5C6]" style={{ height: pct(pair.check.value) }}>
+                  <div className="p-[clamp(10px,1.4vw,24px)]">
+                    <dt className={`${microCaps} text-[10px] text-night/75`}>{pair.check.label}</dt>
+                    <dd className="mt-3 font-display text-[clamp(32px,5.6vw,104px)] leading-[0.85] tracking-[-0.05em]">
+                      <Counter to={pair.check.value} decimals={1} duration={2} />
+                      <span className="mt-2 block text-[clamp(12px,1vw,16px)] tracking-[0.02em] text-night/55">{pair.unit}</span>
+                    </dd>
+                  </div>
+                </div>
+
+                {/* Tratado, em preto: o trecho que passa da testemunha, no vermelho do produto, no topo. */}
+                <div className="pr-bar relative flex flex-col bg-night text-cream" style={{ height: pct(pair.treated.value) }}>
+                  <span
+                    aria-hidden
+                    className="block shrink-0 bg-kmep"
+                    style={{ height: `${((pair.treated.value - pair.check.value) / pair.treated.value) * 100}%` }}
+                  />
+                  <div className="p-[clamp(10px,1.4vw,24px)]">
+                    <dt className={`${microCaps} text-[10px] text-kmep-light`}>{pair.treated.label}</dt>
+                    <dd className="mt-3 font-display text-[clamp(32px,5.6vw,104px)] leading-[0.85] tracking-[-0.05em]">
+                      <Counter to={pair.treated.value} decimals={1} duration={2} />
+                      <span className="mt-2 block text-[clamp(12px,1vw,16px)] tracking-[0.02em] text-cream/55">{pair.unit}</span>
+                    </dd>
+                  </div>
+                  {/* O jarro, no pé da barra — o que fez a diferença acima dele. */}
+                  <div className="pr-jug absolute right-[clamp(10px,1.4vw,24px)] bottom-[clamp(10px,1.4vw,24px)] left-[clamp(10px,1.4vw,24px)] h-[clamp(90px,11vw,180px)]">
+                    <Image
+                      src="/img/pack-kmep-us.webp"
+                      alt=""
+                      fill
+                      sizes="(min-width: 1024px) 20vw, 40vw"
+                      className="object-contain object-bottom"
+                    />
+                  </div>
+                </div>
+
+                {/* A diferença, amarrada ao trecho em vermelho por um colchete. */}
+                <div className="relative hidden h-full lg:block">
+                  <span
+                    aria-hidden
+                    className="pr-diff absolute left-0 w-3 border-y-2 border-r-2 border-kmep"
+                    style={{
+                      bottom: pct(pair.check.value),
+                      height: pct(pair.treated.value - pair.check.value),
+                    }}
+                  />
+                  <div
+                    className="pr-diff absolute left-[clamp(28px,2.4vw,44px)]"
+                    style={{ bottom: `calc(${pct(pair.treated.value)} + clamp(16px, 1.6vw, 24px))` }}
+                  >
+                    <dt className={`${microCaps} text-kmep`}>{pair.diff.label}</dt>
+                    <dd className="mt-2 font-display text-[clamp(44px,4.6vw,88px)] leading-none tracking-[-0.04em] text-kmep">
+                      {pair.diff.value}
+                      <span className="ml-1 text-[0.32em] tracking-[0.02em] text-night/55">{pair.unit}</span>
+                    </dd>
+                    <dd className={`${microCaps} mt-2 text-night/60`}>{pair.diff.note}</dd>
+                  </div>
+                </div>
+              </dl>
+
+              {/* O nível da testemunha, atravessando as duas barras. */}
+              <span
+                aria-hidden
+                className="pointer-events-none absolute inset-x-0 border-t border-dashed border-night/45"
+                style={{ bottom: pct(pair.check.value) }}
+              />
+            </div>
+          </div>
+          <figcaption className={`${microCaps} mt-4 text-[10px] text-night/55`}>{scale.label}</figcaption>
+        </figure>
+
+        {/* A ficha do ensaio: quatro fatos com ícone e a conversão de unidades. */}
         <div className="pr-table mt-[clamp(56px,7vw,112px)]">
-          <p className={`${eyebrow} text-moss`}>{table.label}</p>
-          <p className={`${microCaps} mt-3 max-w-[70ch] text-[12px] text-forest/75`}>{table.intro}</p>
-          <div className="mt-6 overflow-x-auto">
-            <table className="w-full min-w-[760px] border-collapse text-left">
-              <thead>
-                <tr>
-                  {table.columns.map((col) => (
-                    <th key={col} scope="col" className={`${microCaps} pb-3 pr-4 text-[10px] font-normal text-moss`}>
-                      {col}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {table.rows.map((row, r) => (
-                  <Fragment key={r}>
-                    <tr aria-hidden>
-                      <td colSpan={table.columns.length} className="p-0">
-                        <span className={`pr-rule block origin-left ${r === 0 ? "h-[2px] bg-forest" : "h-px bg-forest/25"}`} />
-                      </td>
-                    </tr>
-                    <tr className="pr-row">
-                      {row.map((cell, c) => (
-                        <td
-                          key={c}
-                          className={`py-4 pr-4 align-baseline ${r === 0 ? "font-display text-[clamp(16px,1.3vw,20px)] tracking-[-0.01em]" : `${microCaps} text-[11px] text-forest/60`} ${r === 0 && (c === 2 || c === 4) ? "font-medium" : ""}`}
-                        >
-                          {cell}
-                        </td>
-                      ))}
-                    </tr>
-                  </Fragment>
-                ))}
-                <tr aria-hidden>
-                  <td colSpan={table.columns.length} className="p-0">
-                    <span className="pr-rule block h-px origin-left bg-forest/25" />
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-baseline sm:justify-between sm:gap-10">
+            <p className={`${eyebrow} text-kmep`}>{table.label}</p>
+            <p className={`${microCaps} max-w-[62ch] text-[11px] text-night/60 sm:text-right`}>{table.intro}</p>
           </div>
-        </div>
 
-        {/* O artigo revisado por pares, separado por régua. */}
-        <div className="mt-[clamp(56px,7vw,112px)] grid gap-10 border-t-2 border-forest pt-[clamp(28px,3vw,44px)] lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:gap-16">
-          <div>
-            <p className={`${eyebrow} text-moss`}>{paper.label}</p>
-            <h3 className="mt-4 max-w-[24ch] text-[clamp(24px,2.3vw,40px)] leading-[1.06] tracking-[-0.025em]">{paper.heading}</h3>
-            <p className={`${microCaps} mt-5 max-w-[62ch] text-[12px] text-forest/75`}>{paper.body}</p>
-          </div>
-          <div>
-            <dl>
-              {paper.facts.map((fact) => (
-                <div key={fact.k} className="grid grid-cols-[110px_minmax(0,1fr)] gap-4 border-t border-forest/15 py-3 sm:grid-cols-[140px_minmax(0,1fr)]">
-                  <dt className={`${microCaps} text-[10px] text-moss`}>{fact.k}</dt>
-                  <dd className="font-display text-[clamp(15px,1.2vw,18px)] leading-[1.25] tracking-[-0.005em] [overflow-wrap:anywhere]">
-                    {fact.v}
+          <dl className="mt-6 grid grid-cols-2 gap-px overflow-hidden border border-night/15 bg-night/15 lg:grid-cols-4">
+            {table.facts.map((fact) => (
+              <div key={fact.k} className="pr-tile relative flex flex-col gap-5 bg-cream p-[clamp(16px,2vw,28px)]">
+                <span className="absolute top-[clamp(16px,2vw,28px)] right-[clamp(16px,2vw,28px)] grid size-10 place-items-center rounded-full bg-night text-kmep-light">
+                  <FactIcon name={fact.icon} />
+                </span>
+                <div className="max-w-[calc(100%-56px)]">
+                  <dt className={`${microCaps} text-[10px] text-night/55`}>{fact.k}</dt>
+                  <dd className="mt-2 font-display text-[clamp(20px,1.9vw,30px)] leading-none tracking-[-0.02em]">
+                    {fact.pending ? (
+                      <span className="inline-flex items-center gap-2 rounded-full border border-night/20 px-3 py-1.5 text-[clamp(13px,1vw,15px)] tracking-normal">
+                        <span className="relative flex size-2">
+                          <span className="absolute inset-0 animate-ping rounded-full bg-kmep-light opacity-70 motion-reduce:hidden" />
+                          <span className="relative size-2 rounded-full bg-kmep" />
+                        </span>
+                        {fact.v}
+                      </span>
+                    ) : (
+                      fact.v
+                    )}
+                  </dd>
+                </div>
+              </div>
+            ))}
+          </dl>
+
+          {/* Unidades americanas ⇄ unidades do ensaio. */}
+          <div className="mt-4">
+            <p className={`${microCaps} text-[10px] text-night/55`}>{table.original.label}</p>
+            <dl className="mt-3 grid gap-3 sm:grid-cols-3">
+              {table.original.rows.map((row, i) => (
+                <div
+                  key={row.k}
+                  className={`pr-tile flex items-center justify-between gap-3 px-4 py-3 ${i === 0 ? "bg-night text-cream" : i === 2 ? "bg-kmep text-cream" : "bg-[#E4E0D3]"}`}
+                >
+                  <dt className={`${microCaps} text-[10px] text-night/65`}>{row.k}</dt>
+                  <dd className="flex items-center gap-2 font-display text-[clamp(14px,1.1vw,17px)] tracking-[-0.01em] whitespace-nowrap">
+                    <span className="font-medium">{row.us}</span>
+                    <svg aria-hidden viewBox="0 0 16 10" className="w-4 text-night/40" fill="none" stroke="currentColor" strokeWidth="1.3">
+                      <path d="M1 3h13m-3-2 3 2-3 2M15 7H2m3-2-3 2 3 2" />
+                    </svg>
+                    <span className="text-night/55">{row.orig}</span>
                   </dd>
                 </div>
               ))}
             </dl>
-            <p className="mt-6 border-l-2 border-lime pl-4 text-[13px] leading-[1.6] text-forest/75">{paper.disclosure}</p>
           </div>
         </div>
 
-        <p className={`${microCaps} mt-[clamp(40px,5vw,72px)] max-w-[80ch] text-[10px] text-forest/55`}>{proof.footnote}</p>
+        {/* O artigo revisado por pares: o protocolo desenhado e a citação. */}
+        <div className="mt-[clamp(56px,7vw,112px)] grid gap-10 border-t-2 border-night pt-[clamp(28px,3vw,44px)] lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)] lg:gap-16">
+          <div>
+            <p className={`${eyebrow} text-kmep`}>{paper.label}</p>
+            <h3 className="mt-4 max-w-[26ch] text-[clamp(22px,2vw,34px)] leading-[1.08] tracking-[-0.025em]">{paper.heading}</h3>
+            <ul className="mt-5 flex flex-wrap gap-2">
+              {paper.chips.map((chip) => (
+                <li key={chip} className={`${microCaps} rounded-full bg-night px-3 py-1.5 text-[10px] text-cream`}>
+                  {chip}
+                </li>
+              ))}
+            </ul>
+
+            {/* Tratamentos × aplicações. */}
+            <figure className="pr-scheme mt-8 border border-night/15 p-[clamp(16px,2vw,28px)]">
+              <div className="flex flex-wrap items-baseline justify-between gap-3">
+                <p className={`${microCaps} text-[10px] text-kmep`}>{paper.scheme.label}</p>
+                <div className={`${microCaps} flex flex-wrap gap-4 text-[10px] text-night/60`}>
+                  <span className="flex items-center gap-2">
+                    <span className="size-2.5 rounded-full border border-night/45" />
+                    {paper.scheme.legend.insecticide}
+                  </span>
+                  <span className="flex items-center gap-2">
+                    <span className="size-2.5 rounded-full bg-kmep" />
+                    {paper.scheme.legend.kmep}
+                  </span>
+                </div>
+              </div>
+              <div className="mt-5 space-y-5">
+                {paper.scheme.treatments.map((tr, r) => (
+                  <div key={tr.label}>
+                    <p className="flex items-center gap-2 text-[13px] leading-snug text-night/80">
+                      <span className="grid size-5 shrink-0 place-items-center rounded-full bg-night text-[10px] text-cream">{r + 1}</span>
+                      {tr.label}
+                    </p>
+                    <div className="mt-2 grid grid-cols-[repeat(15,minmax(0,1fr))] gap-[clamp(3px,0.5vw,8px)]">
+                      {Array.from({ length: paper.scheme.applications }, (_, i) => {
+                        const on = tr.kmep === "all" || (tr.kmep === "alternate" && i % 2 === 0);
+                        return (
+                          <span
+                            key={i}
+                            aria-hidden
+                            className={`pr-dot aspect-square max-w-7 rounded-full ${on ? "bg-kmep" : "border border-night/30"}`}
+                          />
+                        );
+                      })}
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div aria-hidden className="mt-2 grid grid-cols-[repeat(15,minmax(0,1fr))] gap-[clamp(3px,0.5vw,8px)] font-display text-[10px] text-night/45">
+                {Array.from({ length: paper.scheme.applications }, (_, i) => (
+                  <span key={i} className="max-w-7 text-center">
+                    {i === 0 || (i + 1) % 5 === 0 ? i + 1 : ""}
+                  </span>
+                ))}
+              </div>
+              <figcaption className={`${microCaps} mt-4 text-[10px] text-night/50`}>{paper.scheme.note}</figcaption>
+            </figure>
+
+            <p className="mt-5 flex items-start gap-3 font-display text-[clamp(17px,1.4vw,22px)] leading-snug tracking-[-0.01em]">
+              <span className="mt-0.5 grid size-6 shrink-0 place-items-center rounded-full bg-kmep text-cream">
+                <svg aria-hidden viewBox="0 0 12 12" className="w-3" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M2 6.5 5 9l5-6" />
+                </svg>
+              </span>
+              {paper.result}
+            </p>
+          </div>
+
+          <div className="flex flex-col gap-6">
+            {/* O cartão de citação. */}
+            <div className="pr-cite relative overflow-hidden bg-night p-[clamp(22px,2.6vw,40px)] text-cream">
+              <span aria-hidden className="absolute inset-y-0 left-0 w-1.5 bg-kmep" />
+              <p className={`${microCaps} text-[10px] text-kmep-light`}>{paper.citation.label}</p>
+              <p className="mt-4 font-display text-[clamp(30px,3vw,52px)] leading-none tracking-[-0.035em]">{paper.citation.journal}</p>
+              <p className="mt-2 font-display text-[clamp(15px,1.2vw,18px)] text-cream/70">{paper.citation.issue}</p>
+              <p className="mt-8 border-t border-cream/15 pt-4 font-mono text-[12px] text-cream/60 [overflow-wrap:anywhere]">
+                DOI {paper.citation.doi}
+              </p>
+              <a
+                href={paper.citation.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`${microCaps} mt-5 inline-flex items-center gap-2 bg-kmep px-4 py-3 text-[11px] text-cream transition-colors hover:bg-cream hover:text-night`}
+              >
+                {paper.citation.cta}
+                <svg aria-hidden viewBox="0 0 12 12" className="w-3" fill="none" stroke="currentColor" strokeWidth="1.6">
+                  <path d="M3 9 9 3M4 3h5v5" />
+                </svg>
+              </a>
+            </div>
+            <p className="border-l-2 border-kmep pl-4 text-[13px] leading-[1.6] text-night/70">{paper.disclosure}</p>
+          </div>
+        </div>
+
+        <p className={`${microCaps} mt-[clamp(40px,5vw,72px)] max-w-[80ch] text-[10px] text-night/55`}>{proof.footnote}</p>
       </div>
     </section>
   );
+}
+
+/** Ícones de traço da ficha do ensaio. */
+function FactIcon({ name }: { name: string }) {
+  const common = {
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: 1.5,
+    className: "w-5",
+    "aria-hidden": true,
+  } as const;
+  switch (name) {
+    case "crop":
+      return (
+        <svg {...common}>
+          <path d="M12 3c2.2 1.6 3 4.2 3 7.5S14 17 12 18c-2-1-3-4.2-3-7.5S9.8 4.6 12 3Z" />
+          <path d="M9.3 8h5.4M9 11h6M9.4 14h5.2M12 18v3M12 21c-2-2.5-5-3-7-3 1 2 3.5 3 7 3Zm0 0c2-2.5 5-3 7-3-1 2-3.5 3-7 3Z" />
+        </svg>
+      );
+    case "pin":
+      return (
+        <svg {...common}>
+          <path d="M12 21s-6.5-6-6.5-11a6.5 6.5 0 0 1 13 0c0 5-6.5 11-6.5 11Z" />
+          <circle cx="12" cy="10" r="2.4" />
+        </svg>
+      );
+    case "source":
+      return (
+        <svg {...common}>
+          <path d="M6 3h8l4 4v14H6Z" />
+          <path d="M14 3v4h4M9 12h6M9 15.5h6M9 19h3.5" />
+        </svg>
+      );
+    default:
+      return (
+        <svg {...common}>
+          <rect x="4" y="5.5" width="16" height="14.5" rx="1" />
+          <path d="M4 10h16M8.5 3.5v4M15.5 3.5v4" />
+        </svg>
+      );
+  }
 }

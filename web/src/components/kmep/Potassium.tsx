@@ -10,19 +10,30 @@ import { eyebrow, fix, microCaps } from "./ui";
 /* Cada etapa ocupa uma unidade da linha do tempo; cada freio, meia. */
 const BRAKE = 0.5;
 
-/* Os mostradores: um arco por etapa, com uma folga entre eles. */
-const RING = { c: 50, r: 42, gap: 5 };
-function arcs(n: number) {
-  const point = (deg: number): [number, number] => {
-    const rad = (deg * Math.PI) / 180;
-    return [fix(RING.c + RING.r * Math.cos(rad)), fix(RING.c + RING.r * Math.sin(rad))];
-  };
+/* Os mostradores: o ponteiro percorre exatamente o ângulo de cada arco. */
+const RING = { c: 50, r: 42, fillR: 29, gap: 5 };
+const BUBBLES = [
+  { radius: 25, size: 1.7, dx: 2.1, dy: -1.3 },
+  { radius: 33, size: 1.4, dx: -1.8, dy: 1.5 },
+  { radius: 28, size: 1.9, dx: 1.5, dy: 1.6 },
+  { radius: 23, size: 1.4, dx: -1.4, dy: -1.3 },
+  { radius: 31, size: 1.8, dx: 1.8, dy: -1.2 },
+  { radius: 26, size: 1.5, dx: -1.6, dy: 1.4 },
+  { radius: 35, size: 1.4, dx: 1.2, dy: 1.5 },
+  { radius: 29, size: 1.7, dx: -1.4, dy: -1.1 },
+  { radius: 24, size: 1.3, dx: 1.5, dy: -1.3 },
+];
+const ringPoint = (deg: number, radius: number): [number, number] => {
+  const rad = (deg * Math.PI) / 180;
+  return [fix(RING.c + radius * Math.cos(rad)), fix(RING.c + radius * Math.sin(rad))];
+};
+function arcs(n: number, radius = RING.r) {
   return Array.from({ length: n }, (_, k) => {
     const a0 = -90 + (360 * k) / n + RING.gap;
     const a1 = -90 + (360 * (k + 1)) / n - RING.gap;
-    const [x0, y0] = point(a0);
-    const [x1, y1] = point(a1);
-    return `M${x0} ${y0} A${RING.r} ${RING.r} 0 ${a1 - a0 > 180 ? 1 : 0} 1 ${x1} ${y1}`;
+    const [x0, y0] = ringPoint(a0, radius);
+    const [x1, y1] = ringPoint(a1, radius);
+    return `M${x0} ${y0} A${radius} ${radius} 0 ${a1 - a0 > 180 ? 1 : 0} 1 ${x1} ${y1}`;
   });
 }
 /* A marca de freio no mostrador do solo: na folga entre dois arcos. */
@@ -36,6 +47,14 @@ function notch(k: number, n: number) {
 }
 
 type RouteKind = "soil" | "foliar";
+/* No solo, pontos antigos se apagam no lugar: 8 → 7 → 6 → 5 no total. */
+const SOIL_STAGES = [
+  { count: 8, retire: [] },
+  { count: 3, retire: [1, 3, 5, 7] },
+  { count: 3, retire: [2, 6, 8, 10] },
+  { count: 2, retire: [4, 11, 13] },
+];
+const bubbleCount = (kind: RouteKind, stage: number) => kind === "soil" ? (SOIL_STAGES[stage]?.count ?? 2) : BUBBLES.length;
 
 /**
  * K7 — Trabalho 2. Depois do escuro, o claro: o potássio, com seção própria
@@ -52,7 +71,7 @@ type RouteKind = "soil" | "foliar";
  * Quando as duas completam, a frase do solo entra sozinha, em máscara.
  */
 export function Potassium() {
-  const { potassium } = useContent().kmep;
+  const { potassium, timing } = useContent().kmep;
   const { routes } = potassium;
   const scope = useRef<HTMLElement>(null);
 
@@ -66,6 +85,8 @@ export function Potassium() {
           const segs = gsap.utils.toArray<HTMLElement>(`.kp-${kind} .kp-seg`);
           const brakes = gsap.utils.toArray<HTMLElement>(`.kp-${kind} .kp-brake`);
           const rings = gsap.utils.toArray<SVGPathElement>(`.kp-${kind} .kp-arc`);
+          const fills = gsap.utils.toArray<SVGPathElement>(`.kp-${kind} .kp-fill`);
+          const allBubbles = gsap.utils.toArray<SVGCircleElement>(`.kp-${kind} .kp-bubble`);
           const spark = `.kp-${kind} .kp-spark`;
           const hand = `.kp-${kind} .kp-hand`;
           const color = kind === "soil" ? "#435630" : "#B7C73E";
@@ -79,16 +100,32 @@ export function Potassium() {
               .to(node, { scale: 1, duration: 0.3, ease: "power2.out" }, t + 0.16)
               .fromTo(node.nextElementSibling, { opacity: 0.35 }, { opacity: 1, duration: 0.3, ease: "sine.out" }, t)
               .fromTo(rings[k], { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 0.8, ease: "none" }, t)
+              .fromTo(fills[k], { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 0.8, ease: "none" }, t)
               .fromTo(
                 hand,
-                { rotation: (360 * k) / n, svgOrigin: `${RING.c} ${RING.c}` },
-                { rotation: (360 * (k + 1)) / n, duration: 0.8, ease: "none", immediateRender: k === 0 },
+                { rotation: (360 * k) / n + RING.gap, svgOrigin: `${RING.c} ${RING.c}` },
+                { rotation: (360 * (k + 1)) / n - RING.gap, duration: 0.8, ease: "none", immediateRender: k === 0 },
                 t,
               )
               /* A faísca que corre na ponta do arco enquanto ele se enche —
                  sem ela o preenchimento é só uma fatia crescendo, seca. */
               .fromTo(spark, { opacity: 1 }, { motionPath: { path: rings[k], alignOrigin: [0.5, 0.5] }, duration: 0.8, ease: "none" }, t)
               .to(spark, { opacity: 0, duration: 0.12, ease: "sine.in" }, t + 0.72);
+            if (kind === "soil" && k > 0) {
+              tl.to(SOIL_STAGES[k].retire.map((i) => allBubbles[i]), { opacity: 0, duration: 0.35, ease: "sine.inOut" }, t);
+            }
+            const count = bubbleCount(kind, k);
+            const bubbles = gsap.utils.toArray<SVGCircleElement>(`.kp-${kind} .kp-bubble-stage-${k} .kp-bubble`);
+            bubbles.forEach((bubble, i) => {
+              const { dx, dy } = BUBBLES[i];
+              const fraction = (i + 1) / (count + 1);
+              tl.fromTo(
+                bubble,
+                { opacity: 0, x: -dx, y: -dy },
+                { opacity: 1, x: dx, y: dy, duration: 0.48, ease: "sine.out" },
+                t + 0.8 * fraction + 0.04,
+              );
+            });
             if (k === n - 1) return;
             if (brakes[k]) {
               tl.fromTo(brakes[k], { opacity: 0.25, scale: 0.7 }, { opacity: 1, scale: 1, duration: 0.22, ease: "back.out(2)" }, t + 0.8);
@@ -96,6 +133,7 @@ export function Potassium() {
             }
             tl.fromTo(segs[k], { [axis]: 0 }, { [axis]: 1, duration: 0.8, ease: "none" }, t + 0.2);
             t += 1;
+            tl.to(hand, { rotation: (360 * (k + 1)) / n + RING.gap, duration: 0.2, ease: "none" }, t - 0.2);
           });
         });
         return tl;
@@ -113,7 +151,7 @@ export function Potassium() {
             build(gsap.timeline({ paused: true }), desktop ? "scaleX" : "scaleY").progress(1);
             return;
           }
-          build(
+          const timeline = build(
             gsap.timeline({
               defaults: { ease: "power2.out" },
               scrollTrigger: desktop
@@ -122,6 +160,15 @@ export function Potassium() {
             }),
             desktop ? "scaleX" : "scaleY",
           );
+          if (desktop) {
+            timeline.fromTo(".kp-product", { scale: 0.6 }, { scale: 1, duration: timeline.duration(), ease: "none" }, 0);
+          } else {
+            gsap.fromTo(".kp-product", { scale: 0.6 }, {
+              scale: 1,
+              ease: "none",
+              scrollTrigger: { trigger: ".kp-product-frame", start: "top 85%", end: "bottom 40%", scrub: 0.6 },
+            });
+          }
         },
       );
     },
@@ -131,9 +178,11 @@ export function Potassium() {
   const route = (kind: RouteKind) => {
     const data = routes[kind];
     const n = data.steps.length;
+    const ringArcs = arcs(n);
+    const fillArcs = arcs(n, RING.fillR);
     return (
       <div
-        className={`kp-${kind} grid grid-cols-[76px_minmax(0,1fr)] items-start gap-x-5 gap-y-4 border-t border-forest/15 pt-6 lg:grid-cols-[180px_minmax(0,1fr)] lg:items-center lg:gap-x-10 lg:pt-8`}
+        className={`kp-${kind} relative grid grid-cols-[76px_minmax(0,1fr)] items-start gap-x-5 gap-y-4 border-t border-forest/15 pt-6 lg:grid-cols-[180px_minmax(0,1fr)] lg:items-center lg:gap-x-10 lg:pt-8`}
       >
         <div className="flex flex-col items-start gap-3">
           <svg viewBox="0 0 100 100" aria-hidden className="w-[64px] lg:w-[104px]">
@@ -149,7 +198,21 @@ export function Potassium() {
               </filter>
             </defs>
             <circle cx={RING.c} cy={RING.c} r={RING.r} fill="none" stroke="#16261B" strokeOpacity="0.1" strokeWidth="7" />
-            {arcs(n).map((d) => (
+            <circle cx={RING.c} cy={RING.c} r={RING.fillR} fill="none" stroke="#16261B" strokeOpacity="0.06" strokeWidth="19" />
+            {fillArcs.map((d) => (
+              <path
+                key={d}
+                className="kp-fill"
+                d={d}
+                pathLength={1}
+                strokeDasharray="1 1"
+                fill="none"
+                stroke={kind === "soil" ? "#435630" : "#B7C73E"}
+                strokeOpacity={kind === "soil" ? 0.22 : 0.38}
+                strokeWidth="19"
+              />
+            ))}
+            {ringArcs.map((d) => (
               <path
                 key={d}
                 className="kp-arc"
@@ -173,6 +236,27 @@ export function Potassium() {
               filter={`url(#kp-glow-${kind})`}
               opacity="0"
             />
+            {Array.from({ length: n }, (_, k) => {
+              const count = bubbleCount(kind, k);
+              return (
+                <g key={k} className={`kp-bubble-stage-${k}`}>
+                  {BUBBLES.slice(0, count).map(({ radius, size }, i) => {
+                    const fraction = (i + 1) / (count + 1);
+                    const angle = -90 + (360 * k) / n + RING.gap + (360 / n - 2 * RING.gap) * fraction;
+                    const [cx, cy] = ringPoint(angle, radius);
+                    return (
+                      <g
+                        key={i}
+                        className="kp-bubble-float"
+                        style={{ animationDuration: `${2.8 + i * 0.6 + (k % 2) * 0.35}s`, animationDelay: `${-(k * BUBBLES.length + i) * 0.53}s` }}
+                      >
+                        <circle className="kp-bubble" cx={cx} cy={cy} r={size} fill="#435630" opacity="0" />
+                      </g>
+                    );
+                  })}
+                </g>
+              );
+            })}
             {/* O ponteiro, desenhado no fim do curso. */}
             <line className="kp-hand" x1={RING.c} y1={RING.c} x2={RING.c} y2={RING.c - 30} stroke="#16261B" strokeWidth="2.5" strokeLinecap="round" />
             <circle cx={RING.c} cy={RING.c} r="3.5" fill="#16261B" />
@@ -207,12 +291,23 @@ export function Potassium() {
             </li>
           ))}
         </ol>
+        {kind === "foliar" && (
+          <div className="kp-product-frame relative col-start-2 mt-4 aspect-[376/235] w-full max-w-[376px] lg:absolute lg:top-10 lg:right-0 lg:mt-0 lg:w-[min(33%,376px)]">
+            <Image
+              src="/img/pack-kmep-us.webp"
+              alt={timing.jugAlt}
+              fill
+              sizes="(min-width: 1024px) 376px, 100vw"
+              className="kp-product object-contain drop-shadow-[0_18px_24px_rgba(22,38,27,0.18)]"
+            />
+          </div>
+        )}
       </div>
     );
   };
 
   return (
-    <section ref={scope} className="relative overflow-clip bg-[#E9EBCB] text-forest">
+    <section ref={scope} className="relative overflow-clip bg-cream text-forest">
       <div className="wrap grid gap-6 pt-sec lg:grid-cols-[minmax(0,1fr)_minmax(0,440px)] lg:items-end lg:gap-16">
         <div>
           <p className={`${eyebrow} text-moss`}>{potassium.label}</p>

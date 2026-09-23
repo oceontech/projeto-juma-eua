@@ -249,12 +249,21 @@ export const proof = {
   table: {
     label: "The trial, in full",
     intro: "One trial, published whole. When we have more, they'll be here too, including the ones that didn't separate.",
-    columns: ["Crop", "Location", "Treated", "Untreated check", "Difference", "Source", "Year"],
-    rows: [
-      /* TODO(P21): trocar "Being confirmed" pelo ano do ensaio. */
-      ["Corn", "Brazil", "221.3 bu/ac", "212.3 bu/ac", "+8.9 (+4.2%)", "Rehagro", "Being confirmed"],
-      ["", "Original units", "231.45 sc/ha", "222.12 sc/ha", "+9.33 sc/ha", "", ""],
+    facts: [
+      { k: "Crop", v: "Corn", icon: "crop" },
+      { k: "Location", v: "Brazil", icon: "pin" },
+      { k: "Source", v: "Rehagro", icon: "source" },
+      /* TODO(P21): trocar "Being confirmed" pelo ano do ensaio e tirar o `pending`. */
+      { k: "Year", v: "Being confirmed", icon: "year", pending: true },
     ],
+    original: {
+      label: "Original units",
+      rows: [
+        { k: "Treated", us: "221.3 bu/ac", orig: "231.45 sc/ha" },
+        { k: "Untreated check", us: "212.3 bu/ac", orig: "222.12 sc/ha" },
+        { k: "Difference", us: "+8.9 bu/ac", orig: "+9.33 sc/ha" },
+      ],
+    },
   },
   /* O artigo revisado por pares. O incremento exato de produtividade está em
      figura no artigo e depende da P32; a autorização para citá-lo também.
@@ -262,13 +271,29 @@ export const proof = {
   paper: {
     label: "And a second one, peer-reviewed",
     heading: "Randomized blocks, a third-party station, and a journal that published it.",
-    body: "Cotton, 2021 season, run at an independent experimental station in Rio Verde, Goiás. Randomized block design, three treatments: the recommended insecticide program alone, the same program with KMEP Ultra® in every application, and the same program with KMEP Ultra® in alternate applications. Fifteen applications, manual harvest and a yield assessment at the end. Both KMEP Ultra® treatments out-yielded the check.",
-    facts: [
-      { k: "Design", v: "Randomized blocks · 3 treatments" },
-      { k: "Station", v: "Independent · Rio Verde, Goiás" },
-      { k: "Published in", v: "Revista Foco · v.16 n.2 · 2023" },
-      { k: "DOI", v: "10.54751/revistafoco.v16n2-129" },
-    ],
+    chips: ["Cotton", "2021 season", "Rio Verde, Goiás", "Independent station", "Randomized blocks", "Manual harvest"],
+    /* Esquema do protocolo: três tratamentos, quinze aplicações. A ordem das
+       aplicações alternadas é ilustrativa — o calendário real está no artigo. */
+    scheme: {
+      label: "Protocol · 15 applications",
+      applications: 15,
+      treatments: [
+        { label: "Insecticide program alone", kmep: "none" },
+        { label: "+ KMEP Ultra® in every application", kmep: "all" },
+        { label: "+ KMEP Ultra® in alternate applications", kmep: "alternate" },
+      ],
+      legend: { insecticide: "Insecticide application", kmep: "With KMEP Ultra®" },
+      note: "Schematic. The application calendar is in the paper.",
+    },
+    result: "Both KMEP Ultra® treatments out-yielded the check.",
+    citation: {
+      label: "Published in",
+      journal: "Revista Foco",
+      issue: "v.16 n.2 · 2023",
+      doi: "10.54751/revistafoco.v16n2-129",
+      href: "https://doi.org/10.54751/revistafoco.v16n2-129",
+      cta: "Read the paper",
+    },
     disclosure: "Disclosure: three of the four authors are Juma-Agro agronomists. The fourth is a researcher at the Instituto Goiano de Agricultura, and the trial was run at an independent experimental station. We are saying so here because it is the kind of thing you would find out anyway, and because a trial you can check is worth more than one you have to believe.",
   },
   footnote: "Results from field trials conducted in Brazil. Field performance varies with climate, soil and management.",
@@ -282,14 +307,23 @@ export const economics = {
   heading: "What nine bushels is worth on your acres.",
   body: "At $4.30 corn, 8.9 bushels is $38.27 an acre. The product costs six dollars an acre at the label rate for one spray. We publish both numbers together, because the gap between them is the whole decision.",
   witness: "+8.9 bu/ac: 221.3 treated vs 212.3 bu/ac untreated check",
-  columns: ["Corn price", "Value of +8.9 bu/ac", "Product cost", "Net per acre"],
-  rows: [
-    { price: "$4.00/bu", value: 35.6, cost: 6, net: 29.6 },
-    { price: "$4.30/bu", value: 38.27, cost: 6, net: 32.27 },
-    { price: "$4.60/bu", value: 40.94, cost: 6, net: 34.94 },
-  ],
-  /* As barras dividem uma escala só: ganho, custo e líquido no mesmo metro. */
-  scale: { max: 45, step: 15 },
+  /* A calculadora. O ganho e o custo são os dois números com fonte (ensaio
+     Rehagro e dose do rótulo); preço do milho e área são do leitor.
+     TODO(P4): se a dose do rótulo americano mudar o custo, é aqui. */
+  calc: {
+    gain: 8.9,
+    cost: 6,
+    price: { label: "Corn price", unit: "/bu", hint: "Drag to set your price", min: 3.5, max: 5.5, step: 0.05, initial: 4.3, presets: [4, 4.3, 4.6] },
+    acres: { label: "Your acres", unit: "ac", presets: [160, 500, 1000, 2500], initial: 500 },
+    steps: { value: "Value of +8.9 bu/ac", cost: "Product cost", net: "Net per acre" },
+    perAcre: "/ac",
+    ratio: { label: "Grain value per $1 of product", suffix: "to $1" },
+    breakEven: { label: "Pays for itself with corn above", unit: "/bu" },
+    farm: { label: "Net on your acres", note: "One spray, at the label rate" },
+    /* Topo fixo do gráfico: cobre o preço máximo do controle (5.5 × 8.9). */
+    scaleMax: 50,
+    scaleStep: 10,
+  },
   footnote: "Yield response from the Rehagro trial in Brazil. Corn prices shown for reference. Your result will vary with climate, soil and management.",
 };
 
@@ -328,6 +362,10 @@ export const timing = {
   body: "In the insecticide pass you already have on the schedule. Corn and soybeans are the two crops positioned for the U.S. today. Cotton and specialty crops are under technical review.",
   cropLabel: "Crop",
   season: "Season",
+  /* As pontas do arco da safra e a deixa antes do primeiro estágio. */
+  ends: ["Planting", "Harvest"],
+  hint: "Scroll through the season",
+  pass: "Pass",
   /* A régua é ordinal: marca os estágios do rótulo 2026, sem pretender ser
      escala de dias. `at` é a posição na régua, de 0 a 1. */
   crops: [
@@ -352,8 +390,8 @@ export const timing = {
         /* As repetições não têm estágio próprio: marca sem rótulo, e a nota
            do colchete diz o intervalo. */
         { code: "V6/V7", at: 0.3 },
-        { code: "", at: 0.47, minor: true },
-        { code: "", at: 0.64, minor: true },
+        { code: "", display: "+10–15 days", at: 0.47, minor: true },
+        { code: "", display: "+10–15 days", at: 0.64, minor: true },
       ],
       spans: [{ from: 0, to: 2, note: "Repeating every 10 to 15 days" }],
       summary: "Soybeans: V6/V7, repeating every 10 to 15 days.",

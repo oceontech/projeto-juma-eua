@@ -184,22 +184,45 @@ export const proof: typeof en.proof = {
   table: {
     label: "O ensaio, na íntegra",
     intro: "Um ensaio, publicado inteiro. Quando tivermos mais, estarão aqui também, inclusive os que não separaram.",
-    columns: ["Cultura", "Local", "Tratado", "Testemunha", "Diferença", "Fonte", "Ano"],
-    rows: [
-      ["Milho", "Brasil", "221,3 bu/ac", "212,3 bu/ac", "+8,9 (+4,2%)", "Rehagro", "Em confirmação"],
-      ["", "Unidades originais", "231,45 sc/ha", "222,12 sc/ha", "+9,33 sc/ha", "", ""],
+    facts: [
+      { k: "Cultura", v: "Milho", icon: "crop" },
+      { k: "Local", v: "Brasil", icon: "pin" },
+      { k: "Fonte", v: "Rehagro", icon: "source" },
+      { k: "Ano", v: "Em confirmação", icon: "year", pending: true },
     ],
+    original: {
+      label: "Unidades originais",
+      rows: [
+        { k: "Tratado", us: "221,3 bu/ac", orig: "231,45 sc/ha" },
+        { k: "Testemunha", us: "212,3 bu/ac", orig: "222,12 sc/ha" },
+        { k: "Diferença", us: "+8,9 bu/ac", orig: "+9,33 sc/ha" },
+      ],
+    },
   },
   paper: {
     label: "E um segundo, revisado por pares",
     heading: "Blocos casualizados, estação experimental de terceiro, e um periódico que publicou.",
-    body: "Algodão, safra 2021, conduzido em estação experimental independente em Rio Verde, Goiás. Delineamento de blocos casualizados, três tratamentos: o programa de inseticidas recomendado sozinho, o mesmo programa com KMEP Ultra® em todas as aplicações, e o mesmo programa com KMEP Ultra® em aplicações alternadas. Quinze aplicações, colheita manual e avaliação de produtividade ao final. Os dois tratamentos com KMEP Ultra® produziram mais que a testemunha.",
-    facts: [
-      { k: "Delineamento", v: "Blocos casualizados · 3 tratamentos" },
-      { k: "Estação", v: "Independente · Rio Verde, Goiás" },
-      { k: "Publicado em", v: "Revista Foco · v.16 n.2 · 2023" },
-      { k: "DOI", v: "10.54751/revistafoco.v16n2-129" },
-    ],
+    chips: ["Algodão", "Safra 2021", "Rio Verde, Goiás", "Estação independente", "Blocos casualizados", "Colheita manual"],
+    scheme: {
+      label: "Protocolo · 15 aplicações",
+      applications: 15,
+      treatments: [
+        { label: "Programa de inseticidas sozinho", kmep: "none" },
+        { label: "+ KMEP Ultra® em todas as aplicações", kmep: "all" },
+        { label: "+ KMEP Ultra® em aplicações alternadas", kmep: "alternate" },
+      ],
+      legend: { insecticide: "Aplicação de inseticida", kmep: "Com KMEP Ultra®" },
+      note: "Esquema. O calendário das aplicações está no artigo.",
+    },
+    result: "Os dois tratamentos com KMEP Ultra® produziram mais que a testemunha.",
+    citation: {
+      label: "Publicado em",
+      journal: "Revista Foco",
+      issue: "v.16 n.2 · 2023",
+      doi: "10.54751/revistafoco.v16n2-129",
+      href: "https://doi.org/10.54751/revistafoco.v16n2-129",
+      cta: "Ler o artigo",
+    },
     disclosure: "Divulgação: três dos quatro autores são agrônomos da Juma-Agro. O quarto é pesquisador do Instituto Goiano de Agricultura, e o ensaio foi conduzido em estação experimental independente. Está dito aqui porque é o tipo de coisa que se descobre de qualquer forma, e porque um ensaio que dá para conferir vale mais que um em que é preciso acreditar.",
   },
   footnote: "Resultados de ensaios de campo conduzidos no Brasil. O desempenho em campo varia com clima, solo e manejo.",
@@ -209,13 +232,19 @@ export const economics: typeof en.economics = {
   heading: "Quanto valem nove bushels na sua área.",
   body: "Com o milho a $4,30, 8,9 bushels são $38,27 por acre. O produto custa seis dólares por acre na dose do rótulo, para uma aplicação. Publicamos os dois números juntos, porque a distância entre eles é a decisão inteira.",
   witness: "+8,9 bu/ac: 221,3 tratado vs 212,3 bu/ac na testemunha",
-  columns: ["Preço do milho", "Valor de +8,9 bu/ac", "Custo do produto", "Líquido por acre"],
-  rows: [
-    { price: "$4,00/bu", value: 35.6, cost: 6, net: 29.6 },
-    { price: "$4,30/bu", value: 38.27, cost: 6, net: 32.27 },
-    { price: "$4,60/bu", value: 40.94, cost: 6, net: 34.94 },
-  ],
-  scale: { max: 45, step: 15 },
+  calc: {
+    gain: 8.9,
+    cost: 6,
+    price: { label: "Preço do milho", unit: "/bu", hint: "Arraste para definir o seu preço", min: 3.5, max: 5.5, step: 0.05, initial: 4.3, presets: [4, 4.3, 4.6] },
+    acres: { label: "Sua área", unit: "ac", presets: [160, 500, 1000, 2500], initial: 500 },
+    steps: { value: "Valor de +8,9 bu/ac", cost: "Custo do produto", net: "Líquido por acre" },
+    perAcre: "/ac",
+    ratio: { label: "Valor em grão por $1 de produto", suffix: "para $1" },
+    breakEven: { label: "Se paga com o milho acima de", unit: "/bu" },
+    farm: { label: "Líquido na sua área", note: "Uma aplicação, na dose do rótulo" },
+    scaleMax: 50,
+    scaleStep: 10,
+  },
   footnote: "Resposta de produtividade do ensaio Rehagro no Brasil. Preços do milho mostrados como referência. O seu resultado vai variar com clima, solo e manejo.",
 };
 
@@ -244,6 +273,9 @@ export const timing: typeof en.timing = {
   body: "Na aplicação de inseticida que você já tem no calendário. Milho e soja são as duas culturas posicionadas para os EUA hoje. Algodão e culturas especiais estão em revisão técnica.",
   cropLabel: "Cultura",
   season: "Safra",
+  ends: ["Plantio", "Colheita"],
+  hint: "Role pela safra",
+  pass: "Aplicação",
   crops: [
     {
       id: "corn",
@@ -264,8 +296,8 @@ export const timing: typeof en.timing = {
       label: "Soja",
       marks: [
         { code: "V6/V7", at: 0.3 },
-        { code: "", at: 0.47, minor: true },
-        { code: "", at: 0.64, minor: true },
+        { code: "", display: "+10 a 15 dias", at: 0.47, minor: true },
+        { code: "", display: "+10 a 15 dias", at: 0.64, minor: true },
       ],
       spans: [{ from: 0, to: 2, note: "Repetindo a cada 10 a 15 dias" }],
       summary: "Soja: V6/V7, repetindo a cada 10 a 15 dias.",

@@ -315,7 +315,12 @@ export function Deposition() {
   const [t14x1, t14y1] = sunAt(14, 50);
 
   return (
-    <section ref={scope} data-nav-theme="dark" className="relative overflow-clip bg-forest text-offwhite">
+    <section ref={scope} className="relative overflow-clip bg-forest text-offwhite">
+      <span aria-hidden data-nav-theme="dark" className="pointer-events-none absolute inset-x-0 top-0 bottom-[15svh]" />
+      <span
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-[70svh] bg-[linear-gradient(180deg,var(--color-forest)_0%,#26371F_20%,var(--color-olive)_45%,var(--color-moss)_65%,#A9B283_82%,var(--color-cream)_100%)]"
+      />
       <div className="wrap relative grid gap-x-16 lg:grid-cols-[minmax(0,520px)_minmax(0,1fr)]">
         {/* A cena: presa no meio da tela no desktop. No celular, numa faixa
             presa no topo, com fundo liso da cor da seção e um esmaecimento

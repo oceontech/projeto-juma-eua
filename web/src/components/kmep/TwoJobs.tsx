@@ -54,9 +54,8 @@ const PATH_B = `M${SPLIT[0]} ${SPLIT[1]} C450 ${SPLIT[1]} 470 ${B_Y} 560 ${B_Y} 
  * K5 — a Big Idea. Cena presa (o padrão do Converge da LP B): enquanto o
  * pin segura a tela, o rastro da passada se desenha, a bifurcação abre, o
  * mostrador de minutos gira depressa e a régua da safra acende devagar — as
- * duas escalas de tempo lado a lado. O fundo desce do creme para o floresta
- * por trás, e o título troca de cor na metade do pin, quando o degradê já
- * escureceu atrás dele.
+ * duas escalas de tempo lado a lado. O fundo sai do mesmo preto da seção
+ * anterior e desce diretamente até o verde escuro.
  *
  * No celular, sem pin: a mesma linha do tempo presa ao scroll comum, e os
  * rótulos saem do desenho para uma legenda em HTML, legível em 360px.
@@ -149,24 +148,6 @@ export function TwoJobs() {
             return;
           }
 
-          if (desktop) {
-            gsap.fromTo(
-              [".tj-heading", ".tj-lead", ".tj-eyebrow"],
-              { color: "#16261B" },
-              {
-                color: "#EEEBE0",
-                ease: "none",
-                scrollTrigger: {
-                  trigger: scope.current,
-                  start: () => `top top-=${window.innerHeight * 0.6}`,
-                  end: () => `top top-=${window.innerHeight * 0.95}`,
-                  scrub: true,
-                  invalidateOnRefresh: true,
-                },
-              },
-            );
-          }
-
           build(
             gsap.timeline({
               defaults: { ease: "power2.out" },
@@ -184,17 +165,18 @@ export function TwoJobs() {
   return (
     <section
       ref={scope}
-      className="relative overflow-hidden bg-[linear-gradient(180deg,var(--color-cream)_0%,var(--color-cream)_30%,var(--color-moss)_42%,var(--color-olive)_50%,#26371F_58%,var(--color-forest)_68%)] text-forest lg:bg-[linear-gradient(180deg,var(--color-cream)_0%,var(--color-cream)_7%,#A9B283_17%,var(--color-moss)_27%,var(--color-olive)_40%,#26371F_54%,var(--color-forest)_66%)]"
+      data-nav-theme="dark"
+      className="relative overflow-hidden bg-[linear-gradient(180deg,var(--color-night)_0%,var(--color-forest)_55%)] text-cream"
     >
       <div className="tj-stage relative flex min-h-[100svh] flex-col justify-center gap-[clamp(28px,5svh,56px)] py-[clamp(72px,10svh,120px)]">
         <div className="wrap grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,440px)] lg:items-end lg:gap-16">
           <div>
-            <p className={`tj-eyebrow ${eyebrow} text-moss`}>{twoJobs.eyebrow}</p>
+            <p className={`tj-eyebrow ${eyebrow} text-lime`}>{twoJobs.eyebrow}</p>
             <SplitLines className="tj-heading mt-4 text-[clamp(48px,6.2vw,116px)] leading-[0.92] tracking-[-0.045em] text-balance">
               {twoJobs.heading}
             </SplitLines>
           </div>
-          <p className={`tj-lead ${microCaps} text-[12px] text-forest/80`}>{twoJobs.lead}</p>
+          <p className={`tj-lead ${microCaps} text-[12px] text-cream/80`}>{twoJobs.lead}</p>
         </div>
 
         <div className="tj-scene wrap">
