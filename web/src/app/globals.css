@@ -3284,7 +3284,7 @@ html[data-proof-overlap] .expertise-layer--dark .expertise-bg {
 }
 
 .sp-still .sp-slots {
-  min-height: 0;
+  display: block;
 }
 
 .sp-still .sp-read,
@@ -3297,4 +3297,56 @@ html[data-proof-overlap] .expertise-layer--dark .expertise-bg {
 
 .sp-still .sp-read {
   padding-top: var(--spacing-sec);
+}
+
+/* ======================================== LP B — a virada para o campo */
+/* A cena vive em components/aminosan-b/Field.tsx. O preto nasce fechado —
+   quem o abre é a linha do tempo —, e sem movimento a janela vira seções
+   empilhadas: a pergunta e os três pares, um embaixo do outro. */
+
+
+.fd-black {
+  opacity: 0;
+}
+
+.fd-still {
+  margin-top: 0;
+  background: #060606;
+}
+
+.fd-still .fd-stage {
+  height: auto;
+  min-height: 0;
+  overflow: visible;
+}
+
+.fd-still .fd-black,
+.fd-still .fd-rail {
+  display: none;
+}
+
+.fd-still .fd-ask,
+.fd-still .fd-chapters,
+.fd-still .fd-ch,
+.fd-still .fd-note {
+  position: relative;
+  inset: auto;
+  opacity: 1;
+}
+
+.fd-still .fd-ask {
+  padding-block: var(--spacing-sec);
+}
+
+.fd-still .fd-ch {
+  padding-block: calc(var(--spacing-sec) / 2);
+}
+
+.fd-still .fd-label {
+  opacity: 1;
+}
+
+.fd-still .fd-note {
+  padding: 0 var(--spacing-gut) var(--spacing-sec);
+  text-align: right;
 }

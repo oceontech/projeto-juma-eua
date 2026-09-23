@@ -153,6 +153,18 @@ atropelaria a animação.
 > lado para o outro como uma varredura — já tentado, e pior. Sem a interação com o cursor da
 > primeira versão.
 >
+> A copy de cada etapa troca quando **a forma dela** está quase montada, nos dois sentidos: indo, a
+> 62% do morph; voltando, a 38% (`SWITCH`). Uma linha do tempo em scrub não faz isso — corre igual
+> para os dois lados, e o texto trocava cedo na ida e tarde na volta. Por isso a copy **não** é tween
+> da linha do tempo: `syncCopy()` lê a fase e o sentido do scroll a cada atualização, e a entrada e
+> a saída correm no relógio (`enter`/`leave`). O título chega da esquerda, linha a linha, saindo de um desfoque
+> (SplitText **sem** máscara, que cortaria o desfoque — por isso o build espera as fontes); o resto
+> do bloco vem depois, com o próprio tempo, metade do deslocamento e do desfoque. A saída segue para
+> a direita e se desfaz; em scrub, rolando de volta, o gesto corre da direita para a esquerda. As chamadas presas no desenho esperam a
+> forma assentar (`CALLS_IN`), porque apontam para peças dela. Na folha, as nervuras laterais são
+> traçadas **dentro** da lâmina, com a largura de cada trecho, e param em 78% dela: medidas pela
+> largura do começo, perto do bico elas saíam da borda.
+>
 > A visibilidade da cena tem **duas** fontes guardadas à parte (`inView` e `document.hidden`). Numa
 > flag só, esconder a aba a zerava e voltar não a religava — a cena ficava travada. Vale para B e C. A C passa zero em tudo isso e não
 > muda. A copy está em
@@ -258,6 +270,28 @@ Em desenvolvimento a cena abre um painel lil-gui (densidade, tamanho, dispersão
 cursor e cores) e deixa os uniforms em `window.originScene`. Os dois somem do bundle de produção pela
 comparação com `NODE_ENV`. Os controles de `Cena` valem com o scroll parado: assim que ele anda, a
 linha do tempo volta a mandar.
+
+### A virada para o campo (LP B)
+
+Logo depois da cena de partículas, `components/aminosan-b/Field.tsx`. A emenda acontece **dentro**
+da cena, num movimento só: no fim da linha do tempo de `Specimen.tsx` o texto, as chamadas e o
+trilho saem para a direita, e um círculo preto (`.sp-black`) nasce no centro e cresce sem parar até
+cobrir a tela. As partículas da folha correm para dentro dele enquanto cresce — o alvo delas
+(`u.disc`) é o raio do círculo naquele quadro — e **cada uma cresce ao chegar** (`u.grain`, calculado
+do raio e da contagem para as partículas, juntas, fecharem o disco sem vão), recortada no raio
+exato por uma máscara no fragment shader: a borda sai perfeita, não pontilhada. Quando a última
+chega (`u.gather` = 1), o canvas sai e um elemento sólido (`.sp-black`) do mesmo raio assume.
+Nada sólido aparece antes disso — um miolo sólido crescendo sob ou sobre a nuvem, já tentado,
+aparecia como um ponto no centro. `Field` já nasce toda preta: a emenda é preto sobre
+preto. A pergunta se forma no
+escuro como a frase da home (escala, foco e brilho em curvas separadas) e a resposta é uma
+comparação lado a lado — folha, planta e raiz, sem e com Aminosan® —, cada par subindo por cima do
+anterior. As fotos estão em `public/img/aminosan-b/compare/`, geradas no Higgsfield (GPT Image 2.5);
+a versão "sem" de cada par foi gerada **a partir** da "com", para enquadramento e luz baterem.
+
+**Risco aberto:** a comparação contraria a restrição visual de `docs/02-MERCADO-USA.md` — decisão
+do cliente, registrada em `docs/04-PENDENCIAS.md`. O aviso "Illustrative images" fica na tela a
+comparação inteira; não o remova.
 
 ### A LP C — a versão de instrumento
 

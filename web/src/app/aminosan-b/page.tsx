@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Hero } from "@/components/aminosan-b/Hero";
 import { Specimen } from "@/components/aminosan-b/Specimen";
+import { Field } from "@/components/aminosan-b/Field";
 import { Problem } from "@/components/aminosan-b/Problem";
 import { Converge } from "@/components/aminosan-b/Converge";
 import { Meet } from "@/components/aminosan-b/Meet";
@@ -37,6 +38,9 @@ export default function AminosanBPage() {
       <Specimen>
         <Hero />
       </Specimen>
+      {/* A virada para o campo: o preto abre da folha, pergunta, e responde
+          com a comparação folha → planta → raiz. */}
+      <Field />
       <Problem />
       <Converge />
       <Meet />

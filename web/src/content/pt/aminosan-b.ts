@@ -130,6 +130,43 @@ export const specimen: typeof en.specimen = {
   ],
 };
 
+export const field: typeof en.field = {
+  headline: ["E qual a diferença real", "na lavoura?"],
+  body: "Mesma lavoura, mesmo estágio, mesma passada. Um lado recebeu Aminosan®.",
+  without: "Sem Aminosan®",
+  with: "Com Aminosan®",
+  note: "Imagens ilustrativas.",
+  chapters: [
+    {
+      kicker: "A folha",
+      heading: "Verde mais profundo, folha mais cheia.",
+      body: "Compare a cor e o corpo da folha, lado a lado, no mesmo estágio.",
+      alt: {
+        without: "Folha trifoliolada de soja, mais pálida e fina, ao nascer do sol",
+        with: "Folha trifoliolada de soja, verde profundo e cheia, ao nascer do sol",
+      },
+    },
+    {
+      kicker: "A planta",
+      heading: "Mais planta no mesmo estágio.",
+      body: "Mesma idade, mesma linha. Compare altura, caule e dossel.",
+      alt: {
+        without: "Planta jovem de soja, mais baixa, com folhas menores e pálidas",
+        with: "Planta jovem de soja, mais alta, com folhas maiores e verde profundo",
+      },
+    },
+    {
+      kicker: "Debaixo da terra",
+      heading: "E, sob o solo, mais raiz.",
+      body: "A parte que ninguém vê: raiz principal mais funda e mais raízes laterais explorando o solo.",
+      alt: {
+        without: "Raiz de soja num corte de solo, curta e rala",
+        with: "Raiz de soja num corte de solo, funda e muito ramificada",
+      },
+    },
+  ],
+};
+
 export const problem: typeof en.problem = {
   image: {
     heading: "A maior parte do nitrogênio chega inacabada.",

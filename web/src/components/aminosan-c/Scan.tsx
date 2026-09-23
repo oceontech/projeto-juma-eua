@@ -70,6 +70,9 @@ const uniforms = (): ScanUniforms => ({
   mark: 0,
   square: 0,
   flow: 0,
+  gather: 0,
+  disc: 0,
+  grain: 0,
 });
 
 /** `object-fit: cover` em números, para a nuvem cair onde a foto cairia. */

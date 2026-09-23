@@ -79,6 +79,15 @@ export type ScanUniforms = {
       e a forma seguinte **se adensa por igual**, em vez de se montar de um
       lado para o outro. 0 = o comportamento da LP C. */
   flow: number;
+  /** 0 = a forma; 1 = a nuvem inteira fechada num disco escuro no centro da
+      tela, de raio `disc` px. É a saída da cena da LP B: o disco vira o
+      círculo preto da seção seguinte (Field.tsx). */
+  gather: number;
+  disc: number;
+  /** Tamanho, em px, a que cada partícula cresce ao chegar ao disco. Quem o
+      calcula é a cena, a partir do raio e da contagem: grande o bastante
+      para as partículas, juntas, fecharem o disco sem vão nenhum. */
+  grain: number;
 };
 
 export type Scan = {
@@ -141,6 +150,9 @@ uniform vec3 uAccent2;
 uniform vec2 uFocus;
 uniform float uMark;
 uniform float uFlow;
+uniform float uGather;
+uniform float uDisc;
+uniform float uGrain;
 uniform float uSquare;
 uniform float uShapeScale;
 uniform float uPhase;
@@ -163,6 +175,7 @@ out vec3 vColor;
 out float vAlpha;
 out float vShaped;
 out float vSoft;
+out float vGathered;
 
 const float PI = 3.14159265;
 
@@ -283,6 +296,19 @@ void main() {
   float persp = uFocal / max(uFocal - r.z, 1.0);
   vec2 p = r.xy * persp + center;
 
+  /* O fechamento: cada ponto parte no seu tempo e vai, girando, para um lugar
+     sorteado dentro do disco (raiz do sorteio no raio, para a densidade sair
+     igual do centro a borda). */
+  /* Partidas pouco espalhadas: a nuvem chega quase junta, sem cauda. */
+  float gl = clamp((uGather - seed * 0.2) / 0.8, 0.0, 1.0);
+  float gathered = ease(gl);
+  float ga = hash(aUv + 5.9) * 6.2831 + (1.0 - gathered) * 1.6;
+  /* O raio sai da semente, e nao de outro hash da posicao: dois hashes do
+     mesmo aUv se correlacionam e desenham raios no disco. A raiz espalha os
+     pontos por igual em area, do centro a borda. */
+  vec2 disc = vec2(cos(ga), sin(ga)) * uDisc * sqrt(aSeed.y);
+  p = mix(p, disc, gathered);
+
   gl_Position = vec4(p / (uRes * 0.5), 0.0, 1.0);
 
   /* O ponto de destaque e um pouco maior: e ele que o olho tem de achar. */
@@ -295,7 +321,12 @@ void main() {
   float dotRest = uDot * 1.15 * (1.0 + aDepth * 1.6) * uZoom;
   float rest = mix(cellRest, dotRest, uFlow);
   float px = mix(rest, uDot * (0.7 + 0.6 * aSeed.y) * (1.0 + 0.25 * marked), shaped);
-  gl_PointSize = px * uDpr * persp;
+  /* Ao chegar, a particula cresce ate o grao que fecha o disco: juntas
+     elas viram uma superficie, e a mascara do fragment shader apara a borda. */
+  /* O tamanho corre a frente da posicao: a particula ja chega crescida, e
+     quem pousou cedo cobre o vao de quem ainda esta vindo. */
+  gl_PointSize = mix(px * persp, uGrain, smoothstep(0.0, 0.55, gl)) * uDpr;
+  vGathered = gathered;
 
   /* textureLod, e nao texture: no vertex shader nao ha derivada para o
      nivel ser escolhido sozinho. */
@@ -311,6 +342,7 @@ void main() {
      tambem vai, no proprio ritmo. */
   float toneP = max(uTone, shaped * uFlow);
   vColor = mix(photoColor, mix(scanned, inked, shaped), toneP);
+  vColor = mix(vColor, vec3(0.0235), gathered);
 
   /* Longe escurece: e o que separa a frente do fundo numa nuvem de um tom so. */
   float near = clamp((persp - 0.8) / 0.4, 0.0, 1.0);
@@ -319,7 +351,7 @@ void main() {
   /* O primeiro plano e grande e translucido: opaco, os discos se sobrepoem
      e a folha vira espuma em vez de desfoque. */
   float kept = mix(mix(1.0, 0.6, aDepth * uFlow), mix(0.34, 1.0, near) * mix(0.55 + 0.45 * seed, 1.0, marked), shaped);
-  vAlpha = uOpacity * mix(1.0 - shaped, kept, keeper);
+  vAlpha = uOpacity * mix(mix(1.0 - shaped, kept, keeper), 1.0, gathered);
 }
 `;
 
@@ -330,9 +362,13 @@ in vec3 vColor;
 in float vAlpha;
 in float vShaped;
 in float vSoft;
+in float vGathered;
 
-/* highp: o vertex shader tambem le este uniform, e a precisao tem de ser a mesma. */
+/* highp: o vertex shader tambem le estes uniforms, e a precisao tem de ser a mesma. */
 uniform highp float uSquare;
+uniform highp vec2 uRes;
+uniform highp float uDpr;
+uniform highp float uDisc;
 
 out vec4 frag;
 
@@ -341,6 +377,14 @@ void main() {
   /* A borda amacia com vSoft: o primeiro plano da foto e desfocado. */
   float round = 1.0 - smoothstep(mix(0.45, 0.0, vSoft), 1.0, d);
   float a = mix(round, 1.0, uSquare * (1.0 - vShaped)) * vAlpha;
+  /* A mascara do disco: quem ja chegou e recortado no raio exato, com um
+     pixel de antisserrilhado. E o que deixa a borda perfeita em vez de
+     pontilhada. Quem ainda voa passa livre. */
+  if (vGathered > 0.0) {
+    float r = length(gl_FragCoord.xy - uRes * uDpr * 0.5) / uDpr;
+    float inside = 1.0 - smoothstep(uDisc - 0.6, uDisc + 0.6, r);
+    a *= mix(1.0, inside, smoothstep(0.7, 1.0, vGathered));
+  }
   if (a < 0.004) discard;
   /* Pre-multiplicado: a mistura e ONE / ONE_MINUS_SRC_ALPHA, que compoe sem
      estourar o branco onde os pontos se encostam. */
@@ -444,6 +488,9 @@ export function createScan(
     mark: u("uMark"),
     square: u("uSquare"),
     flow: u("uFlow"),
+    gather: u("uGather"),
+    disc: u("uDisc"),
+    grain: u("uGrain"),
     shapeScale: u("uShapeScale"),
     phase: u("uPhase"),
     opacity: u("uOpacity"),
@@ -500,6 +547,9 @@ export function createScan(
       gl.uniform1f(loc.mark, uni.mark);
       gl.uniform1f(loc.square, uni.square);
       gl.uniform1f(loc.flow, uni.flow);
+      gl.uniform1f(loc.gather, uni.gather);
+      gl.uniform1f(loc.disc, uni.disc);
+      gl.uniform1f(loc.grain, uni.grain);
       gl.uniform1f(loc.shapeScale, uni.shapeScale);
       gl.uniform1f(loc.phase, uni.phase);
       gl.uniform1f(loc.opacity, uni.opacity);

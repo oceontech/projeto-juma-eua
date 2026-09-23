@@ -169,6 +169,54 @@ export const specimen = {
   ],
 };
 
+/**
+ * A virada para o campo: a tela escurece e faz a pergunta, e a resposta é a
+ * comparação lado a lado — folha, planta e raiz, sem e com Aminosan®.
+ *
+ * ATENÇÃO — decisão de risco tomada pelo cliente em 2026-09-23, contra a
+ * restrição visual de docs/02-MERCADO-USA.md ("duas plantas lado a lado com
+ * portes diferentes está proibido no design"; a EPA lê peça promocional junto
+ * com o rótulo, e raiz maior é claim de *root stimulation*). As imagens são
+ * geradas, não de ensaio: por isso o aviso "Illustrative images" fica sempre
+ * na tela, e a copy não traz número nenhum. Rever com a Juma antes do ar.
+ */
+export const field = {
+  headline: ["So what's the real", "difference in the field?"],
+  body: "Same field, same stage, same pass. One side got Aminosan®.",
+  without: "Without Aminosan®",
+  with: "With Aminosan®",
+  note: "Illustrative images.",
+  chapters: [
+    {
+      kicker: "The leaf",
+      heading: "Deeper green, a fuller leaf.",
+      body: "Look at the color and the body of the leaf, side by side, at the same stage.",
+      alt: {
+        without: "Soybean trifoliate leaf, paler and thinner, at sunrise",
+        with: "Soybean trifoliate leaf, deep green and full, at sunrise",
+      },
+    },
+    {
+      kicker: "The plant",
+      heading: "More plant at the same stage.",
+      body: "Same age, same row. Compare height, stem and canopy.",
+      alt: {
+        without: "Young soybean plant, shorter with smaller, paler leaves",
+        with: "Young soybean plant, taller with larger, deep-green leaves",
+      },
+    },
+    {
+      kicker: "Below ground",
+      heading: "And under the soil, more root.",
+      body: "The part nobody sees: a deeper taproot and more lateral roots exploring the soil.",
+      alt: {
+        without: "Soybean root system in a soil cutaway, short and sparse",
+        with: "Soybean root system in a soil cutaway, deep and densely branched",
+      },
+    },
+  ],
+};
+
 export const problem = {
   image: {
     heading: "Most nitrogen arrives unfinished.",

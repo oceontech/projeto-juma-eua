@@ -3,7 +3,7 @@
 import { useRef } from "react";
 import { useContent } from "@/components/layout/LocaleProvider";
 import { booted } from "@/lib/boot";
-import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
+import { gsap, ScrollTrigger, SplitText, useGSAP } from "@/lib/gsap";
 import {
   buildFromPoints,
   createScan,
@@ -68,7 +68,24 @@ const TONE = { at: 0.018, run: 0.028 };
     desacelera ao assentar, e a forma se adensa sem estalo. */
 const MORPH = [0.03, 0.26, 0.5, 0.74];
 const RUN = [0.12, 0.2, 0.2, 0.2];
-const TEXT_IN = MORPH.map((at, i) => (i === 0 ? 0.13 : at + 0.07));
+/* Quando a copy troca, em fração de cada morph. A regra é uma só nos dois
+   sentidos: o texto de uma forma aparece quando **ela** está quase montada.
+   Indo, isso é perto do fim do morph (0,62); voltando, o morph corre ao
+   contrário e a forma anterior fica quase montada perto do começo dele
+   (0,38). Uma linha do tempo em scrub não sabe fazer isso — ela só corre
+   igual para os dois lados, e aí o texto trocava cedo na ida e tarde na
+   volta. Por isso a copy não é tween da linha do tempo: é um estado lido da
+   fase, com o sentido do scroll, e as entradas correm no tempo do relógio. */
+const SWITCH = 0.62;
+
+/* A volta para o hero é a exceção: ali não há texto seguinte, e a copy da
+   primeira forma não pode ficar sobre a nuvem enquanto ela se desfaz de
+   volta na foto. Ela sai assim que a molécula começa a se desmanchar. */
+const HERO_BACK = 0.94;
+
+/* Fração do curso da cena (scroll real) em que a tela já está toda preta:
+   1,16 da linha do tempo, menos uma folga. */
+const END_BLACK = 0.985;
 
 /* O rótulo da bombona, em fração da foto a partir do centro (y para cima).
    É para lá que o zoom anda. */
@@ -124,6 +141,9 @@ const uniforms = (): ScanUniforms => ({
   /* A foto como pontilhado dela mesma, que respira e se solta em correntes —
      ver `flow` em lib/scan/field.ts. */
   flow: 1,
+  gather: 0,
+  disc: 0,
+  grain: 0,
 });
 
 /** `object-fit: cover` em números, com o `object-position` do hero. */
@@ -148,7 +168,8 @@ export function Specimen({ children }: { children: React.ReactNode }) {
       const surface = canvas.current;
       const stage = root?.querySelector<HTMLElement>(".sp-stage");
       const hero = root?.querySelector<HTMLElement>(".sp-hero");
-      if (!root || !surface || !stage || !hero) return;
+      const black = root?.querySelector<HTMLElement>(".sp-black");
+      if (!root || !surface || !stage || !hero || !black) return;
 
       const goStill = () => {
         root.classList.add("sp-still");
@@ -182,23 +203,40 @@ export function Specimen({ children }: { children: React.ReactNode }) {
           let visible = true;
           let inView = true;
           let timeline: gsap.core.Timeline | null = null;
+          let texts: HTMLElement[] = [];
+          let splits: SplitText[] = [];
           let aspect = 2752 / 1536;
           /* A troca da foto pela nuvem: o pontilhado entra (`canvas`) e a foto
              sai (`hero`), cada um de 0 a 1. Quem aplica é o quadro: se a nuvem
              ainda não existe, a foto não sai — senão o scroll apagaria o hero
              e não poria nada no lugar. */
           const handoff = { canvas: 0, hero: 0 };
+          /* A saída: quanto o círculo preto cresceu, e quanto já é sólido. */
+          /* A saída em duas fases de um mesmo gesto: `fill` enche um círculo
+             pequeno com as partículas; `grow` expande o sólido até a tela. */
+          const ending = { fill: 0, grow: 0 };
+          let count = 1;
+          let darkHeader = false;
           let zoomed = 1;
           /* Qual leitura está em cena, para mover só as chamadas dela. */
           const shown = { stage: -1 };
 
           const calls = gsap.utils.toArray<HTMLElement>(".sp-call", root);
 
+          /* Durante o fechamento em disco o canvas desenha em 1×: o preto não
+             tem detalhe a perder, e cada partícula crescida pinta dezenas de
+             pixels por quadro — em 2× seriam quatro vezes mais. */
+          let lowRes = false;
+
           const fit = () => {
             if (!field) return;
             const w = stage.clientWidth;
             const h = stage.clientHeight;
-            field.resize(w, h, Math.min(window.devicePixelRatio || 1, 2));
+            field.resize(
+              w,
+              h,
+              lowRes ? 1 : Math.min(window.devicePixelRatio || 1, 2),
+            );
 
             /* O `object-position` do hero: pelo pé, menos no notebook
                (861–1599px), onde as camadas descem para 60%. */
@@ -231,6 +269,58 @@ export function Specimen({ children }: { children: React.ReactNode }) {
             /* A foto acompanha o zoom da nuvem pelo mesmo número, e não por
                um tween paralelo — dois tempos para um movimento só é como as
                duas descolariam no quadro da troca. */
+            /* O círculo da saída: raio e opacidade lidos do mesmo número que
+               manda as partículas para dentro dele. */
+            if (
+              ending.fill > 0 ||
+              black.style.opacity ||
+              (timeline?.scrollTrigger?.progress ?? 0) >= END_BLACK
+            ) {
+              const w = stage.clientWidth;
+              const h = stage.clientHeight;
+              /* As partículas só enchem um círculo pequeno (SMALL do menor
+                 lado): o grão fica pequeno, a conta é leve e o disco fecha
+                 depressa. Daí em diante quem cresce é o sólido. */
+              const small = Math.min(w, h) * 0.06;
+              /* O preto final segue o scroll **real**, não a linha do tempo
+                 amortecida: num scroll rápido o pin solta antes de o scrub
+                 alcançar, e a cena subia com o círculo ainda pela metade,
+                 mostrando uma faixa por baixo. Passado o ponto em que a tela
+                 fica toda preta, ela está toda preta — com ou sem atraso. */
+              const real = timeline?.scrollTrigger?.progress ?? 0;
+              const full = real >= END_BLACK ? 1 : 0;
+              const r =
+                full * (Math.hypot(w, h) / 2 + 8) +
+                (1 - full) *
+                  (gsap.utils.interpolate(
+                    Math.min(w, h) * 0.01,
+                    small,
+                    ending.fill,
+                  ) +
+                    (Math.hypot(w, h) / 2 + 8 - small) * ending.grow);
+              u.disc = r;
+              /* O grão: com N pontos espalhados por igual no disco, o passo
+                 entre vizinhos é r·√(π/N); quatro passos e meio de diâmetro fecham
+                 a superfície sem vão, mesmo com o acaso do sorteio. */
+              u.grain = Math.max(3, r * Math.sqrt(Math.PI / count) * 4.5);
+              /* Preenchido — a última partícula chegou —, a nuvem dá lugar a
+                 um elemento sólido, do mesmo raio e no mesmo lugar. Os dois
+                 são o mesmo preto, então a troca não se vê. */
+              const solid = u.gather >= 0.999 || full === 1;
+              black.style.clipPath = `circle(${r}px at 50% 50%)`;
+              black.style.opacity = solid ? "1" : "";
+              surface.style.visibility = solid ? "hidden" : "";
+              const dark = solid && r > h / 2;
+              /* Reafirmado a cada quadro, e não só na troca: a seção seguinte
+                 limpa o tom quando se rola de volta para cima dela, com este
+                 preto ainda cobrindo o alto da tela. */
+              const html = document.documentElement;
+              if (dark && html.dataset.navTheme !== "dark")
+                html.dataset.navTheme = "dark";
+              else if (!dark && darkHeader) delete html.dataset.navTheme;
+              darkHeader = dark;
+            }
+
             if (u.zoom !== zoomed) {
               zoomed = u.zoom;
               hero.style.transform = zoomed === 1 ? "" : `scale(${zoomed})`;
@@ -238,6 +328,16 @@ export function Specimen({ children }: { children: React.ReactNode }) {
             const out = field ? handoff.hero : 0;
             hero.style.opacity = out > 0 ? String(1 - out) : "";
             if (!field) return;
+            /* Troca de resolução só na borda do fechamento, uma vez para cada
+               lado — resize refaz o buffer do canvas. */
+            const closing = u.gather > 0;
+            if (closing !== lowRes) {
+              lowRes = closing;
+              fit();
+            }
+            /* Depois da troca para o elemento sólido, o canvas está escondido:
+               não há por que desenhá-lo. */
+            if (u.gather >= 0.999) return;
             u.opacity = handoff.canvas;
             field.render(u, time);
 
@@ -279,7 +379,122 @@ export function Specimen({ children }: { children: React.ReactNode }) {
 
           /* -------------------------------------------- a linha do tempo */
 
+          /* ------------------------------------------------ a copy */
+
+          /* Qual texto está em cena, e o sentido em que o scroll anda. */
+          let current = -1;
+          let lastPhase = 0;
+          let heading = 1;
+
+          /* A entrada, no registro dos sites editoriais: o título chega de
+             lado, linha a linha, saindo de um desfoque; o resto do bloco vem
+             depois, com o próprio tempo e ainda mais contido. Indo, entra da
+             esquerda e sai para a direita; voltando, o contrário. */
+          /* O compasso da troca. A saída é mais longa que um piscar e a entrada
+             espera ela ir quase toda (AFTER): os dois textos se cruzam só no
+             fim, sem disputar a leitura. Dentro da entrada, o título vem
+             primeiro e o resto do bloco bem depois, no próprio tempo. */
+          const T = {
+            out: 0.75,
+            after: 0.3,
+            title: 1.4,
+            lineGap: 0.09,
+            rest: 1.2,
+            restAt: 0.35,
+            restGap: 0.1,
+          };
+
+          const enter = (k: number, dir: number, wait = 0) => {
+            const text = texts[k];
+            const rest = text.querySelectorAll(".sp-fade");
+            const lines = splits[k]?.lines ?? [];
+            const own = root.querySelectorAll(`.sp-call[data-i="${k}"]`);
+            gsap.killTweensOf([text, ...lines, ...rest, ...own]);
+            gsap.set(text, { opacity: 1, x: 0, filter: "none" });
+            gsap.fromTo(
+              lines,
+              { opacity: 0, x: -28 * dir, filter: "blur(10px)" },
+              {
+                opacity: 1,
+                x: 0,
+                filter: "blur(0px)",
+                duration: T.title,
+                stagger: T.lineGap,
+                delay: wait,
+                ease: "power3.out",
+              },
+            );
+            gsap.fromTo(
+              rest,
+              { opacity: 0, x: -12 * dir, filter: "blur(4px)" },
+              {
+                opacity: 1,
+                x: 0,
+                filter: "blur(0px)",
+                duration: T.rest,
+                stagger: T.restGap,
+                delay: wait + T.restAt,
+                ease: "power2.out",
+              },
+            );
+            gsap.fromTo(
+              own,
+              { opacity: 0 },
+              { opacity: 1, duration: 0.9, stagger: 0.12, delay: wait + 0.3 },
+            );
+          };
+
+          const leave = (k: number, dir: number) => {
+            const text = texts[k];
+            const own = root.querySelectorAll(`.sp-call[data-i="${k}"]`);
+            gsap.killTweensOf([text, ...own]);
+            gsap.to(text, {
+              opacity: 0,
+              x: 18 * dir,
+              filter: "blur(6px)",
+              duration: T.out,
+              ease: "power2.inOut",
+            });
+            gsap.to(own, {
+              opacity: 0,
+              duration: T.out * 0.8,
+              ease: "power2.inOut",
+            });
+          };
+
+          const syncCopy = () => {
+            const phase = u.phase;
+            if (phase > lastPhase + 1e-4) heading = 1;
+            else if (phase < lastPhase - 1e-4) heading = -1;
+            lastPhase = phase;
+            const raw =
+              heading > 0
+                ? Math.floor(phase + 1 - SWITCH) - 1
+                : Math.ceil(phase - (1 - SWITCH)) - 1;
+            const next = gsap.utils.clamp(-1, texts.length - 1, raw);
+            /* No fechamento em disco não há forma para descrever: a copy sai. */
+            const target =
+              u.gather > 0.03 || (heading < 0 && phase < HERO_BACK) ? -1 : next;
+            if (target === current) return;
+            if (current >= 0) leave(current, heading);
+            if (target >= 0) enter(target, heading, current >= 0 ? T.after : 0);
+            current = target;
+            /* As chamadas acompanham o giro só da forma em cena. */
+            shown.stage = target;
+          };
+
           const build = (): gsap.core.Timeline => {
+            /* O SplitText mede linha por linha: por isso o build espera as
+               fontes, senão o título quebra no lugar errado e fica preso lá. */
+            texts = gsap.utils.toArray<HTMLElement>(".sp-read", root);
+            splits = texts.map(
+              (text) =>
+                new SplitText(text.querySelector(".sp-head"), {
+                  /* Sem máscara: a entrada é lateral e com desfoque, e a
+                     máscara cortaria as duas coisas. */
+                  type: "lines",
+                }),
+            );
             const rail = root.querySelector<HTMLElement>(".sp-rail");
             const pills = gsap.utils.toArray<HTMLElement>(".og-pill", root);
             const steps = pills.length;
@@ -291,7 +506,9 @@ export function Specimen({ children }: { children: React.ReactNode }) {
               scrollTrigger: {
                 trigger: stage,
                 start: "top top",
-                end: "+=760%",
+                /* 760% da cena, mais o fechamento em disco no fim (1,0 a
+                   1,16 da linha do tempo), no mesmo compasso por tela. */
+                end: "+=880%",
                 scrub: 0.7,
                 pin: true,
                 anticipatePin: 1,
@@ -301,6 +518,7 @@ export function Specimen({ children }: { children: React.ReactNode }) {
                 refreshPriority: 1,
               },
               onUpdate: () => {
+                syncCopy();
                 const drawn = gsap.utils.clamp(
                   0,
                   1,
@@ -363,36 +581,52 @@ export function Specimen({ children }: { children: React.ReactNode }) {
                 { lit: i + 1, duration: RUN[i], ease: "power1.inOut" },
                 at,
               );
-              tl.call(
-                () => {
-                  shown.stage = i;
-                },
-                undefined,
-                TEXT_IN[i],
-              );
-              tl.fromTo(
-                `.sp-read[data-i="${i}"]`,
-                { opacity: 0, y: 22 },
-                { opacity: 1, y: 0, duration: 0.035, ease: "power2.out" },
-                TEXT_IN[i],
-              );
-              tl.fromTo(
-                `.sp-call[data-i="${i}"]`,
-                { opacity: 0 },
-                { opacity: 1, duration: 0.03, stagger: 0.008 },
-                TEXT_IN[i] + 0.015,
-              );
-              if (i < MORPH.length - 1) {
-                tl.to(
-                  `.sp-read[data-i="${i}"], .sp-call[data-i="${i}"]`,
-                  { opacity: 0, duration: 0.025, ease: "power2.in" },
-                  MORPH[i + 1],
-                );
-              }
             });
 
-            /* Um respiro com a folha parada antes de soltar a seção. */
-            tl.to({}, { duration: 0.05 }, 0.95);
+            /* A saída, num movimento só. O texto, as chamadas e o trilho vão
+               embora para a direita; ao mesmo tempo o círculo preto nasce no
+               centro, pequeno, e cresce sem parar até cobrir a tela. As
+               partículas da folha correm para dentro dele enquanto ele cresce
+               (o alvo delas é o raio do círculo naquele quadro), e ele fica
+               sólido quando chegam as últimas: cada uma cresce ao chegar até
+               fechar o disco, recortada na borda exata. O disco das
+               partículas é bem pequeno — 6% do menor lado —, e com
+               `u.gather` em 1 (1,08) a nuvem dá lugar a um elemento sólido,
+               que segue crescendo até cobrir a tela em 1,16, o fim da cena. A seção
+               seguinte (Field.tsx) já começa toda preta: a emenda é preto
+               sobre preto. */
+            tl.fromTo(
+              u,
+              { gather: 0 },
+              { gather: 1, duration: 0.08, ease: "power1.in" },
+              1.0,
+            )
+              .fromTo(
+                ending,
+                { fill: 0 },
+                { fill: 1, duration: 0.08, ease: "none" },
+                1.0,
+              )
+              .fromTo(
+                ending,
+                { grow: 0 },
+                { grow: 1, duration: 0.09, ease: "power2.in" },
+                /* A expansão começa antes de o disco fechar: as duas curvas
+                   se somam, e não há parada entre encher e crescer. */
+                1.07,
+              )
+              .to(
+                rail,
+                {
+                  opacity: 0,
+                  x: 18,
+                  filter: "blur(6px)",
+                  duration: 0.03,
+                  ease: "power2.in",
+                },
+                1.0,
+              )
+              .to(".sp-scrim", { opacity: 0, duration: 0.03 }, 1.0);
 
             ScrollTrigger.refresh();
             return tl;
@@ -402,6 +636,8 @@ export function Specimen({ children }: { children: React.ReactNode }) {
 
           void (async () => {
             await booted;
+            if (!alive) return;
+            await document.fonts?.ready;
             if (!alive) return;
             timeline = build();
             try {
@@ -439,6 +675,7 @@ export function Specimen({ children }: { children: React.ReactNode }) {
                 SPECIMEN.map((f) => f.points),
               );
               if (!alive) return;
+              count = data.count;
               field = createScan(surface, photo, data);
               if (!field) {
                 goStill();
@@ -471,11 +708,21 @@ export function Specimen({ children }: { children: React.ReactNode }) {
             ro.disconnect();
             timeline?.scrollTrigger?.kill();
             timeline?.kill();
+            /* As entradas da copy correm no relógio, fora da linha do tempo. */
+            gsap.killTweensOf([
+              ...texts,
+              ...calls,
+              ...texts.flatMap((t) => [...t.querySelectorAll(".sp-fade")]),
+            ]);
+            splits.forEach((split) => split.revert());
             timeline = null;
             field?.dispose();
             field = null;
             hero.style.transform = "";
             hero.style.opacity = "";
+            black.style.opacity = "";
+            surface.style.visibility = "";
+            if (darkHeader) delete document.documentElement.dataset.navTheme;
           };
         },
       );
@@ -494,6 +741,14 @@ export function Specimen({ children }: { children: React.ReactNode }) {
     >
       <div className="sp-stage relative h-[100svh] min-h-[600px] overflow-hidden">
         <div className="sp-hero absolute inset-0 z-0">{children}</div>
+
+        {/* O círculo preto da saída. Só aparece no quadro em que a nuvem
+            fecha o disco inteiro — aí ele assume, e o canvas sai. */}
+        <div
+          aria-hidden
+          className="sp-black pointer-events-none absolute inset-0 z-[1] bg-[#060606] opacity-0"
+          style={{ clipPath: "circle(0px at 50% 50%)" }}
+        />
 
         <canvas
           ref={canvas}
@@ -541,33 +796,36 @@ export function Specimen({ children }: { children: React.ReactNode }) {
           }}
           className="sp-panel pointer-events-none absolute inset-x-0 bottom-0 z-[5] px-[var(--spacing-gut)] pb-[clamp(24px,5svh,56px)] lg:inset-x-auto lg:bottom-auto lg:top-1/2 lg:left-[var(--sp-gut)] lg:w-[min(38vw,450px)] lg:-translate-y-1/2 lg:px-0 lg:pb-0"
         >
-          {/* As quatro leituras ocupam o mesmo lugar, uma por vez. A altura é
-              reservada para o trilho embaixo não pular na troca. */}
-          <div className="sp-slots relative min-h-[clamp(250px,36svh,330px)] lg:min-h-[360px]">
+          {/* As quatro leituras ocupam a mesma célula da grade, uma por vez.
+              A célula tem a altura da **mais alta** delas — em português, o
+              título da corrente e o da folha vão a três linhas —, e o trilho
+              embaixo fica sempre abaixo de todas, sem pular na troca. Com
+              altura fixa, o bloco mais alto invadia o trilho. */}
+          <div className="sp-slots grid">
             {stages.map((s, i) => (
               <article
                 key={s.kicker}
                 data-i={i}
-                className="sp-read absolute inset-x-0 bottom-0 opacity-0 lg:bottom-auto lg:top-0"
+                className="sp-read col-start-1 row-start-1 self-end opacity-0 lg:self-start"
               >
                 <p
-                  className={`${microCaps} flex items-center gap-3 text-olive`}
+                  className={`${microCaps} sp-fade flex items-center gap-3 text-olive`}
                 >
                   <span className="sp-id">
                     {String(i + 1).padStart(2, "0")}/{total}
                   </span>
                   {s.kicker}
                 </p>
-                <h2 className="mt-3 max-w-[18ch] text-[clamp(26px,3vw,48px)] leading-[1.02] tracking-[-0.03em] text-balance">
+                <h2 className="sp-head mt-3 max-w-[18ch] text-[clamp(26px,3vw,48px)] leading-[1.02] tracking-[-0.03em] text-balance">
                   {s.heading}
                 </h2>
-                <p className="mt-3 max-w-[44ch] text-[clamp(13px,1.02vw,17px)] leading-[1.45] text-muted lg:mt-4">
+                <p className="sp-fade mt-3 max-w-[44ch] text-[clamp(13px,1.02vw,17px)] leading-[1.45] text-muted lg:mt-4">
                   {s.body}
                 </p>
 
                 {/* A legenda das cores do desenho — o leigo não precisa saber
                     o que é um grupo amino, só que o verde é o nitrogênio. */}
-                <ul className="sp-legend mt-3 flex flex-wrap gap-x-5 gap-y-1 lg:mt-4">
+                <ul className="sp-legend sp-fade mt-3 flex flex-wrap gap-x-5 gap-y-1 lg:mt-4">
                   {s.legend.map((l) => (
                     <li
                       key={l.label}
@@ -583,7 +841,7 @@ export function Specimen({ children }: { children: React.ReactNode }) {
                   ))}
                 </ul>
 
-                <ul className="mt-3 grid gap-1.5 lg:hidden">
+                <ul className="sp-fade mt-3 grid gap-1.5 lg:hidden">
                   {s.callouts.map((c) => (
                     <li
                       key={c.label}
@@ -603,7 +861,7 @@ export function Specimen({ children }: { children: React.ReactNode }) {
                   ))}
                 </ul>
 
-                <dl className="mt-6 hidden max-w-[360px] grid-cols-3 gap-px border border-forest/15 bg-forest/15 lg:grid">
+                <dl className="sp-fade mt-6 hidden max-w-[360px] grid-cols-3 gap-px border border-forest/15 bg-forest/15 lg:grid">
                   {s.readout.map((r) => (
                     <div
                       key={r.k}

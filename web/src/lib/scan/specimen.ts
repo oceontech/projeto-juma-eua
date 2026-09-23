@@ -15,7 +15,16 @@
  * descola na primeira vez que alguém mexer na geometria.
  */
 
-import { acid, ball, render, tube, type Anchor, type Form, type Node, type Piece } from "./forms";
+import {
+  acid,
+  ball,
+  render,
+  tube,
+  type Anchor,
+  type Form,
+  type Node,
+  type Piece,
+} from "./forms";
 
 /** 1 = verde (nitrogênio, gotas); 2 = âmbar (ligação a abrir). */
 const N = 1;
@@ -60,7 +69,11 @@ function chainGeometry(into: Piece[]) {
     const t = i / (LINKS - 1) - 0.5;
     /* Mais espaçadas e menores que na LP C: o elo entre duas unidades é o
        assunto desta leitura, e precisa de comprimento para ser visto. */
-    const at: Node = [t * 0.9, Math.sin(t * 3.1) * 0.1, Math.cos(t * 2.6) * 0.1];
+    const at: Node = [
+      t * 0.9,
+      Math.sin(t * 3.1) * 0.1,
+      Math.cos(t * 2.6) * 0.1,
+    ];
     units.push(acid(into, at, 0.34, t * 1.2, N));
   }
   const links: [Node, Node][] = [];
@@ -98,7 +111,13 @@ function freeGeometry(into: Piece[]) {
     const cy = (Math.floor(i / cols) / (rows - 1) - 0.5) * 0.62;
     const jitter = (k: number) => (Math.sin(i * 12.9898 + k) * 43758.5453) % 1;
     units.push(
-      acid(into, [cx + jitter(1) * 0.05, cy + jitter(2) * 0.05, jitter(3) * 0.2], 0.3, jitter(4) * 6, N),
+      acid(
+        into,
+        [cx + jitter(1) * 0.05, cy + jitter(2) * 0.05, jitter(3) * 0.2],
+        0.3,
+        jitter(4) * 6,
+        N,
+      ),
     );
   }
   return units;
@@ -122,51 +141,94 @@ export const free: Form = {
 
 /* ------------------------------------------------------- 04 · a folha */
 
-/* A lâmina, como a da LP C: `u` da base ao bico, `v` de borda a borda. */
-const wide = (u: number) => Math.sin(Math.pow(u, 0.72) * Math.PI) * 0.29;
-const curl = (u: number, v: number) => Math.pow(Math.abs(v), 2) * 0.16 - u * 0.05;
-const spine = (u: number) => -0.42 + u * 0.86;
-const onLeaf = (u: number, v: number, lift = 0): Node => [spine(u), v * wide(u), curl(u, v) + lift];
+/* A lâmina: `u` corre da base (0) ao bico (1), `v` de borda a borda (−1 a 1).
+   A largura é de folha de verdade — base arredondada, o corpo mais largo um
+   pouco abaixo do meio, e o bico afinando em ponta, não em gota. */
+const LEN = 0.84;
+const wide = (u: number) =>
+  0.3 *
+  Math.pow(Math.sin(Math.PI * Math.pow(u, 0.8)), 0.85) *
+  (1 - 0.35 * u * u);
+const spine = (u: number) => -LEN / 2 + u * LEN;
+/* Um arco leve ao longo da nervura e as bordas levantando um pouco: é o que
+   dá corpo quando o desenho gira. */
+const curl = (u: number, v: number) =>
+  v * v * 0.1 - Math.sin(Math.PI * u) * 0.06;
+const onLeaf = (u: number, v: number, lift = 0): Node => [
+  spine(u),
+  v * wide(u),
+  curl(u, v) + lift,
+];
 
-/** Onde as gotas pousaram, em (u, v) da lâmina. Espalhadas à mão para nenhuma
-    cair sobre a nervura, onde sumiriam no traço. */
+/**
+ * Uma nervura lateral: sai da central e sobe inclinada em direção ao bico,
+ * como numa folha de verdade. Ela é traçada **dentro** da lâmina — o fim de
+ * cada trecho é calculado com a largura daquele ponto, e para em 78% dela —
+ * e por isso nunca passa da borda. A versão anterior somava o comprimento no
+ * eixo e usava a largura do começo; perto do bico, onde a folha estreita, a
+ * nervura saía para fora.
+ */
+function vein(into: Piece[], from: number, side: -1 | 1) {
+  const steps = 6;
+  const reach = 0.78;
+  const rise = Math.min(0.16, (1 - from) * 0.6);
+  let prev = onLeaf(from, 0, 0.004);
+  for (let k = 1; k <= steps; k++) {
+    const t = k / steps;
+    const u = from + rise * Math.sin((t * Math.PI) / 2);
+    const next = onLeaf(u, side * reach * t, 0.004);
+    into.push(tube(prev, next, 0.0045 * (1 - 0.5 * t)));
+    prev = next;
+  }
+}
+
+/** Onde as gotas pousaram, em (u, v) da lâmina. Longe da nervura central e
+    das laterais, onde sumiriam no traço. */
 const DROPS: [number, number][] = [
-  [0.2, 0.45],
-  [0.3, -0.55],
-  [0.42, 0.3],
-  [0.5, -0.25],
-  [0.58, 0.62],
-  [0.66, -0.6],
-  [0.74, 0.28],
-  [0.82, -0.3],
-  [0.36, 0.72],
-  [0.9, 0.35],
+  [0.2, 0.5],
+  [0.28, -0.45],
+  [0.4, 0.62],
+  [0.47, -0.62],
+  [0.55, 0.32],
+  [0.62, -0.3],
+  [0.7, 0.55],
+  [0.78, -0.4],
 ];
 
 export const leaf: Form = {
   points: (n) => {
     const pieces: Piece[] = [];
-    pieces.push({
-      at: (u, v) => onLeaf(u, (v - 0.5) * 2),
-      area: 0.86 * 0.4,
-    });
-    for (let i = 0; i < 24; i++) {
-      pieces.push(tube(onLeaf(i / 24, 0), onLeaf((i + 1) / 24, 0), 0.009));
+    /* A lâmina pela área de verdade: a integral da largura ao longo do eixo. */
+    let area = 0;
+    for (let k = 0; k < 40; k++) area += wide((k + 0.5) / 40) * 2 * (LEN / 40);
+    pieces.push({ at: (u, v) => onLeaf(u, (v - 0.5) * 2), area });
+    /* O pecíolo, curto, saindo da base. */
+    pieces.push(tube([spine(0) - 0.09, -0.015, -0.01], onLeaf(0, 0), 0.007));
+    /* A nervura central, afinando até o bico. */
+    for (let k = 0; k < 20; k++) {
+      pieces.push(
+        tube(
+          onLeaf(k / 20, 0, 0.004),
+          onLeaf((k + 1) / 20, 0, 0.004),
+          0.007 * (1 - 0.6 * (k / 20)),
+        ),
+      );
     }
-    for (let k = 1; k <= 6; k++) {
-      const u = 0.1 + (k / 7) * 0.78;
-      for (const side of [-1, 1]) {
-        pieces.push(tube(onLeaf(u, 0), [spine(u + 0.11), side * wide(u) * 0.86, curl(u + 0.11, side)], 0.006));
-      }
+    for (let k = 0; k < 6; k++) {
+      const from = 0.1 + k * 0.13;
+      vein(pieces, from, 1);
+      vein(pieces, from + 0.05, -1);
     }
     /* As gotas: esferas pequenas pousadas na lâmina, no verde de destaque. */
-    DROPS.forEach(([u, v]) => pieces.push({ ...ball(onLeaf(u, v, 0.03), 0.032), tag: N }));
+    DROPS.forEach(([u, v]) =>
+      pieces.push({ ...ball(onLeaf(u, v, 0.028), 0.028), tag: N }),
+    );
     return render(pieces, n);
   },
   anchors: [
-    { at: onLeaf(0.3, 0.6), side: -1 },
-    { at: onLeaf(0.58, 0.62, 0.03), side: 1 },
-    { at: onLeaf(0.96, 0), side: 1 },
+    { at: onLeaf(0.3, 0.85), side: -1 },
+    { at: onLeaf(0.55, 0.32, 0.028), side: 1 },
+    { at: onLeaf(0.97, 0), side: 1 },
   ],
 };
 

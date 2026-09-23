@@ -243,3 +243,4 @@ testemunha**, ano, cultivar, número de repetições e delineamento.
 | Domínio não definido a tempo | Média | Alto | Subir em domínio provisório da Vercel |
 | Fotos de campo americano não chegam | Alta | Médio | Banco de imagens licenciado, só macro |
 | Cliente pede mudança estrutural na revisão | Média | Alto | Antecipar a revisão de Home |
+| Comparação tratada × sem tratamento na LP B (`/aminosan-b`, seção `Field`) contraria a restrição visual do `02-MERCADO-USA.md` — raiz maior é claim de *root stimulation*. Decisão do cliente em 23/09/2026; imagens geradas por IA, marcadas "Illustrative images" | Média | Alto | Validar com a Juma e com o regulatório antes de publicar; se cair, a seção troca as fotos por dado de ensaio com fonte e testemunha |
