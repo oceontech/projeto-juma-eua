@@ -1,149 +1,87 @@
 "use client";
 
+import Image from "next/image";
 import { useRef } from "react";
 import { useContent } from "@/components/layout/LocaleProvider";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { SplitLines } from "@/components/motion/SplitLines";
-import { Cta, microCaps } from "./ui";
+import { microCaps } from "./ui";
 
-/* Gerador com semente: as posições saem iguais no servidor e no cliente,
-   senão a hidratação reclamaria de cada círculo. */
-function seeded(seed: number) {
-  return () => {
-    seed |= 0;
-    seed = (seed + 0x6d2b79f5) | 0;
-    let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
-    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
-}
-
-const W = 1000;
-const H = 620;
-const COUNT = 140;
-const GOLDEN = Math.PI * (3 - Math.sqrt(5));
-
-/* Esferas metálicas: brilho especular no alto à esquerda, corpo na cor da
-   marca, sombra no lado oposto e uma borda um pouco mais clara (luz
-   refletida), que é o que vende o volume. */
-const SPHERES = {
-  lime: [
-    [0, "#FCFFE8"],
-    [0.14, "#E1EB8C"],
-    [0.48, "#B7C73E"],
-    [0.86, "#5E6C14"],
-    [1, "#87972C"],
-  ],
-  cream: [
-    [0, "#FFFFFF"],
-    [0.14, "#F8F6F0"],
-    [0.48, "#D6D2C3"],
-    [0.86, "#817C6B"],
-    [1, "#ABA694"],
-  ],
-  forest: [
-    [0, "#A9BDAE"],
-    [0.14, "#52695A"],
-    [0.48, "#1E3224"],
-    [0.86, "#08110B"],
-    [1, "#223629"],
-  ],
-} as const;
-
-/* Destino: filotaxia, o arranjo das sementes do girassol — um cacho que
-   parece crescido, não desenhado. Origem: espalhados pela cena toda. */
-const DOTS = (() => {
-  const rand = seeded(7);
-  return Array.from({ length: COUNT }, (_, i) => {
-    const radius = 21 * Math.sqrt(i + 0.5);
-    const angle = i * GOLDEN;
-    const r = Math.max(4, 13 - i * 0.065) + rand() * 3;
-    return {
-      cx: +(W / 2 + radius * Math.cos(angle)).toFixed(1),
-      cy: +(H / 2 + radius * Math.sin(angle)).toFixed(1),
-      r: +r.toFixed(1),
-      fromX: +((rand() - 0.5) * W * 1.25).toFixed(1),
-      fromY: +((rand() - 0.5) * H * 1.3).toFixed(1),
-      fromR: +(0.4 + rand() * 1.1).toFixed(2),
-      tone: rand(),
-    };
-  });
-})();
+/* Cada etapa ocupa uma unidade da linha do tempo; cada conversão, meia. */
+const BRAKE = 0.5;
+const AMBER = "#C9731E";
+/* As cores da bombona: o azul da faixa do rótulo e o verde do logotipo. */
+const BLUE = "#134777";
+const GREEN = "#1F7A44";
 
 /**
- * "E se a folha recebesse a parte pronta?" — o nitrogênio espalhado se
- * junta num cacho só enquanto a seção passa. No desktop a cena fica presa
- * durante a junção; no celular ela acontece no próprio fluxo do scroll.
+ * "E se a lavoura pulasse a linha de montagem?" — uma linha só, do nitrato ao
+ * aminoácido: o scroll percorre a rota etapa por etapa, com uma marca âmbar
+ * em cada conversão. No fim o arco lima salta do primeiro ponto ao último de
+ * uma vez e, só depois, a bombona chega. No desktop a cena trava até tudo aparecer; no
+ * celular segue o scroll normal. Conta etapas, não horas.
  */
 export function Converge() {
   const { converge } = useContent().aminosanB;
+  const { routes } = converge;
   const scope = useRef<HTMLElement>(null);
 
   useGSAP(
     () => {
       const mm = gsap.matchMedia();
+
+      const build = (tl: gsap.core.Timeline, axis: "scaleX" | "scaleY") => {
+        const nodes = gsap.utils.toArray<HTMLElement>(".cv-node");
+        const segs = gsap.utils.toArray<HTMLElement>(".cv-seg");
+        const brakes = gsap.utils.toArray<HTMLElement>(".cv-brake");
+        const n = nodes.length;
+        let t = 0;
+        nodes.forEach((node, k) => {
+          tl.fromTo(node, { backgroundColor: "#DDE4EC", scale: 1 }, { backgroundColor: BLUE, scale: 1.4, duration: 0.16, ease: "back.out(3)" }, t)
+            .to(node, { scale: 1, duration: 0.3, ease: "power2.out" }, t + 0.16)
+            .fromTo(node.nextElementSibling, { opacity: 0.35 }, { opacity: 1, duration: 0.3, ease: "sine.out" }, t);
+          if (k === n - 1) return;
+          tl.fromTo(brakes[k], { opacity: 0.25, scale: 0.7 }, { opacity: 1, scale: 1, duration: 0.22, ease: "back.out(2)" }, t + 0.3);
+          t += BRAKE;
+          tl.fromTo(segs[k], { [axis]: 0 }, { [axis]: 1, duration: 0.8, ease: "none" }, t);
+          t += 1;
+        });
+
+        /* Primeiro o arco atravessa a rota inteira de uma vez, do primeiro
+           ponto ao último; só depois a bombona chega e a mensagem aparece. */
+        t += 0.4;
+        tl.fromTo(".cv-jump-x", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.6, ease: "power2.inOut" }, t)
+          .fromTo(".cv-jump-y", { clipPath: "inset(0 0 100% 0)" }, { clipPath: "inset(0 0 0% 0)", duration: 0.6, ease: "power2.inOut" }, t)
+          .to(nodes[0], { backgroundColor: GREEN, borderColor: GREEN, duration: 0.15 }, t)
+          .to(nodes[n - 1], { backgroundColor: GREEN, borderColor: GREEN, scale: 1.6, duration: 0.18, ease: "back.out(3)" }, t + 0.6)
+          .to(nodes[n - 1], { scale: 1, duration: 0.3 }, t + 0.78)
+          .fromTo(".cv-jug", { opacity: 0, y: -24, scale: 0.8 }, { opacity: 1, y: 0, scale: 1, duration: 0.5, ease: "back.out(1.6)" }, t + 0.85)
+          .fromTo(".cv-with", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.4 }, t + 1.1);
+        return tl;
+      };
+
       mm.add(
         {
           desktop: "(min-width: 1024px) and (prefers-reduced-motion: no-preference)",
           mobile: "(max-width: 1023px) and (prefers-reduced-motion: no-preference)",
+          still: "(prefers-reduced-motion: reduce)",
         },
         (ctx) => {
-          const { desktop } = ctx.conditions as { desktop: boolean };
-          const dots = gsap.utils.toArray<SVGCircleElement>(".cv-dot");
-
-          /* Com a cena presa, o fundo desliza por trás do título: ele nasce
-             escuro sobre a parte clara e vira creme só na metade final do
-             pin, quando o degradê já escureceu atrás dele. */
-          if (desktop) {
-            gsap.fromTo(
-              ".cv-heading",
-              { color: "#16261B" },
-              {
-                color: "#EEEBE0",
-                ease: "none",
-                scrollTrigger: {
-                  trigger: scope.current,
-                  start: () => `top top-=${window.innerHeight * 0.6}`,
-                  end: () => `top top-=${window.innerHeight * 0.95}`,
-                  scrub: true,
-                },
-              },
-            );
+          const { desktop, still } = ctx.conditions as { desktop: boolean; still: boolean };
+          const axis = desktop ? "scaleX" : "scaleY";
+          if (still) {
+            build(gsap.timeline({ paused: true }), axis).progress(1);
+            return;
           }
-
-          const tl = gsap.timeline({
-            scrollTrigger: desktop
-              ? { trigger: ".cv-stage", start: "top top", end: "+=110%", scrub: 0.8, pin: true }
-              : { trigger: ".cv-scene", start: "top 85%", end: "center 45%", scrub: 0.8 },
-          });
-
-          tl.fromTo(
-            dots,
-            {
-              x: (i) => DOTS[i].fromX,
-              y: (i) => DOTS[i].fromY,
-              scale: (i) => DOTS[i].fromR,
-              opacity: 0.55,
-              transformOrigin: "50% 50%",
-            },
-            { x: 0, y: 0, scale: 1, opacity: 1, ease: "power2.inOut", stagger: { each: 0.004, from: "random" } },
-          )
-            .fromTo(".cv-cluster", { rotation: -40, svgOrigin: `${W / 2} ${H / 2}` }, { rotation: 0, ease: "power1.out" }, 0)
-            .fromTo(".cv-aside", { opacity: 0, y: 40 }, { opacity: 1, y: 0, ease: "power2.out", duration: 0.35 }, 0.55);
-
-          /* Deriva contínua: cada bolinha vagueia sem parar em volta do próprio
-             lugar. Fica no <g> de fora, então não briga com o scroll acima. */
-          gsap.utils.toArray<SVGGElement>(".cv-drift").forEach((g) => {
-            gsap.to(g, {
-              x: "random(-22, 22)",
-              y: "random(-22, 22)",
-              duration: "random(2.2, 4.5)",
-              ease: "sine.inOut",
-              repeat: -1,
-              repeatRefresh: true,
-              delay: gsap.utils.random(0, 1.5),
-            });
-          });
+          build(
+            gsap.timeline({
+              defaults: { ease: "power2.out" },
+              scrollTrigger: desktop
+                ? { trigger: ".cv-stage", start: "top top", end: "+=160%", scrub: 0.6, pin: true, anticipatePin: 1 }
+                : { trigger: ".cv-route", start: "top 75%", end: "bottom 40%", scrub: 0.6 },
+            }),
+            axis,
+          );
 
           gsap.from(".cv-card", {
             y: 60,
@@ -153,9 +91,6 @@ export function Converge() {
             ease: "expo.out",
             scrollTrigger: { trigger: ".cv-cards", start: "top 88%", once: true },
           });
-
-          /* A linha verde acima de cada título se desenha da esquerda para a
-             direita, logo depois que o card sobe. */
           gsap.from(".cv-line", {
             scaleX: 0,
             stagger: 0.12,
@@ -170,76 +105,151 @@ export function Converge() {
     { scope },
   );
 
+  const n = routes.steps.length;
+
+  const withLabel = (
+    <>
+      <p className={`${microCaps} text-[11px] text-[#1F7A44]`}>{routes.with.label}</p>
+      <p className="mt-1 font-display text-[clamp(16px,1.35vw,21px)] leading-[1.15] tracking-[-0.01em]">
+        {routes.with.note}
+      </p>
+    </>
+  );
+
+  const jug = (className: string) => (
+    <div className={`cv-jug relative aspect-[376/235] ${className}`}>
+      <Image
+        src="/img/pack-aminosan-us.webp"
+        alt={routes.with.jugAlt}
+        fill
+        sizes="200px"
+        className="origin-bottom scale-[1.45] object-contain drop-shadow-[0_18px_24px_rgba(22,38,27,0.18)]"
+      />
+    </div>
+  );
+
+  const brake = (
+    <>
+      <span className="block h-[2px] w-3.5" style={{ backgroundColor: AMBER }} />
+      <span className="block h-[2px] w-3.5" style={{ backgroundColor: AMBER }} />
+    </>
+  );
+
   return (
-    <section
-      ref={scope}
-      className="relative overflow-hidden bg-[linear-gradient(180deg,var(--color-cream)_0%,#A9B283_14%,var(--color-moss)_28%,var(--color-olive)_48%,#26371F_72%,var(--color-forest)_100%)] text-forest"
-    >
-      <div className="cv-stage relative flex min-h-[100svh] flex-col justify-center py-[clamp(72px,8vw,120px)]">
-        <div className="wrap">
-          <SplitLines className="cv-heading max-w-[16ch] text-[clamp(34px,3.8vw,68px)] leading-[1] tracking-[-0.03em]">
-            {converge.heading}
-          </SplitLines>
-        </div>
+    <section ref={scope} className="relative overflow-clip bg-cream text-forest">
+      {/* Tudo mora no palco que trava: cabeçalho, linha, fecho e cartões,
+          com o espaço medido pela altura da tela para caber numa vista só. */}
+      <div className="cv-stage flex flex-col justify-center gap-[clamp(20px,4svh,40px)] py-[clamp(48px,6vw,96px)] lg:min-h-[100svh] lg:gap-[clamp(14px,3svh,32px)] lg:py-[clamp(20px,4svh,48px)]">
+      <div className="wrap grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,440px)] lg:items-end lg:gap-16">
+        <SplitLines className="max-w-[24ch] text-[clamp(30px,min(3.6vw,6.5svh),60px)] leading-[0.97] tracking-[-0.035em] text-balance">
+          {converge.heading}
+        </SplitLines>
+        <p className={`${microCaps} text-[12px] text-forest/75`}>{converge.aside.body}</p>
+      </div>
 
-        <div className="wrap relative mt-6 grid items-center gap-10 lg:mt-0 lg:grid-cols-[1fr_320px]">
-          <div className="cv-scene">
-            <svg viewBox={`0 0 ${W} ${H}`} className="w-full overflow-visible" aria-hidden>
-              <defs>
-                {Object.entries(SPHERES).map(([name, stops]) => (
-                  <radialGradient key={name} id={`cv-sphere-${name}`} cx="0.42" cy="0.4" r="0.62" fx="0.3" fy="0.26">
-                    {stops.map(([offset, color]) => (
-                      <stop key={offset} offset={offset} stopColor={color} />
-                    ))}
-                  </radialGradient>
-                ))}
-              </defs>
-              <g className="cv-cluster">
-                {DOTS.map((d, i) => (
-                  <g key={i} className="cv-drift">
-                    <circle
-                      className="cv-dot"
-                      cx={d.cx}
-                      cy={d.cy}
-                      r={d.r}
-                      fill={`url(#cv-sphere-${d.tone > 0.7 ? "lime" : d.tone > 0.35 ? "cream" : "forest"})`}
-                    />
-                  </g>
-                ))}
-              </g>
-            </svg>
-          </div>
+      <div>
+        <div className="cv-route mx-auto w-[min(920px,calc(100%-2*var(--spacing-gut)))]">
+          <div className="relative ml-10 lg:mt-[clamp(170px,23svh,210px)] lg:ml-0">
+            {/* O salto do Aminosan®: do centro do primeiro nó ao do último.
+                No desktop o arco passa por cima da linha, com a bombona e a
+                mensagem no topo; no celular, pela esquerda da linha vertical. */}
+            <div className="absolute bottom-[calc(100%-6px)] left-[6px] hidden h-[100px] w-full lg:block">
+              <svg aria-hidden viewBox="0 0 100 100" preserveAspectRatio="none" className="cv-jump-x absolute inset-0 size-full overflow-visible">
+                <path
+                  d="M0 100 C0 0 100 0 100 100"
+                  fill="none"
+                  stroke={GREEN}
+                  strokeWidth="2.5"
+                  vectorEffect="non-scaling-stroke"
+                />
+              </svg>
+              <div className="absolute bottom-[calc(100%-24px)] left-1/2 flex -translate-x-1/2 flex-col items-center text-center">
+                {jug("w-[160px]")}
+                <div className="cv-with mt-2">{withLabel}</div>
+              </div>
+            </div>
+            <div aria-hidden className="absolute top-2 left-[-30px] h-56 w-9 lg:hidden">
+              <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="cv-jump-y absolute inset-0 size-full overflow-visible">
+                <path
+                  d="M100 0 C0 0 0 100 100 100"
+                  fill="none"
+                  stroke={GREEN}
+                  strokeWidth="2.5"
+                  vectorEffect="non-scaling-stroke"
+                />
+              </svg>
+            </div>
 
-          <div className="cv-aside text-cream">
-            <h3 className="text-[clamp(28px,2.5vw,42px)] leading-[1] tracking-[-0.025em]">
-              {converge.aside.heading.map((line) => (
-                <span key={line} className="block">
-                  {line}
-                </span>
+            {/* No celular cada etapa tem altura fixa (h-14), para o arco saber
+                onde fica o último nó: 4 × 56px = h-56. */}
+            <ol className="flex flex-col lg:grid lg:grid-cols-[repeat(4,minmax(0,1fr))_0px]">
+              {routes.steps.map((step, k) => (
+                <li key={step} className="relative h-14 pl-7 lg:h-auto lg:pt-8 lg:pr-4 lg:pl-0">
+                  {k < n - 1 && (
+                    <span className="absolute top-[12px] left-[5px] h-[calc(100%-2px)] w-[2px] bg-forest/10 lg:top-[5px] lg:left-[6px] lg:h-[2px] lg:w-full">
+                      <span className="cv-seg absolute inset-0 origin-top bg-amino lg:origin-left" />
+                      <span
+                        aria-hidden
+                        className="cv-brake absolute top-1/2 left-1/2 flex -translate-x-1/2 -translate-y-1/2 flex-col gap-[3px] lg:rotate-90"
+                      >
+                        {brake}
+                      </span>
+                    </span>
+                  )}
+                  <span
+                    className="cv-node absolute top-[2px] left-0 size-3 rounded-full border-2 lg:top-0"
+                    style={{ borderColor: BLUE, backgroundColor: BLUE }}
+                  />
+                  <p
+                    className={`font-display text-[clamp(16px,1.35vw,21px)] leading-[1.15] tracking-[-0.01em] ${k === n - 1 ? "lg:absolute lg:top-8 lg:right-[-12px] lg:text-right lg:whitespace-nowrap" : ""}`}
+                  >
+                    {step}
+                  </p>
+                </li>
               ))}
-            </h3>
-            <p className={`${microCaps} mt-4 text-cream/85`}>{converge.aside.body}</p>
-            <Cta href={converge.aside.cta.href} className="mt-6">
-              {converge.aside.cta.label}
-            </Cta>
+            </ol>
           </div>
+
+          <div className="mt-6 flex items-center gap-4 lg:hidden">
+            {jug("w-[160px] shrink-0")}
+            <div className="cv-with">{withLabel}</div>
+          </div>
+
+          <p className={`${microCaps} mt-8 flex items-center gap-3 text-[10px] lg:mt-[clamp(12px,2.5svh,28px)] text-forest/65 lg:text-[11px]`}>
+            <span aria-hidden className="flex flex-col gap-[3px]">
+              {brake}
+            </span>
+            {routes.conversion}
+          </p>
         </div>
       </div>
 
-      <div className="wrap cv-cards grid grid-cols-2 gap-3 pb-[clamp(56px,7vw,110px)] md:grid-cols-3 md:gap-4">
-        {converge.cards.map((card, i) => (
-          <article
-            key={card.title}
-            className={`cv-card relative flex flex-col ${i === 0 ? "col-span-2 md:col-span-1" : ""} overflow-hidden rounded-[clamp(12px,1.05vw,20px)] bg-linear-[122.93deg,var(--color-night-warm)_2.4%,var(--color-night-deep)_60.23%] p-4 text-offwhite md:p-[clamp(20px,1.8vw,28px)]`}
+      <div className="wrap">
+        <div className="flex flex-col items-start gap-6 lg:flex-row lg:items-center lg:justify-between">
+          <SplitLines
+            as="p"
+            stagger={0.12}
+            className="font-display text-[clamp(26px,min(2.8vw,5svh),48px)] leading-[1.02] tracking-[-0.03em] text-balance"
           >
-            {/* w-fit: a linha só alcança a largura que o título ocupa. */}
-            <div className="max-w-full w-fit">
-              <span aria-hidden className="cv-line block h-[2px] w-full origin-left rounded-full bg-lime" />
-              <h3 className="mt-3 text-[clamp(20px,1.6vw,26px)] leading-[1.1] tracking-[-0.02em]">{card.title}</h3>
-            </div>
-            <p className={`${microCaps} mt-3 text-offwhite/70`}>{card.body}</p>
-          </article>
-        ))}
+            {converge.aside.heading.join(" ")}
+          </SplitLines>
+        </div>
+
+        <div className="cv-cards mt-[clamp(32px,5vw,56px)] grid lg:mt-[clamp(14px,3svh,32px)] grid-cols-2 gap-3 md:grid-cols-3 md:gap-4">
+          {converge.cards.map((card, i) => (
+            <article
+              key={card.title}
+              className={`cv-card relative flex flex-col ${i === 0 ? "col-span-2 md:col-span-1" : ""} overflow-hidden rounded-[clamp(12px,1.05vw,20px)] bg-linear-[122.93deg,var(--color-night-warm)_2.4%,var(--color-night-deep)_60.23%] p-4 text-offwhite md:p-[clamp(16px,1.5vw,24px)]`}
+            >
+              <div className="max-w-full w-fit">
+                <span aria-hidden className="cv-line block h-[2px] w-full origin-left rounded-full bg-lime" />
+                <h3 className="mt-3 text-[clamp(20px,1.6vw,26px)] leading-[1.1] tracking-[-0.02em]">{card.title}</h3>
+              </div>
+              <p className={`${microCaps} mt-3 text-offwhite/70`}>{card.body}</p>
+            </article>
+          ))}
+        </div>
+      </div>
       </div>
     </section>
   );

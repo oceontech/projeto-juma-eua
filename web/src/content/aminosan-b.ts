@@ -170,49 +170,36 @@ export const specimen = {
 };
 
 /**
- * A virada para o campo: a tela escurece e faz a pergunta, e a resposta é a
- * comparação lado a lado — folha, planta e raiz, sem e com Aminosan®.
+ * A virada para o campo: a tela escurece e faz a pergunta, e a resposta
+ * percorre folha, planta e raiz, um resultado por vez.
  *
  * ATENÇÃO — decisão de risco tomada pelo cliente em 2026-09-23, contra a
- * restrição visual de docs/02-MERCADO-USA.md ("duas plantas lado a lado com
- * portes diferentes está proibido no design"; a EPA lê peça promocional junto
+ * restrição visual de docs/02-MERCADO-USA.md (a EPA lê peça promocional junto
  * com o rótulo, e raiz maior é claim de *root stimulation*). As imagens são
- * geradas, não de ensaio: por isso o aviso "Illustrative images" fica sempre
- * na tela, e a copy não traz número nenhum. Rever com a Juma antes do ar.
+ * geradas, não de ensaio; a copy não traz número nenhum. Rever com a Juma
+ * antes do ar.
  */
 export const field = {
   headline: ["So what's the real", "difference in the field?"],
-  body: "Same field, same stage, same pass. One side got Aminosan®.",
-  without: "Without Aminosan®",
-  with: "With Aminosan®",
-  note: "Illustrative images.",
+  body: "Follow the details from leaf to root.",
   chapters: [
     {
       kicker: "The leaf",
       heading: "Deeper green, a fuller leaf.",
-      body: "Look at the color and the body of the leaf, side by side, at the same stage.",
-      alt: {
-        without: "Soybean trifoliate leaf, paler and thinner, at sunrise",
-        with: "Soybean trifoliate leaf, deep green and full, at sunrise",
-      },
+      body: "A closer look at the color and body of the leaf.",
+      alt: "Soybean trifoliate leaf, deep green and full, at sunrise",
     },
     {
       kicker: "The plant",
       heading: "More plant at the same stage.",
-      body: "Same age, same row. Compare height, stem and canopy.",
-      alt: {
-        without: "Young soybean plant, shorter with smaller, paler leaves",
-        with: "Young soybean plant, taller with larger, deep-green leaves",
-      },
+      body: "Height, stem and canopy come into view.",
+      alt: "Young soybean plant with larger, deep-green leaves",
     },
     {
       kicker: "Below ground",
       heading: "And under the soil, more root.",
       body: "The part nobody sees: a deeper taproot and more lateral roots exploring the soil.",
-      alt: {
-        without: "Soybean root system in a soil cutaway, short and sparse",
-        with: "Soybean root system in a soil cutaway, deep and densely branched",
-      },
+      alt: "Isolated soybean root system with a long taproot and fine lateral branches",
     },
   ],
 };
@@ -244,6 +231,18 @@ export const converge = {
     body: "Aminosan® puts free-form L-amino acids on the leaf, already in the form the plant builds protein from. No conversion to wait on, no detour through the soil.",
     cta: { label: "See how it works", href: "#meet" },
   },
+  /* A comparação numa linha só: a rota do nitrato, etapa por etapa, e o
+     Aminosan® que salta do primeiro ponto ao último. Conta etapas, não
+     horas — não há número de tempo com fonte. */
+  routes: {
+    steps: ["Nitrate", "Nitrite", "Ammonium", "Glutamate", "Amino acid"],
+    with: {
+      label: "With Aminosan®",
+      note: "Straight to the amino acid",
+      jugAlt: "Aminosan® jug",
+    },
+    conversion: "Each conversion spends the crop's energy",
+  },
   cards: [
     {
       title: "100% free-form",
@@ -262,10 +261,9 @@ export const converge = {
 
 export const meet = {
   heading: "Meet Aminosan®",
-  intro: "Follow one pour from the jug to the leaf.",
-  scroll: "Scroll to dive in",
-  /* Cada etapa acompanha um trecho do vídeo tocado pelo scroll (Meet.tsx):
-     derrame, mistura e mergulho, nuvem submersa, partículas, folha. */
+  intro: "From the jug to the leaf, in five steps.",
+  pauseVideo: "Pause video",
+  playVideo: "Play video",
   stages: [
     {
       n: "01",

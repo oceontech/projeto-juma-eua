@@ -24,7 +24,7 @@ export const metadata: Metadata = {
  * A/B e trocou de lugar com a primeira, que foi para /aminosan-b.
  * Estrutura e ritmo seguem a referência editorial (hero de produto com
  * parallax de entrada que se desfaz em partículas — origem vegetal e forma
- * do aminoácido —, problema em tela dividida, convergência, produto com vídeo no scroll,
+ * do aminoácido —, problema em tela dividida, convergência, produto em bento grid com vídeo em loop,
  * dentro da folha (lente de microscópio),
  * prova, janela crítica, fichas de cultura, o que tem na bombona, trilho
  * de perguntas, pedido).
@@ -37,8 +37,8 @@ export default function AminosanPage() {
       <Specimen>
         <Hero />
       </Specimen>
-      {/* A virada para o campo: o preto abre da folha, pergunta, e responde
-          com a comparação folha → planta → raiz. */}
+      {/* A virada para o campo: o preto abre da folha, pergunta, e percorre
+          os resultados da folha à raiz. */}
       <Field />
       <Problem />
       <Converge />

@@ -3107,15 +3107,12 @@ html[data-proof-overlap] .expertise-layer--dark .expertise-bg {
 }
 
 /* ======================================== LP B — a virada para o campo */
-/* A cena vive em components/aminosan-b/Field.tsx. O preto nasce fechado —
-   quem o abre é a linha do tempo —, e sem movimento a janela vira seções
-   empilhadas: a pergunta e os três pares, um embaixo do outro. */
-
-
+/* O preto nasce fechado; sem movimento, os três resultados ficam empilhados. */
 .fd-black {
   opacity: 0;
 }
 
+@media (prefers-reduced-motion: reduce) {
 .fd-still {
   margin-top: 0;
   background: #060606;
@@ -3125,37 +3122,39 @@ html[data-proof-overlap] .expertise-layer--dark .expertise-bg {
   height: auto;
   min-height: 0;
   overflow: visible;
-}
-
-.fd-still .fd-black,
-.fd-still .fd-rail {
-  display: none;
+  padding: 64px 0;
 }
 
 .fd-still .fd-ask,
-.fd-still .fd-chapters,
-.fd-still .fd-ch,
-.fd-still .fd-note {
+.fd-still .fd-wheel {
+  display: none;
+}
+
+.fd-still .fd-layout {
   position: relative;
-  inset: auto;
+  display: block;
   opacity: 1;
 }
 
-.fd-still .fd-ask {
-  padding-block: var(--spacing-sec);
+.fd-still .fd-product {
+  position: relative;
+  top: auto;
+  left: auto;
+  justify-content: flex-start;
+  margin-bottom: 32px;
 }
 
-.fd-still .fd-ch {
-  padding-block: calc(var(--spacing-sec) / 2);
+.fd-still .fd-main {
+  height: auto;
+  min-height: 0;
+  gap: 48px;
 }
 
-.fd-still .fd-label {
-  opacity: 1;
+.fd-still .fd-card {
+  visibility: visible;
+  grid-column: 1;
+  grid-row: auto;
 }
-
-.fd-still .fd-note {
-  padding: 0 var(--spacing-gut) var(--spacing-sec);
-  text-align: right;
 }
 
 /* As bolinhas dos relógios do KMEP flutuam sem disputar o transform do scroll. */

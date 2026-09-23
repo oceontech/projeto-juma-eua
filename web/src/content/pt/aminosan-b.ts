@@ -132,37 +132,25 @@ export const specimen: typeof en.specimen = {
 
 export const field: typeof en.field = {
   headline: ["E qual a diferença real", "na lavoura?"],
-  body: "Mesma lavoura, mesmo estágio, mesma passada. Um lado recebeu Aminosan®.",
-  without: "Sem Aminosan®",
-  with: "Com Aminosan®",
-  note: "Imagens ilustrativas.",
+  body: "Da folha à raiz, acompanhe cada detalhe.",
   chapters: [
     {
       kicker: "A folha",
       heading: "Verde mais profundo, folha mais cheia.",
-      body: "Compare a cor e o corpo da folha, lado a lado, no mesmo estágio.",
-      alt: {
-        without: "Folha trifoliolada de soja, mais pálida e fina, ao nascer do sol",
-        with: "Folha trifoliolada de soja, verde profundo e cheia, ao nascer do sol",
-      },
+      body: "Um olhar de perto para a cor e o corpo da folha.",
+      alt: "Folha trifoliolada de soja, verde profundo e cheia, ao nascer do sol",
     },
     {
       kicker: "A planta",
       heading: "Mais planta no mesmo estágio.",
-      body: "Mesma idade, mesma linha. Compare altura, caule e dossel.",
-      alt: {
-        without: "Planta jovem de soja, mais baixa, com folhas menores e pálidas",
-        with: "Planta jovem de soja, mais alta, com folhas maiores e verde profundo",
-      },
+      body: "Altura, caule e dossel entram em foco.",
+      alt: "Planta jovem de soja, com folhas maiores e verde profundo",
     },
     {
       kicker: "Debaixo da terra",
       heading: "E, sob o solo, mais raiz.",
       body: "A parte que ninguém vê: raiz principal mais funda e mais raízes laterais explorando o solo.",
-      alt: {
-        without: "Raiz de soja num corte de solo, curta e rala",
-        with: "Raiz de soja num corte de solo, funda e muito ramificada",
-      },
+      alt: "Raiz de soja isolada com raiz principal longa e ramificações finas",
     },
   ],
 };
@@ -194,6 +182,15 @@ export const converge: typeof en.converge = {
     body: "O Aminosan® leva L-aminoácidos livres à folha, já na forma que a planta usa para montar proteína. Sem conversão para esperar, sem desvio pelo solo.",
     cta: { label: "Veja como funciona", href: "#meet" },
   },
+  routes: {
+    steps: ["Nitrato", "Nitrito", "Amônio", "Glutamato", "Aminoácido"],
+    with: {
+      label: "Com Aminosan®",
+      note: "Direto ao aminoácido",
+      jugAlt: "Bombona do Aminosan®",
+    },
+    conversion: "Cada conversão gasta a energia da lavoura",
+  },
   cards: [
     {
       title: "100% livres",
@@ -212,8 +209,9 @@ export const converge: typeof en.converge = {
 
 export const meet: typeof en.meet = {
   heading: "Conheça o Aminosan®",
-  intro: "Acompanhe uma dose, da bombona até a folha.",
-  scroll: "Role para mergulhar",
+  intro: "Da bombona à folha, em cinco passos.",
+  pauseVideo: "Pausar vídeo",
+  playVideo: "Reproduzir vídeo",
   stages: [
     {
       n: "01",

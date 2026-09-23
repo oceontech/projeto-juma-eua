@@ -1,6 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  devIndicators: false,
   images: {
     /* 75 é o padrão; 90 fica para as fotos em tela cheia, que perdem
        detalhe visível com a compressão padrão. */

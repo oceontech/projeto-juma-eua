@@ -287,14 +287,12 @@ chega (`u.gather` = 1), o canvas sai e um elemento sólido (`.sp-black`) do mesm
 Nada sólido aparece antes disso — um miolo sólido crescendo sob ou sobre a nuvem, já tentado,
 aparecia como um ponto no centro. `Field` já nasce toda preta: a emenda é preto sobre
 preto. A pergunta se forma no
-escuro como a frase da home (escala, foco e brilho em curvas separadas) e a resposta é uma
-comparação lado a lado — folha, planta e raiz, sem e com Aminosan® —, cada par subindo por cima do
-anterior. As fotos estão em `public/img/aminosan-b/compare/`, geradas no Higgsfield (GPT Image 2.5);
-a versão "sem" de cada par foi gerada **a partir** da "com", para enquadramento e luz baterem.
-
-**Risco aberto:** a comparação contraria a restrição visual de `docs/02-MERCADO-USA.md` — decisão
-do cliente, registrada em `docs/04-PENDENCIAS.md`. O aviso "Illustrative images" fica na tela a
-comparação inteira; não o remova.
+escuro como a frase da home (escala, foco e brilho em curvas separadas). A resposta percorre
+folha, planta e raiz: a bombona fica à esquerda, cada resultado ocupa o centro e as miniaturas
+giram em arco à direita conforme o scroll. As fotos ilustrativas estão em
+`public/img/aminosan-b/compare/`.
+**Risco aberto:** a imagem de raiz e a copy de resultado ainda precisam de revisão com a Juma
+antes da publicação, conforme `docs/02-MERCADO-USA.md`.
 
 ### Plugins
 

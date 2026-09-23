@@ -83,10 +83,6 @@ const SWITCH = 0.62;
    volta na foto. Ela sai assim que a molécula começa a se desmanchar. */
 const HERO_BACK = 0.94;
 
-/* Fração do curso da cena (scroll real) em que a tela já está toda preta:
-   1,16 da linha do tempo, menos uma folga. */
-const END_BLACK = 0.985;
-
 /* O rótulo da bombona, em fração da foto a partir do centro (y para cima).
    É para lá que o zoom anda. */
 const FOCUS: [number, number] = [-0.005, -0.16];
@@ -274,7 +270,9 @@ export function Specimen({ children }: { children: React.ReactNode }) {
             if (
               ending.fill > 0 ||
               black.style.opacity ||
-              (timeline?.scrollTrigger?.progress ?? 0) >= END_BLACK
+              (timeline?.scrollTrigger?.progress ?? 0) *
+                (timeline?.duration() || 1.16) >=
+                1.0
             ) {
               const w = stage.clientWidth;
               const h = stage.clientHeight;
@@ -288,16 +286,25 @@ export function Specimen({ children }: { children: React.ReactNode }) {
                  mostrando uma faixa por baixo. Passado o ponto em que a tela
                  fica toda preta, ela está toda preta — com ou sem atraso. */
               const real = timeline?.scrollTrigger?.progress ?? 0;
-              const full = real >= END_BLACK ? 1 : 0;
+              /* Mesmas curvas da linha do tempo, mas lidas do scroll real:
+                 o raio nunca fica atrás do que o dedo já rolou. É contínuo —
+                 chega a 1 exatamente no fim do pin —, então não há salto de
+                 um círculo pela metade para a tela cheia. */
+              const tReal = real * (timeline?.duration() || 1.16);
+              const fill = Math.max(
+                ending.fill,
+                gsap.utils.clamp(0, 1, (tReal - 1.0) / 0.08),
+              );
+              const grow = Math.max(
+                ending.grow,
+                gsap.parseEase("power2.in")(
+                  gsap.utils.clamp(0, 1, (tReal - 1.07) / 0.09),
+                ),
+              );
+              const full = grow >= 1 ? 1 : 0;
               const r =
-                full * (Math.hypot(w, h) / 2 + 8) +
-                (1 - full) *
-                  (gsap.utils.interpolate(
-                    Math.min(w, h) * 0.01,
-                    small,
-                    ending.fill,
-                  ) +
-                    (Math.hypot(w, h) / 2 + 8 - small) * ending.grow);
+                gsap.utils.interpolate(Math.min(w, h) * 0.01, small, fill) +
+                (Math.hypot(w, h) / 2 + 8 - small) * grow;
               u.disc = r;
               /* O grão: com N pontos espalhados por igual no disco, o passo
                  entre vizinhos é r·√(π/N); quatro passos e meio de diâmetro fecham
@@ -306,7 +313,7 @@ export function Specimen({ children }: { children: React.ReactNode }) {
               /* Preenchido — a última partícula chegou —, a nuvem dá lugar a
                  um elemento sólido, do mesmo raio e no mesmo lugar. Os dois
                  são o mesmo preto, então a troca não se vê. */
-              const solid = u.gather >= 0.999 || full === 1;
+              const solid = u.gather >= 0.999 || full === 1 || tReal >= 1.08;
               black.style.clipPath = `circle(${r}px at 50% 50%)`;
               black.style.opacity = solid ? "1" : "";
               surface.style.visibility = solid ? "hidden" : "";
