@@ -1,11 +1,9 @@
 import * as enAminosan from "./aminosan";
 import * as enAminosanB from "./aminosan-b";
-import * as enAminosanC from "./aminosan-c";
 import * as enHome from "./home";
 import * as enKmep from "./kmep";
 import * as ptAminosan from "./pt/aminosan";
 import * as ptAminosanB from "./pt/aminosan-b";
-import * as ptAminosanC from "./pt/aminosan-c";
 import * as ptHome from "./pt/home";
 import * as ptKmep from "./pt/kmep";
 
@@ -22,11 +20,10 @@ export const LOCALE_COOKIE = "locale";
 
 export type Content = {
   home: typeof enHome;
+  /** Versão anterior da LP do Aminosan (rota /aminosan-b). */
   aminosan: typeof enAminosan;
-  /** LP B do Aminosan, para o teste A/B (rota /aminosan-b). */
+  /** LP principal do Aminosan (rota /aminosan) — nasceu como versão B. */
   aminosanB: typeof enAminosanB;
-  /** LP C do Aminosan, a versão de instrumento (rota /aminosan-c). */
-  aminosanC: typeof enAminosanC;
   /** LP do KMEP Ultra (rota /kmep). */
   kmep: typeof enKmep;
 };
@@ -36,14 +33,12 @@ const dictionaries: Record<Locale, Content> = {
     home: enHome,
     aminosan: enAminosan,
     aminosanB: enAminosanB,
-    aminosanC: enAminosanC,
     kmep: enKmep,
   },
   pt: {
     home: ptHome,
     aminosan: ptAminosan,
     aminosanB: ptAminosanB,
-    aminosanC: ptAminosanC,
     kmep: ptKmep,
   },
 };

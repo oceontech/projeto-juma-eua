@@ -129,8 +129,11 @@ atropelaria a animação.
 
 ### A cena de partículas da LP B
 
-> **Hoje a LP B usa `components/aminosan-b/Specimen.tsx`**, a cena no mecanismo da LP C (ver "A LP
-> C" abaixo) com as cores da B: a foto do hero — fundo e folhas compostos num canvas — dá o zoom e
+> **Rotas:** a LP dos componentes `aminosan-b/` é hoje a **principal**, em `/aminosan`; a versão
+> anterior (`components/aminosan/`) mudou para `/aminosan-b`. A LP C foi removida.
+>
+> **Hoje a LP B usa `components/aminosan-b/Specimen.tsx`**, a cena no mecanismo da antiga LP C (removida:
+> grade de pontos sobre a própria foto, cor lida da textura no vertex shader) com as cores da B: a foto do hero — fundo e folhas compostos num canvas — dá o zoom e
 > se fragmenta sozinha, sem a linha de varredura e sem a trama de fundo, e a nuvem passa pelas
 > quatro leituras de `lib/scan/specimen.ts`. Para o leigo, a cor tem legenda: verde é o nitrogênio
 > (e, na folha, a gota), âmbar é a ligação que ainda precisa ser aberta — é a tag por ponto que o
@@ -172,7 +175,7 @@ atropelaria a animação.
 >
 > O `Origin` descrito a seguir, com `lib/origin/`, saiu da página mas continua no repositório.
 
-`/aminosan-b` abre com a foto do hero se **aproximando** — o zoom do parallax, com ela ainda
+`/aminosan` (antiga `/aminosan-b`) abre com a foto do hero se **aproximando** — o zoom do parallax, com ela ainda
 inteira —, depois se fragmentando em pontos, que ganham volume e percorrem a cadeia da assimilação
 de nitrogênio: planta com raiz, nitrato, amônio, aminoácido, uma etapa por morph. É o único lugar
 do site com WebGL. As peças:
@@ -292,35 +295,6 @@ a versão "sem" de cada par foi gerada **a partir** da "com", para enquadramento
 **Risco aberto:** a comparação contraria a restrição visual de `docs/02-MERCADO-USA.md` — decisão
 do cliente, registrada em `docs/04-PENDENCIAS.md`. O aviso "Illustrative images" fica na tela a
 comparação inteira; não o remova.
-
-### A LP C — a versão de instrumento
-
-`/aminosan-c` é a terceira versão do teste, num registro oposto ao da B: fundo escuro, tipografia de
-painel, e uma cena que não ilustra o produto — **analisa uma amostra dele**. As duas convivem; o
-formulário é o mesmo Server Action e se separam pelo campo `source`.
-
-| Arquivo | O que faz |
-|---|---|
-| `components/aminosan-c/Scan.tsx` | A cena e a moldura de HUD |
-| `lib/scan/field.ts` | O renderizador: a nuvem que **é** a fotografia, e o `project()` que pendura as chamadas |
-| `lib/scan/forms.ts` | Os quatro corpos — unidade, cadeia, unidades livres, folha |
-| `components/aminosan-c/Spec.tsx · Window.tsx · Request.tsx` | Especificação, janela de aplicação e pedido |
-
-**A diferença técnica que define a página:** aqui os pontos não são sorteados da foto, são uma
-**grade regular sobre ela** e leem a cor **da textura, no vertex shader** (`textureLod`, porque no
-vertex shader não há derivada para escolher o nível sozinho). Em repouso cada ponto ocupa a própria
-célula e o conjunto reconstrói a imagem; quando eles saem do lugar, é a fotografia que se desmancha,
-não um retrato dela. Daí a grade ser grande — 560×344 são 193 mil pontos —, e daí também a célula
-ter de acompanhar o tamanho da foto na tela: com célula grande a imagem em repouso vira mosaico.
-
-**Duas armadilhas já pagas.** A textura vai **sem** `UNPACK_FLIP_Y_WEBGL`: com o flip, `v = 0` passa
-a ser a base da imagem, e tanto o mapeamento para a tela quanto a varredura de cima para baixo saem
-invertidos. E só uma fração das partículas (`uKeep`) vira amostra: a foto precisa de duzentos mil
-pontos para fechar, uma molécula precisa de vinte mil — com todos eles o átomo vira disco maciço. O
-resto se dissipa para fora e apaga.
-
-O `refreshPriority: 1` do pin vale aqui pelo mesmo motivo da LP B: a cena é a primeira da página mas
-é criada por último, depois do véu e da textura.
 
 ### Plugins
 

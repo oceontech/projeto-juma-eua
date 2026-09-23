@@ -1,56 +1,50 @@
 import type { Metadata } from "next";
-import { Hero } from "@/components/aminosan-b/Hero";
-import { Specimen } from "@/components/aminosan-b/Specimen";
-import { Field } from "@/components/aminosan-b/Field";
-import { Problem } from "@/components/aminosan-b/Problem";
-import { Converge } from "@/components/aminosan-b/Converge";
-import { Meet } from "@/components/aminosan-b/Meet";
-import { Cell } from "@/components/aminosan-b/Cell";
-import { Proof } from "@/components/aminosan-b/Proof";
-import { Timing } from "@/components/aminosan-b/Timing";
-import { Season } from "@/components/aminosan-b/Season";
-import { Inside } from "@/components/aminosan-b/Inside";
-import { Questions } from "@/components/aminosan-b/Questions";
-import { Final } from "@/components/aminosan-b/Final";
+import { Hero } from "@/components/aminosan/Hero";
+import { NitrogenProcess } from "@/components/aminosan/NitrogenProcess";
+import { VideoSection } from "@/components/aminosan/VideoSection";
+import { AminoAcidDelivery } from "@/components/aminosan/AminoAcidDelivery";
+import { OperationalBenefits } from "@/components/aminosan/OperationalBenefits";
+import { FieldResults } from "@/components/aminosan/FieldResults";
+import { CompanyStory } from "@/components/aminosan/CompanyStory";
+import { ProductDetails } from "@/components/aminosan/ProductDetails";
+import { Faq } from "@/components/aminosan/Faq";
+import { TrialRequest } from "@/components/aminosan/TrialRequest";
 
 export const metadata: Metadata = {
   title: "Aminosan®",
   description:
-    "100% free-form L-amino acids with N, P and K, straight to the leaf in the pass you already make.",
-  /* Versão B do teste A/B: a canônica continua sendo /aminosan. */
+    "Free amino acids, delivered ready to use. In the field for 40 years.",
+  /* Versão anterior da LP, guardada em /aminosan-b: a canônica é /aminosan. */
   alternates: { canonical: "/aminosan" },
 };
 
-/**
- * LP B do Aminosan — escrita do zero para o teste A/B contra /aminosan.
- * Estrutura e ritmo seguem a referência editorial (hero de produto com
- * parallax de entrada que se desfaz em partículas — origem vegetal e forma
- * do aminoácido —, problema em tela dividida, convergência, produto com vídeo no scroll,
- * dentro da folha (lente de microscópio),
- * prova, janela crítica, fichas de cultura, o que tem na bombona, trilho
- * de perguntas, pedido).
- */
+/** Versão anterior da LP do Aminosan (rota /aminosan-b) — layout do Figma
+    (node 2:316 / 56:408). A principal é a de components/aminosan-b. */
 export default function AminosanBPage() {
   return (
     <>
-      {/* O hero mora dentro da cena: os dois travam juntos enquanto a foto
-          se fragmenta em partículas e a nuvem passa pelas quatro leituras. */}
-      <Specimen>
-        <Hero />
-      </Specimen>
-      {/* A virada para o campo: o preto abre da folha, pergunta, e responde
-          com a comparação folha → planta → raiz. */}
-      <Field />
-      <Problem />
-      <Converge />
-      <Meet />
-      <Cell />
-      <Proof />
-      <Timing />
-      <Season />
-      <Inside />
-      <Questions />
-      <Final />
+      <Hero />
+      {/* O hero revela esta seção esmaecendo sobre ela, e o corte dele acaba
+          em branco — o papel do diagrama está a um passo desse branco, então
+          a travessia é um esmaecimento e não um corte de cor.
+
+          O palco do vídeo divide o mesmo branco: da saída da hero até a
+          seção seguinte o fundo não muda uma vez, então a moldura lima cresce
+          sobre a superfície que já estava ali e não há nenhuma travessia de
+          cor para encenar. Nada aqui leva `data-nav-theme`: o trecho é claro
+          inteiro, menos a foto da metade esquerda, e é o vidro claro da barra
+          que sustenta a leitura por cima dela. */}
+      <section id="nitrogen-process" className="overflow-x-clip bg-white">
+        <NitrogenProcess />
+        <VideoSection />
+      </section>
+      <AminoAcidDelivery />
+      <OperationalBenefits />
+      <FieldResults />
+      <CompanyStory />
+      <ProductDetails />
+      <Faq />
+      <TrialRequest />
     </>
   );
 }

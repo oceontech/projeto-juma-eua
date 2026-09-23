@@ -10,8 +10,8 @@ LP Aminosan®. O site fica em `web/` (Next.js). Leia `README.md` para o estado g
 |---|---|---|
 | Home | `docs/03-SITE.md` | `web/src/components/home/` + `web/src/content/home.ts` |
 | **LP KMEP Ultra®** | **`docs/05-COPY-KMEP-ULTRA.md`** | `web/src/components/kmep/` + `web/src/content/kmep.ts` — rota `/kmep` (`/kmep-ultra` redireciona) |
-| LP Aminosan® | `docs/03-SITE.md` + `web/src/content/aminosan.ts` | `web/src/components/aminosan/` |
-| LP Aminosan® versão B (teste A/B) | `web/src/content/aminosan-b.ts` | `web/src/components/aminosan-b/` |
+| **LP Aminosan®** (rota `/aminosan`) | `web/src/content/aminosan-b.ts` | `web/src/components/aminosan-b/` — nasceu como versão B e virou a principal |
+| LP Aminosan® versão anterior (rota `/aminosan-b`) | `docs/03-SITE.md` + `web/src/content/aminosan.ts` | `web/src/components/aminosan/` |
 
 **Antes de escrever qualquer coisa da LP do KMEP Ultra, leia `docs/05-COPY-KMEP-ULTRA.md`.** Ele é o
 documento canônico: posicionamento, arco narrativo, as dezessete seções e a copy pronta em inglês.

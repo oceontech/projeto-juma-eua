@@ -31,6 +31,8 @@ export function TrialRequest() {
 
       <Reveal y={20} delay={0.1} className="wrap mt-[clamp(32px,4vw,56px)] max-w-[1320px]">
         <form action={action} noValidate>
+          {/* De qual versão da LP o lead veio: esta é a /aminosan-b. */}
+          <input type="hidden" name="source" value="aminosan-b" />
           <div className="grid grid-cols-1 gap-x-[clamp(20px,2vw,32px)] gap-y-[clamp(16px,1.6vw,20px)] sm:grid-cols-2">
             <Field id={`${id}-name`} label={fields.name.label} error={state.errors.name}>
               <input
