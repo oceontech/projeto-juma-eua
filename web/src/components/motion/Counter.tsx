@@ -16,6 +16,11 @@ type CounterProps = {
   trigger?: string;
   start?: string;
   replay?: boolean;
+  /**
+   * Casas decimais. Zero (o padrão) conta em inteiros; `1` serve aos
+   * resultados de ensaio (221.3 bu/ac), que perderiam o sentido arredondados.
+   */
+  decimals?: number;
 };
 
 /**
@@ -29,8 +34,8 @@ type CounterProps = {
  * estado do React: são dezenas de quadros por segundo, e cada um viraria uma
  * renderização de árvore inteira para trocar três caracteres.
  *
- * `snap` mantém a contagem em inteiros — sem ele o número treme com casas
- * decimais no meio do caminho.
+ * `snap` mantém a contagem no passo da última casa pedida — sem ele o número
+ * treme com casas a mais no meio do caminho.
  */
 export function Counter({
   to,
@@ -42,8 +47,10 @@ export function Counter({
   trigger,
   start,
   replay = false,
+  decimals = 0,
 }: CounterProps) {
   const ref = useRef<HTMLElement>(null);
+  const format = (value: number) => (decimals ? value.toFixed(decimals) : String(Math.round(value)));
 
   useGSAP(
     () => {
@@ -60,13 +67,13 @@ export function Counter({
         (context) => {
           const { animate } = context.conditions as { animate: boolean };
           if (!animate) {
-            el.textContent = String(to);
+            el.textContent = format(to);
             return;
           }
 
           const count = { value: from };
           const write = () => {
-            el.textContent = String(Math.round(count.value));
+            el.textContent = format(count.value);
           };
           write();
 
@@ -75,7 +82,7 @@ export function Counter({
             duration,
             delay,
             ease: "power2.out",
-            snap: { value: 1 },
+            snap: { value: 1 / 10 ** decimals },
             onUpdate: write,
             scrollTrigger: {
               trigger: (trigger && document.querySelector(trigger)) || el,
@@ -88,17 +95,17 @@ export function Counter({
 
           /* Devolve o número certo se a preferência mudar no meio. */
           return () => {
-            el.textContent = String(to);
+            el.textContent = format(to);
           };
         },
       );
     },
-    { scope: ref, dependencies: [to, from, duration, delay, trigger, start, replay] },
+    { scope: ref, dependencies: [to, from, duration, delay, trigger, start, replay, decimals] },
   );
 
   return (
     <Tag ref={ref} className={className}>
-      {to}
+      {format(to)}
     </Tag>
   );
 }

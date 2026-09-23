@@ -13,6 +13,11 @@ const nextConfig: NextConfig = {
        ele conferir a origem a cada pedido. */
     minimumCacheTTL: process.env.NODE_ENV === "development" ? 0 : 14400,
   },
+  /* A LP do KMEP mudou de /kmep-ultra para /kmep. Permanente, e antes do
+     sistema de arquivos: a rota antiga não chega a renderizar. */
+  async redirects() {
+    return [{ source: "/kmep-ultra", destination: "/kmep", permanent: true }];
+  },
   /**
    * O site não vai ao ar antes da liberação do responsável regulatório da
    * LLC — a mesma política do protótipo em site/vercel.json. O cabeçalho

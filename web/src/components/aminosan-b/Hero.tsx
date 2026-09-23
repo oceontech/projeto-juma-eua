@@ -12,7 +12,9 @@ import { gsap, useGSAP } from "@/lib/gsap";
  * O parallax é só de entrada, como a abertura do hero da home, sem nada
  * preso ao scroll: quando o preloader sai, o fundo assenta de um zoom e as
  * folhas sobem de baixo até o lugar, um pouco atrás, para a cena ganhar
- * profundidade. O texto entra por cima das duas.
+ * profundidade. O texto entra por cima das duas. Depois que a folha assenta,
+ * fica um vento fraco e constante nela — ver `startDrift` — que também
+ * existe na LP do KMEP (`kmep/Hero.tsx`), com o mesmo mecanismo.
  *
  * `data-hb-copy` marca o que sai de cena quando o scroll começa (o texto e a
  * sombra que o sustenta): quem o tira é a cena de partículas, em
@@ -31,12 +33,67 @@ export function Hero() {
       const mm = gsap.matchMedia();
 
       mm.add("(prefers-reduced-motion: no-preference)", () => {
+        const leaves = scope.current?.querySelector<HTMLElement>("[data-hb='leaves']");
+
         gsap.set("[data-hb='bg']", { scale: 1.18, transformOrigin: "50% 60%" });
-        gsap.set("[data-hb='leaves']", { yPercent: 38 });
+        /* A folha recebe uma folga de 12% (`scale`) que o recorte do
+           `<picture>` não tem: sem ela, o vento do `startDrift` desloca a
+           camada inteira e descobre a cor de fundo da seção na borda, porque
+           a imagem termina exatamente onde o recorte termina. Com a origem
+           no centro a folga sobra igual nos quatro lados, e cobre de sobra o
+           vaivém de x, y e rotação que vem depois. */
+        gsap.set("[data-hb='leaves']", { yPercent: 38, scale: 1.12, transformOrigin: "50% 50%" });
         gsap.set("[data-hb='fade']", { opacity: 0, y: 24 });
 
         let alive = true;
         let intro: gsap.core.Timeline | undefined;
+        const drift: gsap.core.Tween[] = [];
+
+        /* A folha nunca para de vez: assim que assenta no lugar, fica um
+           vento fraco e constante nela — vaivém pequeno em x, y e rotação,
+           cada eixo com o seu período, para não ler como um balanço só.
+           `sine.inOut` para de vez nas pontas do curso e é rápido no meio —
+           e o repouso em que a folha chega da entrada é o meio do curso (x,
+           y e rotação em zero), o ponto de maior velocidade do ciclo. Entrar
+           direto no loop ali é o corte seco: a folha ia de parada a veloz
+           num quadro só. Por isso cada eixo abre com uma perna extra, da
+           posição de repouso até a primeira ponta do curso — mesma curva
+           `sine.inOut`, que também para de vez nas pontas —, e só then o loop
+           sem fim começa, exatamente de onde essa perna parou. Nenhum ponto
+           de emenda tem salto de posição nem de velocidade. */
+        const startDrift = () => {
+          if (!alive || !leaves) return;
+
+          const swing = (prop: "x" | "y" | "rotation", amplitude: number, period: number, entry: number) => {
+            const enter = gsap.fromTo(
+              leaves,
+              { [prop]: 0 },
+              {
+                [prop]: -amplitude,
+                duration: entry,
+                ease: "sine.inOut",
+                onComplete: () => {
+                  if (!alive) return;
+                  const loop = gsap.fromTo(
+                    leaves,
+                    { [prop]: -amplitude },
+                    { [prop]: amplitude, duration: period / 2, ease: "sine.inOut", yoyo: true, repeat: -1 },
+                  );
+                  drift.push(loop);
+                },
+              },
+            );
+            drift.push(enter);
+          };
+
+          /* Durações de entrada diferentes para os três eixos não chegarem
+             juntos na primeira ponta — sem isso a folha "trava" no mesmo
+             instante em três direções, o que denuncia o efeito. */
+          swing("x", 7, 5.2, 1.1);
+          swing("y", 5, 6.6, 1.6);
+          swing("rotation", 0.5, 7.4, 2.1);
+        };
+
         void booted.then(() => {
           if (!alive) return;
           intro = gsap
@@ -45,12 +102,16 @@ export function Hero() {
                a folha achata a profundidade. */
             .to("[data-hb='bg']", { scale: 1, duration: 2.6, ease: "power2.out" }, 0)
             .to("[data-hb='leaves']", { yPercent: 0, duration: 2 }, 0.15)
+            /* O vento começa assim que a folha chega, não quando o resto do
+               hero termina de entrar. */
+            .call(startDrift, [], 2.15)
             .to("[data-hb='fade']", { opacity: 1, y: 0, duration: 1.1, stagger: 0.1 }, 0.5);
         });
 
         return () => {
           alive = false;
           intro?.kill();
+          for (const tween of drift) tween.kill();
         };
       });
     },

@@ -9,7 +9,7 @@ LP Aminosan®. O site fica em `web/` (Next.js). Leia `README.md` para o estado g
 | Página | Copy e posicionamento | Implementação |
 |---|---|---|
 | Home | `docs/03-SITE.md` | `web/src/components/home/` + `web/src/content/home.ts` |
-| **LP KMEP Ultra®** | **`docs/05-COPY-KMEP-ULTRA.md`** | `web/src/app/kmep-ultra/` — ainda um esqueleto |
+| **LP KMEP Ultra®** | **`docs/05-COPY-KMEP-ULTRA.md`** | `web/src/components/kmep/` + `web/src/content/kmep.ts` — rota `/kmep` (`/kmep-ultra` redireciona) |
 | LP Aminosan® | `docs/03-SITE.md` + `web/src/content/aminosan.ts` | `web/src/components/aminosan/` |
 | LP Aminosan® versão B (teste A/B) | `web/src/content/aminosan-b.ts` | `web/src/components/aminosan-b/` |
 
