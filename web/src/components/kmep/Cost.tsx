@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { Reveal } from "@/components/motion/Reveal";
 import { SplitLines } from "@/components/motion/SplitLines";
 import { getContent } from "@/lib/locale";
@@ -5,14 +6,13 @@ import { microCaps } from "./ui";
 
 /**
  * K4. O que a perda custa até a colheita — no escuro, com o cobre marcando
- * custo: os dois blocos empilhados, cada um aberto por um fio cobre que se
- * desenha logo depois do bloco subir (o gesto do `.cv-line` da LP B), e o
- * fecho em linha própria.
+ * custo: imagem da lavoura e das raízes sob o título, dois blocos empilhados
+ * abertos por fios cobre e o fecho em linha própria.
  *
  * Nenhum número aqui: a seção descreve dinâmica agronômica e custo
  * operacional, e é por isso que ela publica sem depender da P2.
  *
- * Server Component: só texto e <Reveal>, nada que precise de estado.
+ * Server Component: imagem, texto e <Reveal>, nada que precise de estado.
  */
 export async function Cost() {
   const { cost } = (await getContent()).kmep;
@@ -25,9 +25,19 @@ export async function Cost() {
       />
 
       <div className="wrap grid gap-[clamp(40px,6vw,96px)] lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)]">
-        <SplitLines className="max-w-[13ch] text-[clamp(36px,4.4vw,80px)] leading-[0.96] tracking-[-0.035em] text-balance">
-          {cost.heading}
-        </SplitLines>
+        <div>
+          <SplitLines className="max-w-[13ch] text-[clamp(36px,4.4vw,80px)] leading-[0.96] tracking-[-0.035em] text-balance">
+            {cost.heading}
+          </SplitLines>
+          <Image
+            src="/img/kmep/cost-roots.webp"
+            alt=""
+            width={1672}
+            height={941}
+            sizes="(min-width: 1024px) 46vw, 100vw"
+            className="mt-[clamp(32px,4vw,60px)] h-auto w-full max-w-[640px]"
+          />
+        </div>
 
         <div className="lg:pt-[clamp(8px,1vw,16px)]">
           <Reveal>

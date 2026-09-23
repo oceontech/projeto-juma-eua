@@ -14,89 +14,127 @@ const VB_W = 560;
 const VB_H = 720;
 const NOZZLE: [number, number] = [280, 46];
 
-/* A folha: aresta de cima de A até a ponta B, subindo para a direita.
-   Nenhuma das duas arestas é reta — a de cima é um arco raso, como o dorso
-   alongado de uma folha de gramínea, e a de baixo é a barriga: cheia perto
-   da base, afinando para um bico fino na ponta. As duas juntas é que dão o
-   ar de folha; uma lâmina com uma aresta reta lê como faca, não como
-   planta. */
-const LEAF_A: [number, number] = [70, 704];
-const LEAF_B: [number, number] = [484, 432];
+/* A folha: da base A até a ponta B, subindo para a direita. Duas cúbicas,
+   uma por aresta, as duas de A para B: a de cima (onde fica a cera e onde
+   as gotas pousam) e a de baixo. Os pontos de controle ficam longe da linha
+   A–B e abrem ângulo nas pontas — é isso que deixa a lâmina cheia, com base
+   arredondada e ponta romba, em vez de um fuso fino. */
+type Pt = [number, number];
+const LEAF_A: Pt = [70, 704];
+const LEAF_B: Pt = [484, 432];
 const LEN = Math.hypot(LEAF_B[0] - LEAF_A[0], LEAF_B[1] - LEAF_A[1]);
-const DIR: [number, number] = [(LEAF_B[0] - LEAF_A[0]) / LEN, (LEAF_B[1] - LEAF_A[1]) / LEN];
+const DIR: Pt = [(LEAF_B[0] - LEAF_A[0]) / LEN, (LEAF_B[1] - LEAF_A[1]) / LEN];
 /* Normal para dentro da lâmina (para baixo e à direita). */
-const NRM: [number, number] = [-DIR[1], DIR[0]];
+const NRM: Pt = [-DIR[1], DIR[0]];
 const SLOPE = fix((Math.atan2(DIR[1], DIR[0]) * 180) / Math.PI, 3);
-const leafY = (x: number) => LEAF_A[1] + ((x - LEAF_A[0]) * (LEAF_B[1] - LEAF_A[1])) / (LEAF_B[0] - LEAF_A[0]);
-const along = (t: number, off = 0): [number, number] => [
+/* Ponto a uma fração `t` do eixo A–B, deslocado `off` na normal. */
+const along = (t: number, off = 0): Pt => [
   fix(LEAF_A[0] + (LEAF_B[0] - LEAF_A[0]) * t + NRM[0] * off, 1),
   fix(LEAF_A[1] + (LEAF_B[1] - LEAF_A[1]) * t + NRM[1] * off, 1),
 ];
-const unit = ([x, y]: [number, number]): [number, number] => {
-  const m = Math.hypot(x, y) || 1;
-  return [x / m, y / m];
+
+type Cubic = [Pt, Pt, Pt, Pt];
+const cubicAt = ([p0, p1, p2, p3]: Cubic, t: number): Pt => {
+  const m = 1 - t;
+  const a = m * m * m, b = 3 * m * m * t, c = 3 * m * t * t, d = t * t * t;
+  return [a * p0[0] + b * p1[0] + c * p2[0] + d * p3[0], a * p0[1] + b * p1[1] + c * p2[1] + d * p3[1]];
 };
-/* Normal local de um vetor-tangente, na mesma rotação que gera `NRM` a
-   partir de `DIR` — usada para as arestas curvas, onde a normal muda ponto
-   a ponto em vez de ficar fixa. */
-const localNrm = ([tx, ty]: [number, number]): [number, number] => unit([-ty, tx]);
-
-/* Aresta de cima: um arco quadrático raso, mais alto perto da base. */
-const TOP_CTRL: [number, number] = (() => {
-  const [sx, sy] = along(0.4);
-  return [fix(sx - NRM[0] * 22, 1), fix(sy - NRM[1] * 22, 1)];
-})();
-const qPoint = (p0: [number, number], c: [number, number], p1: [number, number], t: number): [number, number] => {
-  const mt = 1 - t;
-  return [mt * mt * p0[0] + 2 * mt * t * c[0] + t * t * p1[0], mt * mt * p0[1] + 2 * mt * t * c[1] + t * t * p1[1]];
+const cubicTangent = ([p0, p1, p2, p3]: Cubic, t: number): Pt => {
+  const m = 1 - t;
+  const a = 3 * m * m, b = 6 * m * t, c = 3 * t * t;
+  return [
+    a * (p1[0] - p0[0]) + b * (p2[0] - p1[0]) + c * (p3[0] - p2[0]),
+    a * (p1[1] - p0[1]) + b * (p2[1] - p1[1]) + c * (p3[1] - p2[1]),
+  ];
 };
-const qTangent = (p0: [number, number], c: [number, number], p1: [number, number], t: number): [number, number] => [
-  2 * (1 - t) * (c[0] - p0[0]) + 2 * t * (p1[0] - c[0]),
-  2 * (1 - t) * (c[1] - p0[1]) + 2 * t * (p1[1] - c[1]),
-];
-const topPoint = (t: number) => qPoint(LEAF_A, TOP_CTRL, LEAF_B, t);
-const topTangent = (t: number) => qTangent(LEAF_A, TOP_CTRL, LEAF_B, t);
+/* Normal local, na mesma rotação que gera `NRM` a partir de `DIR`. */
+const localNrm = ([tx, ty]: Pt): Pt => {
+  const m = Math.hypot(tx, ty) || 1;
+  return [-ty / m, tx / m];
+};
+const cubicD = ([, p1, p2, p3]: Cubic) =>
+  `C${fix(p1[0], 1)} ${fix(p1[1], 1)} ${fix(p2[0], 1)} ${fix(p2[1], 1)} ${fix(p3[0], 1)} ${fix(p3[1], 1)}`;
 
-/* Aresta de baixo: uma cúbica de B até A — barriga cheia perto da base
-   (`BOTTOM_BELLY`) fechando num afilar raso perto da ponta (`BOTTOM_TIP`). */
-const BOTTOM_TIP: [number, number] = (() => {
-  const [sx, sy] = along(0.86);
-  return [fix(sx + NRM[0] * 18, 1), fix(sy + NRM[1] * 18, 1)];
-})();
-const BOTTOM_BELLY: [number, number] = (() => {
-  const [sx, sy] = along(0.28);
-  return [fix(sx + NRM[0] * 86, 1), fix(sy + NRM[1] * 86, 1)];
-})();
-const LEAF_PATH = `M${LEAF_A[0]} ${LEAF_A[1]} Q${TOP_CTRL[0]} ${TOP_CTRL[1]} ${LEAF_B[0]} ${LEAF_B[1]} C${BOTTOM_TIP[0]} ${BOTTOM_TIP[1]} ${BOTTOM_BELLY[0]} ${BOTTOM_BELLY[1]} ${LEAF_A[0]} ${LEAF_A[1]} Z`;
+const TOP: Cubic = [LEAF_A, along(0.06, -60), along(0.78, -68), LEAF_B];
+const BOTTOM: Cubic = [LEAF_A, along(0.05, 64), along(0.78, 72), LEAF_B];
+/* A aresta de baixo é desenhada de B de volta para A, para fechar o contorno. */
+const LEAF_PATH = `M${LEAF_A[0]} ${LEAF_A[1]} ${cubicD(TOP)} ${cubicD([LEAF_B, BOTTOM[2], BOTTOM[1], LEAF_A])} Z`;
 
-/* A nervura central acompanha a mesma curva da aresta de cima, só que por
-   dentro da lâmina — por isso é um traço, não mais uma reta. */
+/* A nervura é a média ponto a ponto das duas arestas — como as duas curvas
+   têm o mesmo parâmetro, a média é a linha do meio exata e nunca sai da
+   lâmina. Nasce na base e para um pouco antes da ponta. */
+const MID: Cubic = [0, 1, 2, 3].map((k) => [(TOP[k][0] + BOTTOM[k][0]) / 2, (TOP[k][1] + BOTTOM[k][1]) / 2]) as Cubic;
+/* Desenhada como forma cheia, e não traço, para afinar da base (grossa)
+   até quase sumir perto da ponta. */
 const MIDRIB_PATH = (() => {
-  const inward = (t: number, depth: number): [number, number] => {
-    const [x, y] = topPoint(t);
-    const [nx, ny] = localNrm(topTangent(t));
-    return [fix(x + nx * depth, 1), fix(y + ny * depth, 1)];
-  };
-  const [ax, ay] = inward(0.04, 20);
-  const [cx, cy] = inward(0.5, 26);
-  const [bx, by] = inward(0.94, 8);
-  return `M${ax} ${ay} Q${cx} ${cy} ${bx} ${by}`;
+  const n = 40;
+  const left: string[] = [];
+  const right: string[] = [];
+  for (let k = 0; k <= n; k++) {
+    const t = (k / n) * 0.94;
+    const [x, y] = cubicAt(MID, t);
+    const [nx, ny] = localNrm(cubicTangent(MID, t));
+    const w = 1.3 * (1 - t) + 0.2;
+    left.push(`${fix(x - nx * w, 1)} ${fix(y - ny * w, 1)}`);
+    right.unshift(`${fix(x + nx * w, 1)} ${fix(y + ny * w, 1)}`);
+  }
+  return `M${left.join(" L")} L${right.join(" L")} Z`;
 })();
+
+/* As nervuras laterais: saem da nervura central e sobem em arco para a
+   ponta, parando antes da borda, como numa folha de verdade. Alternadas
+   entre os dois lados para não lerem como espinha de peixe. */
+const lerp = (a: Pt, b: Pt, k: number): Pt => [a[0] + (b[0] - a[0]) * k, a[1] + (b[1] - a[1]) * k];
+const VEINS = Array.from({ length: 16 }, (_, i) => {
+  const side = i % 2 === 0 ? TOP : BOTTOM;
+  const s = 0.1 + Math.floor(i / 2) * 0.1 + (i % 2) * 0.04;
+  const from = cubicAt(MID, s);
+  const to = lerp(cubicAt(MID, s + 0.12), cubicAt(side, s + 0.12), 0.84);
+  const ctrl = lerp(cubicAt(MID, s + 0.03), cubicAt(side, s + 0.05), 0.6);
+  return `M${fix(from[0], 1)} ${fix(from[1], 1)} Q${fix(ctrl[0], 1)} ${fix(ctrl[1], 1)} ${fix(to[0], 1)} ${fix(to[1], 1)}`;
+}).filter((_, i) => Math.floor(i / 2) * 0.1 + 0.1 < 0.84);
+/* O pecíolo: um toco curto saindo da base, na direção oposta à ponta. */
+const PETIOLE = (() => {
+  const [ex, ey] = along(-0.035, 4);
+  const [cx, cy] = along(-0.015, 6);
+  return `M${LEAF_A[0]} ${LEAF_A[1]} Q${cx} ${cy} ${ex} ${ey}`;
+})();
+/* O degradê da lâmina corre de uma borda à outra: mais claro no lado de
+   cima, que pega a luz, e mais escuro na barriga. */
+const SHADE_FROM = along(0.5, -48);
+const SHADE_TO = along(0.5, 56);
+
+/* Onde as gotas pousam: a altura da aresta de cima numa dada coordenada x,
+   interpolada numa tabela da curva (a cúbica não se resolve em x direto). */
+const TOP_TABLE = Array.from({ length: 121 }, (_, i) => cubicAt(TOP, i / 120));
+const leafY = (x: number) => {
+  const i = TOP_TABLE.findIndex((p) => p[0] >= x);
+  if (i <= 0) return TOP_TABLE[Math.max(i, 0)][1];
+  const [x0, y0] = TOP_TABLE[i - 1];
+  const [x1, y1] = TOP_TABLE[i];
+  return y0 + ((x - x0) / (x1 - x0)) * (y1 - y0);
+};
+
 /* A cera: marcas curtas para fora da aresta de cima, como cristais —
-   perpendiculares à curva em cada ponto, não a uma direção fixa. */
+   perpendiculares à curva em cada ponto. */
 const WAX = Array.from({ length: 30 }, (_, i) => {
-  const t = 0.03 + i * 0.032;
-  const [x1, y1] = topPoint(t);
-  const [nx, ny] = localNrm(topTangent(t));
+  const t = 0.04 + i * 0.031;
+  const [x1, y1] = cubicAt(TOP, t);
+  const [nx, ny] = localNrm(cubicTangent(TOP, t));
   return { x1: fix(x1, 1), y1: fix(y1, 1), x2: fix(x1 - nx * 4.5, 1), y2: fix(y1 - ny * 4.5, 1) };
 });
-const LABEL_T = 0.3;
+
+/* O rótulo corre por fora da aresta de baixo, acompanhando a curva. */
+const LABEL_T = 0.28;
 const LEAF_LABEL = (() => {
-  const [x, y] = topPoint(LABEL_T);
-  const [nx, ny] = localNrm(topTangent(LABEL_T));
-  return [fix(x + nx * 58, 1), fix(y + ny * 58, 1)];
+  const [x, y] = cubicAt(BOTTOM, LABEL_T);
+  const [nx, ny] = localNrm(cubicTangent(BOTTOM, LABEL_T));
+  return [fix(x + nx * 26, 1), fix(y + ny * 26, 1)];
 })();
-const LABEL_SLOPE = fix((Math.atan2(topTangent(LABEL_T)[1], topTangent(LABEL_T)[0]) * 180) / Math.PI, 3);
+const LABEL_SLOPE = (() => {
+  const [tx, ty] = cubicTangent(BOTTOM, LABEL_T);
+  return fix((Math.atan2(ty, tx) * 180) / Math.PI, 3);
+})();
 
 /* O arco do sol: 6h à esquerda, 18h à direita, por cima. */
 const SUN = { cx: 470, cy: 116, r: 56 };
@@ -241,10 +279,6 @@ export function Deposition() {
             trigger: stage,
             ...active,
             toggleClass: { targets: stage, className: "is-active" },
-            onToggle: (self) => {
-              const count = scope.current?.querySelector(".dp-count");
-              if (self.isActive && count) count.textContent = `0${s + 1}`;
-            },
           });
 
           gsap.fromTo(
@@ -350,8 +384,28 @@ export function Deposition() {
                 </text>
 
                 {/* A folha, inclinada e cerosa. */}
-                <path d={LEAF_PATH} fill="#26371F" stroke="#B9C2A0" strokeOpacity="0.6" />
-                <path d={MIDRIB_PATH} fill="none" stroke="#B9C2A0" strokeOpacity="0.3" />
+                <defs>
+                  <linearGradient
+                    id="dp-leaf-shade"
+                    gradientUnits="userSpaceOnUse"
+                    x1={SHADE_FROM[0]}
+                    y1={SHADE_FROM[1]}
+                    x2={SHADE_TO[0]}
+                    y2={SHADE_TO[1]}
+                  >
+                    <stop offset="0" stopColor="#34482A" />
+                    <stop offset="0.5" stopColor="#283B21" />
+                    <stop offset="1" stopColor="#1D2C18" />
+                  </linearGradient>
+                </defs>
+                <path d={PETIOLE} fill="none" stroke="#B9C2A0" strokeOpacity="0.6" strokeWidth="2.2" strokeLinecap="round" />
+                <path d={LEAF_PATH} fill="url(#dp-leaf-shade)" stroke="#B9C2A0" strokeOpacity="0.6" />
+                <g fill="none" stroke="#B9C2A0" strokeOpacity="0.2" strokeWidth="0.9" strokeLinecap="round">
+                  {VEINS.map((d) => (
+                    <path key={d} d={d} />
+                  ))}
+                </g>
+                <path d={MIDRIB_PATH} fill="#B9C2A0" fillOpacity="0.4" />
                 <g stroke="#B9C2A0" strokeOpacity="0.75">
                   {WAX.map((w, i) => (
                     <line key={i} {...w} />
@@ -389,9 +443,6 @@ export function Deposition() {
                   </g>
                 ))}
               </svg>
-              <p aria-hidden className="absolute bottom-[1%] left-0 font-display text-[12px] tracking-[0.18em] text-lime">
-                <span className="dp-count">01</span> <span className="text-offwhite/45">/ 03</span>
-              </p>
               <p aria-hidden className="absolute right-0 bottom-[1%] flex items-center gap-2 font-display text-[11px] tracking-[0.14em] text-offwhite uppercase lg:hidden">
                 <span className="dp-hour-0">{deposition.hours[0]}</span>
                 <span className="text-offwhite/40">→</span>

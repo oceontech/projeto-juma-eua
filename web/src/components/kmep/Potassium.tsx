@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useRef } from "react";
 import { useContent } from "@/components/layout/LocaleProvider";
 import { SplitLines } from "@/components/motion/SplitLines";
@@ -65,23 +66,32 @@ export function Potassium() {
           const segs = gsap.utils.toArray<HTMLElement>(`.kp-${kind} .kp-seg`);
           const brakes = gsap.utils.toArray<HTMLElement>(`.kp-${kind} .kp-brake`);
           const rings = gsap.utils.toArray<SVGPathElement>(`.kp-${kind} .kp-arc`);
+          const spark = `.kp-${kind} .kp-spark`;
           const hand = `.kp-${kind} .kp-hand`;
           const color = kind === "soil" ? "#435630" : "#B7C73E";
           const n = nodes.length;
           let t = 0;
           nodes.forEach((node, k) => {
-            tl.fromTo(node, { backgroundColor: "#E9EBCB" }, { backgroundColor: color, duration: 0.2 }, t)
-              .fromTo(node.nextElementSibling, { opacity: 0.35 }, { opacity: 1, duration: 0.25 }, t)
+            /* O nó não só troca de cor — dá um pequeno solavanco (`back.out`)
+               ao acender, como um clique, em vez de só esmaecer de uma cor
+               para outra. */
+            tl.fromTo(node, { backgroundColor: "#E9EBCB", scale: 1 }, { backgroundColor: color, scale: 1.4, duration: 0.16, ease: "back.out(3)" }, t)
+              .to(node, { scale: 1, duration: 0.3, ease: "power2.out" }, t + 0.16)
+              .fromTo(node.nextElementSibling, { opacity: 0.35 }, { opacity: 1, duration: 0.3, ease: "sine.out" }, t)
               .fromTo(rings[k], { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 0.8, ease: "none" }, t)
               .fromTo(
                 hand,
                 { rotation: (360 * k) / n, svgOrigin: `${RING.c} ${RING.c}` },
                 { rotation: (360 * (k + 1)) / n, duration: 0.8, ease: "none", immediateRender: k === 0 },
                 t,
-              );
+              )
+              /* A faísca que corre na ponta do arco enquanto ele se enche —
+                 sem ela o preenchimento é só uma fatia crescendo, seca. */
+              .fromTo(spark, { opacity: 1 }, { motionPath: { path: rings[k], alignOrigin: [0.5, 0.5] }, duration: 0.8, ease: "none" }, t)
+              .to(spark, { opacity: 0, duration: 0.12, ease: "sine.in" }, t + 0.72);
             if (k === n - 1) return;
             if (brakes[k]) {
-              tl.fromTo(brakes[k], { opacity: 0.25 }, { opacity: 1, duration: 0.15 }, t + 0.8);
+              tl.fromTo(brakes[k], { opacity: 0.25, scale: 0.7 }, { opacity: 1, scale: 1, duration: 0.22, ease: "back.out(2)" }, t + 0.8);
               t += BRAKE;
             }
             tl.fromTo(segs[k], { [axis]: 0 }, { [axis]: 1, duration: 0.8, ease: "none" }, t + 0.2);
@@ -127,6 +137,17 @@ export function Potassium() {
       >
         <div className="flex flex-col items-start gap-3">
           <svg viewBox="0 0 100 100" aria-hidden className="w-[64px] lg:w-[104px]">
+            <defs>
+              {/* O brilho da faísca que corre na ponta do arco enquanto ele
+                  se enche. */}
+              <filter id={`kp-glow-${kind}`} x="-200%" y="-200%" width="500%" height="500%">
+                <feGaussianBlur stdDeviation="2.2" result="blur" />
+                <feMerge>
+                  <feMergeNode in="blur" />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
+            </defs>
             <circle cx={RING.c} cy={RING.c} r={RING.r} fill="none" stroke="#16261B" strokeOpacity="0.1" strokeWidth="7" />
             {arcs(n).map((d) => (
               <path
@@ -145,6 +166,13 @@ export function Potassium() {
               Array.from({ length: n - 1 }, (_, k) => (
                 <line key={k} {...notch(k + 1, n)} stroke="#CB351B" strokeWidth="2.5" />
               ))}
+            <circle
+              className="kp-spark"
+              r="3"
+              fill={kind === "soil" ? "#435630" : "#B7C73E"}
+              filter={`url(#kp-glow-${kind})`}
+              opacity="0"
+            />
             {/* O ponteiro, desenhado no fim do curso. */}
             <line className="kp-hand" x1={RING.c} y1={RING.c} x2={RING.c} y2={RING.c - 30} stroke="#16261B" strokeWidth="2.5" strokeLinecap="round" />
             <circle cx={RING.c} cy={RING.c} r="3.5" fill="#16261B" />
@@ -193,6 +221,17 @@ export function Potassium() {
           </SplitLines>
         </div>
         <p className={`${microCaps} text-[12px] text-forest/75`}>{potassium.body}</p>
+      </div>
+
+      <div className="wrap mt-[clamp(32px,4vw,56px)]">
+        <Image
+          src="/img/kmep/potassium-pods.webp"
+          alt=""
+          width={1774}
+          height={887}
+          sizes="(min-width: 1024px) 680px, 100vw"
+          className="mx-auto h-auto w-full max-w-[680px]"
+        />
       </div>
 
       <div className="kp-stage flex min-h-[100svh] flex-col justify-center py-[clamp(64px,9svh,110px)]">
