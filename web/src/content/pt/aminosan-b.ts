@@ -19,16 +19,113 @@ export const hero: typeof en.hero = {
 export const origin: typeof en.origin = {
   panels: [
     {
-      eyebrow: "De onde vem",
-      heading: "Começa como planta.",
-      body: "Cada aminoácido da bombona foi construído por uma planta antes. A fermentação enzimática libera um de cada vez, inteiro e na forma livre — origem vegetal do começo ao fim.",
-      caption: "Origem vegetal · fermentação enzimática",
+      eyebrow: "Dentro de toda lavoura",
+      heading: "Nenhuma planta recebe um aminoácido pronto.",
+      body: "Ela constrói cada um deles, a partir do nitrogênio bruto, numa linha que roda a safra inteira. É essa linha, uma etapa por vez.",
+      caption: "Assimilação de nitrogênio, simplificada",
     },
     {
-      eyebrow: "O que sai",
-      heading: "Chega como bloco pronto.",
-      body: "Um grupo amino, um grupo ácido, uma cadeia lateral. É a forma de que são feitas as proteínas da própria planta, e a única forma dentro da bombona: L-aminoácidos 100% livres, com nitrogênio, fosfato e potássio junto.",
+      eyebrow: "Etapa um",
+      heading: "Começa como nitrato.",
+      body: "O que a raiz absorve é NO₃⁻ — um nitrogênio preso a três oxigênios. É a forma em que o nitrogênio circula, e ainda não é nada que a planta consiga usar para construir.",
+      caption: "NO₃⁻ · nitrato",
+    },
+    {
+      eyebrow: "Etapas dois e três",
+      heading: "Duas reduções até o amônio.",
+      body: "De nitrato a nitrito, de nitrito a amônio. Duas enzimas, duas conversões, e as duas são pagas com energia e carbono que a lavoura produziu na folha.",
+      caption: "NH₄⁺ · amônio",
+    },
+    {
+      eyebrow: "Etapa quatro",
+      heading: "E só agora, um aminoácido.",
+      body: "O amônio entra no glutamato, e o glutamato repassa ao aminoácido que a lavoura estava construindo. Quatro conversões, e a lavoura pagou por todas elas.",
       caption: "L-aminoácido · NH₂ — CH(R) — COOH",
+    },
+  ],
+
+  route: {
+    label: "A rota que a lavoura percorre",
+    steps: ["NO₃⁻", "NO₂⁻", "NH₄⁺", "Glu", "AA"],
+    lit: [0, 1, 3, 5],
+    shortcut: {
+      label: "A rota com o Aminosan®",
+      from: "Aminosan®",
+      note: "Entregue como o aminoácido pronto: 100% livre, forma L, de origem vegetal.",
+    },
+  },
+};
+
+export const specimen: typeof en.specimen = {
+  steps: ["A peça", "Ligadas", "Livres", "Na folha"],
+  stepOf: "Etapa",
+  stages: [
+    {
+      kicker: "A peça",
+      heading: "Isto é um aminoácido.",
+      body: "Toda proteína que a planta faz — as enzimas, a folha, a vagem — é montada com peças pequenas como esta. São vinte tipos, e cada um leva nitrogênio numa das pontas.",
+      legend: [{ tone: 1, label: "Nitrogênio" }],
+      callouts: [
+        { label: "Ponta do nitrogênio", note: "NH₂ — o grupo amino" },
+        { label: "Ponta ácida", note: "COOH — a outra ponta" },
+        { label: "Cadeia lateral", note: "A parte que diferencia um tipo do outro" },
+      ],
+      readout: [
+        { k: "O que é", v: "Uma peça" },
+        { k: "Tipos", v: "20" },
+        { k: "Leva", v: "Nitrogênio" },
+      ],
+    },
+    {
+      kicker: "Ligadas",
+      heading: "Os aminoácidos podem vir ligados numa corrente.",
+      body: "Presos ponta a ponta, eles se chamam peptídeos. Cada elo âmbar é uma ligação que precisa ser aberta antes de uma única peça poder ser usada.",
+      legend: [
+        { tone: 2, label: "Elo a abrir" },
+        { tone: 1, label: "Nitrogênio" },
+      ],
+      callouts: [
+        { label: "Elo", note: "A ligação entre dois aminoácidos" },
+        { label: "Corrente", note: "Peças ainda presas umas às outras" },
+        { label: "Ainda não livre", note: "Nenhuma peça aqui está sozinha" },
+      ],
+      readout: [
+        { k: "Peças", v: "Presas" },
+        { k: "Elos", v: "A abrir" },
+        { k: "Pronto para uso", v: "Ainda não" },
+      ],
+    },
+    {
+      kicker: "Forma livre",
+      heading: "O Aminosan® entrega as peças já separadas.",
+      body: "100% livre. A proteína vegetal é desmontada por fermentação enzimática em L-aminoácidos individuais — sem correntes, sem elo nenhum para abrir.",
+      legend: [{ tone: 1, label: "Nitrogênio" }],
+      callouts: [
+        { label: "Peças soltas", note: "Sem ligações peptídicas" },
+        { label: "Só forma L", note: "A forma com que as proteínas vegetais são feitas" },
+        { label: "Sem hormônios", note: "Aminoácidos mais N, P e K" },
+      ],
+      readout: [
+        { k: "Peças", v: "Soltas" },
+        { k: "Elos", v: "Nenhum" },
+        { k: "Pronto para uso", v: "Sim" },
+      ],
+    },
+    {
+      kicker: "Na folha",
+      heading: "Pulverizado na folha, numa passada que você já faz.",
+      body: "Foliar, sozinho ou no tanque com o que já está no calendário — siga a ordem de mistura do rótulo. Nitrogênio, fósforo e potássio vão na mesma gota.",
+      legend: [{ tone: 1, label: "Gota da pulverização" }],
+      callouts: [
+        { label: "A folha", note: "Onde a calda pousa" },
+        { label: "Gota", note: "Aminoácidos mais N, P e K" },
+        { label: "Sem viagem extra", note: "Vai numa passada que você já faz" },
+      ],
+      readout: [
+        { k: "Aplicação", v: "Na folha" },
+        { k: "Passadas extras", v: "0" },
+        { k: "Leva", v: "N · P · K" },
+      ],
     },
   ],
 };

@@ -9,7 +9,7 @@
  */
 
 import { type Cloud, type Weight, cover, loadImage, luma, pixelsOf, stipple } from "./sample";
-import { aminoAcid, soybean } from "./shapes";
+import { aminoAcid, ammonium, nitrate, soybean } from "./shapes";
 import type { FieldData } from "./field";
 
 export { cover };
@@ -73,9 +73,6 @@ const weightBg: Weight = (r, g, b, _a, u, v) => {
 const weightLeaves: Weight = (r, g, b, a) =>
   a < 40 ? 0 : (a / 255) * (0.35 + 0.75 * Math.pow(1 - luma(r, g, b), 1.1));
 
-/* Formas desenhadas: tinta é ponto, papel não é. */
-const weightInk: Weight = (r, g, b) => Math.pow(1 - luma(r, g, b), 1.15);
-
 /** Junta duas nuvens numa só, na ordem em que vieram. */
 function concat(a: Cloud, b: Cloud): Cloud {
   const pos = new Float32Array(a.pos.length + b.pos.length);
@@ -87,14 +84,13 @@ function concat(a: Cloud, b: Cloud): Cloud {
   return { count: a.count + b.count, pos, color };
 }
 
-/** As duas formas, amostradas com a contagem pedida. */
+/** Fração das partículas que não entra no desenho e fica vagando em volta. */
+const STRAY = 0.16;
+
+/** As quatro formas da cadeia, com a contagem pedida. Cada uma já sai n×4 —
+    x, y, z e a ordem de construção. Ver shapes.ts. */
 export function shapeClouds(count: number) {
-  /* 900 px de lado: acima disso o pontilhado não muda e o getImageData
-     começa a pesar no celular. */
-  return {
-    plant: stipple(soybean(900), count, weightInk),
-    mol: stipple(aminoAcid(900), count, weightInk),
-  };
+  return [soybean(count), nitrate(count), ammonium(count), aminoAcid(count)] as const;
 }
 
 export type Built = {
@@ -114,31 +110,43 @@ export async function buildField(count: number, narrow: boolean): Promise<Built>
     stipple(pixelsOf(leavesImg), fgCount, weightLeaves),
   );
 
-  const { plant, mol } = shapeClouds(count);
+  const shapes = shapeClouds(count);
 
-  /* Tamanho, profundidade e semente. No fundo a profundidade cresce para o
-     pé da foto — o solo está perto da câmera, o horizonte não —, e nas
-     folhas ela é quase total, que é de onde vem o ponto grande e macio. */
-  const meta = new Float32Array(count * 3);
+  /* Tamanho, profundidade, semente e halo.
+
+     A profundidade cresce para o pé da foto — o solo está perto da câmera, o
+     horizonte não — e é quase total nas folhas recortadas. Ela serve a duas
+     coisas: ao tamanho do ponto, como sempre serviu, e ao z da nuvem da foto,
+     que é o que dá relevo à cena quando ela se fragmenta.
+
+     O halo é o volume em torno do desenho: uma parte das partículas não fecha
+     na forma e fica orbitando fora dela. O expoente concentra quase todas
+     logo na beirada, com poucas indo longe; espalhadas por igual, virariam
+     uma nuvem de fundo em vez de volume. */
+  const meta = new Float32Array(count * 4);
   for (let i = 0; i < count; i++) {
     const front = i >= bgCount;
-    const u = photo.pos[i * 2] + 0.5;
-    const v = 0.5 - photo.pos[i * 2 + 1];
+    const x = photo.pos[i * 2];
+    const y = photo.pos[i * 2 + 1];
+    const u = x + 0.5;
+    const v = 0.5 - y;
+    /* "Profundidade" aqui é só tamanho de ponto: a folhagem recortada vem à
+       frente na foto, e ponto maior é como isso aparece. A cena é plana. */
     const depth = front ? 0.62 + Math.random() * 0.38 : band(v, 0.52, 1.1, 0.5) * 0.3;
     /* No rótulo o ponto encolhe: com o ponto do resto da cena, três pontos
        cobrem a haste de uma letra e o nome vira tarja. */
     const fine = front ? 1 : 1 - 0.3 * label(u, v);
-    meta[i * 3] = (front ? 3.2 : 1.95) * (0.7 + Math.random() * 0.9) * fine;
-    meta[i * 3 + 1] = depth;
-    meta[i * 3 + 2] = Math.random();
+    meta[i * 4] = (front ? 4.2 : 2.6) * (0.7 + Math.random() * 0.9) * fine;
+    meta[i * 4 + 1] = depth;
+    meta[i * 4 + 2] = Math.random();
+    meta[i * 4 + 3] = Math.random() < STRAY ? Math.pow(Math.random(), 1.7) : 0;
   }
 
   return {
     data: {
       count,
       hero: photo.pos,
-      plant: plant.pos,
-      mol: mol.pos,
+      shapes: [shapes[0], shapes[1], shapes[2], shapes[3]],
       color: photo.color,
       meta,
     },
@@ -150,7 +158,7 @@ export async function buildField(count: number, narrow: boolean): Promise<Built>
  * O quadro estático do caminho sem WebGL (ou com menos movimento): o mesmo
  * pontilhado, desenhado uma vez em canvas 2D, em grafite sobre o off-white.
  */
-export function paintStill(canvas: HTMLCanvasElement, cloud: Cloud, dark: string) {
+export function paintStill(canvas: HTMLCanvasElement, cloud: Float32Array, dark: string) {
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
   const w = canvas.clientWidth;
   const h = canvas.clientHeight;
@@ -163,13 +171,13 @@ export function paintStill(canvas: HTMLCanvasElement, cloud: Cloud, dark: string
   ctx.clearRect(0, 0, w, h);
   ctx.fillStyle = dark;
   const scale = Math.min(w, h) * 0.92;
-  for (let i = 0; i < cloud.count; i++) {
-    const x = w / 2 + cloud.pos[i * 2] * scale;
-    const y = h / 2 - cloud.pos[i * 2 + 1] * scale;
-    const r = 0.6 + Math.random() * 0.7;
-    ctx.globalAlpha = 0.5 + Math.random() * 0.45;
+  const count = cloud.length / 3;
+  for (let i = 0; i < count; i++) {
+    const x = w / 2 + cloud[i * 3] * scale;
+    const y = h / 2 - cloud[i * 3 + 1] * scale;
+    ctx.globalAlpha = 0.55 + Math.random() * 0.4;
     ctx.beginPath();
-    ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.arc(x, y, 1 + Math.random() * 0.8, 0, Math.PI * 2);
     ctx.fill();
   }
   ctx.globalAlpha = 1;

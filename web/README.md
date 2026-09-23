@@ -129,14 +129,47 @@ atropelaria a animação.
 
 ### A cena de partículas da LP B
 
-`/aminosan-b` abre com o hero se desfazendo em pontos, que viram uma planta de soja e depois uma
-molécula de aminoácido. É o único lugar do site com WebGL. As peças:
+> **Hoje a LP B usa `components/aminosan-b/Specimen.tsx`**, a cena no mecanismo da LP C (ver "A LP
+> C" abaixo) com as cores da B: a foto do hero — fundo e folhas compostos num canvas — dá o zoom e
+> se fragmenta sozinha, sem a linha de varredura e sem a trama de fundo, e a nuvem passa pelas
+> quatro leituras de `lib/scan/specimen.ts`. Para o leigo, a cor tem legenda: verde é o nitrogênio
+> (e, na folha, a gota), âmbar é a ligação que ainda precisa ser aberta — é a tag por ponto que o
+> `lib/scan/field.ts` aceita (`mark`, `accent`, `accent2`). O zoom anda para o rótulo da bombona
+> (`focus`), e em repouso o ponto é quadrado (`square`), porque sobre papel claro o vão entre
+> pontos redondos deixa a foto lavada (na B, hoje, `square` é 0 — ver abaixo).
+>
+> A abertura segue o princípio da primeira versão desta cena (`lib/origin/build.ts`): a foto vira
+> um **pontilhado dela mesma** (`lib/scan/stipple.ts` — denso onde é escura, céu vazio, bombona e
+> rótulo reforçados, folhas da frente em ponto grande e macio), que aparece por cima do hero
+> enquanto ele sai por baixo, escorre para o grafite e só então parte para o aminoácido. Todo ponto
+> do pontilhado vira a molécula (80 mil no desktop, 40 mil no celular).
+>
+> As trocas seguem a construção da primeira versão (`flow`): o par entre uma forma e a seguinte é
+> **o índice, portanto sorteado**; as partidas ficam quase juntas (`stagger` 0,15 — com 0,45 os
+> primeiros pontos chegavam cedo e a forma aparecia pronta no fundo, com a nuvem ainda no ar); a
+> fase anda com `power2.inOut`; e o empurrão (`scatter` 90) vem de ruído de gradiente, em
+> correntes, mais um sopro para fora do centro. A nuvem se abre pela tela, viaja inteira e **se
+> contrai** na forma seguinte, que só fica nítida quando ela chega. Casar vizinho com vizinho, ou partir em ordem, faz a forma se montar de um
+> lado para o outro como uma varredura — já tentado, e pior. Sem a interação com o cursor da
+> primeira versão.
+>
+> A visibilidade da cena tem **duas** fontes guardadas à parte (`inView` e `document.hidden`). Numa
+> flag só, esconder a aba a zerava e voltar não a religava — a cena ficava travada. Vale para B e C. A C passa zero em tudo isso e não
+> muda. A copy está em
+> `specimen`, em `content/aminosan-b.ts`.
+>
+> O `Origin` descrito a seguir, com `lib/origin/`, saiu da página mas continua no repositório.
+
+`/aminosan-b` abre com a foto do hero se **aproximando** — o zoom do parallax, com ela ainda
+inteira —, depois se fragmentando em pontos, que ganham volume e percorrem a cadeia da assimilação
+de nitrogênio: planta com raiz, nitrato, amônio, aminoácido, uma etapa por morph. É o único lugar
+do site com WebGL. As peças:
 
 | Arquivo | O que faz |
 |---|---|
 | `components/aminosan-b/Origin.tsx` | A cena: embrulha o `<Hero>`, trava os dois juntos e liga a linha do tempo aos uniforms |
 | `lib/origin/sample.ts` | Pontilhado por amostragem de rejeição, e o `cover` que repete o enquadramento do CSS |
-| `lib/origin/shapes.ts` | As duas formas, desenhadas em canvas 2D e amostradas pelo mesmo pontilhador |
+| `lib/origin/shapes.ts` | As quatro formas, como **traçado paramétrico** com ordem de construção |
 | `lib/origin/build.ts` | Monta a nuvem — o mesmo N nos três estados — e desenha o quadro estático do fallback |
 | `lib/origin/field.ts` | O renderizador: um `POINTS` em WebGL2, com o GLSL |
 
@@ -153,10 +186,107 @@ Três coisas que não são óbvias:
    Quem acende isso é a classe `.og-still`, e as regras dela ficam **fora de `@layer`** no
    `globals.css` — precisam vencer os utilitários de posição que o JSX carrega.
 
-Em desenvolvimento a cena abre um painel lil-gui (densidade, tamanho, ruído, velocidade, dispersão,
-cursor e cores) e deixa os uniforms em `window.origin`. Os dois somem do bundle de produção pela
+**A cena tem `refreshPriority: 1`, e isso não é detalhe.** Ela é a primeira da página mas é criada
+por último, porque espera o véu e as fontes. Sem prioridade, o refresh do ScrollTrigger mede as
+outras seções antes de existir o espaçador deste pin, e todas elas ficam com a posição de uma página
+sete telas mais curta — o vídeo do Meet chega a travar por cima desta cena, ainda no meio dela. Se
+algum dia esta cena passar a ser criada na montagem, a prioridade pode sair.
+
+**O orçamento de pontos é repartido por área, peça por peça.** É o que permite a cena rodar com doze
+mil partículas. Cada forma é uma lista de superfícies paramétricas — a folha é o vão entre duas
+bordas, o caule e a raiz são curvas engrossadas, o átomo é um disco — e cada uma recebe pontos em
+proporção à própria área. A primeira versão pintava um quadrado e sorteava pontos pela luminância:
+ali o papel em branco também entra no sorteio, e o que é pequeno mas importante (a letra de um
+átomo, a ponta de uma raiz) some antes de qualquer outra coisa. Aqui nada desaparece, porque nada
+disputa com o vazio.
+
+Pela mesma razão a letra do átomo é **vazada** e funciona: o disco tem cota própria e fica cheio
+mesmo com doze mil pontos no total. A máscara da letra é dilatada de propósito — buraco do tamanho
+exato do desenho fecha sozinho sob o ponto gordo que a cena usa.
+
+Duas armadilhas de densidade, as duas já resolvidas e fáceis de reintroduzir: o `t` de uma
+superfície precisa ser **reparametrizado por área** (a passo constante, o folíolo sai denso na base
+e no bico e ralo no meio, que é onde ele tem mais corpo); e `BOOST`, em `shapes.ts`, dá ao caule e à
+raiz mais cota do que a área deles pediria — sem isso a folhagem, que é quase toda a tinta, deixa o
+resto ralo.
+
+**A cena é plana.** Não há z, rotação nem perspectiva — isso já existiu e saiu. O desenho é o que
+ele parece ser, visto de frente.
+
+A foto e a nuvem aproximam pelo mesmo número (`uHeroZoom`, escrito no `transform` do hero a cada
+quadro) e pelo mesmo ponto: `fit()` converte o foco em `transform-origin` e no centro da máscara.
+Dois tweens paralelos para o mesmo movimento é como as duas descolariam no meio da quebra.
+
+**O compasso tem uma regra:** o morph ocupa 0,20 da cena e a parada entre um e outro fica em 0,03 a
+0,06. A travessia é o espetáculo, a parada é só o respiro para ler. O inverso disso — parada longa,
+troca curta — é uma cena em que se rola muito esperando e a troca passa num átimo quando enfim vem.
+Pelo mesmo motivo a fase anda **linear**: quem suaviza é cada partícula dentro do shader, e uma
+curva na linha do tempo concentraria o movimento no meio do trecho.
+
+No desktop a cena é de duas colunas — copy à esquerda, desenho à direita — e quem decide isso é o
+media query `TWO_COLUMN` em `Origin.tsx`, que **precisa ser o mesmo número do `lg:` do JSX**. Com os
+dois diferentes existe uma faixa de larguras com o desenho já à direita e o texto ainda no pé.
+
+O trilho da rota é **SVG**: a linha se desenha por `stroke-dashoffset` — a linha do tempo escreve a
+fração que falta em `--draw` — e cada nó acende no quadro em que o traço passa por ele. Cuidado com
+nome de classe aqui: `og-head` é o título da etapa, e a ponta da seta do atalho é `og-arrow`. Dar o
+mesmo nome às duas apaga o título, porque a regra de opacidade do SVG cai nele.
+
+Abaixo da copy vai o trilho da rota, que **não troca com os painéis**: ele nasce uma vez e fica,
+enchendo continuamente com o scroll enquanto as pastilhas acendem, e no fim ganha a mesma rota pelo
+produto, numa seta só. Por isso a coluna de texto tem `min-height` e os quatro textos se empilham no
+mesmo lugar — sem isso o trilho subiria e desceria a cada troca. É a comparação "com e sem" da
+página, e a única forma segura de dar essa comparação — o que se compara é o trajeto do nitrogênio,
+nunca duas plantas. Planta tratada ao lado de testemunha é representação visual de regulador de
+crescimento e está proibida no design (`docs/02-MERCADO-USA.md`).
+
+Trocar a densidade recarrega os buffers pelo `field.update()`. **Não refaça o campo:** o `dispose()`
+devolve o contexto do canvas com `WEBGL_lose_context`, e um canvas que já devolveu o contexto não dá
+outro — o `createField` seguinte compila o shader num contexto morto e falha.
+
+Parte das partículas não fecha no desenho e fica orbitando em volta dele: é o halo, o volume que a
+referência tem em torno da imagem. Quem controla é `meta.w` por partícula e o uniform `uHalo`. E
+dentro do desenho a deriva cai pela metade de propósito — as letras dos átomos são buracos de poucos
+pixels no campo de pontos, e com a amplitude do estado de foto as vizinhas entram no buraco e apagam
+a letra.
+
+A linha do tempo é montada dentro de um `await` — depois do véu e das fontes, porque o SplitText
+mede linha por linha — e por isso nasce **fora** do contexto do `useGSAP`. Quem a recolhe é a
+limpeza do componente, na mão; sem isso o ScrollTrigger dela sobrevive à navegação.
+
+Em desenvolvimento a cena abre um painel lil-gui (densidade, tamanho, dispersão, movimento, halo,
+cursor e cores) e deixa os uniforms em `window.originScene`. Os dois somem do bundle de produção pela
 comparação com `NODE_ENV`. Os controles de `Cena` valem com o scroll parado: assim que ele anda, a
 linha do tempo volta a mandar.
+
+### A LP C — a versão de instrumento
+
+`/aminosan-c` é a terceira versão do teste, num registro oposto ao da B: fundo escuro, tipografia de
+painel, e uma cena que não ilustra o produto — **analisa uma amostra dele**. As duas convivem; o
+formulário é o mesmo Server Action e se separam pelo campo `source`.
+
+| Arquivo | O que faz |
+|---|---|
+| `components/aminosan-c/Scan.tsx` | A cena e a moldura de HUD |
+| `lib/scan/field.ts` | O renderizador: a nuvem que **é** a fotografia, e o `project()` que pendura as chamadas |
+| `lib/scan/forms.ts` | Os quatro corpos — unidade, cadeia, unidades livres, folha |
+| `components/aminosan-c/Spec.tsx · Window.tsx · Request.tsx` | Especificação, janela de aplicação e pedido |
+
+**A diferença técnica que define a página:** aqui os pontos não são sorteados da foto, são uma
+**grade regular sobre ela** e leem a cor **da textura, no vertex shader** (`textureLod`, porque no
+vertex shader não há derivada para escolher o nível sozinho). Em repouso cada ponto ocupa a própria
+célula e o conjunto reconstrói a imagem; quando eles saem do lugar, é a fotografia que se desmancha,
+não um retrato dela. Daí a grade ser grande — 560×344 são 193 mil pontos —, e daí também a célula
+ter de acompanhar o tamanho da foto na tela: com célula grande a imagem em repouso vira mosaico.
+
+**Duas armadilhas já pagas.** A textura vai **sem** `UNPACK_FLIP_Y_WEBGL`: com o flip, `v = 0` passa
+a ser a base da imagem, e tanto o mapeamento para a tela quanto a varredura de cima para baixo saem
+invertidos. E só uma fração das partículas (`uKeep`) vira amostra: a foto precisa de duzentos mil
+pontos para fechar, uma molécula precisa de vinte mil — com todos eles o átomo vira disco maciço. O
+resto se dissipa para fora e apaga.
+
+O `refreshPriority: 1` do pin vale aqui pelo mesmo motivo da LP B: a cena é a primeira da página mas
+é criada por último, depois do véu e da textura.
 
 ### Plugins
 

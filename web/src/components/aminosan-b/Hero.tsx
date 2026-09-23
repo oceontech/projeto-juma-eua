@@ -13,6 +13,10 @@ import { gsap, useGSAP } from "@/lib/gsap";
  * preso ao scroll: quando o preloader sai, o fundo assenta de um zoom e as
  * folhas sobem de baixo até o lugar, um pouco atrás, para a cena ganhar
  * profundidade. O texto entra por cima das duas.
+ *
+ * `data-hb-copy` marca o que sai de cena quando o scroll começa (o texto e a
+ * sombra que o sustenta): quem o tira é a cena de partículas, em
+ * Specimen.tsx, que embrulha este hero.
  */
 
 /* O mesmo corte da home para trocar a foto do celular. */
@@ -90,10 +94,11 @@ export function Hero() {
       {/* Leitura do texto branco do pé: a folha é escura, mas tem brilho. */}
       <div
         aria-hidden
+        data-hb-copy
         className="pointer-events-none absolute inset-0 z-[3] bg-[radial-gradient(ellipse_48%_42%_at_0%_100%,rgba(16,32,22,0.55),transparent_75%)]"
       />
 
-      <div className="wrap relative z-[4] pt-[clamp(84px,12svh,124px)] text-center min-[861px]:max-[1599px]:pt-[clamp(100px,15svh,124px)]">
+      <div data-hb-copy className="wrap relative z-[4] pt-[clamp(84px,12svh,124px)] text-center min-[861px]:max-[1599px]:pt-[clamp(100px,15svh,124px)]">
         <p
           data-hb="fade"
           className="font-display text-[clamp(11px,1.1vw,15px)] tracking-[0.38em] text-ink uppercase"
@@ -108,7 +113,7 @@ export function Hero() {
         </h1>
       </div>
 
-      <div className="relative z-[4] mt-auto flex items-end px-[var(--spacing-gut)] lg:px-[clamp(40px,5vw,96px)] justify-between gap-6 pb-[clamp(28px,8svh,72px)] text-white">
+      <div data-hb-copy className="relative z-[4] mt-auto flex items-end px-[var(--spacing-gut)] lg:px-[clamp(40px,5vw,96px)] justify-between gap-6 pb-[clamp(28px,8svh,72px)] text-white">
         <div data-hb="fade" className="max-w-[min(62%,340px)] lg:max-w-[380px]">
           <h2 className="text-[clamp(22px,2.3vw,40px)] leading-[1.02] tracking-[-0.02em]">
             {hero.aside.heading.map((line) => (

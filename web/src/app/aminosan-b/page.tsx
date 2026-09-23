@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Hero } from "@/components/aminosan-b/Hero";
-import { Origin } from "@/components/aminosan-b/Origin";
+import { Specimen } from "@/components/aminosan-b/Specimen";
 import { Problem } from "@/components/aminosan-b/Problem";
 import { Converge } from "@/components/aminosan-b/Converge";
 import { Meet } from "@/components/aminosan-b/Meet";
@@ -32,11 +32,11 @@ export const metadata: Metadata = {
 export default function AminosanBPage() {
   return (
     <>
-      {/* O hero mora dentro do Origin: os dois travam juntos enquanto a foto
-          se desfaz em partículas e a nuvem vira planta e depois molécula. */}
-      <Origin>
+      {/* O hero mora dentro da cena: os dois travam juntos enquanto a foto
+          se fragmenta em partículas e a nuvem passa pelas quatro leituras. */}
+      <Specimen>
         <Hero />
-      </Origin>
+      </Specimen>
       <Problem />
       <Converge />
       <Meet />

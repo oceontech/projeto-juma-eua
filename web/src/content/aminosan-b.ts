@@ -26,26 +26,145 @@ export const hero = {
 };
 
 /**
- * As duas seções que nascem do hero se desfazendo em partículas (Origin.tsx).
+ * A cena de partículas que nasce do hero se desfazendo (Origin.tsx).
  *
- * Abertura, não argumento: o Problem e o Converge, logo abaixo, é que fazem
- * o caso do produto. Aqui só se conta de onde ele vem — origem vegetal e
- * fermentação enzimática, que hoje só aparecem como linha de tabela em
- * `inside` — e em que forma ele chega. Nenhum verbo de efeito na planta.
+ * O arco é a cadeia da assimilação de nitrogênio: onde ela acontece, o que a
+ * raiz recebe, o que sobra depois das reduções, e a peça pronta no fim. Só na
+ * última seção o produto entra — e entra pelo que ele entrega, nunca pelo que
+ * faria na planta. Descrever a fisiologia da planta é seguro; prometer efeito
+ * sobre ela é o gatilho FIFRA. Ver docs/02-MERCADO-USA.md, Achado 1.
+ *
+ * O Problem, logo abaixo, conta a mesma cadeia em cartões. A repetição é
+ * conhecida e está de pé por decisão do cliente, até ver as duas juntas.
  */
 export const origin = {
   panels: [
     {
-      eyebrow: "Where it comes from",
-      heading: "It begins as a plant.",
-      body: "Every amino acid in the jug was built by a plant first. Enzymatic fermentation releases them one at a time, intact and free-form — plant-derived from start to finish.",
-      caption: "Plant-derived · enzymatic fermentation",
+      eyebrow: "Inside every crop",
+      heading: "No plant is handed an amino acid.",
+      body: "It builds every one of them, from raw nitrogen up, on a line that runs the whole season. Here is that line, one step at a time.",
+      caption: "Nitrogen assimilation, simplified",
     },
     {
-      eyebrow: "What comes out",
-      heading: "It arrives as a building block.",
-      body: "An amino group, an acid group, a side chain. That's the shape a plant's own proteins are built from, and the only shape in the jug: 100% free-form L-amino acids, with nitrogen, phosphate and potash along for the ride.",
+      eyebrow: "Step one",
+      heading: "It starts as nitrate.",
+      body: "What the roots take up is NO₃⁻ — one nitrogen held by three oxygens. It's the form nitrogen travels in, and nothing the plant can build with yet.",
+      caption: "NO₃⁻ · nitrate",
+    },
+    {
+      eyebrow: "Steps two and three",
+      heading: "Two reductions to get to ammonium.",
+      body: "Nitrate to nitrite, nitrite to ammonium. Two enzymes, two conversions, and both are paid for in energy and carbon the crop made in the leaf.",
+      caption: "NH₄⁺ · ammonium",
+    },
+    {
+      eyebrow: "Step four",
+      heading: "And only now, an amino acid.",
+      body: "Ammonium goes onto glutamate, and glutamate passes it to the amino acid the crop was building toward. Four conversions, and the crop paid for every one of them.",
       caption: "L-amino acid · NH₂ — CH(R) — COOH",
+    },
+  ],
+
+  /* O trilho que fecha a cena: a rota da planta, que vai acendendo etapa por
+     etapa, e embaixo dela a mesma rota pelo produto — um passo só. É a
+     comparação que a página precisa dar de relance, e a única forma segura de
+     dar: o que se compara é o caminho do nitrogênio, não o porte de duas
+     plantas. Planta tratada ao lado de testemunha é representação visual de
+     regulador de crescimento e está proibida no design — 02-MERCADO-USA.md. */
+  route: {
+    label: "The route the crop runs",
+    steps: ["NO₃⁻", "NO₂⁻", "NH₄⁺", "Glu", "AA"],
+    /** Quantas etapas já estão acesas em cada painel. */
+    lit: [0, 1, 3, 5],
+    shortcut: {
+      label: "The route with Aminosan®",
+      from: "Aminosan®",
+      note: "Delivered as the finished amino acid: 100% free-form, L-form, plant-derived.",
+    },
+  },
+};
+
+/**
+ * A cena de partículas, no arco da LP C — a unidade, a cadeia, a forma livre
+ * e a folha —, escrita para quem nunca viu uma molécula. Três apoios para o
+ * leigo: a cor tem legenda (o verde é o nitrogênio; o âmbar é a ligação que
+ * ainda precisa ser aberta), cada painel termina numa pergunta de sim ou não
+ * ("Ready to use?"), e o trilho embaixo diz em palavras onde se está.
+ *
+ * As chamadas seguem a ordem das âncoras em `lib/scan/specimen.ts`: é por
+ * índice que uma encontra a outra. `tone` na legenda é a tag do desenho
+ * (1 verde, 2 âmbar).
+ */
+export const specimen = {
+  steps: ["Building block", "Linked", "Free", "On the leaf"],
+  stepOf: "Step",
+  stages: [
+    {
+      kicker: "The building block",
+      heading: "This is an amino acid.",
+      body: "Every protein a plant makes — the enzymes, the leaf, the pod — is assembled from small parts like this one. There are twenty kinds, and each carries nitrogen at one end.",
+      legend: [{ tone: 1, label: "Nitrogen" }],
+      callouts: [
+        { label: "Nitrogen end", note: "NH₂ — the amino group" },
+        { label: "Acid end", note: "COOH — the other end" },
+        { label: "Side chain", note: "The part that makes each kind different" },
+      ],
+      readout: [
+        { k: "What it is", v: "One part" },
+        { k: "Kinds", v: "20" },
+        { k: "Carries", v: "Nitrogen" },
+      ],
+    },
+    {
+      kicker: "Linked",
+      heading: "Amino acids can come linked in a chain.",
+      body: "Joined end to end, they are called peptides. Each amber link is a bond that has to be opened before a single part can be used.",
+      legend: [
+        { tone: 2, label: "Link to open" },
+        { tone: 1, label: "Nitrogen" },
+      ],
+      callouts: [
+        { label: "Link", note: "The bond between two amino acids" },
+        { label: "Chain", note: "Parts still joined together" },
+        { label: "Not free yet", note: "No part here is on its own" },
+      ],
+      readout: [
+        { k: "Parts", v: "Joined" },
+        { k: "Links", v: "To open" },
+        { k: "Ready to use", v: "Not yet" },
+      ],
+    },
+    {
+      kicker: "Free form",
+      heading: "Aminosan® delivers them already apart.",
+      body: "100% free-form. Plant protein is taken apart by enzymatic fermentation into single L-amino acids — no chains, no links left to open.",
+      legend: [{ tone: 1, label: "Nitrogen" }],
+      callouts: [
+        { label: "Single parts", note: "No peptide bonds" },
+        { label: "L-form only", note: "The form plant proteins are built from" },
+        { label: "No hormones", note: "Amino acids plus N, P and K" },
+      ],
+      readout: [
+        { k: "Parts", v: "Single" },
+        { k: "Links", v: "None" },
+        { k: "Ready to use", v: "Yes" },
+      ],
+    },
+    {
+      kicker: "On the leaf",
+      heading: "Sprayed on the leaf, in a pass you already make.",
+      body: "Foliar, alone or in the tank with what is already on your calendar — follow the mixing order on the label. Nitrogen, phosphate and potash ride in the same drop.",
+      legend: [{ tone: 1, label: "Spray drop" }],
+      callouts: [
+        { label: "The leaf", note: "Where the spray lands" },
+        { label: "Spray drop", note: "Amino acids plus N, P and K" },
+        { label: "No extra trip", note: "Rides on a pass you make anyway" },
+      ],
+      readout: [
+        { k: "Applied", v: "On the leaf" },
+        { k: "Extra passes", v: "0" },
+        { k: "Carries", v: "N · P · K" },
+      ],
     },
   ],
 };

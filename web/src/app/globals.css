@@ -2814,6 +2814,102 @@ html[data-proof-overlap] .expertise-layer--dark .expertise-bg {
    Fora de `@layer`, de propósito: estas regras precisam vencer os utilitários
    de posição e altura que o JSX carrega, e CSS sem camada vence CSS em
    camada. Quem acende a classe é Origin.tsx. */
+/* A foto não esmaece por igual: ela é comida de fora para dentro, no mesmo
+   sentido em que as partículas partem. É uma máscara radial centrada no mesmo
+   foco do zoom, e é o que faz a imagem parecer que se despedaçou em vez de ter
+   sido trocada por outra. `--og-r` é o raio em porcento, e quem o move é a
+   linha do tempo de Origin.tsx; o foco vem do `fit()`. */
+.og-hero {
+  --og-r: 140;
+  -webkit-mask-image: radial-gradient(
+    circle at var(--og-fx, 50%) var(--og-fy, 60%),
+    #000 calc(var(--og-r) * 1%),
+    transparent calc((var(--og-r) + 26) * 1%)
+  );
+  mask-image: radial-gradient(
+    circle at var(--og-fx, 50%) var(--og-fy, 60%),
+    #000 calc(var(--og-r) * 1%),
+    transparent calc((var(--og-r) + 26) * 1%)
+  );
+}
+
+/* O trilho da rota, em SVG. A linha se desenha por `stroke-dashoffset`, que a
+   linha do tempo escreve em `--draw` (1 = nada desenhado, 0 = tudo), e cada nó
+   acende quando o traço passa por ele. */
+.og-svg {
+  overflow: visible;
+}
+
+.og-track {
+  stroke: color-mix(in srgb, var(--color-forest) 16%, transparent);
+  stroke-width: 1.5;
+}
+
+.og-draw {
+  stroke: var(--color-forest);
+  stroke-width: 1.5;
+  stroke-dasharray: 1;
+  stroke-dashoffset: var(--draw, 1);
+}
+
+.og-draw--short {
+  stroke: var(--color-olive);
+  stroke-dashoffset: var(--draw2, 1);
+}
+
+/* `og-arrow`, não `og-head`: esta última já é a do título da etapa, e a
+   colisão apagava o título inteiro — a regra de opacidade daqui caía nele. */
+.og-arrow {
+  fill: none;
+  stroke: var(--color-olive);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: calc(1 - var(--draw2, 1));
+}
+
+.og-node {
+  fill: var(--color-cream);
+  stroke: color-mix(in srgb, var(--color-forest) 28%, transparent);
+  stroke-width: 1.5;
+  transform-box: fill-box;
+  transform-origin: center;
+  transition:
+    fill 0.25s ease,
+    stroke 0.25s ease,
+    transform 0.25s ease;
+}
+
+.og-pill.is-on .og-node,
+.og-node.is-on {
+  fill: var(--color-forest);
+  stroke: var(--color-forest);
+  transform: scale(1.3);
+}
+
+.og-svg--short .og-node.is-on {
+  fill: var(--color-olive);
+  stroke: var(--color-olive);
+}
+
+.og-tag {
+  fill: color-mix(in srgb, var(--color-forest) 38%, transparent);
+  font-family: var(--font-display);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-anchor: middle;
+  transition: fill 0.25s ease;
+}
+
+.og-pill.is-on .og-tag,
+.og-tag.is-on {
+  fill: var(--color-forest);
+}
+
+.og-svg--short .og-tag.is-on {
+  fill: var(--color-olive);
+}
+
 .og-frame {
   display: none;
 }
@@ -2834,12 +2930,36 @@ html[data-proof-overlap] .expertise-layer--dark .expertise-bg {
   inset: auto;
 }
 
-.og-still .og-panel {
+.og-still .og-col {
+  position: relative;
+  inset: auto;
+  width: auto;
+  transform: none;
+  padding: 0;
+}
+
+.og-still .og-slots {
+  min-height: 0;
+}
+
+.og-still .og-text,
+.og-still .og-rail,
+.og-still .og-short {
   position: relative;
   inset: auto;
   opacity: 1;
   transform: none;
+  max-width: var(--container-wrap);
+  margin-inline: auto;
+  padding-inline: var(--spacing-gut);
+}
+
+.og-still .og-text {
   padding-block: var(--spacing-sec) calc(var(--spacing-sec) / 2);
+}
+
+.og-still .og-rail {
+  padding-bottom: var(--spacing-sec);
 }
 
 /* Largura presa: o desenho é quadrado, e num quadro de tela inteira ele
@@ -2847,6 +2967,334 @@ html[data-proof-overlap] .expertise-layer--dark .expertise-bg {
 .og-still .og-frame {
   display: block;
   width: min(100%, 560px);
-  height: clamp(240px, 44vh, 480px);
+  height: clamp(220px, 38vh, 400px);
   margin-inline: auto;
+}
+
+
+/* ======================================== LP C — o painel do instrumento */
+/* Fora de `@layer`, como o resto da geometria própria deste arquivo: estas
+   regras precisam vencer utilitários de posição e cor. A cena vive em
+   components/aminosan-c/Scan.tsx. */
+
+.sc-tag {
+  font-family: var(--font-display);
+  font-size: 10px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: #5FD0C0;
+}
+
+.sc-id {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 26px;
+  padding: 3px 6px;
+  border: 1px solid #1D3F45;
+  color: #7FE7D2;
+  letter-spacing: 0.1em;
+}
+
+/* A grade de fundo: duas tramas, uma fina e uma larga, como papel milimetrado
+   de painel. */
+.sc-grid {
+  background-image:
+    linear-gradient(to right, rgb(127 231 210 / 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(127 231 210 / 0.05) 1px, transparent 1px),
+    linear-gradient(to right, rgb(127 231 210 / 0.08) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(127 231 210 / 0.08) 1px, transparent 1px);
+  background-size: 28px 28px, 28px 28px, 140px 140px, 140px 140px;
+}
+
+.sc-vignette {
+  background: radial-gradient(ellipse 72% 62% at 50% 46%, transparent 20%, rgb(4 9 11 / 0.82) 100%);
+}
+
+/* A varredura: um feixe que desce enquanto a foto se desfaz por onde ele
+   passa. `--sweep` é escrito pela linha do tempo. */
+.sc-sweep {
+  --sweep: 0;
+  top: calc(var(--sweep) * 100%);
+  height: 160px;
+  margin-top: -80px;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgb(127 231 210 / 0.05) 42%,
+    rgb(127 231 210 / 0.55) 50%,
+    rgb(127 231 210 / 0.05) 58%,
+    transparent 100%
+  );
+}
+
+/* As cantoneiras do quadro. */
+.sc-corner {
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  border: 1px solid rgb(127 231 210 / 0.5);
+  inset-block-start: clamp(20px, 4vw, 56px);
+  inset-inline-start: clamp(20px, 4vw, 56px);
+}
+
+.sc-corner--tl { border-right: 0; border-bottom: 0; }
+.sc-corner--tr { border-left: 0; border-bottom: 0; inset-inline: auto clamp(20px, 4vw, 56px); }
+.sc-corner--bl { border-right: 0; border-top: 0; inset-block: auto clamp(20px, 4vw, 56px); }
+.sc-corner--br {
+  border-left: 0;
+  border-top: 0;
+  inset-block: auto clamp(20px, 4vw, 56px);
+  inset-inline: auto clamp(20px, 4vw, 56px);
+}
+
+/* A régua de progresso da cena. */
+.sc-rule {
+  height: 2px;
+  background: rgb(127 231 210 / 0.14);
+}
+
+.sc-bar {
+  display: block;
+  height: 100%;
+  transform-origin: left center;
+  background: #7FE7D2;
+}
+
+/* Uma chamada: o anel no ponto do desenho, o filete que sai dele e a etiqueta
+   na ponta. O `--side` escolhe o lado; o `--depth`, escrito a cada quadro,
+   apaga a chamada que girou para trás da amostra. */
+/* As chamadas só existem onde há margem dos dois lados do desenho. Abaixo
+   disso o mesmo texto vira lista dentro do painel — ver Scan.tsx. */
+@media (max-width: 1023px) {
+  .sc-call {
+    display: none;
+  }
+}
+
+.sc-call {
+  --side: 1;
+  --depth: 1;
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  will-change: transform;
+}
+
+.sc-ring {
+  position: absolute;
+  top: -9px;
+  left: -9px;
+  width: 18px;
+  height: 18px;
+  border: 1px solid rgb(127 231 210 / calc(0.9 * var(--depth)));
+  border-radius: 50%;
+}
+
+.sc-lead {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 58px;
+  height: 1px;
+  transform-origin: left center;
+  transform: scaleX(var(--side));
+  background: linear-gradient(to right, rgb(127 231 210 / calc(0.7 * var(--depth))), rgb(127 231 210 / calc(0.25 * var(--depth))));
+}
+
+.sc-tagbox {
+  position: absolute;
+  top: -7px;
+  left: 0;
+  display: block;
+  width: max-content;
+  max-width: 190px;
+  margin-inline-start: calc(var(--side) * 64px);
+  translate: calc((var(--side) - 1) * 50%) 0;
+  opacity: var(--depth);
+}
+
+.sc-call-label {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #CFF6EE;
+}
+
+.sc-call-note {
+  display: block;
+  margin-top: 3px;
+  font-size: 11px;
+  line-height: 1.35;
+  color: #6F918E;
+}
+
+/* Sem WebGL2, ou com menos movimento: a cena não se prende ao scroll. Fica a
+   fotografia, e as quatro leituras viram blocos de texto empilhados. */
+.sc-still .sc-stage {
+  height: auto;
+  min-height: 0;
+}
+
+.sc-still .sc-hud,
+.sc-still .sc-sweep,
+.sc-still canvas {
+  display: none;
+}
+
+.sc-still .sc-panel {
+  position: relative;
+  inset: auto;
+  display: block;
+  width: auto;
+}
+
+.sc-still .sc-slots {
+  min-height: 0;
+}
+
+.sc-still .sc-read {
+  position: relative;
+  inset: auto;
+  opacity: 1;
+  transform: none;
+  padding-block: clamp(36px, 5vw, 72px);
+}
+
+
+/* =================================== LP B — a cena no mecanismo da LP C */
+/* Fora de `@layer`, como o resto da geometria própria: estas regras precisam
+   vencer utilitários de posição. A cena vive em
+   components/aminosan-b/Specimen.tsx. O trilho reaproveita as classes og-*. */
+
+.sp-id {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 7px;
+  border: 1px solid color-mix(in srgb, var(--color-olive) 45%, transparent);
+  border-radius: 999px;
+  letter-spacing: 0.08em;
+}
+
+/* Uma chamada: o anel no ponto do desenho, o filete que sai dele e a etiqueta
+   na ponta. O `--side` escolhe o lado; o `--depth`, escrito a cada quadro,
+   apaga a chamada que girou para trás do desenho. */
+@media (max-width: 1023px) {
+  .sp-call {
+    display: none;
+  }
+}
+
+.sp-call {
+  --side: 1;
+  --depth: 1;
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  will-change: transform;
+}
+
+.sp-ring {
+  position: absolute;
+  top: -9px;
+  left: -9px;
+  width: 18px;
+  height: 18px;
+  border: 1.5px solid color-mix(in srgb, var(--color-forest) calc(85% * var(--depth)), transparent);
+  border-radius: 50%;
+}
+
+.sp-lead {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 76px;
+  height: 1px;
+  transform-origin: left center;
+  transform: scaleX(var(--side));
+  background: color-mix(in srgb, var(--color-forest) calc(55% * var(--depth)), transparent);
+}
+
+.sp-tagbox {
+  position: absolute;
+  top: -12px;
+  left: 0;
+  display: block;
+  width: max-content;
+  max-width: 210px;
+  padding: 4px 8px;
+  margin-inline-start: calc(var(--side) * 76px);
+  /* Um fundo de papel: a etiqueta pousa sobre os pontos do desenho e, sem ele,
+     o texto se mistura com eles. */
+  background: color-mix(in srgb, #F4F2EC 88%, transparent);
+  border-radius: 3px;
+  translate: calc((var(--side) - 1) * 50%) 0;
+  opacity: var(--depth);
+}
+
+.sp-call-label {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-forest);
+}
+
+.sp-call-note {
+  display: block;
+  margin-top: 3px;
+  font-size: 12px;
+  line-height: 1.35;
+  color: var(--color-muted);
+}
+
+/* Sem WebGL2, ou com menos movimento: a cena não se prende ao scroll. O hero
+   fica como está, e as quatro leituras viram blocos de texto empilhados. */
+.sp-still .sp-stage {
+  height: auto;
+  min-height: 0;
+  overflow: visible;
+}
+
+.sp-still .sp-live,
+.sp-still .sp-scrim,
+.sp-still .sp-legend {
+  display: none;
+}
+
+.sp-still .sp-hero {
+  position: relative;
+  inset: auto;
+}
+
+.sp-still .sp-panel {
+  position: relative;
+  inset: auto;
+  width: auto;
+  transform: none;
+  max-width: var(--container-wrap);
+  margin-inline: auto;
+  padding: 0 var(--spacing-gut) var(--spacing-sec);
+}
+
+.sp-still .sp-slots {
+  min-height: 0;
+}
+
+.sp-still .sp-read,
+.sp-still .sp-rail {
+  position: relative;
+  inset: auto;
+  opacity: 1;
+  transform: none;
+}
+
+.sp-still .sp-read {
+  padding-top: var(--spacing-sec);
 }
