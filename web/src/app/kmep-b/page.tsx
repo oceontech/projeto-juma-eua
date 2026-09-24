@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Hero } from "@/components/kmep/Hero";
 import { Specimen } from "@/components/kmep/Specimen";
 import { Blackout } from "@/components/kmep/Blackout";
-import { TwoJobs } from "@/components/kmep/TwoJobs";
 import { Deposition } from "@/components/kmep/Deposition";
 import { Potassium } from "@/components/kmep/Potassium";
 import { Flush } from "@/components/kmep/Flush"; // HOLD P2 — remover junto com Flush.tsx
@@ -20,36 +19,30 @@ export const metadata: Metadata = {
   title: "KMEP Ultra®",
   description:
     "One pass, two jobs: better spray coverage and deposition, plus foliar potassium for grain fill. Six dollars an acre, in the insecticide pass you already run.",
+  /* Versão B do teste A/B: a canônica é /kmep. */
+  alternates: { canonical: "/kmep" },
 };
 
 /**
- * LP do KMEP Ultra®, versão A (a versão B, que entra pelo produto, está em
- * /kmep-b). O hero se desfaz em partículas e a nuvem conta a perda que não
- * se vê — a passada vista da cabine, o que parou no topo do dossel, o que
- * quicou e secou, e a mesma folha com o KMEP no tanque (K3 e K6 em
- * desenho). A cena fecha num disco preto que abre o Blackout: o K4 inteiro,
- * e o ensaio com a testemunha ao lado (o K2). Por isso o Problem e o Cost
- * não entram aqui. O Timing absorve a ficha de dose.
+ * LP do KMEP Ultra®, versão B (rota /kmep-b) — a candidata do teste A/B que
+ * entra pelo produto (docs/05, K1 versão 2). A versão A está em /kmep.
  *
- * Copy: docs/05-COPY-KMEP-ULTRA.md, o canônico. Plano de execução, gramática
- * visual e regras: docs/06-PROMPT-LP-KMEP.md. O design system e o movimento
- * são os da /aminosan-b; o que separa as duas páginas é a matéria (bico, gota,
- * ar, cera, a hora do dia) e o acento cobre, que aqui marca perda e custo.
+ * O hero leva a headline da versão 2, e a cena de partículas conta uma
+ * passada, dois trabalhos: a barra, a gota que fica (trabalho 1), o
+ * potássio entrando pela folha (trabalho 2) e a espiga no enchimento — é o
+ * K5 em desenho, e por isso o TwoJobs não entra. A perda vem depois, no
+ * preto: o que a cabine não mostra, o potássio que o solo não entrega a
+ * tempo, e o ensaio. O Problem e o Cost ficam de fora pelo mesmo motivo da A.
  *
- * <Flush /> (K8) está em HOLD pela P2 e sai com a linha de import e a de JSX
- * abaixo, mais os dois trechos marcados em Operation.tsx e Questions.tsx.
+ * Daí em diante a página é a mesma da versão A.
  */
-export default function KmepPage() {
+export default function KmepBPage() {
   return (
     <>
-      {/* O hero mora dentro da cena: os dois travam juntos enquanto a foto
-          se fragmenta em partículas e a nuvem passa pelas quatro leituras. */}
-      <Specimen variant="a">
-        <Hero />
+      <Specimen variant="b">
+        <Hero variant="b" />
       </Specimen>
-      {/* O preto abre do disco da cena: o que a perda custa, e o ensaio. */}
-      <Blackout variant="a" />
-      <TwoJobs />
+      <Blackout variant="b" />
       <Deposition />
       <Potassium />
       {/* HOLD P2 — remover junto com Flush.tsx */}

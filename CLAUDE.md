@@ -10,6 +10,7 @@ LP Aminosan®. O site fica em `web/` (Next.js). Leia `README.md` para o estado g
 |---|---|---|
 | Home | `docs/03-SITE.md` | `web/src/components/home/` + `web/src/content/home.ts` |
 | **LP KMEP Ultra®** | **`docs/05-COPY-KMEP-ULTRA.md`** | `web/src/components/kmep/` + `web/src/content/kmep.ts` — rota `/kmep` (`/kmep-ultra` redireciona) |
+| LP KMEP Ultra® versão B do teste A/B (rota `/kmep-b`) | mesmo canônico, headline versão 2 | mesmos componentes com `variant="b"`; cenas de partículas em `web/src/lib/scan/kmep.ts` |
 | **LP Aminosan®** (rota `/aminosan`) | `web/src/content/aminosan-b.ts` | `web/src/components/aminosan-b/` — nasceu como versão B e virou a principal |
 | LP Aminosan® versão anterior (rota `/aminosan-b`) | `docs/03-SITE.md` + `web/src/content/aminosan.ts` | `web/src/components/aminosan/` |
 

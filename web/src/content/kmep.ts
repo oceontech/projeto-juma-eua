@@ -527,3 +527,259 @@ export const final = {
   crops: ["Corn", "Soybeans", "Cotton", "Other"],
   alt: "Corn harvest at sunset, grain unloading into a cart beside the combine",
 };
+
+/* ======================================================================
+   As cenas de partículas e a virada para o preto — versões A e B
+   ======================================================================
+
+   O mesmo mecanismo da LP do Aminosan: a foto do hero se desfaz em
+   partículas, a nuvem passa por quatro leituras (desenhos em
+   `lib/scan/kmep.ts`) e fecha num disco preto que abre a seção seguinte.
+
+   A (rota /kmep) entra pela dor — a perda que não se vê — e só na última
+   leitura mostra o produto. B (rota /kmep-b) entra pelo produto, com a
+   headline da versão 2 do teste A/B, e a perda vem depois, no preto.
+
+   A copy é o canônico (docs/05-COPY-KMEP-ULTRA.md) cortado na frase. O que a
+   cena afirma é o comportamento físico da gota — linguagem de adjuvante,
+   impressa no folheto americano da Juma. Nenhuma leitura fala de inseto nem
+   de desempenho do inseticida. As cores da legenda são as do desenho: 1 lima
+   (fica e trabalha), 2 cobre (perdido). */
+
+export type SceneStage = {
+  kicker: string;
+  heading: string;
+  body: string;
+  legend: { tone: 1 | 2; label: string }[];
+  /** Na ordem das âncoras do desenho em `lib/scan/kmep.ts`. */
+  callouts: { label: string; note: string }[];
+  readout: { k: string; v: string }[];
+};
+
+export type Scene = { steps: string[]; stages: SceneStage[] };
+
+export type BlackoutChapter = {
+  kicker: string;
+  heading: string;
+  body: string;
+  image: string;
+  alt: string;
+  /** Só no capítulo da colheita: o ensaio, com a testemunha ao lado. */
+  proof?: boolean;
+};
+
+export type Blackout = {
+  headline: string[];
+  body: string;
+  chapters: BlackoutChapter[];
+};
+
+/** Versão A — a perda que não se vê. */
+export const sceneA: Scene = {
+  steps: ["From the cab", "Stopped on top", "Bounced, dried", "With KMEP Ultra®"],
+  stages: [
+    {
+      kicker: "From the cab",
+      heading: "The pass looked clean from the cab.",
+      body: "You ran the product you chose, at label rate, in a window that was actually good. What you cannot see from there is where the spray actually ended up.",
+      legend: [],
+      callouts: [
+        { label: "Nozzle", note: "Label rate, as planned" },
+        { label: "Spray fan", note: "Leaves the nozzle looking even" },
+        { label: "Canopy", note: "Where the pass is aimed" },
+      ],
+      readout: [
+        { k: "Rate", v: "Label" },
+        { k: "Window", v: "Good" },
+        { k: "Visible loss", v: "None" },
+      ],
+    },
+    {
+      kicker: "Stopped on top",
+      heading: "Part of it stopped on the top of the canopy.",
+      body: "The upper leaves catch the spray first. The leaf surface that mattered sits below them, and from the cab it looks exactly the same.",
+      legend: [{ tone: 2, label: "Spray that didn't do the job" }],
+      callouts: [
+        { label: "Top leaves", note: "Where the spray stopped" },
+        { label: "Lower canopy", note: "The leaf surface that mattered" },
+        { label: "Whorl", note: "Tight, upright, hard to reach" },
+      ],
+      readout: [
+        { k: "Top of canopy", v: "Wet" },
+        { k: "Lower canopy", v: "Dry" },
+        { k: "Seen from the cab", v: "No" },
+      ],
+    },
+    {
+      kicker: "Bounced. Dried.",
+      heading: "Part of it bounced. Part of it dried.",
+      body: "A droplet lands on a surface that may be waxy and vertical, and either stays there long enough to work or does not. Hidden losses like these leave no visible sign in the field.",
+      legend: [{ tone: 2, label: "Lost from the leaf" }],
+      callouts: [
+        { label: "Bounced", note: "Hit the wax and left the leaf" },
+        { label: "Dried", note: "Gone before it could work" },
+        { label: "Waxy leaf", note: "Upright and water-repellent" },
+      ],
+      readout: [
+        { k: "Landed", v: "Yes" },
+        { k: "Stayed", v: "Not all" },
+        { k: "Visible sign", v: "None" },
+      ],
+    },
+    {
+      kicker: "With KMEP Ultra®",
+      heading: "Nothing changes about your nozzle or your rate.",
+      body: "What changes is how many of those droplets stay where you put them. KMEP Ultra® rides in the tank you are already filling, improves how the spray covers and lands, and carries foliar potassium in the same drop.",
+      legend: [{ tone: 1, label: "Spray that stays" }],
+      callouts: [
+        { label: "Spread droplet", note: "Covers and lands on the leaf" },
+        { label: "Leaf surface", note: "The target you aimed it at" },
+        { label: "Potassium", note: "Rides in the same drop" },
+      ],
+      readout: [
+        { k: "Rate", v: "Same" },
+        { k: "Pass", v: "Same" },
+        { k: "Carries", v: "Potassium" },
+      ],
+    },
+  ],
+};
+
+/** Versão A — o preto: o que a perda custa (K4), e onde ela aparece. */
+export const blackoutA: Blackout = {
+  headline: ["Small losses you never see", "add up to a number you do."],
+  body: "Two things happen when a pass underperforms.",
+  chapters: [
+    {
+      kicker: "The obvious one",
+      heading: "The re-spray.",
+      body: "Another trip, more diesel, another weather window you did not plan for.",
+      image: "/img/kmep/blackout/respray.webp",
+      alt: "A sprayer boom passing over young corn at first light, mist hanging over the rows",
+    },
+    {
+      kicker: "The quieter one",
+      heading: "The potassium the crop needed in the same stretch.",
+      body: "And did not get, because the demand peaked while the soil was dry and the root could not move it fast enough.",
+      image: "/img/kmep/blackout/dryroots.webp",
+      alt: "Brace roots of a corn plant gripping dry, cracked soil in late summer",
+    },
+    {
+      kicker: "At harvest",
+      heading: "Both show up in the yield monitor.",
+      body: "Neither of those shows up as a symptom you can photograph. One trial, with the check strip beside it:",
+      image: "/img/kmep/blackout/monitor.webp",
+      alt: "A yield map glowing on the in-cab monitor of a combine at dusk during corn harvest",
+      proof: true,
+    },
+  ],
+};
+
+/** Versão B — a headline da versão 2 do teste A/B no hero (K1). */
+export const heroB = {
+  heading: "One pass. Two jobs. Six dollars an acre.",
+  /* O título curto do pé é a headline da versão 1, que aqui desce para lá. */
+  aside: { heading: ["You won't see the loss", "until you harvest."] },
+  body: "KMEP Ultra® goes in with the insecticide you already chose. It improves coverage and deposition on the day you spray, and it puts potassium on the leaf for the window where demand peaks.",
+};
+
+/** Versão B — uma passada, dois trabalhos. */
+export const sceneB: Scene = {
+  steps: ["One pass", "Job 1", "Job 2", "Grain fill"],
+  stages: [
+    {
+      kicker: "One pass",
+      heading: "One pass. Two jobs.",
+      body: "KMEP Ultra® goes in the tank with the insecticide you already chose, on the pass you already scheduled. No separate trip across the field.",
+      legend: [],
+      callouts: [
+        { label: "Nozzle", note: "Same nozzle, same rate" },
+        { label: "Spray fan", note: "Rides with the insecticide you chose" },
+        { label: "Canopy", note: "The pass you already scheduled" },
+      ],
+      readout: [
+        { k: "Extra trips", v: "0" },
+        { k: "Tank", v: "Same" },
+        { k: "Cost", v: "$6 / acre" },
+      ],
+    },
+    {
+      kicker: "Job 1 · The day you spray",
+      heading: "What the droplet does before it dries.",
+      body: "KMEP Ultra® improves how the spray covers the leaf surface and how well it deposits, so more of what you bought reaches the target you aimed it at.",
+      legend: [{ tone: 1, label: "Spray that stays" }],
+      callouts: [
+        { label: "Coverage", note: "Spread across the leaf surface" },
+        { label: "Deposition", note: "Stays where it lands" },
+        { label: "Same rate", note: "Nothing changes on the label" },
+      ],
+      readout: [
+        { k: "Happens in", v: "20 minutes" },
+        { k: "Rate", v: "Same" },
+        { k: "Nozzle", v: "Same" },
+      ],
+    },
+    {
+      kicker: "Job 2 · The rest of the season",
+      heading: "Foliar potassium starts at the leaf.",
+      body: "Soil potassium has to dissolve, travel to the root and ride up to the leaf, and every step slows down when the profile dries. Foliar potassium moves into the tissue from where it lands.",
+      legend: [{ tone: 1, label: "Potassium" }],
+      callouts: [
+        { label: "Droplet", note: "Where the potassium lands" },
+        { label: "Into the tissue", note: "Moves in from the leaf" },
+        { label: "Vein", note: "The route through the leaf" },
+      ],
+      readout: [
+        { k: "Starts at", v: "The leaf" },
+        { k: "Waits on soil", v: "No" },
+        { k: "Runs for", v: "The season" },
+      ],
+    },
+    {
+      kicker: "Grain fill",
+      heading: "Potassium in the weeks that set the kernel.",
+      body: "Potassium demand peaks late, through pollination and grain fill, exactly when a dry stretch limits what the soil can move. The corn pass at ear formation puts it on the leaf in that window.",
+      legend: [{ tone: 1, label: "Grain fill" }],
+      callouts: [
+        { label: "Kernels", note: "Where the demand peaks" },
+        { label: "Husk", note: "Ear formation: the last pass" },
+        { label: "Silks", note: "Pollination" },
+      ],
+      readout: [
+        { k: "Corn passes", v: "V4 · V6 · Ear" },
+        { k: "Demand", v: "Peaks late" },
+        { k: "Extra trips", v: "0" },
+      ],
+    },
+  ],
+};
+
+/** Versão B — o preto: a perda, que aqui vem depois do produto. */
+export const blackoutB: Blackout = {
+  headline: ["You won't see the loss", "until you harvest."],
+  body: "Part of every application never does the work you paid for.",
+  chapters: [
+    {
+      kicker: "On the leaf",
+      heading: "Part of every pass misses.",
+      body: "Some of the spray stops on the top of the canopy, some bounces, and some dries before it reaches the leaf surface that mattered. None of it shows from the cab.",
+      image: "/img/kmep/blackout/canopy.webp",
+      alt: "Spray droplets beaded on the top leaf of a corn plant at dawn, the leaves below in shadow",
+    },
+    {
+      kicker: "In the soil",
+      heading: "In the ground is not in the plant.",
+      body: "The potassium is in the ground. Your soil test says so. That is not the same as having it in the plant during the three weeks that set the kernel.",
+      image: "/img/kmep/blackout/dryroots.webp",
+      alt: "Brace roots of a corn plant gripping dry, cracked soil in late summer",
+    },
+    {
+      kicker: "At harvest",
+      heading: "Nine bushels, same pass.",
+      body: "One trial, published whole, with the check strip beside it. The product went in with an insecticide application that was already on the schedule.",
+      image: "/img/kmep/blackout/monitor.webp",
+      alt: "A yield map glowing on the in-cab monitor of a combine at dusk during corn harvest",
+      proof: true,
+    },
+  ],
+};

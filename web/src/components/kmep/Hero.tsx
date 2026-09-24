@@ -23,8 +23,14 @@ import { gsap, useGSAP } from "@/lib/gsap";
 /* O mesmo corte da home para trocar a foto do celular. */
 const NARROW = "(max-width: 860px)";
 
-export function Hero() {
-  const { hero } = useContent().kmep;
+/**
+ * `variant="b"` troca só as frases: a headline da versão 2 do teste A/B no
+ * alto e a da versão 1 no pé (`heroB` em content/kmep.ts). A foto, o
+ * movimento e o selo são os mesmos.
+ */
+export function Hero({ variant = "a" }: { variant?: "a" | "b" }) {
+  const content = useContent().kmep;
+  const hero = variant === "b" ? { ...content.hero, ...content.heroB } : content.hero;
   const scope = useRef<HTMLDivElement>(null);
 
   useGSAP(
@@ -157,10 +163,11 @@ export function Hero() {
             texto ocupa a largura toda, e a sombra sobe do pé inteiro. */}
         <div
           aria-hidden
+          data-hb-copy
           className="pointer-events-none absolute inset-0 z-[3] bg-[linear-gradient(0deg,rgba(16,32,22,0.72)_0%,rgba(16,32,22,0.4)_20%,transparent_36%)] min-[861px]:bg-[radial-gradient(ellipse_54%_48%_at_0%_100%,rgba(16,32,22,0.6),transparent_75%)]"
         />
 
-        <div className="wrap relative z-[4] pt-[clamp(84px,12svh,124px)] text-center">
+        <div data-hb-copy className="wrap relative z-[4] pt-[clamp(84px,12svh,124px)] text-center">
           <p
             data-kh="fade"
             className="mx-auto max-w-[34ch] font-display text-[clamp(10px,1vw,14px)] tracking-[0.24em] text-ink uppercase min-[861px]:max-w-none min-[861px]:tracking-[0.32em]"
@@ -185,7 +192,7 @@ export function Hero() {
           </h1>
         </div>
 
-        <div className="relative z-[4] mt-auto flex items-end justify-between gap-6 px-[var(--spacing-gut)] pb-[clamp(28px,8svh,72px)] text-white lg:px-[clamp(40px,5vw,96px)]">
+        <div data-hb-copy className="relative z-[4] mt-auto flex items-end justify-between gap-6 px-[var(--spacing-gut)] pb-[clamp(28px,8svh,72px)] text-white lg:px-[clamp(40px,5vw,96px)]">
           <div data-kh="fade" className="max-w-[min(64%,420px)]">
             <h2 className="text-[clamp(18px,2vw,32px)] leading-[1.1] tracking-[-0.02em]">
               {hero.aside.heading.map((line) => (
