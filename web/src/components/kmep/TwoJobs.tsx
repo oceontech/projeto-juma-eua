@@ -5,6 +5,7 @@ import { useContent } from "@/components/layout/LocaleProvider";
 import { SplitLines } from "@/components/motion/SplitLines";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { eyebrow, fix, microCaps } from "./ui";
+import styles from "./TwoJobs.module.css";
 
 /* ------------------------------------------------------------ geometria */
 /* Uma passada que se bifurca em dois cartões. A largura de cada cartão já é
@@ -207,9 +208,9 @@ export function TwoJobs() {
     <section
       ref={scope}
       data-nav-theme="dark"
-      className="relative overflow-hidden bg-[linear-gradient(180deg,var(--color-night)_0%,var(--color-forest)_55%)] text-cream"
+      className="relative z-[2] bg-night text-cream"
     >
-      <div className="tj-stage relative flex min-h-[100svh] flex-col justify-center gap-[clamp(28px,4.5svh,52px)] py-[clamp(64px,8svh,104px)]">
+      <div className={`tj-stage ${styles.stage} relative flex min-h-[100svh] flex-col justify-center gap-[clamp(28px,4.5svh,52px)] py-[clamp(64px,8svh,104px)]`}>
         <div className="wrap grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,420px)] lg:items-end lg:gap-16">
           <div>
             <p className={`${eyebrow} text-lime`}>{twoJobs.eyebrow}</p>
