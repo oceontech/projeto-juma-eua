@@ -1,4 +1,5 @@
 .stage {
+  --soil-image: url("/img/kmep/soil-transition-2k.png");
   isolation: isolate;
   background: var(--color-night);
 }
@@ -19,15 +20,22 @@
       rgb(12 12 14 / 0.6) 58%,
       var(--color-night) 96%
     ),
-    url("/img/kmep/soil-transition-2k.png");
+    var(--soil-image);
   background-position: center;
   background-repeat: no-repeat;
   background-size: 100% 100%;
 }
 
 @media (max-width: 767px) {
+  .stage {
+    --soil-image: url("/img/kmep/soil-transition-mobile.webp");
+  }
+
   .stage::before {
-    /* Crop horizontally on phones to preserve the scale of the soil. */
-    background-size: 100% 100%, auto 100%;
+    /* Preserve the portrait proportions; its solid fade joins the section
+       background below without stretching soil across the stacked cards. */
+    inset-block-start: calc(-1 * clamp(80px, 24vw, 160px));
+    inset-block-end: auto;
+    aspect-ratio: 1 / 2;
   }
 }
