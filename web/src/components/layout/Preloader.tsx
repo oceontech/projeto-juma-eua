@@ -176,7 +176,7 @@ export function Preloader() {
     <div
       ref={root}
       aria-hidden
-      className="fixed inset-0 z-[200] grid place-items-center overflow-hidden bg-white"
+      className="fixed inset-0 z-[200] grid place-content-center place-items-center overflow-hidden bg-white"
     >
       {/* A composição é 1920 × 1080 e o player encaixa dentro do palco
           (`meet`), então a proporção precisa estar declarada — sem ela o SVG
@@ -184,7 +184,11 @@ export function Preloader() {
           selo em telas estreitas: o que sobra sai pelas laterais e o véu
           corta. A marca (selo e bandeiras) fica 8,9% da altura da composição
           abaixo do centro dela, e o palco sobe exatamente isso: o desenho
-          fica no centro vertical da tela, como no véu da troca de página. */}
+          fica no centro vertical da tela, como no véu da troca de página.
+          `place-content-center` centra a trilha do grid: em telas mais
+          estreitas que a largura mínima (iPhone de 375 a 393px) o palco
+          transborda e, sem isso, encostava à esquerda e sobrava tudo à
+          direita — a marca aparecia deslocada. */}
       <div
         ref={stage}
         className="aspect-video w-[min(600px,78vw)] min-w-[420px] -translate-y-[8.9%]"
