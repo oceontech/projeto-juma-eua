@@ -752,7 +752,6 @@ export function Specimen({ children }: { children: React.ReactNode }) {
   );
 
   const { stages, steps } = specimen;
-  const total = String(stages.length).padStart(2, "0");
 
   return (
     <section
@@ -832,9 +831,6 @@ export function Specimen({ children }: { children: React.ReactNode }) {
                 <p
                   className={`${microCaps} sp-fade flex items-center gap-3 text-olive`}
                 >
-                  <span className="sp-id">
-                    {String(i + 1).padStart(2, "0")}/{total}
-                  </span>
                   {s.kicker}
                 </p>
                 <h2 className="sp-head mt-3 max-w-[18ch] text-[clamp(26px,3vw,48px)] leading-[1.02] tracking-[-0.03em] text-balance">

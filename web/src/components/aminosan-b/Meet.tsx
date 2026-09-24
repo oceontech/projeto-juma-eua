@@ -1,99 +1,73 @@
 "use client";
 
 import Image from "next/image";
-import { Pause, Play } from "lucide-react";
-import { useRef, useState } from "react";
 import { useContent } from "@/components/layout/LocaleProvider";
-import { Cta, Mark, microCaps } from "./ui";
 
 export function Meet() {
   const { meet } = useContent().aminosanB;
-  const video = useRef<HTMLVideoElement>(null);
-  const [playing, setPlaying] = useState(true);
   const [pour, mix, drop, ready, leaf] = meet.stages;
 
   return (
-    <section id="meet" data-nav-theme="dark" aria-labelledby="meet-heading" className="bg-[#123524] py-[clamp(72px,8vw,124px)] text-cream">
+    <section id="meet" aria-labelledby="meet-heading" className="bg-cream py-[clamp(72px,8vw,124px)] text-forest xl:py-10">
       <div className="wrap">
-        <div className="mb-9 grid gap-5 md:mb-12 md:grid-cols-[1fr_auto] md:items-end">
-          <div>
-            <p className={`${microCaps} mb-4 text-lime`}>01 — 05</p>
-            <h2 id="meet-heading" className="max-w-[13ch] text-[clamp(42px,5.2vw,82px)] leading-[0.98] tracking-[-0.04em]">
-              {meet.heading}
-            </h2>
-          </div>
-          <p className="max-w-[34ch] text-sm leading-relaxed text-cream/75 md:pb-2 md:text-base">{meet.intro}</p>
+        <div className="mb-9 md:mb-12 xl:mb-6">
+          <h2 id="meet-heading" className="max-w-[13ch] text-[clamp(42px,5.2vw,82px)] leading-[0.98] tracking-[-0.04em]">
+            {meet.heading}
+          </h2>
         </div>
 
-        <ol className="grid gap-4 md:grid-cols-2 lg:grid-cols-12 lg:auto-rows-[minmax(250px,auto)] lg:gap-5">
-          <li className="relative isolate flex min-h-[460px] flex-col justify-end overflow-hidden rounded-[24px] bg-[#123524] p-[clamp(24px,3vw,40px)] md:col-span-2 lg:col-span-7 lg:row-span-2 lg:min-h-[540px]">
+        <ol className="grid grid-cols-2 gap-3 md:gap-4 lg:grid-cols-12 lg:auto-rows-[minmax(250px,auto)] lg:gap-5 xl:grid-rows-2 xl:auto-rows-auto">
+          <li className="relative isolate flex min-h-[460px] flex-col justify-end overflow-hidden rounded-[24px] bg-[#123524] text-cream p-[clamp(20px,3vw,40px)] col-span-2 md:col-span-2 lg:col-span-7 lg:row-span-2 lg:min-h-[540px] xl:col-span-6 xl:min-h-[460px]" style={{ clipPath: "inset(0 round 24px)" }}>
             <video
-              ref={video}
               autoPlay
               muted
               loop
               playsInline
               preload="metadata"
               aria-hidden="true"
-              onPlay={() => setPlaying(true)}
-              onPause={() => setPlaying(false)}
               className="absolute inset-0 -z-20 h-full w-full object-cover"
             >
-              <source media="(max-width: 767px)" src="/video/aminosan-b/dive/meet-tall-story.mp4" type="video/mp4" />
-              <source src="/video/aminosan-b/dive/meet-wide-story.mp4" type="video/mp4" />
+              <source media="(max-width: 767px)" src="/video/aminosan-b/dive/drop-aminosan-mobile.mp4" type="video/mp4" />
+              <source src="/video/aminosan-b/dive/drop-aminosan.mp4" type="video/mp4" />
             </video>
             <span aria-hidden className="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-t from-[#071b13]/95 via-[#071b13]/35 to-transparent" />
-            <button
-              type="button"
-              onClick={() => {
-                if (video.current?.paused) void video.current.play();
-                else video.current?.pause();
-              }}
-              aria-label={playing ? meet.pauseVideo : meet.playVideo}
-              className="absolute top-5 right-5 flex size-10 items-center justify-center rounded-full border border-cream/50 bg-[#092016]/60 text-cream transition-colors hover:bg-[#092016] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lime"
-            >
-              {playing ? <Pause size={16} fill="currentColor" /> : <Play size={16} fill="currentColor" />}
-            </button>
             <div className="relative max-w-[30rem]">
-              <Mark className="mb-5 text-lime" />
-              <p className={`${microCaps} text-lime`}>{pour.n} / 05</p>
-              <h3 className="mt-3 text-[clamp(36px,3.7vw,60px)] leading-none tracking-[-0.035em]">{pour.title}</h3>
+              <h3 className="text-[clamp(36px,3.7vw,60px)] leading-none tracking-[-0.035em]">{pour.title}</h3>
               <p className="mt-4 max-w-[38ch] text-sm leading-relaxed text-cream/90 md:text-base">{pour.body}</p>
             </div>
           </li>
 
-          <li className="flex min-h-[250px] flex-col rounded-[24px] bg-cream p-[clamp(24px,2.5vw,36px)] text-forest md:col-span-1 lg:col-span-5">
-            <p className={`${microCaps} flex items-center justify-between text-olive`}><span>{mix.n} / 05</span><Mark /></p>
-            <div className="mt-auto pt-8">
-              <h3 className="max-w-[16ch] text-[clamp(28px,2.7vw,43px)] leading-[1.05] tracking-[-0.03em]">{mix.title}</h3>
-              <p className="mt-4 max-w-[42ch] text-sm leading-relaxed text-forest/75">{mix.body}</p>
+          <li className="relative flex min-h-[190px] md:min-h-[250px] flex-col overflow-hidden rounded-[24px] bg-white p-4 md:p-[clamp(24px,2.5vw,36px)] text-forest row-span-2 md:row-span-1 md:col-span-1 lg:col-span-5 xl:col-span-3 xl:min-h-[220px] xl:p-6">
+            <div className="relative min-h-0 flex-1 md:hidden">
+              <Image src="/img/pack-aminosan-us.webp" alt="Frasco de Aminosan®" fill sizes="50vw" className="pointer-events-none object-contain drop-shadow-[0_8px_10px_rgba(22,38,27,0.2)]" />
+            </div>
+            <Image src="/img/pack-aminosan-us.webp" alt="" aria-hidden width={112} height={112} className="pointer-events-none absolute right-4 top-2 hidden h-28 w-28 object-contain drop-shadow-[0_8px_10px_rgba(22,38,27,0.2)] md:block" />
+            <div className="relative pt-3 md:mt-auto md:pt-8 xl:pt-0">
+              <h3 className="max-w-[16ch] text-[clamp(20px,5.2vw,28px)] md:text-[clamp(28px,2.7vw,43px)] leading-[1.05] tracking-[-0.03em] xl:text-[clamp(26px,2.2vw,32px)]">{mix.title}</h3>
+              <p className="mt-2 max-w-[42ch] text-xs md:mt-4 md:text-sm leading-relaxed text-forest/75">{mix.body}</p>
             </div>
           </li>
 
-          <li className="flex min-h-[250px] flex-col overflow-hidden rounded-[24px] bg-lime p-[clamp(24px,2.5vw,36px)] text-forest md:col-span-1 lg:col-span-5">
-            <p className={`${microCaps} flex items-center justify-between`}><span>{drop.n} / 05</span><Mark /></p>
-            <div className="mt-auto pt-8">
-              <h3 className="max-w-[16ch] text-[clamp(28px,2.7vw,43px)] leading-[1.05] tracking-[-0.03em]">{drop.title}</h3>
-              <p className="mt-4 max-w-[42ch] text-sm leading-relaxed text-forest/85">{drop.body}</p>
+          <li className="flex min-h-0 md:min-h-[250px] flex-col overflow-hidden rounded-[24px] bg-[linear-gradient(145deg,#28291e_0%,#121310_54%,#090a09_100%)] p-4 md:p-[clamp(24px,2.5vw,36px)] text-offwhite md:col-span-1 lg:col-span-5 xl:col-span-3 xl:min-h-[220px] xl:p-6">
+            <div className="mt-auto pt-0 md:pt-8 xl:pt-0">
+              <h3 className="max-w-[16ch] text-[clamp(20px,5.2vw,28px)] md:text-[clamp(28px,2.7vw,43px)] leading-[1.05] tracking-[-0.03em] xl:text-[clamp(26px,2.2vw,32px)]">{drop.title}</h3>
+              <p className="mt-2 max-w-[42ch] text-xs md:mt-4 md:text-sm leading-relaxed text-offwhite/78">{drop.body}</p>
             </div>
           </li>
 
-          <li className="flex min-h-[280px] flex-col rounded-[24px] border border-cream/20 bg-[#21432e] p-[clamp(24px,2.5vw,36px)] md:col-span-1 lg:col-span-5">
-            <p className={`${microCaps} flex items-center justify-between text-lime`}><span>{ready.n} / 05</span><Mark /></p>
-            <div className="mt-auto pt-8">
-              <h3 className="max-w-[16ch] text-[clamp(28px,2.7vw,43px)] leading-[1.05] tracking-[-0.03em]">{ready.title}</h3>
-              <p className="mt-4 max-w-[42ch] text-sm leading-relaxed text-cream/75">{ready.body}</p>
+          <li className="flex min-h-0 md:min-h-[280px] flex-col rounded-[24px] bg-[linear-gradient(145deg,#28291e_0%,#121310_54%,#090a09_100%)] p-4 md:p-[clamp(24px,2.5vw,36px)] text-offwhite md:col-span-1 lg:col-span-5 xl:col-span-3 xl:min-h-[220px] xl:p-6">
+            <div className="mt-auto pt-0 md:pt-8 xl:pt-0">
+              <h3 className="max-w-[16ch] text-[clamp(20px,5.2vw,28px)] md:text-[clamp(28px,2.7vw,43px)] leading-[1.05] tracking-[-0.03em] xl:text-[clamp(26px,2.2vw,32px)]">{ready.title}</h3>
+              <p className="mt-2 max-w-[42ch] text-xs md:mt-4 md:text-sm leading-relaxed text-offwhite/78">{ready.body}</p>
             </div>
           </li>
 
-          <li className="relative isolate flex min-h-[280px] flex-col justify-between overflow-hidden rounded-[24px] bg-[#1a321e] p-[clamp(24px,2.5vw,36px)] md:col-span-1 lg:col-span-7">
-            <Image src="/img/aminosan-b/meet-leaf.webp" alt="" fill sizes="(min-width: 1024px) 55vw, (min-width: 768px) 50vw, 100vw" className="-z-20 object-cover object-center" />
+          <li className="relative isolate flex min-h-0 md:min-h-[280px] flex-col overflow-hidden rounded-[24px] bg-[#1a321e] text-cream p-4 md:p-[clamp(24px,2.5vw,36px)] col-span-2 md:col-span-1 lg:col-span-7 xl:col-span-3 xl:min-h-[220px] xl:p-6">
+            <Image src="/img/aminosan-b/meet-leaf.webp" alt="" fill sizes="(min-width: 1280px) 25vw, (min-width: 1024px) 55vw, (min-width: 768px) 50vw, 100vw" className="-z-20 object-cover object-center" />
             <span aria-hidden className="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-r from-[#102618]/95 via-[#102618]/75 to-[#102618]/15" />
-            <p className={`${microCaps} flex items-center justify-between text-lime`}><span>{leaf.n} / 05</span><Mark /></p>
-            <div className="pt-10">
-              <h3 className="text-[clamp(28px,2.7vw,43px)] leading-[1.05] tracking-[-0.03em]">{leaf.title}</h3>
-              <p className="mt-4 max-w-[36ch] text-sm leading-relaxed text-cream/85">{leaf.body}</p>
-              <Cta href={meet.cta.href} className="mt-6">{meet.cta.label}</Cta>
+            <div className="pt-0 md:pt-10 xl:mt-auto xl:pt-0">
+              <h3 className="text-[clamp(20px,5.2vw,28px)] md:text-[clamp(28px,2.7vw,43px)] leading-[1.05] tracking-[-0.03em] xl:text-[clamp(26px,2.2vw,32px)]">{leaf.title}</h3>
+              <p className="mt-2 max-w-[36ch] text-xs md:mt-4 md:text-sm leading-relaxed text-cream/85">{leaf.body}</p>
             </div>
           </li>
         </ol>

@@ -146,15 +146,11 @@ export function Cell() {
         });
 
         /* A etapa em leitura acende; as outras ficam em segundo plano. */
-        gsap.utils.toArray<HTMLElement>(".cl-stage").forEach((stage, i) => {
+        gsap.utils.toArray<HTMLElement>(".cl-stage").forEach((stage) => {
           ScrollTrigger.create({
             trigger: stage,
             ...active,
             toggleClass: { targets: stage, className: "is-active" },
-            onToggle: (self) => {
-              const count = scope.current?.querySelector(".cl-count");
-              if (self.isActive && count) count.textContent = `0${i + 1}`;
-            },
           });
           gsap.from(stage.querySelectorAll(".cl-in"), {
             y: 40,
@@ -207,6 +203,8 @@ export function Cell() {
       ref={scope}
       className="relative overflow-clip bg-[#E9EBCB] text-forest lg:bg-[linear-gradient(180deg,#EEF0D8_0%,#E3E5BC_55%,#D4D9A6_100%)]"
     >
+      <span aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-[clamp(120px,18vw,260px)] bg-gradient-to-b from-cream to-cream/0" />
+      <span aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-[clamp(120px,18vw,260px)] bg-gradient-to-t from-cream to-cream/0" />
       {BUBBLES.map((b, i) => (
         <span
           key={i}
@@ -253,9 +251,6 @@ export function Cell() {
                   />
                 ))}
               </svg>
-              <p className="absolute right-[4%] bottom-[6%] font-display text-[12px] tracking-[0.18em] text-olive">
-                <span className="cl-count">01</span> <span className="opacity-50">/ 03</span>
-              </p>
             </div>
           </div>
         </div>

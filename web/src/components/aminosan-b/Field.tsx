@@ -100,7 +100,6 @@ export function Field() {
     return () => mm.revert();
   }, { scope });
 
-  const total = String(field.chapters.length).padStart(2, "0");
   const last = field.chapters[field.chapters.length - 1];
   return (
     <section ref={scope} aria-label={field.headline.join(" ")} className="fd relative z-[1] -mt-[180svh] text-cream">
@@ -127,7 +126,7 @@ export function Field() {
               <article key={chapter.kicker} className="fd-card invisible col-start-1 row-start-1 grid grid-cols-[minmax(0,0.78fr)_minmax(0,1fr)] items-center gap-[clamp(20px,2.5vw,50px)] max-[900px]:grid-cols-1 max-[900px]:gap-4">
                 <div className="self-center max-[900px]:pl-[clamp(76px,15vw,120px)]">
                   <p className={microCaps + " flex items-center gap-3 text-sage"}>
-                    <span className="rounded-full border border-cream/25 px-[7px] py-[2px] tracking-[0.08em]">{String(i + 1).padStart(2, "0")}/{total}</span>{chapter.kicker}
+                    {chapter.kicker}
                   </p>
                   <h3 className="mt-4 max-w-[14ch] text-[clamp(27px,3.1vw,52px)] leading-[1.02] tracking-[-0.035em] text-balance max-[900px]:mt-2 max-[900px]:text-[clamp(24px,5vw,38px)]">{chapter.heading}</h3>
                   <p className="mt-4 max-w-[36ch] text-[clamp(13px,1vw,17px)] leading-[1.5] text-cream/70 max-[900px]:mt-2">{chapter.body}</p>
@@ -160,7 +159,7 @@ export function Field() {
               <article className="col-start-1 row-start-1 grid grid-cols-[minmax(0,0.78fr)_minmax(0,1fr)] items-center gap-[clamp(20px,2.5vw,50px)] max-[900px]:grid-cols-1 max-[900px]:gap-4">
                 <div className="self-center max-[900px]:pl-[clamp(76px,15vw,120px)]">
                   <p className={microCaps + " flex items-center gap-3 text-olive"}>
-                    <span className="rounded-full border border-forest/25 px-[7px] py-[2px] tracking-[0.08em]">{total}/{total}</span>{last.kicker}
+                    {last.kicker}
                   </p>
                   <h3 className="mt-4 max-w-[14ch] text-[clamp(27px,3.1vw,52px)] leading-[1.02] tracking-[-0.035em] text-balance max-[900px]:mt-2 max-[900px]:text-[clamp(24px,5vw,38px)]">{last.heading}</h3>
                   <p className="mt-4 max-w-[36ch] text-[clamp(13px,1vw,17px)] leading-[1.5] text-forest/70 max-[900px]:mt-2">{last.body}</p>

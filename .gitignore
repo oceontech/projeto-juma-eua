@@ -3,6 +3,7 @@
 Thumbs.db
 
 /.video-tools/node_modules
+/.video-tools/originals/
 
 # ferramentas locais de agentes (skills instaladas, config do Claude Code)
 .agents/

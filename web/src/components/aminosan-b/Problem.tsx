@@ -7,13 +7,13 @@ import { gsap, useGSAP } from "@/lib/gsap";
 import { Counter } from "@/components/motion/Counter";
 import { microCaps } from "./ui";
 
-/* Centros dos cards (% do palco), formando uma curva em U (onda) sobre a esfera. */
+/* Centros dos cards (% do palco), formando uma curva em U (onda) dentro da esfera, com folga para o movimento. */
 const CARD_POS: [number, number][] = [
-  [24, 24],
-  [30, 52],
-  [50, 72],
-  [70, 52],
-  [69, 22],
+  [30, 24],
+  [32, 51],
+  [50, 74],
+  [68, 51],
+  [70, 24],
 ];
 
 /**
@@ -51,8 +51,8 @@ export function Problem() {
 
         gsap.utils.toArray<HTMLElement>(".pb-step").forEach((card, i) => {
           gsap.to(card, {
-            y: i % 2 ? 9 : -9,
-            x: i % 2 ? -5 : 5,
+            y: i % 2 ? 5 : -5,
+            x: i % 2 ? -3 : 3,
             duration: 3 + i * 0.5,
             ease: "sine.inOut",
             yoyo: true,
@@ -102,17 +102,17 @@ export function Problem() {
                 <li
                   key={step.name}
                   style={{ left: `${x}%`, top: `${y}%` }}
-                  className={`pb-step absolute flex min-w-[88px] -translate-x-1/2 -translate-y-1/2 flex-col items-center rounded-[clamp(12px,1.05vw,20px)] border px-[clamp(12px,1.6vw,28px)] py-[clamp(10px,1.2vw,20px)] text-center shadow-[0_8px_30px_-12px_rgba(22,38,27,0.35)] backdrop-blur-md ${last ? "border-forest/30 bg-lime/45" : "border-forest/15 bg-cream/45"}`}
+                  className={`pb-step absolute flex min-w-[62px] -translate-x-1/2 -translate-y-1/2 flex-col items-center rounded-[clamp(10px,1.05vw,20px)] border px-[clamp(8px,1.6vw,28px)] py-[clamp(6px,1.2vw,20px)] sm:min-w-[88px] text-center shadow-[0_8px_30px_-12px_rgba(22,38,27,0.35)] backdrop-blur-md ${last ? "border-forest/30 bg-lime/45" : "border-forest/15 bg-cream/45"}`}
                 >
-                  <span className="font-display text-[clamp(16px,1.7vw,28px)] leading-none tracking-[-0.01em]">{step.formula}</span>
-                  <span className="mt-2 text-[clamp(8px,0.7vw,10px)] tracking-[0.12em] text-forest/70 uppercase">{step.name}</span>
+                  <span className="font-display text-[clamp(13px,1.7vw,28px)] leading-none tracking-[-0.01em]">{step.formula}</span>
+                  <span className="mt-1.5 text-[clamp(7px,0.7vw,10px)] tracking-[0.12em] text-forest/70 uppercase">{step.name}</span>
                 </li>
               );
             })}
           </ol>
         </div>
 
-        <div className="pb-caption mt-4 flex w-fit flex-col items-center lg:col-start-1 lg:row-start-1 lg:mt-0 lg:items-start lg:justify-self-start lg:self-center lg:text-left">
+        <div className="pb-caption mt-4 flex w-fit flex-col items-center self-center justify-self-center lg:col-start-1 lg:row-start-1 lg:mt-0 lg:items-start lg:justify-self-start lg:self-center lg:text-left">
           <span aria-hidden className="pb-bar mb-6 block h-[2px] w-[92%] origin-left bg-forest" />
           <h2 className="max-w-[16ch] text-[clamp(30px,3vw,52px)] leading-[0.98] tracking-[-0.03em]">
             {problem.image.heading}
