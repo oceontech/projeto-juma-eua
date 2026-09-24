@@ -351,7 +351,7 @@ export const credential = {
 
 export const timing = {
   heading: "When it goes in.",
-  body: "In a spray pass you already have on the schedule. Row crops, vegetables and orchards each have their own window, and the timing below follows the Juma label for each one. Pick your crop.",
+  body: "In a spray pass you already have on the schedule, at the label rate of 16 fl oz per acre. Orchards, vegetables, ornamentals and row crops each have their own window. Pick your crop.",
   cropLabel: "Crop",
   rateLabel: "Rate",
   season: "Season",
@@ -364,132 +364,16 @@ export const timing = {
      vêm da ficha técnica da Juma (docs/assets/kmep-ultra-ficha-br.pdf), em
      nomenclatura americana. Café ficou de fora: não é cultura dos EUA. `ends`
      troca as pontas do arco quando a safra não começa no plantio.
-     `rate` é a dose da ficha convertida (o produto é o mesmo nos dois
-     países): L/ha × 13,684 = fl oz/ac. Doses por concentração (mL/100 L) usam
-     os 400 L/ha da ficha; nas frutíferas, que se aplicam por diluição, a
-     conversão é por 100 gal (1 mL/100 L = 0,128 fl oz/100 gal). */
+     `rate` é a dose do rótulo americano, a mesma em todas as culturas
+     (decisão do cliente, 24/09/2026): "16 Oz per acre in every insecticide
+     application". Ornamentais não estão na ficha BR: a janela segue a regra
+     do rótulo, uma dose por aplicação. A ordem põe frutas, hortaliças,
+     tomate, ornamentais e legumes antes das grandes culturas. */
   crops: [
-    {
-      id: "corn",
-      label: "Corn",
-      rate: "14–27 fl oz/ac",
-      marks: [
-        { code: "V4", at: 0.18 },
-        { code: "V6", at: 0.32 },
-        { code: "Ear formation", at: 0.62 },
-      ],
-      spans: [
-        { from: 0, to: 1, note: "Ride with passes you already scheduled" },
-        { from: 2, to: 2, note: "The potassium arriving where the demand is" },
-      ],
-      summary: "V4, V6, and again at ear formation. The corn timing has two halves and both matter. The first two ride with passes you already scheduled, and the one at ear formation is the potassium arriving where the demand is.",
-    },
-    {
-      id: "soy",
-      label: "Soybeans",
-      rate: "11–21 fl oz/ac",
-      marks: [
-        { code: "V6/V7", at: 0.3 },
-        { code: "", display: "+10–15 days", at: 0.47, minor: true },
-        { code: "", display: "+10–15 days", at: 0.64, minor: true },
-      ],
-      spans: [
-        { from: 0, to: 2, note: "Repeating every 10 to 15 days" },
-      ],
-      summary: "Soybeans: V6/V7, repeating every 10 to 15 days.",
-    },
-    {
-      id: "cotton",
-      label: "Cotton",
-      rate: "21–27 fl oz/ac",
-      marks: [
-        { code: "Day 40", at: 0.3 },
-        { code: "", display: "+7 days", at: 0.42, minor: true },
-        { code: "", display: "+7 days", at: 0.54, minor: true },
-        { code: "", display: "+7 days", at: 0.66, minor: true },
-      ],
-      spans: [
-        { from: 0, to: 3, note: "Four to six passes, a week apart" },
-      ],
-      summary: "Cotton: starting 40 days after emergence, four to six passes a week apart.",
-    },
-    {
-      id: "beans",
-      label: "Dry beans",
-      rate: "14–27 fl oz/ac",
-      marks: [
-        { code: "Bloom", at: 0.42 },
-        { code: "", display: "+10–15 days", at: 0.57, minor: true },
-        { code: "", display: "+10–15 days", at: 0.72, minor: true },
-      ],
-      spans: [
-        { from: 0, to: 2, note: "After bloom, every 10 to 15 days" },
-      ],
-      summary: "Dry beans: after bloom, repeating every 10 to 15 days.",
-    },
-    {
-      id: "potato",
-      label: "Potatoes",
-      rate: "14–27 fl oz/ac",
-      marks: [
-        { code: "Day 50", at: 0.38 },
-        { code: "", display: "+7 days", at: 0.51, minor: true },
-        { code: "", display: "+7 days", at: 0.64, minor: true },
-      ],
-      spans: [
-        { from: 0, to: 2, note: "Weekly, from day 50" },
-      ],
-      summary: "Potatoes: weekly, starting 50 days after emergence.",
-    },
-    {
-      id: "onion",
-      label: "Onions & garlic",
-      rate: "14–27 fl oz/ac",
-      ends: ["Transplant", "Harvest"],
-      marks: [
-        { code: "Day 50", at: 0.4 },
-        { code: "", display: "+7 days", at: 0.53, minor: true },
-        { code: "", display: "+7 days", at: 0.66, minor: true },
-      ],
-      spans: [
-        { from: 0, to: 2, note: "Weekly, from day 50 after transplant" },
-      ],
-      summary: "Onions and garlic: weekly, starting 50 days after transplant.",
-    },
-    {
-      id: "roots",
-      label: "Carrots & beets",
-      rate: "14–27 fl oz/ac",
-      marks: [
-        { code: "Day 40", at: 0.34 },
-        { code: "", display: "+7 days", at: 0.47, minor: true },
-        { code: "", display: "+7 days", at: 0.6, minor: true },
-      ],
-      spans: [
-        { from: 0, to: 2, note: "Weekly, from day 40" },
-      ],
-      summary: "Carrots and beets: weekly, starting 40 days after emergence.",
-    },
-    {
-      id: "tomato",
-      label: "Tomatoes & peppers",
-      rate: "11–16 fl oz/ac",
-      ends: ["Transplant", "Harvest"],
-      marks: [
-        { code: "Day 40", at: 0.3 },
-        { code: "", display: "+7 days", at: 0.42, minor: true },
-        { code: "", display: "+7 days", at: 0.54, minor: true },
-        { code: "", display: "+7 days", at: 0.66, minor: true },
-      ],
-      spans: [
-        { from: 0, to: 3, note: "Weekly, from day 40 after transplant" },
-      ],
-      summary: "Tomatoes and peppers: weekly, starting 40 days after transplant.",
-    },
     {
       id: "citrus",
       label: "Citrus",
-      rate: "27 fl oz/ac",
+      rate: "16 fl oz/ac",
       ends: ["Bloom", "Harvest"],
       marks: [
         { code: "Fruit set", at: 0.25 },
@@ -504,7 +388,7 @@ export const timing = {
     {
       id: "fruit",
       label: "Tree fruit",
-      rate: "26–38 fl oz per 100 gal",
+      rate: "16 fl oz/ac",
       ends: ["Bloom", "Harvest"],
       marks: [
         { code: "After bloom", at: 0.22 },
@@ -519,7 +403,7 @@ export const timing = {
     {
       id: "veg",
       label: "Vegetables",
-      rate: "8–11 fl oz/ac",
+      rate: "16 fl oz/ac",
       ends: ["Seeding", "Harvest"],
       marks: [
         { code: "Day 30", at: 0.3 },
@@ -531,12 +415,144 @@ export const timing = {
       ],
       summary: "Other vegetables: every two weeks, starting 30 days after germination or transplant.",
     },
+    {
+      id: "tomato",
+      label: "Tomatoes & peppers",
+      rate: "16 fl oz/ac",
+      ends: ["Transplant", "Harvest"],
+      marks: [
+        { code: "Day 40", at: 0.3 },
+        { code: "", display: "+7 days", at: 0.42, minor: true },
+        { code: "", display: "+7 days", at: 0.54, minor: true },
+        { code: "", display: "+7 days", at: 0.66, minor: true },
+      ],
+      spans: [
+        { from: 0, to: 3, note: "Weekly, from day 40 after transplant" },
+      ],
+      summary: "Tomatoes and peppers: weekly, starting 40 days after transplant.",
+    },
+    {
+      id: "ornamental",
+      label: "Ornamentals",
+      rate: "16 fl oz/ac",
+      ends: ["Planting", "Market"],
+      marks: [
+        { code: "First spray", at: 0.24 },
+        { code: "", display: "Next spray", at: 0.44, minor: true },
+        { code: "", display: "Next spray", at: 0.64, minor: true },
+      ],
+      spans: [
+        { from: 0, to: 2, note: "In every spray pass" },
+      ],
+      summary: "Ornamentals: in every spray pass through the crop, at the label rate.",
+    },
+    {
+      id: "potato",
+      label: "Potatoes",
+      rate: "16 fl oz/ac",
+      marks: [
+        { code: "Day 50", at: 0.38 },
+        { code: "", display: "+7 days", at: 0.51, minor: true },
+        { code: "", display: "+7 days", at: 0.64, minor: true },
+      ],
+      spans: [
+        { from: 0, to: 2, note: "Weekly, from day 50" },
+      ],
+      summary: "Potatoes: weekly, starting 50 days after emergence.",
+    },
+    {
+      id: "onion",
+      label: "Onions & garlic",
+      rate: "16 fl oz/ac",
+      ends: ["Transplant", "Harvest"],
+      marks: [
+        { code: "Day 50", at: 0.4 },
+        { code: "", display: "+7 days", at: 0.53, minor: true },
+        { code: "", display: "+7 days", at: 0.66, minor: true },
+      ],
+      spans: [
+        { from: 0, to: 2, note: "Weekly, from day 50 after transplant" },
+      ],
+      summary: "Onions and garlic: weekly, starting 50 days after transplant.",
+    },
+    {
+      id: "roots",
+      label: "Carrots & beets",
+      rate: "16 fl oz/ac",
+      marks: [
+        { code: "Day 40", at: 0.34 },
+        { code: "", display: "+7 days", at: 0.47, minor: true },
+        { code: "", display: "+7 days", at: 0.6, minor: true },
+      ],
+      spans: [
+        { from: 0, to: 2, note: "Weekly, from day 40" },
+      ],
+      summary: "Carrots and beets: weekly, starting 40 days after emergence.",
+    },
+    {
+      id: "corn",
+      label: "Corn",
+      rate: "16 fl oz/ac",
+      marks: [
+        { code: "V4", at: 0.18 },
+        { code: "V6", at: 0.32 },
+        { code: "Ear formation", at: 0.62 },
+      ],
+      spans: [
+        { from: 0, to: 1, note: "Ride with passes you already scheduled" },
+        { from: 2, to: 2, note: "The potassium arriving where the demand is" },
+      ],
+      summary: "V4, V6, and again at ear formation. The corn timing has two halves and both matter. The first two ride with passes you already scheduled, and the one at ear formation is the potassium arriving where the demand is.",
+    },
+    {
+      id: "soy",
+      label: "Soybeans",
+      rate: "16 fl oz/ac",
+      marks: [
+        { code: "V6/V7", at: 0.3 },
+        { code: "", display: "+10–15 days", at: 0.47, minor: true },
+        { code: "", display: "+10–15 days", at: 0.64, minor: true },
+      ],
+      spans: [
+        { from: 0, to: 2, note: "Repeating every 10 to 15 days" },
+      ],
+      summary: "Soybeans: V6/V7, repeating every 10 to 15 days.",
+    },
+    {
+      id: "cotton",
+      label: "Cotton",
+      rate: "16 fl oz/ac",
+      marks: [
+        { code: "Day 40", at: 0.3 },
+        { code: "", display: "+7 days", at: 0.42, minor: true },
+        { code: "", display: "+7 days", at: 0.54, minor: true },
+        { code: "", display: "+7 days", at: 0.66, minor: true },
+      ],
+      spans: [
+        { from: 0, to: 3, note: "Four to six passes, a week apart" },
+      ],
+      summary: "Cotton: starting 40 days after emergence, four to six passes a week apart.",
+    },
+    {
+      id: "beans",
+      label: "Dry beans",
+      rate: "16 fl oz/ac",
+      marks: [
+        { code: "Bloom", at: 0.42 },
+        { code: "", display: "+10–15 days", at: 0.57, minor: true },
+        { code: "", display: "+10–15 days", at: 0.72, minor: true },
+      ],
+      spans: [
+        { from: 0, to: 2, note: "After bloom, every 10 to 15 days" },
+      ],
+      summary: "Dry beans: after bloom, repeating every 10 to 15 days.",
+    },
   ],
   details: [
     {
       k: "Rate and pack",
-      /* TODO(P35): acrescentar as embalagens americanas. */
-      v: "From 8 to 27 fl oz per acre, by crop, as shown above. Tree fruit is mixed at 26 to 38 fl oz per 100 gallons.",
+      /* TODO(P35): outras embalagens americanas, se houver. */
+      v: "16 fl oz per acre in every pass, the rate on the U.S. label. One 2.5 gal jug covers 20 acres.",
     },
     {
       k: "Tank mix",
@@ -554,7 +570,7 @@ export const fit = {
     label: "It fits",
     lead: "An operation that",
     items: [
-      "Already has spray passes on the schedule, in row crops, vegetables or orchards",
+      "Already has spray passes on the schedule, in orchards, vegetables, ornamentals or row crops",
       "Runs its own check strips",
       "Wants more out of a pass that is already budgeted",
     ],
@@ -656,8 +672,8 @@ export const final = {
   disclaimer: "KMEP Ultra® is applied in tank mix with an insecticide and never in place of one. It does not change the rate on the insecticide label. Always read and follow the label directions of the pesticide you are applying.",
   /* As culturas do formulário reduzido: as duas posicionadas, a que está em
      revisão e uma saída. A ordem casa com os ícones do TrialForm. */
-  crops: ["Row crops", "Vegetables", "Citrus & fruit", "Other"],
-  cropIcons: ["corn", "vegetables", "citrus"],
+  crops: ["Citrus & fruit", "Vegetables", "Ornamentals", "Row crops", "Other"],
+  cropIcons: ["citrus", "vegetables", "ornamentals", "corn"],
   alt: "Corn harvest at sunset, grain unloading into a cart beside the combine",
 };
 

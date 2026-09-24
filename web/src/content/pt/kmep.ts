@@ -260,7 +260,7 @@ export const credential: typeof en.credential = {
 
 export const timing: typeof en.timing = {
   heading: "Quando ele entra.",
-  body: "Numa aplicação que você já tem no calendário. Grandes culturas, hortaliças e pomares têm cada um a sua janela, e as datas abaixo seguem o rótulo da Juma para cada cultura. Escolha a sua.",
+  body: "Numa aplicação que você já tem no calendário, na dose do rótulo: 16 fl oz por acre. Pomares, hortaliças, ornamentais e grandes culturas têm cada um a sua janela. Escolha a sua.",
   cropLabel: "Cultura",
   rateLabel: "Dose",
   season: "Safra",
@@ -269,126 +269,9 @@ export const timing: typeof en.timing = {
   pass: "Aplicação",
   crops: [
     {
-      id: "corn",
-      label: "Milho",
-      rate: "14 a 27 fl oz/ac",
-      marks: [
-        { code: "V4", at: 0.18 },
-        { code: "V6", at: 0.32 },
-        { code: "Formação da espiga", at: 0.62 },
-      ],
-      spans: [
-        { from: 0, to: 1, note: "Vão junto com aplicações já agendadas" },
-        { from: 2, to: 2, note: "O potássio chegando onde está a demanda" },
-      ],
-      summary: "V4, V6 e de novo na formação da espiga. A janela do milho tem duas metades e as duas importam. As duas primeiras vão junto com aplicações já agendadas, e a da formação da espiga é o potássio chegando onde está a demanda.",
-    },
-    {
-      id: "soy",
-      label: "Soja",
-      rate: "11 a 21 fl oz/ac",
-      marks: [
-        { code: "V6/V7", at: 0.3 },
-        { code: "", display: "+10 a 15 dias", at: 0.47, minor: true },
-        { code: "", display: "+10 a 15 dias", at: 0.64, minor: true },
-      ],
-      spans: [
-        { from: 0, to: 2, note: "Repetindo a cada 10 a 15 dias" },
-      ],
-      summary: "Soja: V6/V7, repetindo a cada 10 a 15 dias.",
-    },
-    {
-      id: "cotton",
-      label: "Algodão",
-      rate: "21 a 27 fl oz/ac",
-      marks: [
-        { code: "Dia 40", at: 0.3 },
-        { code: "", display: "+7 dias", at: 0.42, minor: true },
-        { code: "", display: "+7 dias", at: 0.54, minor: true },
-        { code: "", display: "+7 dias", at: 0.66, minor: true },
-      ],
-      spans: [
-        { from: 0, to: 3, note: "De quatro a seis aplicações, uma por semana" },
-      ],
-      summary: "Algodão: a partir de 40 dias após a emergência, de quatro a seis aplicações com uma semana de intervalo.",
-    },
-    {
-      id: "beans",
-      label: "Feijão",
-      rate: "14 a 27 fl oz/ac",
-      marks: [
-        { code: "Florada", at: 0.42 },
-        { code: "", display: "+10 a 15 dias", at: 0.57, minor: true },
-        { code: "", display: "+10 a 15 dias", at: 0.72, minor: true },
-      ],
-      spans: [
-        { from: 0, to: 2, note: "Após a florada, a cada 10 a 15 dias" },
-      ],
-      summary: "Feijão: após a florada, repetindo a cada 10 a 15 dias.",
-    },
-    {
-      id: "potato",
-      label: "Batata",
-      rate: "14 a 27 fl oz/ac",
-      marks: [
-        { code: "Dia 50", at: 0.38 },
-        { code: "", display: "+7 dias", at: 0.51, minor: true },
-        { code: "", display: "+7 dias", at: 0.64, minor: true },
-      ],
-      spans: [
-        { from: 0, to: 2, note: "Semanal, a partir do dia 50" },
-      ],
-      summary: "Batata: semanal, a partir de 50 dias após a emergência.",
-    },
-    {
-      id: "onion",
-      label: "Cebola e alho",
-      rate: "14 a 27 fl oz/ac",
-      ends: ["Transplante", "Colheita"],
-      marks: [
-        { code: "Dia 50", at: 0.4 },
-        { code: "", display: "+7 dias", at: 0.53, minor: true },
-        { code: "", display: "+7 dias", at: 0.66, minor: true },
-      ],
-      spans: [
-        { from: 0, to: 2, note: "Semanal, a partir do dia 50 após o transplante" },
-      ],
-      summary: "Cebola e alho: semanal, a partir de 50 dias após o transplante.",
-    },
-    {
-      id: "roots",
-      label: "Cenoura e beterraba",
-      rate: "14 a 27 fl oz/ac",
-      marks: [
-        { code: "Dia 40", at: 0.34 },
-        { code: "", display: "+7 dias", at: 0.47, minor: true },
-        { code: "", display: "+7 dias", at: 0.6, minor: true },
-      ],
-      spans: [
-        { from: 0, to: 2, note: "Semanal, a partir do dia 40" },
-      ],
-      summary: "Cenoura e beterraba: semanal, a partir de 40 dias após a emergência.",
-    },
-    {
-      id: "tomato",
-      label: "Tomate e pimentão",
-      rate: "11 a 16 fl oz/ac",
-      ends: ["Transplante", "Colheita"],
-      marks: [
-        { code: "Dia 40", at: 0.3 },
-        { code: "", display: "+7 dias", at: 0.42, minor: true },
-        { code: "", display: "+7 dias", at: 0.54, minor: true },
-        { code: "", display: "+7 dias", at: 0.66, minor: true },
-      ],
-      spans: [
-        { from: 0, to: 3, note: "Semanal, a partir do dia 40 após o transplante" },
-      ],
-      summary: "Tomate e pimentão: semanal, a partir de 40 dias após o transplante.",
-    },
-    {
       id: "citrus",
       label: "Citros",
-      rate: "27 fl oz/ac",
+      rate: "16 fl oz/ac",
       ends: ["Florada", "Colheita"],
       marks: [
         { code: "Pegamento", at: 0.25 },
@@ -403,7 +286,7 @@ export const timing: typeof en.timing = {
     {
       id: "fruit",
       label: "Frutíferas",
-      rate: "26 a 38 fl oz por 100 gal",
+      rate: "16 fl oz/ac",
       ends: ["Florada", "Colheita"],
       marks: [
         { code: "Pós-florada", at: 0.22 },
@@ -418,7 +301,7 @@ export const timing: typeof en.timing = {
     {
       id: "veg",
       label: "Hortaliças",
-      rate: "8 a 11 fl oz/ac",
+      rate: "16 fl oz/ac",
       ends: ["Semeadura", "Colheita"],
       marks: [
         { code: "Dia 30", at: 0.3 },
@@ -430,11 +313,143 @@ export const timing: typeof en.timing = {
       ],
       summary: "Outras hortaliças: quinzenal, a partir de 30 dias após a germinação ou o transplante.",
     },
+    {
+      id: "tomato",
+      label: "Tomate e pimentão",
+      rate: "16 fl oz/ac",
+      ends: ["Transplante", "Colheita"],
+      marks: [
+        { code: "Dia 40", at: 0.3 },
+        { code: "", display: "+7 dias", at: 0.42, minor: true },
+        { code: "", display: "+7 dias", at: 0.54, minor: true },
+        { code: "", display: "+7 dias", at: 0.66, minor: true },
+      ],
+      spans: [
+        { from: 0, to: 3, note: "Semanal, a partir do dia 40 após o transplante" },
+      ],
+      summary: "Tomate e pimentão: semanal, a partir de 40 dias após o transplante.",
+    },
+    {
+      id: "ornamental",
+      label: "Ornamentais",
+      rate: "16 fl oz/ac",
+      ends: ["Plantio", "Venda"],
+      marks: [
+        { code: "1ª aplicação", at: 0.24 },
+        { code: "", display: "Próxima", at: 0.44, minor: true },
+        { code: "", display: "Próxima", at: 0.64, minor: true },
+      ],
+      spans: [
+        { from: 0, to: 2, note: "Em toda aplicação" },
+      ],
+      summary: "Ornamentais: em toda aplicação ao longo do ciclo, na dose do rótulo.",
+    },
+    {
+      id: "potato",
+      label: "Batata",
+      rate: "16 fl oz/ac",
+      marks: [
+        { code: "Dia 50", at: 0.38 },
+        { code: "", display: "+7 dias", at: 0.51, minor: true },
+        { code: "", display: "+7 dias", at: 0.64, minor: true },
+      ],
+      spans: [
+        { from: 0, to: 2, note: "Semanal, a partir do dia 50" },
+      ],
+      summary: "Batata: semanal, a partir de 50 dias após a emergência.",
+    },
+    {
+      id: "onion",
+      label: "Cebola e alho",
+      rate: "16 fl oz/ac",
+      ends: ["Transplante", "Colheita"],
+      marks: [
+        { code: "Dia 50", at: 0.4 },
+        { code: "", display: "+7 dias", at: 0.53, minor: true },
+        { code: "", display: "+7 dias", at: 0.66, minor: true },
+      ],
+      spans: [
+        { from: 0, to: 2, note: "Semanal, a partir do dia 50 após o transplante" },
+      ],
+      summary: "Cebola e alho: semanal, a partir de 50 dias após o transplante.",
+    },
+    {
+      id: "roots",
+      label: "Cenoura e beterraba",
+      rate: "16 fl oz/ac",
+      marks: [
+        { code: "Dia 40", at: 0.34 },
+        { code: "", display: "+7 dias", at: 0.47, minor: true },
+        { code: "", display: "+7 dias", at: 0.6, minor: true },
+      ],
+      spans: [
+        { from: 0, to: 2, note: "Semanal, a partir do dia 40" },
+      ],
+      summary: "Cenoura e beterraba: semanal, a partir de 40 dias após a emergência.",
+    },
+    {
+      id: "corn",
+      label: "Milho",
+      rate: "16 fl oz/ac",
+      marks: [
+        { code: "V4", at: 0.18 },
+        { code: "V6", at: 0.32 },
+        { code: "Formação da espiga", at: 0.62 },
+      ],
+      spans: [
+        { from: 0, to: 1, note: "Vão junto com aplicações já agendadas" },
+        { from: 2, to: 2, note: "O potássio chegando onde está a demanda" },
+      ],
+      summary: "V4, V6 e de novo na formação da espiga. A janela do milho tem duas metades e as duas importam. As duas primeiras vão junto com aplicações já agendadas, e a da formação da espiga é o potássio chegando onde está a demanda.",
+    },
+    {
+      id: "soy",
+      label: "Soja",
+      rate: "16 fl oz/ac",
+      marks: [
+        { code: "V6/V7", at: 0.3 },
+        { code: "", display: "+10 a 15 dias", at: 0.47, minor: true },
+        { code: "", display: "+10 a 15 dias", at: 0.64, minor: true },
+      ],
+      spans: [
+        { from: 0, to: 2, note: "Repetindo a cada 10 a 15 dias" },
+      ],
+      summary: "Soja: V6/V7, repetindo a cada 10 a 15 dias.",
+    },
+    {
+      id: "cotton",
+      label: "Algodão",
+      rate: "16 fl oz/ac",
+      marks: [
+        { code: "Dia 40", at: 0.3 },
+        { code: "", display: "+7 dias", at: 0.42, minor: true },
+        { code: "", display: "+7 dias", at: 0.54, minor: true },
+        { code: "", display: "+7 dias", at: 0.66, minor: true },
+      ],
+      spans: [
+        { from: 0, to: 3, note: "De quatro a seis aplicações, uma por semana" },
+      ],
+      summary: "Algodão: a partir de 40 dias após a emergência, de quatro a seis aplicações com uma semana de intervalo.",
+    },
+    {
+      id: "beans",
+      label: "Feijão",
+      rate: "16 fl oz/ac",
+      marks: [
+        { code: "Florada", at: 0.42 },
+        { code: "", display: "+10 a 15 dias", at: 0.57, minor: true },
+        { code: "", display: "+10 a 15 dias", at: 0.72, minor: true },
+      ],
+      spans: [
+        { from: 0, to: 2, note: "Após a florada, a cada 10 a 15 dias" },
+      ],
+      summary: "Feijão: após a florada, repetindo a cada 10 a 15 dias.",
+    },
   ],
   details: [
     {
       k: "Dose e embalagem",
-      v: "De 8 a 27 fl oz por acre, conforme a cultura, como mostrado acima. Nas frutíferas, 26 a 38 fl oz por 100 galões de calda.",
+      v: "16 fl oz por acre em toda aplicação, a dose do rótulo americano. Um galão de 2,5 gal cobre 20 acres.",
     },
     {
       k: "Mistura de tanque",
@@ -450,7 +465,7 @@ export const fit: typeof en.fit = {
     label: "Serve",
     lead: "Para uma operação que",
     items: [
-      "Já tem aplicações no calendário, em grandes culturas, hortaliças ou pomares",
+      "Já tem aplicações no calendário, em pomares, hortaliças, ornamentais ou grandes culturas",
       "Conduz as próprias faixas testemunha",
       "Quer mais de uma aplicação que já está no orçamento",
     ],
@@ -523,8 +538,8 @@ export const final: typeof en.final = {
   heading: "Faça uma faixa de teste. O produto é por nossa conta.",
   body: "Escolha um talhão, deixe uma faixa testemunha sem tratar ao lado, e voltamos na colheita com você. Diga a sua cultura e o seu estado e enviamos antes o rótulo, as doses em fl oz por acre e o relatório completo do ensaio.",
   disclaimer: "O KMEP Ultra® é aplicado em mistura de tanque com um inseticida e nunca no lugar de um. Ele não muda a dose do rótulo do inseticida. Sempre leia e siga as instruções do rótulo do defensivo que você está aplicando.",
-  crops: ["Grandes culturas", "Hortaliças", "Citros e frutas", "Outra"],
-  cropIcons: ["corn", "vegetables", "citrus"],
+  crops: ["Citros e frutas", "Hortaliças", "Ornamentais", "Grandes culturas", "Outra"],
+  cropIcons: ["citrus", "vegetables", "ornamentals", "corn"],
   alt: "Colheita de milho ao pôr do sol, com o grão sendo descarregado na carreta ao lado da colheitadeira",
 };
 

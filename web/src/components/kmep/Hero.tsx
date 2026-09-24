@@ -170,7 +170,7 @@ export function Hero({ variant = "a" }: { variant?: "a" | "b" }) {
         <div data-hb-copy className="wrap hero-band relative z-[4] text-center">
           <p
             data-kh="fade"
-            className="mx-auto max-w-[34ch] font-display text-[clamp(10px,1vw,14px)] tracking-[0.24em] text-ink uppercase min-[861px]:max-w-none min-[861px]:tracking-[0.32em]"
+            className="mx-auto font-display text-[clamp(9.5px,1vw,14px)] tracking-[0.18em] whitespace-nowrap text-ink uppercase min-[861px]:tracking-[0.32em]"
           >
             {hero.eyebrow.map((item, i) => (
               <Fragment key={item}>
