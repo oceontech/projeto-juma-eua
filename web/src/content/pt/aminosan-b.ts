@@ -183,10 +183,11 @@ export const converge: typeof en.converge = {
     cta: { label: "Veja como funciona", href: "#meet" },
   },
   routes: {
-    steps: ["Nitrato", "Nitrito", "Amônio", "Glutamato", "Aminoácido"],
+    label: "O caminho da própria lavoura: do nitrato do solo aos aminoácidos",
+    steps: ["Nitrato", "Nitrito", "Amônio", "Glutamato", "Aminoácidos"],
     with: {
       label: "Com Aminosan®",
-      note: "Direto ao aminoácido",
+      note: "Aplicado na folha, direto aos aminoácidos",
       jugAlt: "Bombona do Aminosan®",
     },
     conversion: "Cada conversão gasta a energia da lavoura",

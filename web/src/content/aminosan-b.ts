@@ -235,10 +235,11 @@ export const converge = {
      Aminosan® que salta do primeiro ponto ao último. Conta etapas, não
      horas — não há número de tempo com fonte. */
   routes: {
-    steps: ["Nitrate", "Nitrite", "Ammonium", "Glutamate", "Amino acid"],
+    label: "The crop's own route: from soil nitrate to amino acids",
+    steps: ["Nitrate", "Nitrite", "Ammonium", "Glutamate", "Amino acids"],
     with: {
       label: "With Aminosan®",
-      note: "Straight to the amino acid",
+      note: "Applied on the leaf, straight to the amino acids",
       jugAlt: "Aminosan® jug",
     },
     conversion: "Each conversion spends the crop's energy",

@@ -3182,6 +3182,63 @@ html[data-proof-overlap] .expertise-layer--dark .expertise-bg {
   opacity: 0;
 }
 
+.fd-plant,
+.fd-curtain-plant {
+  top: 25svh;
+  left: 52%;
+  width: auto;
+  max-width: none;
+  height: 145svh;
+  object-fit: contain;
+}
+
+.fd-plant {
+  opacity: 0;
+}
+
+@media (max-width: 900px) {
+  .fd-plant,
+  .fd-curtain-plant {
+    top: 48svh;
+    left: calc(50% - 66.6667vw);
+    height: 200vw;
+  }
+
+  .fd-main,
+  .fd-curtain .fd-main {
+    position: absolute;
+    top: clamp(170px, 25svh, 230px);
+    right: var(--spacing-gut);
+    left: var(--spacing-gut);
+    width: auto;
+    height: auto;
+    min-height: 0;
+    align-items: start;
+    padding: 18px 20px 20px;
+    border-radius: 16px;
+    background: var(--color-forest);
+  }
+
+  .fd-card,
+  .fd-curtain-card {
+    width: 100%;
+    max-width: none;
+  }
+
+  .fd-curtain-card,
+  .fd-curtain-card h3 {
+    color: var(--color-cream);
+  }
+
+  .fd-curtain-card p:first-child {
+    color: var(--color-sage);
+  }
+
+  .fd-curtain-card p:last-child {
+    color: color-mix(in srgb, var(--color-cream) 70%, transparent);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
 .fd-still {
   margin-top: 0;
@@ -3196,8 +3253,19 @@ html[data-proof-overlap] .expertise-layer--dark .expertise-bg {
 }
 
 .fd-still .fd-ask,
-.fd-still .fd-wheel {
+.fd-still .fd-curtain {
   display: none;
+}
+
+.fd-still .fd-plant {
+  position: relative;
+  top: auto;
+  left: auto;
+  display: block;
+  width: min(80vw, 420px);
+  height: auto;
+  margin: 0 auto 32px;
+  opacity: 1;
 }
 
 .fd-still .fd-layout {
@@ -3215,15 +3283,30 @@ html[data-proof-overlap] .expertise-layer--dark .expertise-bg {
 }
 
 .fd-still .fd-main {
+  position: relative;
+  top: auto;
+  right: auto;
+  left: auto;
   height: auto;
   min-height: 0;
   gap: 48px;
+  padding: 0;
+  background: none;
 }
 
 .fd-still .fd-card {
   visibility: visible;
   grid-column: 1;
   grid-row: auto;
+  max-width: none;
+}
+
+@media (max-width: 900px) {
+  .fd-still .fd-card {
+    padding: 18px 20px 20px;
+    border-radius: 16px;
+    background: var(--color-forest);
+  }
 }
 }
 

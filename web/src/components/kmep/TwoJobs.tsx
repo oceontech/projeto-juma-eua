@@ -7,155 +7,195 @@ import { gsap, useGSAP } from "@/lib/gsap";
 import { eyebrow, fix, microCaps } from "./ui";
 
 /* ------------------------------------------------------------ geometria */
-/* A cena num quadro de 1200 × 440. Um rastro entra pela esquerda e se divide:
-   o caminho A é curto e termina num mostrador de minutos (o dia da
-   aplicação); o caminho B é longo, corre como uma régua da safra e termina
-   na colheita. Traço fino e geométrico — nada de ícone de spray. */
+/* Uma passada que se bifurca em dois cartões. A largura de cada cartão já é
+   a escala de tempo: o do minuto é estreito (5/12), o da safra é largo
+   (7/12). A bifurcação sai da pílula "One pass", que fica sobre a emenda dos
+   dois cartões, e desce até o centro de cada um. */
 
-const W = 1200;
-const H = 440;
-const SPLIT: [number, number] = [380, 220];
+/* O quadro da bifurcação: a largura é esticada até a da grade
+   (`preserveAspectRatio="none"`), a altura é 1:1 em pixels. As colunas não
+   têm vão; o respiro entre os cartões é o `px` de cada coluna, igual dos
+   dois lados, para o centro do cartão cair exatamente no centro da coluna. */
+const FORK_W = 1200;
+const FORK_H = 76;
+const SEAM = (FORK_W * 5) / 12;
+const A_X = SEAM / 2;
+const B_X = SEAM + (FORK_W - SEAM) / 2;
+/* Sai do pé da pílula, abre na horizontal a meia altura e desce reto até o
+   cartão, com os cantos arredondados. O esticamento horizontal da grade é
+   pequeno (1200 → ~1360), e o arco do canto quase não se deforma. */
+const FORK_TOP = 34;
+const FORK_MID = 54;
+const R = 12;
+const elbow = (x: number) => {
+  const s = Math.sign(x - SEAM);
+  return `M${SEAM} ${FORK_TOP} V${FORK_MID - R} Q${SEAM} ${FORK_MID} ${SEAM + s * R} ${FORK_MID} H${x - s * R} Q${x} ${FORK_MID} ${x} ${FORK_MID + R} V${FORK_H}`;
+};
+const FORK_A = elbow(A_X);
+const FORK_B = elbow(B_X);
 
-/* O mostrador do caminho A. */
-const DIAL = { cx: 760, cy: 110, r: 52 };
+/* O mostrador do trabalho 1: 20 minutos num curso de 270°, abrindo embaixo. */
+const GAUGE = { c: 100, r: 78 };
 const MINUTES = 20;
-/* Ângulo em graus (SVG: 0 à direita, sentido horário) da marca `k` de 0 a 20:
-   de 135° (baixo-esquerda) a 405° (baixo-direita), 270° de curso. */
 const angle = (k: number) => 135 + (270 * k) / MINUTES;
 const polar = (deg: number, r: number): [number, number] => {
   const rad = (deg * Math.PI) / 180;
-  return [fix(DIAL.cx + r * Math.cos(rad)), fix(DIAL.cy + r * Math.sin(rad))];
+  return [fix(GAUGE.c + r * Math.cos(rad)), fix(GAUGE.c + r * Math.sin(rad))];
 };
-const DIAL_TICKS = Array.from({ length: MINUTES + 1 }, (_, k) => {
+const [ARC_X0, ARC_Y0] = polar(angle(0), GAUGE.r);
+const [ARC_X1, ARC_Y1] = polar(angle(MINUTES), GAUGE.r);
+const GAUGE_ARC = `M${ARC_X0} ${ARC_Y0} A${GAUGE.r} ${GAUGE.r} 0 1 1 ${ARC_X1} ${ARC_Y1}`;
+const GAUGE_TICKS = Array.from({ length: MINUTES + 1 }, (_, k) => {
   const major = k % 5 === 0;
-  const [x1, y1] = polar(angle(k), major ? 42 : 46);
-  const [x2, y2] = polar(angle(k), DIAL.r);
-  const [lx, ly] = polar(angle(k), 66);
-  return { k, major, x1, y1, x2, y2, lx, ly };
+  const [x1, y1] = polar(angle(k), major ? 91 : 93);
+  const [x2, y2] = polar(angle(k), 98);
+  return { k, major, x1, y1, x2, y2 };
 });
-const [ARC_X0, ARC_Y0] = polar(angle(0), DIAL.r);
-const [ARC_X1, ARC_Y1] = polar(angle(MINUTES), DIAL.r);
-/* O ponteiro é desenhado já na posição final; a animação o traz de volta
-   270° e deixa ele andar até ali. Sem JavaScript, a cena fica completa. */
-const [NEEDLE_X, NEEDLE_Y] = polar(angle(MINUTES), 38);
 
-/* A régua do caminho B. */
-const B_Y = 330;
-const B_FROM = 600;
-const B_TO = 1176;
-const B_TICKS = Array.from({ length: 25 }, (_, i) => B_FROM + i * 24);
-const B_MARKS = [792, 960, B_TO];
-
-const PATH_IN = `M20 ${SPLIT[1]} H${SPLIT[0]}`;
-const PATH_A = `M${SPLIT[0]} ${SPLIT[1]} C450 ${SPLIT[1]} 470 ${DIAL.cy} 560 ${DIAL.cy} H${DIAL.cx - DIAL.r - 2}`;
-const PATH_B = `M${SPLIT[0]} ${SPLIT[1]} C450 ${SPLIT[1]} 470 ${B_Y} 560 ${B_Y} H${B_TO}`;
+/* A régua da safra do trabalho 2, em % da largura. O primeiro trecho, em
+   lima, é o dia da aplicação — o trabalho 1 inteiro cabe nele. */
+const SLIVER = 1.6;
+const STAGES = [40, 70, 100];
+/* A linha do tempo da cena: onde a régua começa a correr e quanto dura. */
+const BAR_AT = 0.44;
+const BAR_LEN = 0.42;
 
 /**
- * K5 — a Big Idea. Cena presa (o padrão do Converge da LP B): enquanto o
- * pin segura a tela, o rastro da passada se desenha, a bifurcação abre, o
- * mostrador de minutos gira depressa e a régua da safra acende devagar — as
- * duas escalas de tempo lado a lado. O fundo sai do mesmo preto da seção
- * anterior e desce diretamente até o verde escuro.
+ * K5 — a Big Idea. Uma passada que se abre em dois cartões, e cada cartão
+ * mostra a sua escala de tempo: o mostrador de minutos do trabalho 1 dá a
+ * volta depressa; a régua da safra do trabalho 2 corre devagar, da
+ * aplicação até a colheita. No desktop a cena fica presa (o padrão do
+ * Converge da LP B) enquanto a bifurcação desce, os cartões sobem e os dois
+ * relógios andam, cada um no seu compasso.
  *
- * No celular, sem pin: a mesma linha do tempo presa ao scroll comum, e os
- * rótulos saem do desenho para uma legenda em HTML, legível em 360px.
+ * Tudo que é texto está em HTML, legível e selecionável; o SVG é só traço.
+ * Sem JavaScript ou com menos movimento, a cena chega completa.
  */
 export function TwoJobs() {
   const { twoJobs } = useContent().kmep;
   const { scene } = twoJobs;
   const scope = useRef<HTMLElement>(null);
+  const count = useRef<HTMLSpanElement>(null);
 
   useGSAP(
     () => {
       const mm = gsap.matchMedia();
+      const clock = { v: MINUTES };
+      /* O traço da bifurcação é escrito direto no estilo, e não pelo tween
+         de `strokeDashoffset` do GSAP: com `pathLength` no SVG esse tween
+         não acompanhava a faísca, e o traço aparecia de uma vez. */
+      const forkDraw = { p: 0 };
+      const paintFork = (p: number) => {
+        scope.current?.querySelectorAll<SVGPathElement>(".tj-fork").forEach((el) => {
+          el.style.strokeDashoffset = String(fix(1 - p, 4));
+        });
+      };
+      /* Sem isto as faíscas piscam na origem do SVG antes do timeline pegar. */
+      gsap.set(".tj-spark", { opacity: 0 });
 
-      /* Some com as faíscas no repouso (progresso 0 do scroll): sem isso
-         elas piscam em 0,0 — origem do SVG — antes do timeline pegar. */
-      gsap.set([".tj-spark-in", ".tj-spark-a", ".tj-spark-b"], { opacity: 0 });
-
-      /* A linha do tempo da cena, em unidades de 0 a 1.
-         O traço em si (`strokeDashoffset`) fica em `ease: "none"`: é ele que
-         precisa andar 1:1 com o scroll, senão o desenho descola do gesto do
-         dedo. O que dava a sensação seca não era essa parte — era tudo em
-         volta dela acontecer aos saltos (liga/desliga). A faísca que corre
-         na ponta do traço (`motionPath`, abaixo) e as transições de opacidade
-         mais longas, com `sine`, é o que dá o ar de tinta correndo em vez de
-         barra de progresso enchendo. */
+      /* Linha do tempo em unidades de 0 a 1. Os traços andam em
+         `ease: "none"`, 1:1 com o scroll; o que entra e acende ao redor
+         deles vai em `sine`, para não ler como liga/desliga. */
       const build = (tl: gsap.core.Timeline) =>
         tl
-          .fromTo(".tj-in", { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 0.25, ease: "none" }, 0)
-          .fromTo(".tj-start", { opacity: 0, scale: 0.4 }, { opacity: 1, scale: 1, duration: 0.1, ease: "sine.out" }, 0)
+          .fromTo(".tj-pass", { opacity: 0, y: 14, scale: 0.9 }, { opacity: 1, y: 0, scale: 1, duration: 0.1, ease: "sine.out" }, 0)
           .fromTo(
-            ".tj-spark-in",
-            { opacity: 1 },
-            { motionPath: { path: PATH_IN, alignOrigin: [0.5, 0.5] }, duration: 0.25, ease: "none" },
-            0,
+            forkDraw,
+            { p: 0 },
+            { p: 1, duration: 0.34, ease: "sine.inOut", onUpdate: () => paintFork(forkDraw.p) },
+            0.06,
           )
-          .fromTo(
-            ".tj-split",
-            { scale: 0, opacity: 0, svgOrigin: `${SPLIT[0]} ${SPLIT[1]}` },
-            { scale: 1, opacity: 1, duration: 0.1, ease: "sine.out" },
-            0.2,
-          )
-          .to(".tj-spark-in", { opacity: 0, duration: 0.05, ease: "sine.in" }, 0.22)
-          .fromTo(".tj-a", { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 0.2, ease: "none" }, 0.27)
-          .fromTo(".tj-b", { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 0.66, ease: "none" }, 0.27)
+          /* A faísca corre na ponta do traço, na mesma curva de tempo dele:
+             é o que faz o preenchimento ler como tinta escorrendo da pílula
+             até o cartão, e não como um risco que aparece. */
           .fromTo(
             ".tj-spark-a",
             { opacity: 1 },
-            { motionPath: { path: PATH_A, alignOrigin: [0.5, 0.5] }, duration: 0.2, ease: "none" },
-            0.27,
+            { motionPath: { path: FORK_A, alignOrigin: [0.5, 0.5] }, duration: 0.34, ease: "sine.inOut" },
+            0.06,
           )
           .fromTo(
             ".tj-spark-b",
             { opacity: 1 },
-            { motionPath: { path: PATH_B, alignOrigin: [0.5, 0.5] }, duration: 0.66, ease: "none" },
-            0.27,
+            { motionPath: { path: FORK_B, alignOrigin: [0.5, 0.5] }, duration: 0.34, ease: "sine.inOut" },
+            0.06,
           )
-          .to(".tj-spark-a", { opacity: 0, duration: 0.05, ease: "sine.in" }, 0.42)
-          .to(".tj-spark-b", { opacity: 0, duration: 0.05, ease: "sine.in" }, 0.88)
-          .fromTo(".tj-dial", { opacity: 0 }, { opacity: 1, duration: 0.16, ease: "sine.out" }, 0.36)
-          /* O mostrador corre inteiro num trecho curto… */
-          .fromTo(".tj-arc", { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 0.14, ease: "none" }, 0.47)
+          .to(".tj-spark", { opacity: 0, duration: 0.05, ease: "sine.in" }, 0.37)
           .fromTo(
-            ".tj-needle",
-            { rotation: -270, svgOrigin: `${DIAL.cx} ${DIAL.cy}` },
-            { rotation: 0, duration: 0.14, ease: "none" },
-            0.47,
+            ".tj-card",
+            { opacity: 0, y: 48 },
+            { opacity: 1, y: 0, duration: 0.16, stagger: 0.05, ease: "sine.out" },
+            0.24,
           )
-          /* …e a régua da safra acende marca a marca, num aceso gradual (não
-             num piscar), no compasso longo. */
+          .fromTo(".tj-node", { scale: 0 }, { scale: 1, duration: 0.06, ease: "back.out(3)" }, 0.36)
+          /* O trabalho 1 corre inteiro num trecho curto… */
+          .fromTo(".tj-arc", { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 0.16, ease: "none" }, 0.4)
           .fromTo(
-            ".tj-tick",
-            { opacity: 0.12, scaleY: 0.35, transformOrigin: "50% 50%" },
-            { opacity: 1, scaleY: 1, duration: 0.05, stagger: 0.022, ease: "sine.out" },
-            0.34,
+            clock,
+            { v: 0 },
+            {
+              v: MINUTES,
+              duration: 0.16,
+              ease: "none",
+              onUpdate: () => {
+                if (count.current) count.current.textContent = String(Math.round(clock.v));
+              },
+            },
+            0.4,
           )
-          .fromTo(".tj-label", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.1, stagger: 0.05, ease: "sine.out" }, 0.5)
-          .fromTo(".tj-close", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.14, ease: "power2.out" }, 0.8);
+          .fromTo(".tj-gauge-time", { opacity: 0.25 }, { opacity: 1, duration: 0.06, ease: "sine.out" }, 0.54)
+          /* …e o trabalho 2 segue devagar, da aplicação até a colheita. */
+          .fromTo(".tj-sliver", { scaleX: 0 }, { scaleX: 1, duration: 0.03, ease: "none" }, BAR_AT - 0.03)
+          .fromTo(
+            ".tj-fill",
+            { clipPath: "inset(0% 100% 0% 0%)" },
+            { clipPath: "inset(0% 0% 0% 0%)", duration: BAR_LEN, ease: "none" },
+            BAR_AT,
+          )
+          .fromTo(".tj-head", { left: "0%", opacity: 0 }, { left: "100%", opacity: 1, duration: BAR_LEN, ease: "none" }, BAR_AT)
+          .fromTo(".tj-season", { opacity: 0.25 }, { opacity: 1, duration: 0.08, ease: "sine.out" }, BAR_AT + BAR_LEN * 0.4);
+
+      /* Cada marco da safra acende quando a régua passa por ele. */
+      const stages = (tl: gsap.core.Timeline) => {
+        STAGES.forEach((pct, i) => {
+          tl.fromTo(
+            `.tj-mark-${i}`,
+            { opacity: 0.3 },
+            { opacity: 1, duration: 0.05, ease: "sine.out" },
+            BAR_AT + (BAR_LEN * pct) / 100 - 0.03,
+          );
+        });
+        return tl.fromTo(".tj-close", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.12, ease: "power2.out" }, 0.9);
+      };
 
       mm.add(
         {
-          desktop: "(min-width: 1024px) and (prefers-reduced-motion: no-preference)",
-          mobile: "(max-width: 1023px) and (prefers-reduced-motion: no-preference)",
+          /* Só prende quando a cena cabe inteira na altura da tela; abaixo
+             disso, a mesma linha do tempo corre presa ao scroll comum. */
+          pinned: "(min-width: 1024px) and (min-height: 760px) and (prefers-reduced-motion: no-preference)",
+          motion: "(prefers-reduced-motion: no-preference)",
           still: "(prefers-reduced-motion: reduce)",
         },
         (ctx) => {
-          const { desktop, still } = ctx.conditions as { desktop: boolean; still: boolean };
+          const { pinned, still } = ctx.conditions as { pinned: boolean; still: boolean };
 
           if (still) {
-            build(gsap.timeline({ paused: true })).progress(1);
+            stages(build(gsap.timeline({ paused: true }))).progress(1);
             return;
           }
 
-          build(
-            gsap.timeline({
-              defaults: { ease: "power2.out" },
-              scrollTrigger: desktop
-                ? { trigger: ".tj-stage", start: "top top", end: "+=110%", scrub: 0.8, pin: true, anticipatePin: 1 }
-                : { trigger: ".tj-scene", start: "top 85%", end: "bottom 60%", scrub: 0.8 },
-            }),
+          paintFork(0);
+          stages(
+            build(
+              gsap.timeline({
+                scrollTrigger: pinned
+                  ? { trigger: ".tj-stage", start: "top top", end: "+=180%", scrub: 0.8, pin: true, anticipatePin: 1 }
+                  : { trigger: ".tj-scene", start: "top 85%", end: "bottom 55%", scrub: 0.8 },
+              }),
+            ),
           );
+          /* Se o modo mudar no meio da sessão, o traço volta inteiro. */
+          return () => paintFork(1);
         },
       );
     },
@@ -168,173 +208,209 @@ export function TwoJobs() {
       data-nav-theme="dark"
       className="relative overflow-hidden bg-[linear-gradient(180deg,var(--color-night)_0%,var(--color-forest)_55%)] text-cream"
     >
-      <div className="tj-stage relative flex min-h-[100svh] flex-col justify-center gap-[clamp(28px,5svh,56px)] py-[clamp(72px,10svh,120px)]">
-        <div className="wrap grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,440px)] lg:items-end lg:gap-16">
+      <div className="tj-stage relative flex min-h-[100svh] flex-col justify-center gap-[clamp(28px,4.5svh,52px)] py-[clamp(64px,8svh,104px)]">
+        <div className="wrap grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,420px)] lg:items-end lg:gap-16">
           <div>
-            <p className={`tj-eyebrow ${eyebrow} text-lime`}>{twoJobs.eyebrow}</p>
-            <SplitLines className="tj-heading mt-4 text-[clamp(48px,6.2vw,116px)] leading-[0.92] tracking-[-0.045em] text-balance">
+            <p className={`${eyebrow} text-lime`}>{twoJobs.eyebrow}</p>
+            <SplitLines className="mt-4 text-[clamp(46px,5.6vw,100px)] leading-[0.92] tracking-[-0.045em] text-balance">
               {twoJobs.heading}
             </SplitLines>
           </div>
-          <p className={`tj-lead ${microCaps} text-[12px] text-cream/80`}>{twoJobs.lead}</p>
+          <p className="max-w-[46ch] text-[16px] leading-[1.6] text-cream/70 lg:text-[17px]">{twoJobs.lead}</p>
         </div>
 
         <div className="tj-scene wrap">
-          <svg viewBox={`0 0 ${W} ${H}`} className="h-auto max-h-[46svh] w-full overflow-visible" aria-hidden>
-            <defs>
-              {/* O brilho da faísca que corre na ponta do traço — sem ele o
-                  ponto é só uma bolinha se movendo, seco igual ao resto. */}
-              <filter id="tj-glow" x="-200%" y="-200%" width="500%" height="500%">
-                <feGaussianBlur stdDeviation="4" result="blur" />
-                <feMerge>
-                  <feMergeNode in="blur" />
-                  <feMergeNode in="SourceGraphic" />
-                </feMerge>
-              </filter>
-            </defs>
-
-            {/* As rotas em fantasma, para o desenho ter onde correr. */}
-            <g fill="none" stroke="#EEEBE0" strokeOpacity="0.14" strokeWidth="1">
-              <path d={PATH_IN} />
-              <path d={PATH_A} />
-              <path d={PATH_B} />
-            </g>
-
-            <g fill="none" strokeLinecap="round">
-              <path className="tj-in" d={PATH_IN} pathLength={1} strokeDasharray="1 1" stroke="#EEEBE0" strokeWidth="2" />
-              <path className="tj-a" d={PATH_A} pathLength={1} strokeDasharray="1 1" stroke="#B7C73E" strokeWidth="2.5" />
-              <path className="tj-b" d={PATH_B} pathLength={1} strokeDasharray="1 1" stroke="#EEEBE0" strokeWidth="1.5" />
-            </g>
-
-            {/* A faísca: a ponta acesa do traço, correndo à frente dele —
-                é o que faz o preenchimento ler como tinta correndo, e não
-                como uma barra de progresso enchendo. Some assim que chega
-                onde o traço seguinte (ou o mostrador/régua) assume. */}
-            <g filter="url(#tj-glow)">
-              <circle className="tj-spark-in" r="4" fill="#EEEBE0" />
-              <circle className="tj-spark-a" r="4.5" fill="#B7C73E" />
-              <circle className="tj-spark-b" r="3.5" fill="#EEEBE0" />
-            </g>
-
-            <circle className="tj-start" cx="20" cy={SPLIT[1]} r="5" fill="#EEEBE0" />
-            <g className="tj-split">
-              <circle cx={SPLIT[0]} cy={SPLIT[1]} r="9" fill="none" stroke="#EEEBE0" strokeWidth="1.5" />
-              <circle cx={SPLIT[0]} cy={SPLIT[1]} r="3.5" fill="#EEEBE0" />
-            </g>
-
-            {/* A régua da safra, no caminho B. */}
-            <g stroke="#EEEBE0">
-              {B_TICKS.map((x) => {
-                const mark = B_MARKS.includes(x);
-                return (
-                  <line
-                    key={x}
-                    className="tj-tick"
-                    x1={x}
-                    x2={x}
-                    y1={B_Y - (mark ? 12 : 5)}
-                    y2={B_Y + (mark ? 12 : 5)}
-                    strokeWidth={mark ? 1.5 : 1}
-                  />
-                );
-              })}
-            </g>
-
-            {/* O mostrador de minutos, no caminho A. */}
-            <g className="tj-dial">
-              <circle cx={DIAL.cx} cy={DIAL.cy} r={DIAL.r} fill="rgba(7,7,9,0.25)" stroke="#EEEBE0" strokeOpacity="0.35" />
-              {DIAL_TICKS.map((t) => (
-                <line
-                  key={t.k}
-                  x1={t.x1}
-                  y1={t.y1}
-                  x2={t.x2}
-                  y2={t.y2}
-                  stroke="#EEEBE0"
-                  strokeOpacity={t.major ? 0.9 : 0.45}
-                  strokeWidth={t.major ? 1.5 : 1}
+          {/* A passada e a bifurcação. No celular, a pílula e um fio curto
+              descendo até a pilha de cartões. */}
+          <div className="relative flex flex-col items-center lg:block lg:h-[76px]">
+            <p
+              className={`tj-pass ${microCaps} relative z-10 inline-flex items-center gap-2.5 rounded-full border border-cream/30 bg-night/60 px-4 py-2 text-[11px] text-cream backdrop-blur-md lg:absolute lg:top-0 lg:left-[41.6667%] lg:-translate-x-1/2`}
+            >
+              <span aria-hidden className="size-1.5 rounded-full bg-lime shadow-[0_0_10px_var(--color-lime)]" />
+              {scene.pass}
+            </p>
+            <span aria-hidden className="block h-6 w-px bg-cream/35 lg:hidden" />
+            <svg
+              viewBox={`0 0 ${FORK_W} ${FORK_H}`}
+              preserveAspectRatio="none"
+              className="absolute inset-0 h-full w-full overflow-visible max-lg:hidden"
+              aria-hidden
+            >
+              <defs>
+                <filter id="tj-fork-glow" x="-300%" y="-300%" width="700%" height="700%">
+                  <feGaussianBlur stdDeviation="3" result="blur" />
+                  <feMerge>
+                    <feMergeNode in="blur" />
+                    <feMergeNode in="SourceGraphic" />
+                  </feMerge>
+                </filter>
+              </defs>
+              <g fill="none" strokeWidth="1.5" strokeLinecap="round">
+                <path d={FORK_A} stroke="#EEEBE0" strokeOpacity="0.12" />
+                <path d={FORK_B} stroke="#EEEBE0" strokeOpacity="0.12" />
+                <path
+                  className="tj-fork"
+                  d={FORK_A}
+                  pathLength={1}
+                  strokeDasharray="1 1"
+                  stroke="#B7C73E"
                 />
-              ))}
-              <path
-                className="tj-arc"
-                d={`M${ARC_X0} ${ARC_Y0} A${DIAL.r} ${DIAL.r} 0 1 1 ${ARC_X1} ${ARC_Y1}`}
-                pathLength={1}
-                strokeDasharray="1 1"
-                fill="none"
-                stroke="#B7C73E"
-                strokeWidth="3"
-              />
-              <line
-                className="tj-needle"
-                x1={DIAL.cx}
-                y1={DIAL.cy}
-                x2={NEEDLE_X}
-                y2={NEEDLE_Y}
-                stroke="#B7C73E"
-                strokeWidth="2"
-                strokeLinecap="round"
-              />
-              <circle cx={DIAL.cx} cy={DIAL.cy} r="4" fill="#B7C73E" />
-              <g className="max-lg:hidden" fill="#EEEBE0" fillOpacity="0.7" fontSize="12" textAnchor="middle">
-                {DIAL_TICKS.filter((t) => t.major).map((t) => (
-                  <text key={t.k} x={t.lx} y={fix(t.ly + 4)} className="font-display">
-                    {t.k}
-                  </text>
-                ))}
+                <path
+                  className="tj-fork"
+                  d={FORK_B}
+                  pathLength={1}
+                  strokeDasharray="1 1"
+                  stroke="#EEEBE0"
+                  strokeOpacity="0.8"
+                />
               </g>
-            </g>
+              <g filter="url(#tj-fork-glow)">
+                <circle className="tj-spark tj-spark-a" r="4.5" fill="#B7C73E" />
+                <circle className="tj-spark tj-spark-b" r="4" fill="#EEEBE0" />
+              </g>
+            </svg>
+          </div>
 
-            {/* Rótulos dentro do desenho só no desktop; no celular eles
-                viram a legenda abaixo. */}
-            <g className="font-display max-lg:hidden" fill="#EEEBE0">
-              <text className="tj-label" x="20" y={SPLIT[1] - 22} fontSize="13" letterSpacing="2.4">
-                {scene.pass.toUpperCase()}
-              </text>
-              <g className="tj-label">
-                <text x="846" y="92" fontSize="13" letterSpacing="2.4" fill="#B7C73E">
-                  {scene.jobA.tag.toUpperCase()} · {scene.jobA.clock.toUpperCase()}
-                </text>
-                <text x="846" y="122" fontSize="28" letterSpacing="-0.6">
-                  {scene.jobA.title}
-                </text>
-                <text x="846" y="148" fontSize="14" fillOpacity="0.65">
-                  {scene.jobA.time}
-                </text>
-              </g>
-              <g className="tj-label">
-                <text x={B_FROM} y={B_Y - 52} fontSize="13" letterSpacing="2.4" fill="#B7C73E">
-                  {scene.jobB.tag.toUpperCase()}
-                </text>
-                <text x={B_FROM} y={B_Y - 24} fontSize="28" letterSpacing="-0.6">
-                  {scene.jobB.title}
-                </text>
-                <text x={B_TO} y={B_Y - 24} fontSize="14" fillOpacity="0.65" textAnchor="end">
-                  {scene.jobB.time}
-                </text>
-              </g>
-              <g className="tj-label" fontSize="12" letterSpacing="1.8" fillOpacity="0.8">
-                {scene.jobB.marks.map((mark, i) => (
-                  <text key={mark} x={B_MARKS[i]} y={B_Y + 34} textAnchor={i === B_MARKS.length - 1 ? "end" : "middle"}>
-                    {mark.toUpperCase()}
-                  </text>
-                ))}
-              </g>
-            </g>
-          </svg>
+          <div className="grid gap-4 lg:-mx-3 lg:grid-cols-[5fr_7fr] lg:gap-0">
+            {/* ---------------------------------------------- trabalho 1 */}
+            <div className="lg:px-3">
+              <article className="tj-card relative flex h-full flex-col rounded-[22px] border border-lime/25 bg-[radial-gradient(120%_80%_at_50%_0%,color-mix(in_srgb,var(--color-lime)_10%,transparent),transparent_70%)] p-5 sm:p-6 lg:p-7">
+                <span
+                  aria-hidden
+                  className="tj-node absolute -top-[5px] left-1/2 -ml-[5px] size-[10px] rounded-full bg-lime shadow-[0_0_12px_var(--color-lime)] max-lg:hidden"
+                />
+                <p className={`${eyebrow} text-lime`}>{scene.jobA.tag}</p>
 
-          {/* A legenda do celular: os dois trabalhos lado a lado. */}
-          <dl className="mt-6 grid grid-cols-2 gap-4 text-cream lg:hidden">
-            {[scene.jobA, scene.jobB].map((job, i) => (
-              <div key={job.tag} className="tj-label border-t border-cream/25 pt-3">
-                <dt className={`${microCaps} text-[10px] ${i === 0 ? "text-lime" : "text-cream/70"}`}>{job.tag}</dt>
-                <dd className="mt-1 font-display text-[19px] leading-[1.1] tracking-[-0.01em]">{job.title}</dd>
-                <dd className={`${microCaps} mt-2 text-[10px] text-cream/65`}>{job.time}</dd>
-              </div>
-            ))}
-          </dl>
+                <div className="my-5 flex flex-col items-center lg:my-4">
+                  <div className="relative w-[168px] lg:w-[min(176px,20svh)]">
+                    <svg viewBox="0 0 200 200" className="block w-full overflow-visible" aria-hidden>
+                      <defs>
+                        <filter id="tj-glow" x="-50%" y="-50%" width="200%" height="200%">
+                          <feGaussianBlur stdDeviation="3.5" result="blur" />
+                          <feMerge>
+                            <feMergeNode in="blur" />
+                            <feMergeNode in="SourceGraphic" />
+                          </feMerge>
+                        </filter>
+                      </defs>
+                      {GAUGE_TICKS.map((t) => (
+                        <line
+                          key={t.k}
+                          x1={t.x1}
+                          y1={t.y1}
+                          x2={t.x2}
+                          y2={t.y2}
+                          stroke="#EEEBE0"
+                          strokeOpacity={t.major ? 0.7 : 0.3}
+                          strokeWidth={t.major ? 1.5 : 1}
+                        />
+                      ))}
+                      <path d={GAUGE_ARC} fill="none" stroke="#EEEBE0" strokeOpacity="0.1" strokeWidth="10" strokeLinecap="round" />
+                      <path
+                        className="tj-arc"
+                        d={GAUGE_ARC}
+                        pathLength={1}
+                        strokeDasharray="1 1"
+                        fill="none"
+                        stroke="#B7C73E"
+                        strokeWidth="10"
+                        strokeLinecap="round"
+                        filter="url(#tj-glow)"
+                      />
+                    </svg>
+                    <p className="absolute inset-0 flex flex-col items-center justify-center pt-1">
+                      <span
+                        ref={count}
+                        className="font-display text-[64px] leading-none tracking-[-0.05em] tabular-nums text-cream"
+                      >
+                        {MINUTES}
+                      </span>
+                      <span className={`${microCaps} mt-1 text-lime`}>min</span>
+                    </p>
+                  </div>
+                  <p className={`tj-gauge-time ${microCaps} -mt-2 text-[10px] text-cream/70`}>{scene.jobA.time}</p>
+                </div>
+
+                <div className="mt-auto">
+                  <h3 className="font-display text-[clamp(24px,2vw,32px)] leading-[1.05] tracking-[-0.02em]">
+                    {scene.jobA.title}
+                  </h3>
+                  <p className="mt-2 text-[15px] leading-[1.5] text-cream/65">{scene.jobA.body}</p>
+                </div>
+              </article>
+            </div>
+
+            {/* ---------------------------------------------- trabalho 2 */}
+            <div className="lg:px-3">
+              <article className="tj-card relative flex h-full flex-col rounded-[22px] border border-cream/15 bg-[radial-gradient(120%_80%_at_50%_0%,color-mix(in_srgb,var(--color-cream)_6%,transparent),transparent_70%)] p-5 sm:p-6 lg:p-7">
+                <span
+                  aria-hidden
+                  className="tj-node absolute -top-[5px] left-1/2 -ml-[5px] size-[10px] rounded-full bg-cream shadow-[0_0_12px_var(--color-cream)] max-lg:hidden"
+                />
+                <p className={`${eyebrow} text-cream/80`}>{scene.jobB.tag}</p>
+
+                {/* A régua da safra. Tudo em HTML, posicionado em %: o texto
+                    fica nítido e a régua estica com o cartão. */}
+                <div className="relative my-6 flex flex-1 flex-col justify-center lg:my-4">
+                  <div className="flex items-end justify-between gap-3 whitespace-nowrap">
+                    <p className="leading-none">
+                      <span className="block font-display text-[22px] tracking-[-0.02em] text-lime">{scene.jobA.clock}</span>
+                      <span className={`${microCaps} mt-1.5 block text-[10px] text-cream/60`}>{scene.jobB.start}</span>
+                    </p>
+                    <p className={`tj-season ${microCaps} text-right text-[10px] text-cream`}>{scene.jobB.time} →</p>
+                  </div>
+
+                  <div className="relative mt-4 h-3">
+                    <div className="absolute inset-0 rounded-full bg-cream/10" />
+                    <div className="tj-fill absolute inset-0 rounded-full bg-[linear-gradient(90deg,var(--color-lime)_0%,var(--color-sage)_45%,var(--color-cream)_100%)] opacity-90" />
+                    {/* O dia da aplicação: o trabalho 1 inteiro cabe aqui. */}
+                    <div
+                      className="tj-sliver absolute inset-y-[-5px] left-0 origin-left rounded-full bg-lime shadow-[0_0_14px_var(--color-lime)]"
+                      style={{ width: `max(5px, ${SLIVER}%)` }}
+                    />
+                    <span
+                      aria-hidden
+                      className="tj-head absolute top-1/2 left-full size-4 -translate-x-1/2 -translate-y-1/2 rounded-full bg-cream shadow-[0_0_16px_4px_color-mix(in_srgb,var(--color-cream)_55%,transparent)]"
+                    />
+                    {STAGES.map((pct, i) => (
+                      <span
+                        key={pct}
+                        aria-hidden
+                        className={`tj-mark-${i} absolute top-full mt-1.5 h-2.5 w-px bg-cream/70`}
+                        style={{ left: pct === 100 ? "calc(100% - 1px)" : `${pct}%` }}
+                      />
+                    ))}
+                  </div>
+
+                  {/* No celular o marco do meio desce uma linha: em 360px
+                      "Filling" (e "Enchimento", em PT) encostaria em "Harvest". */}
+                  <ol className="relative mt-7 h-[34px] lg:h-4">
+                    {scene.jobB.marks.map((mark, i) => (
+                      <li
+                        key={mark}
+                        className={`tj-mark-${i} ${microCaps} absolute top-0 text-[10px] whitespace-nowrap text-cream/85 ${
+                          STAGES[i] === 100 ? "right-0" : "-translate-x-1/2"
+                        } ${i === 1 ? "max-lg:top-[18px]" : ""}`}
+                        style={STAGES[i] === 100 ? undefined : { left: `${STAGES[i]}%` }}
+                      >
+                        {mark}
+                      </li>
+                    ))}
+                  </ol>
+                </div>
+
+                <div className="mt-auto">
+                  <h3 className="font-display text-[clamp(24px,2vw,32px)] leading-[1.05] tracking-[-0.02em]">
+                    {scene.jobB.title}
+                  </h3>
+                  <p className="mt-2 text-[15px] leading-[1.5] text-cream/65">{scene.jobB.body}</p>
+                </div>
+              </article>
+            </div>
+          </div>
         </div>
 
-        <p className="tj-close wrap font-display text-[clamp(24px,2.7vw,48px)] leading-[1.08] tracking-[-0.025em] text-balance text-cream">
+        <p className="tj-close wrap font-display text-[clamp(22px,2.2vw,38px)] leading-[1.12] tracking-[-0.025em] text-balance text-cream">
           {twoJobs.close}
         </p>
       </div>
