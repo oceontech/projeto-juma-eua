@@ -9,6 +9,7 @@ Se houver divergência entre este arquivo, o protótipo `site/kmep-ultra.html` e
 | Folheto oficial americano `assets/kmep-ultra-folheto-us.pdf` | Como a Juma já comunica o produto nos EUA, impresso. Custo por acre |
 | Resposta oficial da Juma (commit `54891fd`, 01/09/2026) | A hierarquia das três entregas |
 | `site/kmep-ultra.html` | Copy validada da versão anterior, blocos de prova e FAQ |
+| Ficha técnica BR `assets/kmep-ultra-ficha-br.pdf` (arquivada em 24/09/2026) | Garantias, dose e estágio por cultura, embalagens. Cruzada com a página em [`07-CURADORIA-KMEP.md`](07-CURADORIA-KMEP.md) |
 
 ---
 
@@ -52,7 +53,7 @@ tocar no resto.** Ver P2 em `04-PENDENCIAS.md`.
 dólares o acre.
 
 **Promessa:** mesma passada, mesma dose, mais do produto chegando onde devia, e potássio na folha na
-janela em que a espiga está sendo formada. Ensaio em milho: 221,3 contra 212,3 bu/ac.
+janela em que a espiga está sendo formada. Ensaio em milho: 221,2 contra 212,3 bu/ac.
 
 **Nível de consciência do leitor:** 2 a 3. Ele sente a dor (reaplicação, resultado irregular no
 terço inferior, potássio no solo que não chega na hora) e não conhece a categoria. Por isso o arco é
@@ -68,7 +69,7 @@ PAS, e não oferta direta.
 |---|---|---|
 | 1 | "Isso é só um espalhante caro" | K6 (deposição com programa de pesquisa por trás) e K11 (a conta) |
 | 2 | "Qual a diferença de um 0-0-25 ou KTS?" | K16, resposta curta e sem rodeio |
-| 3 | "Seus ensaios são do Brasil" | K10: a testemunha brasileira bate com a média americana |
+| 3 | "Seus ensaios são do Brasil" | K16: a testemunha brasileira (212,3 bu/ac) está acima da média americana (≈186, USDA 2025), perto de Illinois |
 | 4 | "Tem coisa publicada ou só ensaio de fabricante?" | K10: o artigo revisado por pares, com a autoria declarada |
 | 5 | "Então posso baixar a dose do inseticida?" | K9 e K16: não, e está escrito |
 | 6 | "Mais um produto no tanque para dar problema" | K13: ordem de mistura e jar test |
@@ -142,7 +143,7 @@ Texto em inglês americano, pronto para o ar. Onde há duas versões, a primeira
 
 ### `K2` Faixa de prova
 
-> 221.3 bu/ac treated · 212.3 bu/ac untreated check · +8.9 bu/ac (+4.2%)
+> 221.2 bu/ac treated · 212.3 bu/ac untreated check · +8.9 bu/ac (+4.2%)
 > Corn · Rehagro trial · Brazil · [year P21]
 
 ### `K3` O problema
@@ -257,7 +258,7 @@ Quatro cards, na ordem em que o produtor pergunta:
 
 **Headline:** Nine bushels, same pass.
 
-Mantém o bloco da versão anterior: 221,3 contra 212,3 bu/ac, unidades originais (231,45 contra
+Mantém o bloco da versão anterior: 221,2 contra 212,3 bu/ac, unidades originais (231,45 contra
 222,12 sc/ha), tabela completa do ensaio, e o artigo revisado por pares em algodão (Revista Foco,
 v.16 n.2, 2023, DOI 10.54751/revistafoco.v16n2-129), com a declaração de autoria em aberto.
 
@@ -359,8 +360,14 @@ harvest.
 Mantidas as oito da versão anterior, com três ajustes:
 
 - **"Your trials are from Brazil. Why should that matter to me?"** Continua sendo a resposta mais
-  importante da página: a testemunha do ensaio brasileiro (212,3 bu/ac em milho) bate quase exato
-  com a média nacional americana, e o ensaio rodou em condição mais difícil, não mais fácil.
+  importante da página: a testemunha do ensaio brasileiro (212,3 bu/ac em milho) está **acima** da
+  média americana (cerca de 186 bu/ac em 2025, USDA NASS, Crop Production de 14/11/2025) e perto de
+  Illinois (217). A versão anterior dizia "bate quase exato com a média nacional", o que é falso e
+  cai na primeira conta de um agrônomo. O argumento honesto é outro e é melhor: a resposta veio em
+  cima de uma testemunha forte. Resposta publicada: *"Because the check was not a weak field. The
+  untreated corn in our trial ran 212.3 bu/ac, well above the 2025 U.S. average of about 186 bu/ac
+  and close to Illinois at 217. A response on top of a check that strong is harder to get, not
+  easier."*
 - **Pergunta nova, direto do folheto:** *"How much does it cost per acre?"* → Six dollars an acre
   per spray at label rate. The trial it sits next to returned 8.9 bu/ac, which is $38.27 at $4.30
   corn. We publish both numbers on the same screen.

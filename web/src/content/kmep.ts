@@ -54,7 +54,7 @@ export const hero = {
 export const proofBand = {
   label: "The trial, in one line",
   stats: [
-    { value: 221.3, decimals: 1, unit: "bu/ac", label: "Treated" },
+    { value: 221.2, decimals: 1, unit: "bu/ac", label: "Treated" },
     { value: 212.3, decimals: 1, unit: "bu/ac", label: "Untreated check" },
     { value: 8.9, decimals: 1, prefix: "+", unit: "bu/ac", label: "Difference", note: "+4.2%" },
   ] as Stat[],
@@ -226,7 +226,7 @@ export const operation = {
     title: "Six dollars an acre, against 8.9 bushels.",
     cost: { value: "$6", unit: "/acre", label: "Product cost, one spray" },
     gain: { value: "+8.9", unit: "bu/ac", label: "Trial response" },
-    witness: "221.3 vs 212.3 bu/ac untreated check · Rehagro trial, Brazil",
+    witness: "221.2 vs 212.3 bu/ac untreated check · Rehagro trial, Brazil",
     cta: { label: "Ask us for the full trial report", href: "#trial-form" },
   },
 };
@@ -239,7 +239,7 @@ export const proof = {
   body: "One trial, published whole, with the check strip beside it. Corn under leafhopper management, Rehagro, Brazil. The product went in with an insecticide application that was already on the schedule, so the nine bushels came out of a pass that was going to happen anyway.",
   pair: {
     check: { label: "Untreated check", value: 212.3 },
-    treated: { label: "Treated · KMEP Ultra®", value: 221.3 },
+    treated: { label: "Treated · KMEP Ultra®", value: 221.2 },
     diff: { label: "Difference", value: "+8.9", note: "+4.2%" },
     unit: "bu/ac",
   },
@@ -259,7 +259,7 @@ export const proof = {
     original: {
       label: "Original units",
       rows: [
-        { k: "Treated", us: "221.3 bu/ac", orig: "231.45 sc/ha" },
+        { k: "Treated", us: "221.2 bu/ac", orig: "231.45 sc/ha" },
         { k: "Untreated check", us: "212.3 bu/ac", orig: "222.12 sc/ha" },
         { k: "Difference", us: "+8.9 bu/ac", orig: "+9.33 sc/ha" },
       ],
@@ -306,7 +306,7 @@ export const proof = {
 export const economics = {
   heading: "What nine bushels is worth on your acres.",
   body: "At $4.30 corn, 8.9 bushels is $38.27 an acre. The product costs six dollars an acre at the label rate for one spray. We publish both numbers together, because the gap between them is the whole decision.",
-  witness: "+8.9 bu/ac: 221.3 treated vs 212.3 bu/ac untreated check",
+  witness: "+8.9 bu/ac: 221.2 treated vs 212.3 bu/ac untreated check",
   /* A calculadora. O ganho e o custo são os dois números com fonte (ensaio
      Rehagro e dose do rótulo); preço do milho e área são do leitor.
      TODO(P4): se a dose do rótulo americano mudar o custo, é aqui. */
@@ -467,7 +467,10 @@ export const questions = {
   items: [
     {
       q: "Your trials are from Brazil. Why should that matter to me?",
-      a: "Because the check plots line up with your benchmark. The untreated corn in our trial ran 212.3 bu/ac, close to the U.S. national average. The trial wasn't run in easier conditions than yours; it was run in harder ones.",
+      /* Fonte da média: USDA NASS, Crop Production, 14/11/2025 — EUA 186.0
+         bu/ac, Illinois 217. A versão anterior dizia "close to the U.S.
+         national average", o que não é verdade (212.3 está 14% acima). */
+      a: "Because the check was not a weak field. The untreated corn in our trial ran 212.3 bu/ac, well above the 2025 U.S. average of about 186 bu/ac and close to Illinois at 217. A response on top of a check that strong is harder to get, not easier.",
     },
     {
       q: "Is there anything published, or just your own trials?",
@@ -492,7 +495,7 @@ export const questions = {
     },
     {
       q: "How much does it cost per acre?",
-      a: "Six dollars an acre per spray at label rate. The trial it sits next to returned 8.9 bu/ac (221.3 vs 212.3 bu/ac untreated), which is $38.27 at $4.30 corn. We publish both numbers on the same screen.",
+      a: "Six dollars an acre per spray at label rate. The trial it sits next to returned 8.9 bu/ac (221.2 vs 212.3 bu/ac untreated), which is $38.27 at $4.30 corn. We publish both numbers on the same screen.",
     },
     /* Pendentes — fora da tela até a resposta chegar. Voltam descomentadas.
     {

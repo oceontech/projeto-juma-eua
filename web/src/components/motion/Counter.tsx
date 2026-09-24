@@ -18,7 +18,7 @@ type CounterProps = {
   replay?: boolean;
   /**
    * Casas decimais. Zero (o padrão) conta em inteiros; `1` serve aos
-   * resultados de ensaio (221.3 bu/ac), que perderiam o sentido arredondados.
+   * resultados de ensaio (221.2 bu/ac), que perderiam o sentido arredondados.
    */
   decimals?: number;
 };

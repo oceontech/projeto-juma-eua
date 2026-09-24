@@ -68,8 +68,11 @@ Vídeo institucional: `youtube.com/watch?v=xuDR_M6-0iI`
 | Categoria BR | Potencializador de inseticidas: ação desalojante + efeito nutricional de potássio |
 | Uso | Sempre em mistura com o defensivo, via pulverização |
 | Culturas BR | Soja, milho, café, feijão, algodão, citros, tomate |
-| Embalagens | 10L, 20L |
+| Embalagens | **5 L e 20 L** na ficha técnica BR (`assets/kmep-ultra-ficha-br.pdf`). Este documento dizia 10 L e 20 L: a Juma confirma qual vale. Embalagem americana segue em P1 |
+| Garantias (ficha BR) | N 1,2% (14,4 g/L) · P₂O₅ 1,0% (12,0 g/L) · K₂O 15,0% (180,0 g/L), todos solúveis em água. Densidade implícita 1,20 kg/L ≈ 10,0 lb/gal. Não é o Guaranteed Analysis americano (P3): falta o *derived from* |
+| Categoria na ficha BR | "Fertilizante foliar líquido à base de potássio, fósforo e nitrogênio", para "aumento de translocação de açúcares". **A ficha não menciona inseticida em nenhum ponto** |
 | Posicionamento típico | Milho entre V4 e V6 e nas aplicações dirigidas a cigarrinha |
+| Material técnico BR | [`assets/kmep-ultra-ficha-br.pdf`](assets/kmep-ultra-ficha-br.pdf): garantias, dose por cultura (14 culturas), embalagens. Leitura completa em [`07-CURADORIA-KMEP.md`](07-CURADORIA-KMEP.md) |
 | Custo nos EUA | **$6 por acre por aplicação**, na dose de rótulo (folheto americano) |
 | Material oficial nos EUA | [`assets/kmep-ultra-folheto-us.pdf`](assets/kmep-ultra-folheto-us.pdf) |
 
@@ -155,7 +158,7 @@ Soja: 1 sc/ha = 0,892 bu/ac · Milho: 1 sc/ha = 0,956 bu/ac · Cana: 1 t/ha = 0,
 |---|---|---|---|---|---|
 | Acorda Ultra | Soja | 64,7 vs 58,9 sc/ha | **57,7 vs 52,6 bu/ac** | +5,2 (+9,8%) | Field trial |
 | Acorda Ultra | Milho | 196,8 vs 183,4 sc/ha | **188,1 vs 175,3 bu/ac** | +12,8 (+7,3%) | Field trial |
-| KMEP Ultra | Milho | 231,45 vs 222,12 sc/ha | **221,3 vs 212,3 bu/ac** | +8,9 (+4,2%) | Rehagro |
+| KMEP Ultra | Milho | 231,45 vs 222,12 sc/ha | **221,2 vs 212,3 bu/ac** | +8,9 (+4,2%) | Rehagro |
 | FitoFert | Soja | 66,30 vs 61,70 sc/ha | **59,2 vs 55,0 bu/ac** | +4,1 (+7,5%) | JP Agrícola |
 | Aminosan | Soja | +11 e +14 sc/ha | +9,8 e +12,5 bu/ac | sem testemunha | DETEC |
 | Aminosan | Soja | +10 sc/ha | +8,9 bu/ac | sem testemunha | Terras Gerais |
@@ -163,6 +166,10 @@ Soja: 1 sc/ha = 0,892 bu/ac · Milho: 1 sc/ha = 0,956 bu/ac · Cana: 1 t/ha = 0,
 > **Ativo forte, e deve ser dito explicitamente na página:** as testemunhas dos ensaios brasileiros
 > (52,6 bu/ac soja · 175,3 bu/ac milho) batem quase exatamente na média nacional americana. Os
 > ensaios são diretamente comparáveis ao benchmark dos EUA.
+>
+> **Não vale para o KMEP.** A testemunha do KMEP (212,3 bu/ac) está 14% **acima** da média americana
+> (≈186 bu/ac em 2025, USDA NASS). A frase acima foi escrita para o ensaio do Acorda e migrou para a
+> LP do KMEP por engano; corrigida em 24/09/2026. Ver [`07-CURADORIA-KMEP.md`](07-CURADORIA-KMEP.md).
 
 **Disclaimer obrigatório em todo bloco de resultado:**
 *"Results from field trials conducted in Brazil. Field performance varies with climate, soil and management."*

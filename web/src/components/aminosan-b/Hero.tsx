@@ -159,7 +159,7 @@ export function Hero() {
         className="pointer-events-none absolute inset-0 z-[3] bg-[radial-gradient(ellipse_48%_42%_at_0%_100%,rgba(16,32,22,0.55),transparent_75%)]"
       />
 
-      <div data-hb-copy className="wrap relative z-[4] pt-[clamp(84px,12svh,124px)] text-center min-[861px]:max-[1599px]:pt-[clamp(100px,15svh,124px)]">
+      <div data-hb-copy className="wrap hero-band relative z-[4] text-center">
         <p
           data-hb="fade"
           className="font-display text-[clamp(11px,1.1vw,15px)] tracking-[0.38em] text-ink uppercase"

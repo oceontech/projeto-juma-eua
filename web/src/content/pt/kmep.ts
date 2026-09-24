@@ -22,7 +22,7 @@ export const hero: typeof en.hero = {
 export const proofBand: typeof en.proofBand = {
   label: "O ensaio, em uma linha",
   stats: [
-    { value: 221.3, decimals: 1, unit: "bu/ac", label: "Tratado" },
+    { value: 221.2, decimals: 1, unit: "bu/ac", label: "Tratado" },
     { value: 212.3, decimals: 1, unit: "bu/ac", label: "Testemunha" },
     { value: 8.9, decimals: 1, prefix: "+", unit: "bu/ac", label: "Diferença", note: "+4,2%" },
   ],
@@ -165,7 +165,7 @@ export const operation: typeof en.operation = {
     title: "Seis dólares por acre, contra 8,9 bushels.",
     cost: { value: "$6", unit: "/acre", label: "Custo do produto, uma aplicação" },
     gain: { value: "+8,9", unit: "bu/ac", label: "Resposta no ensaio" },
-    witness: "221,3 vs 212,3 bu/ac na testemunha · Ensaio Rehagro, Brasil",
+    witness: "221,2 vs 212,3 bu/ac na testemunha · Ensaio Rehagro, Brasil",
     cta: { label: "Peça o relatório completo do ensaio", href: "#trial-form" },
   },
 };
@@ -176,7 +176,7 @@ export const proof: typeof en.proof = {
   body: "Um ensaio, publicado inteiro, com a faixa testemunha ao lado. Milho em manejo de cigarrinha, Rehagro, Brasil. O produto entrou junto com uma aplicação de inseticida que já estava no calendário, então os nove bushels saíram de uma passada que ia acontecer de qualquer forma.",
   pair: {
     check: { label: "Testemunha", value: 212.3 },
-    treated: { label: "Tratado · KMEP Ultra®", value: 221.3 },
+    treated: { label: "Tratado · KMEP Ultra®", value: 221.2 },
     diff: { label: "Diferença", value: "+8,9", note: "+4,2%" },
     unit: "bu/ac",
   },
@@ -193,7 +193,7 @@ export const proof: typeof en.proof = {
     original: {
       label: "Unidades originais",
       rows: [
-        { k: "Tratado", us: "221,3 bu/ac", orig: "231,45 sc/ha" },
+        { k: "Tratado", us: "221,2 bu/ac", orig: "231,45 sc/ha" },
         { k: "Testemunha", us: "212,3 bu/ac", orig: "222,12 sc/ha" },
         { k: "Diferença", us: "+8,9 bu/ac", orig: "+9,33 sc/ha" },
       ],
@@ -231,7 +231,7 @@ export const proof: typeof en.proof = {
 export const economics: typeof en.economics = {
   heading: "Quanto valem nove bushels na sua área.",
   body: "Com o milho a $4,30, 8,9 bushels são $38,27 por acre. O produto custa seis dólares por acre na dose do rótulo, para uma aplicação. Publicamos os dois números juntos, porque a distância entre eles é a decisão inteira.",
-  witness: "+8,9 bu/ac: 221,3 tratado vs 212,3 bu/ac na testemunha",
+  witness: "+8,9 bu/ac: 221,2 tratado vs 212,3 bu/ac na testemunha",
   calc: {
     gain: 8.9,
     cost: 6,
@@ -368,7 +368,7 @@ export const questions: typeof en.questions = {
   items: [
     {
       q: "Seus ensaios são do Brasil. Por que isso deveria importar para mim?",
-      a: "Porque as parcelas testemunha batem com o seu benchmark. O milho não tratado do nosso ensaio deu 212,3 bu/ac, perto da média nacional americana. O ensaio não foi feito em condição mais fácil que a sua; foi feito em condição mais difícil.",
+      a: "Porque a testemunha não era uma lavoura fraca. O milho não tratado do nosso ensaio deu 212,3 bu/ac, bem acima da média americana de 2025, de cerca de 186 bu/ac, e perto de Illinois, com 217. Uma resposta em cima de uma testemunha tão forte é mais difícil de conseguir, não mais fácil.",
     },
     {
       q: "Existe algo publicado, ou só os ensaios de vocês?",
@@ -390,7 +390,7 @@ export const questions: typeof en.questions = {
     },
     {
       q: "Quanto custa por acre?",
-      a: "Seis dólares por acre por aplicação, na dose do rótulo. O ensaio ao lado dele deu 8,9 bu/ac (221,3 vs 212,3 bu/ac na testemunha), o que são $38,27 com o milho a $4,30. Publicamos os dois números na mesma tela.",
+      a: "Seis dólares por acre por aplicação, na dose do rótulo. O ensaio ao lado dele deu 8,9 bu/ac (221,2 vs 212,3 bu/ac na testemunha), o que são $38,27 com o milho a $4,30. Publicamos os dois números na mesma tela.",
     },
   ],
 };

@@ -3,7 +3,7 @@
 O que a Juma precisa responder, o que cada resposta destrava e o que o site faz enquanto ela não
 chega. **Nenhuma pendência justifica atrasar a entrega** — todas têm estado degradado definido.
 
-Os códigos `P1`–`P32` são os mesmos usados nas etiquetas do protótipo em `site/`. Não renumerar.
+Os códigos `P1`–`P35` são os mesmos usados nas etiquetas do protótipo em `site/`. Não renumerar.
 
 **Atenção:** os itens regulatórios precisam ser dirigidos a quem responde pelo **regulatório da LLC
 nos EUA**, não ao marketing.
@@ -64,6 +64,9 @@ projeto, porque muda o que as páginas podem afirmar.
 | **P30** | **Por que Lakeland?** Logística, citros ou parceiro comercial | Diretoria | A tese comercial inteira |
 | **P31** | Dado de deposição, cobertura, espectro de gotas ou tensão superficial do KMEP | Técnico / P&D | Dá número ao bloco `K6`. Deixou de bloquear o eixo da LP em 22/09/2026 |
 | **P32** | Incremento de produtividade exato do artigo da Revista Foco + autorização para citá-lo | Técnico / jurídico | O número está em figura, não em texto, no artigo publicado |
+| **P33** | **A que dose corresponde o "$6 por acre"?** A ficha BR dá faixa de dose (milho 1,0 a 2,0 L/ha), e o custo por acre dobra de uma ponta à outra | Comercial / técnico | A calculadora do `K11` e o card 4 do `K9`. Aberta em 24/09/2026 |
+| **P34** | O efeito de cobertura e deposição vale no volume de calda americano (10 a 20 gal/ac), e não só nos 400 L/ha (≈43 gal/ac) da ficha BR? | Técnico / P&D | A credibilidade do `K6` diante de quem opera pulverizador. Aberta em 24/09/2026 |
+| **P35** | Embalagens: a ficha BR diz 5 L e 20 L, o `01-PRODUTO.md` dizia 10 L e 20 L, e a LP mostra um galão de 2,5 gal | Comercial | O `alt` e a arte do galão no `K13`. Aberta em 24/09/2026 |
 
 **Sem número:** o **ano do ensaio Rehagro** não consta em nenhum documento auditado. Tabela de
 resultado sem ano levanta suspeita imediata em leitor técnico — cobrar junto de P21.
@@ -131,14 +134,14 @@ acompanha a colheita?
 
 | Campo | KMEP Ultra | Aminosan |
 |---|---|---|
-| Total Nitrogen (N) % | | |
-| Available Phosphate (P₂O₅) % | | |
-| Soluble Potash (K₂O) % | | |
+| Total Nitrogen (N) % | 1,2 *(ficha BR)* | |
+| Available Phosphate (P₂O₅) % | 1,0 *(ficha BR)* | |
+| Soluble Potash (K₂O) % | 15,0 *(ficha BR)* | |
 | Micronutrientes (%) | | |
 | **Free amino acids (%)** | | ← o número mais importante da tabela do Aminosan |
 | Organic carbon (%) | | |
 | Derived from | | |
-| Densidade (lb/gal) | | |
+| Densidade (lb/gal) | ≈10,0 *(calculada: 180 g/L de K₂O ÷ 15%)* | |
 | pH | | |
 
 ### P4 — Dose e posicionamento em unidades americanas
@@ -146,6 +149,12 @@ acompanha a colheita?
 Dose em `fl oz/acre` ou `gal/acre`, por cultura · estágio em terminologia americana (V3, V6, R1,
 R3…) · número de aplicações por ciclo · compatibilidade de mistura e ordem no tanque · restrições:
 intervalo pré-colheita, temperatura, incompatibilidades conhecidas.
+
+> **KMEP, 24/09/2026:** a ficha técnica BR (`assets/kmep-ultra-ficha-br.pdf`) dá dose, estágio e
+> número de aplicações para 14 culturas. A conversão para `fl oz/ac` está em
+> [`07-CURADORIA-KMEP.md`](07-CURADORIA-KMEP.md). **Não fecha P4:** é o rótulo brasileiro, a dose
+> vem em parte por concentração de calda (mL/100 L a 400 L/ha) e o volume de calda americano é
+> outro (P34).
 
 ### P9 — A testemunha dos ensaios de Aminosan
 

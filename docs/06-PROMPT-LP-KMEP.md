@@ -83,7 +83,7 @@ Estas valem mais que qualquer preferência visual. Uma página linda que quebra 
    `P2`. Ele precisa sair com **uma linha de import, uma linha de JSX e dois trechos marcados**
    (um pedaço do card 3 de `K9` e uma pergunta do FAQ). Marque os três pontos com o comentário
    `/* HOLD P2 — remover junto com Flush.tsx */`. Nada mais da página pode depender dele.
-4. **Nenhum número sem testemunha ao lado.** `221.3 vs 212.3 bu/ac`, nunca `+8.9` sozinho.
+4. **Nenhum número sem testemunha ao lado.** `221.2 vs 212.3 bu/ac`, nunca `+8.9` sozinho.
 5. **Toda fonte impressa embaixo**, em corpo miúdo, com local e ano. Dado brasileiro é identificado
    como brasileiro — esconder a origem destrói mais credibilidade do que a origem custa.
 6. **Unidades americanas:** `bu/ac`, `fl oz/acre`, `$/acre`, estágios `V4`/`V6`/`VT`/`R1`. Nunca
@@ -304,14 +304,14 @@ acre.") → dois CTAs: **Run a trial strip on your acres** (`#trial-form`, sóli
 **A faixa de prova (`K2`)** entra colada ao pé do hero — meia altura dentro do escuro, meia fora,
 ou como faixa `cream` imediatamente abaixo (escolha a segunda se a foto for escura demais). Três
 células separadas por fio de 1px:
-`221.3 bu/ac treated` · `212.3 bu/ac untreated check` · `+8.9 bu/ac (+4.2%)`, e embaixo, em corpo
+`221.2 bu/ac treated` · `212.3 bu/ac untreated check` · `+8.9 bu/ac (+4.2%)`, e embaixo, em corpo
 miúdo: `Corn · Rehagro trial · Brazil · [ano — TODO(P21)]`.
 
 **Movimento:** o padrão do `aminosan-b/Hero.tsx`. `gsap.set` dos estados iniciais, tudo esperando
 `booted.then(...)`; fundo `scale 1.18 → 1` em 2.6s (`power2.out`), camada da frente subindo
 `yPercent 38 → 0` em 2s, textos com `opacity`/`y` e `stagger: 0.1` a partir de 0.5s.
 
-**Atenção ao `<Counter>`:** ele arredonda para inteiro (`snap: { value: 1 }`). Para `221.3` você
+**Atenção ao `<Counter>`:** ele arredonda para inteiro (`snap: { value: 1 }`). Para `221.2` você
 precisa de `snap: { value: 0.1 }` e `toFixed(1)` — estenda o componente com uma prop `decimals` em
 vez de duplicá-lo.
 
@@ -489,10 +489,10 @@ aqui o leitor cético para de rolar e lê.
 
 1. Headline *"Nine bushels, same pass."* + a abertura reescrita de `K10`.
 2. **Os dois números lado a lado, com o mesmo peso tipográfico:** `212.3` (untreated check) e
-   `221.3` (treated), com `+8.9 (+4.2%)` entre eles. Nada de planta maior; se usar barras, a escala
+   `221.2` (treated), com `+8.9 (+4.2%)` entre eles. Nada de planta maior; se usar barras, a escala
    começa em zero e está rotulada.
 3. **A tabela do ensaio**, sete colunas: Crop · Location · Treated · Untreated check · Difference ·
-   Source · Year. Duas linhas: a americana (`221.3` / `212.3` / `+8.9 (+4.2%)` / Rehagro / ano
+   Source · Year. Duas linhas: a americana (`221.2` / `212.3` / `+8.9 (+4.2%)` / Rehagro / ano
    pendente) e a de unidades originais (`231.45` / `222.12` / `+9.33 sc/ha`). Está em
    `site/kmep-ultra.html`, por volta da linha 850.
 4. **O artigo revisado por pares**, em bloco separado por régua: algodão, blocos casualizados,

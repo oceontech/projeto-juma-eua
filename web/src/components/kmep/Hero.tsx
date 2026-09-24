@@ -167,7 +167,7 @@ export function Hero({ variant = "a" }: { variant?: "a" | "b" }) {
           className="pointer-events-none absolute inset-0 z-[3] bg-[linear-gradient(0deg,rgba(16,32,22,0.72)_0%,rgba(16,32,22,0.4)_20%,transparent_36%)] min-[861px]:bg-[radial-gradient(ellipse_54%_48%_at_0%_100%,rgba(16,32,22,0.6),transparent_75%)]"
         />
 
-        <div data-hb-copy className="wrap relative z-[4] pt-[clamp(84px,12svh,124px)] text-center">
+        <div data-hb-copy className="wrap hero-band relative z-[4] text-center">
           <p
             data-kh="fade"
             className="mx-auto max-w-[34ch] font-display text-[clamp(10px,1vw,14px)] tracking-[0.24em] text-ink uppercase min-[861px]:max-w-none min-[861px]:tracking-[0.32em]"

@@ -171,6 +171,70 @@
     margin-inline: auto;
   }
 
+  /* ---------------------------------------------- título do hero, centrado
+     Título e subtítulo dos heros do KMEP e do Aminosan ficam no centro
+     vertical do vão em branco entre a base da logo da barra e o topo da
+     bombona — em qualquer tela. As duas LPs usam as mesmas fotos, com a
+     bombona e a logo no mesmo lugar, então a conta é uma só.
+
+     Tudo em CSS, sem medir no navegador: a foto é `object-fit: cover`
+     ancorada no pé, e o quanto ela aparece decorre só da largura e da altura
+     da seção.
+
+       --hb-dh    altura com que a foto é desenhada: a maior entre "cobrir a
+                  largura" (largura × altura/largura da foto) e "cobrir a
+                  altura" (a da seção);
+       --hb-jug   onde fica o topo da bombona, como fração da altura da foto
+                  (0,408 na foto larga, 0,313 na de celular — medidas nos
+                  arquivos);
+       --hb-top   o topo da bombona em px, contado do topo da seção: a foto
+                  desce até o pé (`object-position: 50% 100%`), então
+                  H − dh × (1 − jug). Na faixa de notebook (861–1599px) o
+                  recorte é `50% 60%` e a conta vira 0,6H + dh × (jug − 0,6);
+       --hb-logo  onde a logo da barra termina, medido no navegador: 41px no
+                  estreito e, a partir do `nav` (1152px), a mesma conta do
+                  SiteHeader — centro da barra + 66% da altura do selo, que
+                  transborda por baixo da faixa.
+
+     A caixa vai do topo da seção até o topo da bombona, com o padding
+     reservando a logo; o miolo centra. `safe center`: se o texto não couber
+     no vão (tela muito baixa), ele começa logo abaixo da logo em vez de
+     subir por cima dela. O `height` ignora a fila do flex do hero, que é
+     coluna e não estica. Se a foto do hero mudar, refaça `--hb-jug` e as
+     proporções abaixo. */
+  .hero-band {
+    --hb-h: max(100svh, 600px);
+    --hb-dh: max(calc(100vw * 1536 / 2752), var(--hb-h));
+    --hb-jug: 0.408;
+    --hb-logo: 41px;
+    --hb-top: calc(var(--hb-h) - var(--hb-dh) * (1 - var(--hb-jug)));
+    box-sizing: border-box;
+    height: var(--hb-top);
+    padding-top: var(--hb-logo);
+    display: flex;
+    flex-direction: column;
+    justify-content: safe center;
+  }
+
+  @media (max-width: 860px) {
+    .hero-band {
+      --hb-dh: max(calc(100vw * 1672 / 941), var(--hb-h));
+      --hb-jug: 0.313;
+    }
+  }
+
+  @media (min-width: 861px) and (max-width: 1599px) {
+    .hero-band {
+      --hb-top: calc(0.6 * var(--hb-h) + var(--hb-dh) * (var(--hb-jug) - 0.6));
+    }
+  }
+
+  @media (min-width: 1152px) {
+    .hero-band {
+      --hb-logo: calc(clamp(24px, 1.95vw, 32px) + 0.66 * clamp(52px, 4.2vw, 66px));
+    }
+  }
+
   /* O quadro da molécula não segue a largura de texto do resto do site — é
      cena cheia, com o texto e a rota abertos até perto da borda da janela.
      O teto é mais estreito que os 1718px das faixas de benefícios de

@@ -164,7 +164,7 @@ CTA primário (faixa de teste) + secundário (`See the trial data`).
 **Sem vídeo em loop** — custa o LCP, que está nos critérios de aceite. Nada trava esta seção.
 
 **`S2` Barra de prova** — *fundo verde profundo, tipografia pura, sem ícone*
-Onde o cético decide se continua rolando. `221.3 vs 212.3 bu/ac` (milho, Rehagro) · `38 years` de
+Onde o cético decide se continua rolando. `221.2 vs 212.3 bu/ac` (milho, Rehagro) · `38 years` de
 ensaios com fonte nomeada · `In-house lab since 1988` · slot reservado para o ensaio de soja com
 Aminosan, liberado quando chegar a testemunha (**P9**).
 **Se travar:** publica com três números. Três sólidos valem mais que quatro com um frágil.

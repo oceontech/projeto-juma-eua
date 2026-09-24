@@ -103,7 +103,7 @@ essa estrutura sai e o conteúdo passa para arquivos TypeScript tipados.
 
 ## As três regras que não se negociam
 
-1. **Todo número anda com a testemunha ao lado.** `221.3 vs 212.3 bu/ac`, nunca `+8.9` sozinho.
+1. **Todo número anda com a testemunha ao lado.** `221.2 vs 212.3 bu/ac`, nunca `+8.9` sozinho.
 2. **Toda fonte é impressa embaixo**, em mono, com local e ano.
 3. **Dado brasileiro é identificado como brasileiro.** Esconder a origem destrói mais credibilidade
    do que a origem custa.
