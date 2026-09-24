@@ -47,6 +47,16 @@ tocar no resto.** Ver P2 em `04-PENDENCIAS.md`.
 
 ---
 
+### Revisão de 24/09/2026: dose do rótulo e ordem das culturas
+
+A dose publicada é a do rótulo americano, **16 fl oz/acre, igual para todas as culturas**. As doses
+por cultura da ficha BR não vão para o site. A régua do `K13` tem 12 culturas, nesta ordem: citros,
+frutíferas, hortaliças, tomate e pimentão, **ornamentais** (nova, com janela pela regra do rótulo: uma
+dose por aplicação), batata, cebola e alho, cenoura e beterraba, milho, soja, algodão e feijão. O card
+ao lado do galão diz *"16 fl oz per acre in every pass, the rate on the U.S. label. One 2.5 gal jug
+covers 20 acres."* O formulário segue a mesma prioridade: Citrus & fruit · Vegetables · Ornamentals ·
+Row crops · Other.
+
 ### Revisão de 24/09/2026: sem preço no site
 
 Decisão do cliente: **o site não publica valor.** Saíram o "$6 an acre" do hero (A e B), o card 4 do

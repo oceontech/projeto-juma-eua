@@ -17,7 +17,7 @@ import { Final } from "@/components/kmep/Final";
 export const metadata: Metadata = {
   title: "KMEP Ultra®",
   description:
-    "One pass, two jobs: better spray coverage and deposition, plus foliar potassium in the weeks that set the yield. For row crops, vegetables and orchards, in the spray pass you already run.",
+    "One pass, two jobs: better spray coverage and deposition, plus foliar potassium in the weeks that set the yield. For orchards, vegetables, ornamentals and row crops, in the spray pass you already run.",
   /* Versão B do teste A/B: a canônica é /kmep. */
   alternates: { canonical: "/kmep" },
 };
