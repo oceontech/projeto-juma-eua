@@ -108,9 +108,11 @@ export type Product = {
 export const products: Product[] = [
   {
     id: "kmep",
-    category: "Spray performance · Foliar potassium",
+    /* Nutrição primeiro (24/09/2026). Sem a ação desalojante: a Home publica
+       sem depender da P2. */
+    category: "Foliar potassium · Tank-mix partner",
     title: "KMEP Ultra®",
-    body: "It rides in the tank with your insecticide, improves how the spray covers and lands, and carries foliar potassium into grain fill.",
+    body: "A 1-1-15 liquid potassium that rides in the tank with your insecticide and puts potassium on the leaf in the weeks that set the yield.",
     href: "/kmep",
     image: { src: "/img/pack-kmep-us.webp", alt: "KMEP Ultra 2.5 gal jug with U.S. label" },
   },

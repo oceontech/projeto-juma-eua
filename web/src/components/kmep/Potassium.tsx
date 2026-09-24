@@ -58,8 +58,10 @@ const SOIL_STAGES = [
 const bubbleCount = (kind: RouteKind, stage: number) => kind === "soil" ? (SOIL_STAGES[stage]?.count ?? 2) : BUBBLES.length;
 
 /**
- * K7 — Trabalho 2. Depois do escuro, o claro: o potássio, com seção própria
- * e maior, como a hierarquia da Juma pede.
+ * K7 — Trabalho 1, o centro da página: o potássio, com seção própria e maior,
+ * como a hierarquia da Juma pede. Abre pelo porquê (o que o potássio faz na
+ * planta, e o 1-1-15 da bombona), desce para o solo (AN-01) e fecha nas duas
+ * rotas.
  *
  * A cena é AN-02, "duas rotas, dois relógios", presa num pin curto no
  * desktop: as duas rotas avançam em paralelo, etapa por etapa. A do solo tem
@@ -73,14 +75,23 @@ const bubbleCount = (kind: RouteKind, stage: number) => kind === "soil" ? (SOIL_
  */
 export function Potassium() {
   const { potassium, timing } = useContent().kmep;
-  const { routes } = potassium;
+  const { routes, roles } = potassium;
   const scope = useRef<HTMLElement>(null);
 
   useGSAP(
     () => {
       const mm = gsap.matchMedia();
 
-      const build = (tl: gsap.core.Timeline, axis: "scaleX" | "scaleY") => {
+      /* Os cartões do porquê: a mesma entrada dos cards da operação. */
+      mm.add("(prefers-reduced-motion: no-preference)", () => {
+        gsap.fromTo(
+          ".kp-role",
+          { y: 60, opacity: 0 },
+          { y: 0, opacity: 1, stagger: 0.1, duration: 1, ease: "expo.out", scrollTrigger: { trigger: ".kp-role", start: "top 88%", once: true } },
+        );
+      });
+
+      const build =(tl: gsap.core.Timeline, axis: "scaleX" | "scaleY") => {
         (["soil", "foliar"] as RouteKind[]).forEach((kind) => {
           const nodes = gsap.utils.toArray<HTMLElement>(`.kp-${kind} .kp-node`);
           const segs = gsap.utils.toArray<HTMLElement>(`.kp-${kind} .kp-seg`);
@@ -344,6 +355,43 @@ export function Potassium() {
           </SplitLines>
         </div>
         <p className={`${microCaps} text-[12px] text-forest/75`}>{potassium.body}</p>
+      </div>
+
+      {/* Por que o potássio importa (agronomia do nutriente, não efeito do
+          produto) e, no último cartão, o que vai na bombona. */}
+      <div className="wrap mt-[clamp(36px,5vw,72px)]">
+        <p className={`${eyebrow} text-moss`}>{roles.label}</p>
+        <ol className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4 xl:gap-4">
+          {roles.items.map((item, i) => (
+            <li
+              key={item.title}
+              className="kp-role flex flex-col rounded-[clamp(12px,1.05vw,20px)] border border-forest/12 bg-forest/[0.035] p-[clamp(18px,1.8vw,28px)]"
+            >
+              <p className={`${microCaps} text-[10px] text-moss`}>{String(i + 1).padStart(2, "0")}</p>
+              <h3 className="mt-3 text-[clamp(21px,1.6vw,27px)] leading-[1.1] tracking-[-0.02em] text-balance">{item.title}</h3>
+              <p className="mt-3 text-[15px] leading-[1.5] text-forest/75">{item.body}</p>
+            </li>
+          ))}
+          <li className="kp-role relative flex flex-col overflow-hidden rounded-[clamp(12px,1.05vw,20px)] bg-linear-[122.93deg,var(--color-night-warm)_2.4%,var(--color-night-deep)_60.23%] p-[clamp(18px,1.8vw,28px)] text-cream">
+            <span
+              aria-hidden
+              className="pointer-events-none absolute -right-[20%] -bottom-[30%] h-[80%] w-[80%] bg-[radial-gradient(closest-side,rgba(203,53,27,0.22),transparent)]"
+            />
+            <p className={`${microCaps} relative text-[10px] text-sage`}>{roles.analysis.label}</p>
+            <p className="relative mt-3 font-display text-[clamp(48px,4.4vw,72px)] leading-none tracking-[-0.05em]">
+              {roles.analysis.formula}
+            </p>
+            <dl className="relative mt-auto grid gap-2 pt-6">
+              {roles.analysis.rows.map((row) => (
+                <div key={row.k} className="flex items-baseline justify-between gap-4 border-t border-cream/15 pt-2">
+                  <dt className={`${microCaps} text-[10px] text-cream/70`}>{row.k}</dt>
+                  <dd className="font-display text-[18px] tabular-nums tracking-[-0.01em]">{row.v}</dd>
+                </div>
+              ))}
+            </dl>
+            <p className={`${microCaps} relative mt-4 text-[10px] text-cream/55`}>{roles.analysis.note}</p>
+          </li>
+        </ol>
       </div>
 
       <div className="mt-[clamp(16px,2vw,32px)]">

@@ -1,31 +1,41 @@
 /**
  * Os corpos das duas cenas de partículas do KMEP Ultra® — o mesmo mecanismo
- * da LP do Aminosan (`specimen.ts`), com a matéria do KMEP: barra, bico,
- * leque, dossel, a gota na cera da folha e a espiga.
+ * da LP do Aminosan (`specimen.ts`), com a matéria do KMEP: a espiga no
+ * enchimento, a raiz no solo, o potássio entrando pela folha e a barra.
  *
- * As cores têm o significado que `docs/06-PROMPT-LP-KMEP.md` dá ao acento da
- * página: **cobre** (tag 2) é a fração da aplicação que não trabalha; **lima**
- * (tag 1) é o que fica e trabalha. As duas nunca aparecem na mesma leitura.
+ * Desde 24/09/2026 as cenas contam a **nutrição**, não a tecnologia de
+ * aplicação (decisão do cliente: potássio primeiro, ação desalojante depois,
+ * e nada sobre cobertura ou deposição da calda). A ação desalojante não entra
+ * na cena: ela mora inteira no `Flush.tsx`, que é removível pela P2.
  *
- * Duas cenas, quatro leituras cada:
+ * As cores: **lima** (tag 1) é o potássio que chega e trabalha; **cobre**
+ * (tag 2) é o potássio que não chega à raiz a tempo. As duas nunca aparecem
+ * na mesma leitura.
  *
- *   A — a perda que não se vê (rota /kmep): a passada vista da cabine, o que
- *       parou no topo do dossel, o que quicou e secou, e a mesma folha com o
- *       KMEP no tanque;
- *   B — uma passada, dois trabalhos (rota /kmep-b): a passada, a gota que
- *       fica (trabalho 1), o potássio entrando pela folha (trabalho 2) e a
- *       espiga em enchimento.
+ * Duas cenas, quatro leituras cada, com os mesmos quatro desenhos:
  *
- * Nenhum desenho compara duas plantas nem mostra planta maior: o que a cena
- * descreve é o comportamento físico da gota, que é linguagem de adjuvante.
- * As âncoras das chamadas saem da mesma geometria que os pontos.
+ *   A — entra pela necessidade (rota /kmep): onde a demanda chega ao pico (a
+ *       espiga), onde o solo trava (a raiz), o potássio pela folha, e a
+ *       passada que o produtor já faz;
+ *   B — entra pelo produto (rota /kmep-b): a passada, o potássio pela folha,
+ *       por que a folha (a raiz), e a espiga no enchimento.
+ *
+ * Nenhum desenho compara duas plantas nem mostra planta maior. As âncoras das
+ * chamadas saem da mesma geometria que os pontos.
  */
 
 import { ball, render, tube, type Anchor, type Form, type Node, type Piece } from "./forms";
 
-/** 1 = lima (fica e trabalha); 2 = cobre (perdido). */
+/** 1 = lima (chega e trabalha); 2 = cobre (não chega a tempo). */
 const STAYS = 1;
 const LOST = 2;
+
+/** Pseudoaleatório com semente: a geometria da raiz precisa sair igual nas
+    duas chamadas (pontos e âncoras). */
+const rand = (k: number) => {
+  const x = Math.sin(k * 127.1 + 311.7) * 43758.5453;
+  return x - Math.floor(x);
+};
 
 const TAU = Math.PI * 2;
 
@@ -100,7 +110,7 @@ function corn(into: Piece[], base: Node, height: number, spin: number, scale = 1
   return { blades, top, stalk: [base, top] };
 }
 
-/* ------------------------------------------------- 01 · a passada (barra) */
+/* ------------------------------------------------------ a passada (barra) */
 
 const BOOM_Y = 0.3;
 const NOZZLES = 7;
@@ -152,42 +162,100 @@ export const pass: Form = {
   })(),
 };
 
-/* ---------------------------------------- 02 · o que parou no topo (A) */
+/* ----------------------------------- a raiz no solo: o potássio que não chega */
 
-/** Onde cada gota caiu, em (folha, t, s). As folhas de cima levam quase todas. */
-const TOP_DROPS: [number, number, number][] = [
-  [5, 0.3, 0.3], [5, 0.45, -0.4], [5, 0.6, 0.2], [5, 0.72, -0.2],
-  [4, 0.35, -0.3], [4, 0.5, 0.35], [4, 0.62, -0.1], [4, 0.78, 0.25],
-  [3, 0.4, 0.2], [3, 0.58, -0.35],
-];
+/* Um corte do solo com uma planta nova em cima. A linha da superfície, a
+   camada compactada mais abaixo (tracejada, como o freio do K7) e o sistema
+   radicular fasciculado, que se espalha e deita sobre a camada em vez de
+   atravessá-la. O potássio é a nuvem de grãos no perfil: o que está perto da
+   raiz fica em tinta; o que ficou abaixo da camada, fora do alcance, é cobre.
+   Nenhum número: é o mesmo desenho relativo do AN-01. */
+const SOIL_Y = 0.2;
+const LAYER_Y = -0.2;
 
-function canopyGeometry(into: Piece[]) {
-  const plant = corn(into, [0, -0.5, 0], 0.96, 0.35, 1.2);
-  const drops = TOP_DROPS.map(([b, t, s]) => {
-    const at = plant.blades[b].at(t, s, 0.02);
-    into.push({ ...ball(at, 0.02), tag: LOST });
-    return at;
-  });
-  /* E no cartucho, gotas presas no alto também. */
-  for (let k = 0; k < 4; k++) {
-    const at: Node = [Math.cos(k * 1.7) * 0.03, plant.top[1] - 0.04 - k * 0.03, Math.sin(k * 1.7) * 0.03];
-    into.push({ ...ball(at, 0.016), tag: LOST });
+function rootGeometry(into: Piece[]) {
+  /* A planta nova, acima da superfície. */
+  corn(into, [0, SOIL_Y, 0], 0.26, 0.5, 0.75);
+  /* A superfície do solo: uma linha levemente ondulada. */
+  for (let k = 0; k < 16; k++) {
+    const x0 = -0.5 + k / 16;
+    const x1 = -0.5 + (k + 1) / 16;
+    into.push(tube([x0, SOIL_Y + Math.sin(k * 1.7) * 0.004, 0], [x1, SOIL_Y + Math.sin((k + 1) * 1.7) * 0.004, 0], 0.004));
   }
-  return { plant, drops };
+  /* A camada compactada: tracejado em duas linhas. */
+  for (let k = 0; k < 14; k++) {
+    const x = -0.48 + k * 0.07;
+    into.push(tube([x, LAYER_Y, 0], [x + 0.042, LAYER_Y, 0], 0.005));
+    into.push(tube([x + 0.035, LAYER_Y - 0.022, 0], [x + 0.077, LAYER_Y - 0.022, 0], 0.005));
+  }
+
+  /* As raízes: cada uma desce em quatro trechos com um desvio sorteado e se
+     abre em duas ou três. Nenhuma passa da camada — ali ela deita. */
+  const tips: Node[] = [];
+  const nodes: Node[] = [];
+  let seed = 1;
+  const floor = LAYER_Y + 0.03;
+  const grow = (from: Node, theta: number, phi: number, len: number, r: number, depth: number) => {
+    let p = from;
+    let t = theta;
+    for (let s = 0; s < 4; s++) {
+      t += (rand(seed++) - 0.5) * 0.3;
+      const step = len / 4;
+      const q: Node = [
+        p[0] + Math.sin(t) * Math.cos(phi) * step,
+        Math.max(floor, p[1] - Math.cos(t) * step),
+        p[2] + Math.sin(t) * Math.sin(phi) * step * 0.6,
+      ];
+      into.push(tube(p, q, r * (1 - 0.18 * (s / 4))));
+      nodes.push(q);
+      p = q;
+    }
+    if (depth === 0) {
+      tips.push(p);
+      return;
+    }
+    const n = depth >= 2 ? 3 : 2;
+    for (let k = 0; k < n; k++) {
+      const spread = (k - (n - 1) / 2) * 0.75 + (rand(seed++) - 0.5) * 0.3;
+      grow(p, t + spread, phi + (rand(seed++) - 0.5) * 1.2, len * 0.62, r * 0.6, depth - 1);
+    }
+  };
+  for (let k = 0; k < 5; k++) grow([0, SOIL_Y, 0], -1.1 + k * 0.55, k * 1.3, 0.24, 0.011, 2);
+
+  /* O potássio no perfil, numa grade com folga sorteada. Abaixo da camada:
+     cobre, fora do alcance. Acima: tinta. */
+  const stranded: Node[] = [];
+  for (let i = 0; i < 12; i++) {
+    for (let j = 0; j < 8; j++) {
+      const k = i * 8 + j;
+      const x = -0.46 + i * 0.084 + (rand(900 + k) - 0.5) * 0.05;
+      const y = SOIL_Y - 0.06 - j * 0.085 + (rand(1900 + k) - 0.5) * 0.04;
+      if (y < -0.5 || Math.abs(y - LAYER_Y) < 0.035) continue;
+      const at: Node = [x, y, (rand(2900 + k) - 0.5) * 0.12];
+      const below = y < LAYER_Y;
+      into.push({ ...ball(at, 0.011), tag: below ? LOST : undefined });
+      if (below) stranded.push(at);
+    }
+  }
+  return { tips, nodes, stranded };
 }
 
-export const canopy: Form = {
+export const roots: Form = {
   points: (n) => {
     const pieces: Piece[] = [];
-    canopyGeometry(pieces);
+    rootGeometry(pieces);
     return render(pieces, n);
   },
   anchors: ((): Anchor[] => {
-    const { plant, drops } = canopyGeometry([]);
+    const { tips, stranded } = rootGeometry([]);
+    /* A ponta de raiz mais à esquerda, o grão preso mais à direita, e a
+       camada perto da ponta direita — a etiqueta sai já fora do tracejado. */
+    const tip = tips.reduce((a, b) => (b[0] < a[0] ? b : a), tips[0]);
+    const grain = stranded.reduce((a, b) => (b[0] > a[0] && b[0] < 0.4 ? b : a), stranded[0]);
     return [
-      { at: drops[1], side: 1 },
-      { at: plant.blades[0].at(0.55, 0), side: -1 },
-      { at: plant.top, side: 1 },
+      { at: tip, side: -1 },
+      { at: grain, side: 1 },
+      { at: [0.42, LAYER_Y, 0], side: 1 },
     ];
   })(),
 };
@@ -220,12 +288,6 @@ function leafSurface(into: Piece[]) {
   }
 }
 
-/** A normal da superfície, aproximada: o trecho é quase plano. */
-const NORMAL: Node = [0, 0, 1];
-
-/** Gota esférica, em contas sobre a cera. */
-const bead = (at: Node, r: number, tag: number): Piece => ({ ...ball(add(at, NORMAL, r), r), tag });
-
 /** Gota espalhada: um disco baixo colado à folha, a calota de uma lente. */
 function spread(at: Node, r: number, tag: number): Piece {
   const h = r * 0.2;
@@ -240,69 +302,6 @@ function spread(at: Node, r: number, tag: number): Piece {
   };
 }
 
-/** A mancha que a gota seca deixa: um anel fino na cera. */
-function ring(at: Node, r: number, tag: number): Piece {
-  return {
-    at: (u, v) => {
-      const a = u * TAU;
-      const d = r * (0.82 + 0.18 * v);
-      return [at[0] + Math.cos(a) * d, at[1] + Math.sin(a) * d, at[2] + 0.004];
-    },
-    area: TAU * r * r * 0.18 * 2.4,
-    tag,
-  };
-}
-
-/* ------------------------------------------ 03 · quicou e secou (A) */
-
-function lossGeometry(into: Piece[]) {
-  leafSurface(into);
-  /* Contas: redondas, mal encostam na cera. */
-  const beads: [number, number, number][] = [
-    [-0.6, 0.35, 0.05], [-0.25, -0.5, 0.042], [0.15, 0.4, 0.048], [0.55, -0.3, 0.04],
-  ];
-  const sat = beads.map(([a, b, r]) => {
-    into.push(bead(surface(a, b), r, LOST));
-    return add(surface(a, b), NORMAL, r);
-  });
-  /* O quique: uma gota que bateu e saiu, em arco para fora da folha,
-     encolhendo em cada quadro do rastro. */
-  const hit = surface(-0.05, 0.05);
-  const arc: Node[] = [];
-  for (let k = 1; k <= 5; k++) {
-    const at: Node = [hit[0] + k * 0.055, hit[1] + k * 0.035 - k * k * 0.012, hit[2] + k * 0.07];
-    into.push({ ...ball(at, 0.036 - k * 0.004), tag: LOST });
-    arc.push(at);
-  }
-  /* O que secou: o anel no lugar da gota e um resto miúdo no meio. */
-  const dried: [number, number][] = [[-0.45, -0.1], [0.35, 0.05], [0.72, 0.55]];
-  const spots = dried.map(([a, b]) => {
-    const at = surface(a, b);
-    into.push(ring(at, 0.04, LOST));
-    into.push({ ...ball(add(at, NORMAL, 0.008), 0.008), tag: LOST });
-    return at;
-  });
-  return { arc, spots, sat };
-}
-
-export const loss: Form = {
-  points: (n) => {
-    const pieces: Piece[] = [];
-    lossGeometry(pieces);
-    return render(pieces, n);
-  },
-  anchors: ((): Anchor[] => {
-    const { arc, spots } = lossGeometry([]);
-    return [
-      { at: arc[3], side: 1 },
-      { at: spots[0], side: -1 },
-      { at: surface(0.85, -0.6), side: 1 },
-    ];
-  })(),
-};
-
-/* ----------------------------------- 04 · a mesma folha, com o KMEP (A) */
-
 /** Onde as gotas assentaram, em (a, b, raio). Mais delas, e abertas. */
 const STAY_DROPS: [number, number, number][] = [
   [-0.78, 0.3, 0.06], [-0.55, -0.45, 0.07], [-0.3, 0.4, 0.065], [-0.08, -0.2, 0.075],
@@ -310,64 +309,7 @@ const STAY_DROPS: [number, number, number][] = [
   [-0.2, 0.05, 0.05], [0.05, 0.6, 0.05],
 ];
 
-function stayGeometry(into: Piece[], potassium: boolean) {
-  leafSurface(into);
-  const drops = STAY_DROPS.map(([a, b, r]) => {
-    const at = surface(a, b);
-    into.push(spread(at, r, STAYS));
-    return at;
-  });
-  /* O potássio na mesma gota: grãos em tinta dentro do disco lima. */
-  const salt: Node[] = [];
-  if (potassium) {
-    drops.forEach((at, i) => {
-      for (let k = 0; k < 3; k++) {
-        const a = i * 2.1 + k * 2.2;
-        const p: Node = [at[0] + Math.cos(a) * 0.026, at[1] + Math.sin(a) * 0.026, at[2] + 0.016];
-        into.push(ball(p, 0.0085));
-        salt.push(p);
-      }
-    });
-  }
-  return { drops, salt };
-}
-
-export const stays: Form = {
-  points: (n) => {
-    const pieces: Piece[] = [];
-    stayGeometry(pieces, true);
-    return render(pieces, n);
-  },
-  anchors: ((): Anchor[] => {
-    const { drops, salt } = stayGeometry([], true);
-    return [
-      { at: drops[6], side: 1 },
-      { at: surface(-0.6, -0.95), side: -1 },
-      { at: salt[5], side: 1 },
-    ];
-  })(),
-};
-
-/* ------------------------------------ B · 02 · trabalho 1: a gota que fica */
-
-export const deposit: Form = {
-  points: (n) => {
-    const pieces: Piece[] = [];
-    stayGeometry(pieces, false);
-    return render(pieces, n);
-  },
-  anchors: ((): Anchor[] => {
-    const { drops } = stayGeometry([], false);
-    /* Nenhuma chamada na gota da ponta direita: a etiqueta sairia da tela. */
-    return [
-      { at: drops[6], side: 1 },
-      { at: drops[1], side: -1 },
-      { at: drops[3], side: -1 },
-    ];
-  })(),
-};
-
-/* ----------------------- B · 03 · trabalho 2: o potássio entra pela folha */
+/* ----------------------------------------- o potássio entra pela folha */
 
 /* Da gota, o potássio desce para a nervura mais próxima e corre por ela em
    direção à base da folha. As gotas ficam em tinta; o que acende é o
@@ -420,7 +362,7 @@ export const uptake: Form = {
   })(),
 };
 
-/* ----------------------------------------- B · 04 · a espiga no enchimento */
+/* ------------------------------------------------ a espiga no enchimento */
 
 const EAR_LEN = 0.66;
 const EAR_TILT = 0.32;
@@ -505,6 +447,6 @@ export const ear: Form = {
 
 /** As quatro leituras de cada cena, na ordem em que o scroll as visita. */
 export const KMEP_SCENES: Record<"a" | "b", Form[]> = {
-  a: [pass, canopy, loss, stays],
-  b: [pass, deposit, uptake, ear],
+  a: [ear, roots, uptake, pass],
+  b: [pass, uptake, roots, ear],
 };

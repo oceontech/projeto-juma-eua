@@ -201,7 +201,11 @@ export function Hero({ variant = "a" }: { variant?: "a" | "b" }) {
                 </span>
               ))}
             </h2>
-            <p className="mt-3 text-[clamp(11.5px,1vw,15px)] leading-[1.3] text-pretty text-white/95">{hero.body}</p>
+            <p className="mt-3 text-[clamp(11.5px,1vw,15px)] leading-[1.3] text-pretty text-white/95">
+              {hero.body}
+              {/* HOLD P2 — a frase da ação desalojante, removível sozinha. */}
+              {hero.hold && <> {hero.hold}</>}
+            </p>
           </div>
 
           <FoliarBadge label={hero.badge} />

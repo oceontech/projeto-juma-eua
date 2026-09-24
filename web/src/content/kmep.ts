@@ -1,15 +1,21 @@
 /**
  * Copy da LP do KMEP Ultra® (/kmep), em inglês americano.
  *
- * **Canônico: `docs/05-COPY-KMEP-ULTRA.md`.** Os parágrafos daqui são
- * transcritos de lá; quando um bloco de copy virou duas peças de layout (um
- * título e um corpo, uma lista), o corte foi feito na frase, sem reescrever.
- * O plano de execução da página está em `docs/06-PROMPT-LP-KMEP.md`.
+ * **Canônico: `docs/05-COPY-KMEP-ULTRA.md`.** O plano de execução da página
+ * está em `docs/06-PROMPT-LP-KMEP.md`.
+ *
+ * **Revisão de 24/09/2026 — nutrição primeiro.** Decisão do cliente: o KMEP é
+ * antes de tudo potássio foliar; a ação desalojante vem depois, como o
+ * segundo trabalho da mesma passada; e a página não fala mais de tecnologia de
+ * aplicação (cobertura, deposição, a gota que fica na folha, túnel de vento).
+ * Saíram K3, K4, K6 e K12 e as leituras de gota da cena A.
  *
  * Regras que valem para cada linha deste arquivo:
- * - FIFRA: o produto entrega cobertura, deposição e potássio na folha. Nada
- *   aqui atribui controle de praga nem performance de defensivo, fora do
- *   bloco `flush` (K8), que está em HOLD pela P2 e sai inteiro.
+ * - FIFRA: o produto entrega potássio na folha. O que o potássio faz na
+ *   planta aparece como agronomia do nutriente, nunca como efeito do produto.
+ *   A ação desalojante é claim de pesticida enquanto a P2 não voltar: ela
+ *   mora no `flush` (K8), no segundo cartão do `twoJobs`, no card 3 da
+ *   `operation` e nos trechos `hold`, todos marcados com HOLD P2.
  * - Todo número anda com a testemunha ao lado e com a fonte embaixo.
  * - Pendência nunca aparece na tela: o marcador fica no comentário e o texto
  *   diz a frase honesta do que existe hoje.
@@ -35,17 +41,15 @@ export type Question = {
 /* ---------------------------------------------------------------- K1 + K2 */
 
 export const hero = {
-  eyebrow: ["Spray performance", "Foliar potassium"],
-  /* Encurtada em 24/09/2026. Ecoa as duas peças da Juma: "Potencialize sua
-     aplicação" (ficha BR) e "Optimize every application" (folheto US). A
-     anterior, "You won't see the loss until you harvest.", segue na cena. */
-  heading: "Make every pass count.",
-  /* O título curto do pé (K1, aside) é a headline da versão 2 do teste
-     A/B — que entra pelo produto —, partida na frase. Não é copy nova. */
+  /* "Tank-mix partner" e não "insecticide partner": o olho diz como o produto
+     entra, sem prometer nada sobre o defensivo. */
+  eyebrow: ["Foliar potassium", "Tank-mix partner"],
+  heading: "Potassium when the crop needs it most.",
+  /* O título curto do pé é a headline da versão B, partida na frase. */
   aside: { heading: ["One pass.", "Two jobs."] },
-  body: "KMEP Ultra® rides in the tank you already fill. More of the spray stays on the leaf, and potassium lands in the weeks that set the yield.",
-  /* Sub da versão 2, para o teste A/B — anotada, sem rota própria:
-     "KMEP Ultra® goes in with the insecticide you already chose. It improves coverage and deposition on the day you spray, and it puts potassium on the leaf for the window where demand peaks." */
+  body: "KMEP Ultra® is a 1-1-15 liquid potassium that rides in the spray you already run, and puts potassium on the leaf in the weeks that set yield and quality.",
+  /** HOLD P2 — sai sem tocar no resto do hero. */
+  hold: "In the same tank, it helps the insecticide reach the pests hiding from it." as string | undefined,
   /** O selo do canto: a folha com o texto em arco, como na LP B. */
   badge: "foliar potassium",
   cta: { label: "Run a trial strip on your acres", href: "#trial-form" },
@@ -65,114 +69,77 @@ export const proofBand = {
   source: "Corn · Rehagro trial · Brazil",
 };
 
-/* --------------------------------------------------------------------- K3 */
-
-export const problem = {
-  heading: "You made the pass right. Part of it still missed.",
-  body: [
-    "You ran the product you chose, at label rate, in a window that was actually good. The pass looked clean from the cab. What you cannot see from there is how much of that spray stopped on the top of the canopy, how much bounced, and how much dried before it reached the leaf surface that mattered.",
-    "Hidden losses in application performance cost yield, quality and profit without leaving a single visible sign in the field. By the time the monitor tells you, the pass is four months behind you and there is nothing left to fix.",
-  ],
-  /* A legenda que troca com o scrub. Legenda, não número: nenhum dado de
-     cobertura foi medido e publicado. */
-  captions: ["Top of the canopy", "The leaf that mattered"],
-  /* As três perdas do primeiro parágrafo, em linha própria. */
-  ledger: {
-    label: "What the cab doesn't show",
-    items: ["Stopped on the top of the canopy", "Bounced", "Dried before it reached the leaf"],
-  },
-  alt: "Close-up of a young corn whorl at first light, droplets beaded on the leaf surface",
-};
-
-/* --------------------------------------------------------------------- K4 */
-
-export const cost = {
-  heading: "Small losses you never see add up to a number you do.",
-  intro: "Two things happen when a pass underperforms.",
-  blocks: [
-    {
-      kicker: "The obvious one",
-      title: "The re-spray",
-      body: "Another trip, more diesel, another weather window you did not plan for.",
-    },
-    {
-      kicker: "The quieter one",
-      title: "The potassium the crop needed in the same stretch of the season",
-      body: "And did not get, because the demand peaked while the soil was dry and the root could not move it fast enough.",
-    },
-  ],
-  close: [
-    "Neither of those shows up as a symptom you can photograph.",
-    "Both show up in the yield monitor.",
-  ],
-};
-
 /* --------------------------------------------------------------------- K5 */
 
 export const twoJobs = {
   eyebrow: "Same tank · Same pass",
   heading: "One pass. Two jobs.",
-  lead: "KMEP Ultra® goes in the tank with the insecticide you already chose, on the pass you already scheduled. No separate trip across the field. From there it does two things: it changes how the spray behaves on the way to the leaf, and it delivers potassium the tissue can take up while it is there.",
-  close: "The first job happens in the twenty minutes the sprayer is in that field. The second one runs for the rest of the season.",
-  /* Rótulos da cena: o rastro que entra, e as duas pontas da bifurcação. */
+  lead: "KMEP Ultra® goes in the tank on a pass you already scheduled. No separate trip across the field. The first job, and the reason to buy it, is potassium the leaf can take up in the weeks the crop is filling. The second is an added advantage for the insecticide in the same tank.",
+  close: "The potassium works for the rest of the season. The second job is done in the twenty minutes the sprayer is in that field.",
+  /* Rótulos da cena: o rastro que entra, e as duas pontas da bifurcação. O
+     potássio é o cartão largo, à esquerda, com a régua da safra; a ação
+     desalojante é o cartão estreito, com o mostrador de minutos. */
   scene: {
     pass: "One pass",
-    /* `body` de cada trabalho é a frase do lead canônico que o descreve. */
-    jobA: {
+    potassium: {
       tag: "Job 1",
-      title: "Coverage and deposition",
-      body: "Changes how the spray behaves on the way to the leaf.",
-      clock: "20 min",
-      time: "Twenty minutes in that field",
-    },
-    jobB: {
-      tag: "Job 2",
       title: "Foliar potassium",
-      body: "Delivers potassium the tissue can take up while it is there.",
+      body: "Potassium the leaf can take up, in the weeks that set yield and quality.",
       time: "The rest of the season",
       start: "Spray day",
       marks: ["Flowering", "Filling", "Harvest"],
     },
+    /* HOLD P2 — se a P2 vier restritiva, este cartão sai e o K5 volta a ter
+       um trabalho só: trocar a headline por "Potassium, on a pass you already
+       run." e tirar a bifurcação. */
+    flush: {
+      tag: "Job 2 · Added advantage",
+      title: "Dislodging action",
+      body: "Draws pests out of shelter, into contact with the insecticide you already chose.",
+      clock: "20 min",
+      time: "Twenty minutes in that field",
+    },
   },
-};
-
-/* --------------------------------------------------------------------- K6 */
-
-export const deposition = {
-  label: "Job 1 · The day you spray",
-  heading: "What the droplet does before it dries.",
-  /* As três etapas da cena. O texto de cada uma é o parágrafo do canônico
-     cortado na frase: abertura, a hora do dia, o fecho. */
-  stages: [
-    {
-      n: "01",
-      kicker: "Leaves the nozzle",
-      body: "A spray droplet has a short career. It leaves the nozzle, travels through moving air, lands on a surface that may be waxy and vertical, and either stays there long enough to work or does not. KMEP Ultra® works on that stretch: it improves how the spray covers the leaf surface and how well it deposits, so more of what you bought reaches the target you aimed it at.",
-    },
-    {
-      n: "02",
-      kicker: "Travels through moving air",
-      title: "A pass at 7 a.m. and a pass at 2 p.m. are not the same pass.",
-      body: "It also holds that behavior steadier across the conditions a real day gives you, which is where applications usually separate from one another.",
-    },
-    {
-      n: "03",
-      kicker: "Lands on a waxy, vertical surface",
-      title: "Nothing changes about your nozzle or your rate.",
-      body: "What changes is how many of those droplets stay where you put them.",
-    },
-  ],
-  hours: ["7 a.m.", "2 p.m."],
-  scene: { air: "Moving air", surface: "Waxy leaf surface" },
-  alt: "Diagram of a spray droplet's path: out of the nozzle, across moving air, onto a waxy, steep leaf surface",
 };
 
 /* --------------------------------------------------------------------- K7 */
 
 export const potassium = {
-  label: "Job 2 · The rest of the season",
+  label: "Job 1 · The rest of the season",
   heading: "Yield is set on potassium the root may not deliver in time.",
   body: "Potassium demand peaks late, from flowering through the fill of the grain, the tuber or the fruit, which is exactly when a dry stretch, a compaction layer or a shallow root system limits how much the soil can actually move.",
+  /* O que o potássio faz na planta, como agronomia do nutriente — nunca como
+     efeito do KMEP (FIFRA). Vem da ficha BR ("aumento de translocação de
+     açúcares") e do folheto de morango ("Why potassium matters"). Pendente
+     de revisão do técnico da Juma (07-CURADORIA, 4.3). */
+  roles: {
+    label: "Why potassium matters",
+    items: [
+      {
+        title: "It moves sugar into the harvest.",
+        body: "Potassium is the nutrient the plant uses to load sugar and carry it into the grain, the tuber and the fruit. That is why the demand peaks when the crop fills.",
+      },
+      {
+        title: "It keeps the tissue firm.",
+        body: "It holds water in the cells and runs the opening and closing of the stomata, the plant's own control over water through a dry stretch.",
+      },
+      {
+        title: "It shows up in quality.",
+        body: "Fruit size, sugar content and shelf life are the classic marks of how much potassium the crop had while it filled.",
+      },
+    ],
+    /* A análise garantida do rótulo americano (visto em 24/09/2026). */
+    analysis: {
+      label: "What's in the jug",
+      formula: "1-1-15",
+      rows: [
+        { k: "Nitrogen (N)", v: "1.2%" },
+        { k: "Phosphate (P₂O₅)", v: "1.0%" },
+        { k: "Potash (K₂O)", v: "15.0%" },
+      ],
+      note: "All water-soluble. Guaranteed analysis from the U.S. label.",
+    },
+  },
   /* Entra sozinha, em máscara, depois que as duas rotas completam. */
   quote: "The potassium is in the ground. Your soil test says so. That is not the same as having it in the plant during the weeks that set the yield.",
   /* AN-01. Só subsolo: uma raiz, o potássio, a água e o gargalo. Sem número —
@@ -212,44 +179,55 @@ export const potassium = {
 
 /* HOLD P2 — remover junto com Flush.tsx.
    A ação desalojante é claim de eficácia sob a FIFRA enquanto a leitura
-   regulatória não voltar. Se a P2 vier restritiva, este export pode ficar
-   (nada o importa sem Flush.tsx) ou sair junto. */
+   regulatória não voltar. Desde 24/09/2026 ela é o segundo trabalho da
+   página, logo depois do potássio. Os pontos vêm do folheto de morango da
+   Juma ("dislodges and increases mite movement", "enhances insecticide
+   exposure"). Ficaram de fora, por serem claims mais fortes e sem fonte: a
+   desorientação do ácaro, o óleo essencial (não consta no "derived from" do
+   rótulo americano) e o "+20%" do morango, que não tem testemunha. */
 export const flush = {
-  label: "An added advantage",
+  label: "Job 2 · An added advantage",
   heading: "The one you didn't reach is the one that comes back.",
-  body: "The application was right. The product was right. Part of the population simply never met the spray, because it was in the whorl, under the leaf, in the sheath. KMEP Ultra® rides in the same droplet and moves the target out of that shelter, into contact with the insecticide you already paid for.",
+  body: "The application was right. The product was right. Part of the population simply never met the spray, because it was under the leaf, in the whorl, deep in the canopy. KMEP Ultra® rides in the same tank, draws those pests out of shelter and keeps them moving, so more of them come into contact with the insecticide you already paid for.",
   stages: [
-    { n: "01", title: "Sheltered", body: "Where the droplet was never going to reach." },
-    { n: "02", title: "Dislodged", body: "It comes out on its own." },
+    { n: "01", title: "Sheltered", body: "Where the spray was never going to reach." },
+    { n: "02", title: "Dislodged", body: "It comes out and keeps moving." },
     { n: "03", title: "Exposed", body: "In front of the product you already bought." },
   ],
   caveatLabel: "Same rate, same label",
-  caveat: "This is not a reason to cut your insecticide rate. Same rate, same label, same tank. What changes is how much of the population the insecticide actually reaches.",
-  alt: "Diagram of a corn whorl in three steps: the target sheltered inside, coming out, and exposed on the open leaf",
+  /* O "render mais" do cliente, dito do jeito certo: mais do inseticida que já
+     está no tanque, nunca menos inseticida. */
+  caveat: "More out of the insecticide, never less of it. Same rate, same label, same tank. What changes is how much of the population the insecticide actually reaches.",
+  alt: "Diagram of a corn whorl in three steps: the pest sheltered inside, coming out, and exposed on the open leaf",
 };
 
 /* --------------------------------------------------------------------- K9 */
 
 export const operation = {
   heading: "What it does for the operation.",
+  /* Na ordem da página: o potássio, o tanque, e a ação desalojante (o card
+     largo). */
   cards: [
+    {
+      title: "Potassium in a form the leaf takes up.",
+      body: "On the leaf in the window where demand actually peaks, instead of waiting on soil moisture.",
+      image: "/img/kmep/operation-potassium.webp",
+    },
     {
       title: "Goes in the tank you're already filling.",
       body: "Compatible in tank mix. No separate pass, no extra diesel, no new weather window to wait for.",
+      image: "/img/kmep/operation-tank.webp",
     },
+    /* HOLD P2 — o card inteiro. Sem ele, o card do tanque ocupa a linha de
+       baixo (ver Operation.tsx). */
     {
-      title: "More of the spray does its job.",
-      body: "Better coverage and deposition on the leaf surface you aimed at, at the same rate on the same label.",
+      title: "More of the population meets the insecticide.",
+      body: "The dislodging action brings pests out of shelter, at the rate already on the insecticide label.",
+      image: "/img/kmep/cigarrinha-do-milho-parada.webp",
     },
-    {
-      title: "Potassium in a form the leaf takes up.",
-      body: "Positioned for the window where demand actually peaks, instead of waiting on soil moisture.",
-      /* HOLD P2 — remover junto com Flush.tsx */
-      hold: "And the added flushing advantage brings more of the population into contact with the spray.",
-    },
-  ] as { title: string; body: string; hold?: string }[],
-  /* O card 4 tem tratamento próprio: custo e ganho em linhas separadas,
-     cada um na sua cor, com a testemunha embaixo. */
+  ] as { title: string; body: string; image: string }[],
+  /* O card 4 tem tratamento próprio: a testemunha e o ganho em linhas
+     separadas, cada um na sua cor. */
   offer: {
     title: "Nine more bushels, from a pass you were making anyway.",
     check: { value: "212.3", unit: "bu/ac", label: "Untreated check" },
@@ -354,22 +332,6 @@ export const economics = {
     scaleStep: 10,
   },
   footnote: "Yield response from the Rehagro trial in Brazil. Corn prices shown for reference. Your result will vary with climate, soil and management.",
-};
-
-/* -------------------------------------------------------------------- K12 */
-
-export const credential = {
-  heading: "Application technology is a research program here, not a tagline.",
-  /* O parágrafo é montado em três partes: before + institutions + after.
-     TODO(P19): nomear UENP e NITEC/UNESP depende de autorização. Se o
-     jurídico negar, a edição é uma só — trocar `institutions` por
-     "with two Brazilian university partners". */
-  before: "Since 2021, Juma Agro has run the DESATA project ",
-  institutions: "with UENP and with NITEC, the application technology and machinery lab at UNESP",
-  after: ": wind tunnel work on droplet spectrum, drift and deposition. That is the discipline behind this product, and it is why we can talk about what a droplet does before it dries instead of what we would like it to do.",
-  topics: ["Wind tunnel", "Droplet spectrum", "Drift", "Deposition"],
-  scene: { nozzle: "Nozzle", air: "Airflow", collectors: "Deposition collectors" },
-  sceneAlt: "Line drawing of a wind tunnel: a nozzle over a row of collectors, with airflow carrying the finest droplets downwind",
 };
 
 /* -------------------------------------------------------------------- K13 */
@@ -597,20 +559,23 @@ export const fit = {
     lead: "An operation that",
     items: [
       "Already has spray passes on the schedule, in orchards, vegetables, ornamentals or row crops",
+      "Wants potassium on the leaf in the weeks the crop is filling",
       "Runs its own check strips",
-      "Wants more out of a pass that is already budgeted",
     ],
   },
   notFit: {
     label: "It does not fit",
     lead: "A grower looking to",
     items: [
-      "Replace potash",
+      "Replace a soil potash program",
       "Cut an insecticide rate",
       "Buy a product that works without an application going out anyway",
     ],
   },
-  close: ["If all you need is potassium, buy potassium.", "KMEP Ultra® is bought for what the pass does, and the potassium rides along."],
+  /* A conta que o agrônomo faz (ver a pergunta "How much potassium is in one
+     pass?"): onças de K₂O por acre, não libras. A nutrição lidera a página, e
+     por isso a página diz primeiro o que ela não é. */
+  close: ["It is not a potash program, and it does not replace one.", "It is potassium on the leaf in the weeks that count, on a pass that was going out anyway."],
 };
 
 /* -------------------------------------------------------------------- K15 */
@@ -653,17 +618,24 @@ export const questions = {
       a: "There is one peer-reviewed paper. Cotton, 2021 season, randomized block design, run at an independent experimental station in Rio Verde, Goiás, and published in Revista Foco in 2023 (DOI 10.54751/revistafoco.v16n2-129). Three of its four authors are Juma-Agro agronomists and the fourth is a researcher at the Instituto Goiano de Agricultura. We put that in writing on this page rather than let you find it yourself. It is one paper, not a body of literature, and we would rather say that plainly.",
     },
     {
-      /* A resposta da versão anterior dizia que o produto "muda onde o alvo
-         está quando a calda chega" — é a ação desalojante. A base abaixo fala
-         só da aplicação; a frase da P2 vive em `hold`. */
+      /* A conta, pelo rótulo americano: 16 fl oz = 0,125 gal × 10 lb/gal
+         (25 lb em 2,5 gal) = 1,25 lb de produto × 15% de K₂O = 0,19 lb, cerca
+         de 3 oz de K₂O por acre. Com a nutrição na frente, é a primeira conta
+         do agrônomo, e a página responde antes que ele pergunte. */
+      q: "How much potassium is in one pass?",
+      a: "Ounces, not pounds. At the label rate of 16 fl oz per acre, one pass puts about 3 oz of K₂O on each acre, on the leaf, in the weeks it counts. Your soil program carries the season. This is the potassium that doesn't have to wait on the root.",
+    },
+    {
       q: "How is this different from a standard 0-0-25 or KTS?",
-      a: "A 0-0-25 is a potassium source and nothing else. This goes in the insecticide tank to change how the spray covers and lands, and it carries foliar potassium while it's there. If all you need is potassium, buy potassium.",
+      a: "A 0-0-25 is a potassium source and nothing else. KMEP Ultra® is a 1-1-15 built to go in the spray tank, so the potassium reaches the leaf on a pass you are already making.",
       /* HOLD P2 — remover junto com Flush.tsx */
-      hold: "It also moves the target out of shelter, into contact with the insecticide you already paid for.",
+      hold: "In the same tank, it also draws pests out of shelter, into contact with the insecticide you already paid for.",
     },
     {
       q: "Can I cut my insecticide rate if I use it?",
-      a: "No. It does not stretch the insecticide and it does not change the rate on that label. Run your normal rate.",
+      a: "No. It does not change the rate on that label, and it is not a reason to lower it. Run your normal rate.",
+      /* HOLD P2 — remover junto com Flush.tsx */
+      hold: "What it changes is how much of the population that rate reaches.",
     },
     {
       q: "Can I tank mix it with my insecticide or fungicide?",
@@ -711,15 +683,14 @@ export const final = {
    partículas, a nuvem passa por quatro leituras (desenhos em
    `lib/scan/kmep.ts`) e fecha num disco preto que abre a seção seguinte.
 
-   A (rota /kmep) entra pela dor — a perda que não se vê — e só na última
-   leitura mostra o produto. B (rota /kmep-b) entra pelo produto, com a
-   headline da versão 2 do teste A/B, e a perda vem depois, no preto.
+   Desde 24/09/2026 as duas cenas contam a nutrição. A (rota /kmep) entra
+   pela necessidade — onde a demanda de potássio chega ao pico, onde o solo
+   trava — e fecha no produto. B (rota /kmep-b) entra pelo produto, com a
+   headline da versão 2 do teste A/B, e a necessidade vem depois.
 
-   A copy é o canônico (docs/05-COPY-KMEP-ULTRA.md) cortado na frase. O que a
-   cena afirma é o comportamento físico da gota — linguagem de adjuvante,
-   impressa no folheto americano da Juma. Nenhuma leitura fala de inseto nem
-   de desempenho do inseticida. As cores da legenda são as do desenho: 1 lima
-   (fica e trabalha), 2 cobre (perdido). */
+   Nenhuma leitura fala de inseto nem de desempenho do inseticida: a ação
+   desalojante mora no K8, removível pela P2. As cores da legenda são as do
+   desenho: 1 lima (o potássio que chega), 2 cobre (o que não chega a tempo). */
 
 export type SceneStage = {
   kicker: string;
@@ -749,100 +720,106 @@ export type Blackout = {
   chapters: BlackoutChapter[];
 };
 
-/** Versão A — a perda que não se vê. */
-export const sceneA: Scene = {
-  steps: ["From the cab", "Stopped on top", "Bounced, dried", "With KMEP Ultra®"],
-  stages: [
-    {
-      kicker: "From the cab",
-      heading: "The pass looked clean from the cab.",
-      body: "You ran the product you chose, at label rate, in a window that was actually good. What you cannot see from there is where the spray actually ended up.",
-      legend: [],
-      callouts: [
-        { label: "Nozzle", note: "Label rate, as planned" },
-        { label: "Spray fan", note: "Leaves the nozzle looking even" },
-        { label: "Canopy", note: "Where the pass is aimed" },
-      ],
-      readout: [
-        { k: "Rate", v: "Label" },
-        { k: "Window", v: "Good" },
-        { k: "Visible loss", v: "None" },
-      ],
-    },
-    {
-      kicker: "Stopped on top",
-      heading: "Part of it stopped on the top of the canopy.",
-      body: "The upper leaves catch the spray first. The leaf surface that mattered sits below them, and from the cab it looks exactly the same.",
-      legend: [{ tone: 2, label: "Spray that didn't do the job" }],
-      callouts: [
-        { label: "Top leaves", note: "Where the spray stopped" },
-        { label: "Lower canopy", note: "The leaf surface that mattered" },
-        { label: "Whorl", note: "Tight, upright, hard to reach" },
-      ],
-      readout: [
-        { k: "Top of canopy", v: "Wet" },
-        { k: "Lower canopy", v: "Dry" },
-        { k: "Seen from the cab", v: "No" },
-      ],
-    },
-    {
-      kicker: "Bounced. Dried.",
-      heading: "Part of it bounced. Part of it dried.",
-      body: "A droplet lands on a surface that may be waxy and vertical, and either stays there long enough to work or does not. Hidden losses like these leave no visible sign in the field.",
-      legend: [{ tone: 2, label: "Lost from the leaf" }],
-      callouts: [
-        { label: "Bounced", note: "Hit the wax and left the leaf" },
-        { label: "Dried", note: "Gone before it could work" },
-        { label: "Waxy leaf", note: "Upright and water-repellent" },
-      ],
-      readout: [
-        { k: "Landed", v: "Yes" },
-        { k: "Stayed", v: "Not all" },
-        { k: "Visible sign", v: "None" },
-      ],
-    },
-    {
-      kicker: "With KMEP Ultra®",
-      heading: "Nothing changes about your nozzle or your rate.",
-      body: "What changes is how many of those droplets stay where you put them. KMEP Ultra® rides in the tank you are already filling, improves how the spray covers and lands, and carries foliar potassium in the same drop.",
-      legend: [{ tone: 1, label: "Spray that stays" }],
-      callouts: [
-        { label: "Spread droplet", note: "Covers and lands on the leaf" },
-        { label: "Leaf surface", note: "The target you aimed it at" },
-        { label: "Potassium", note: "Rides in the same drop" },
-      ],
-      readout: [
-        { k: "Rate", v: "Same" },
-        { k: "Pass", v: "Same" },
-        { k: "Carries", v: "Potassium" },
-      ],
-    },
+/* As quatro leituras, uma por desenho. Cada cena usa as quatro, em ordem
+   diferente; o texto de cada uma muda com o lugar que ela ocupa. */
+
+const readEar: SceneStage = {
+  kicker: "Where demand peaks",
+  heading: "Yield is set in the last weeks of the season.",
+  body: "Potassium demand peaks late, from flowering through the fill of the grain, the tuber or the fruit. That is when the crop moves the most sugar, and potassium is what carries it.",
+  legend: [{ tone: 1, label: "Filling" }],
+  callouts: [
+    { label: "Kernels", note: "Where the demand peaks" },
+    { label: "Husk", note: "The fill: grain, tuber or fruit" },
+    { label: "Silks", note: "Flowering" },
+  ],
+  readout: [
+    { k: "Demand", v: "Peaks late" },
+    { k: "Window", v: "Flowering to fill" },
+    { k: "Visible sign", v: "None yet" },
   ],
 };
 
-/** Versão A — o preto: o que a perda custa (K4), e onde ela aparece. */
+const readRoots: SceneStage = {
+  kicker: "Where the soil stalls",
+  heading: "In the ground is not in the plant.",
+  body: "The potassium is in the ground. Your soil test says so. But it moves with water, and a dry stretch or a compacted layer slows it down right when the crop asks for the most.",
+  legend: [{ tone: 2, label: "Potassium that doesn't reach the root in time" }],
+  callouts: [
+    { label: "Root", note: "Takes up only what reaches it" },
+    { label: "Potassium", note: "Stuck in a drying profile" },
+    { label: "Compacted layer", note: "Slows the water down" },
+  ],
+  readout: [
+    { k: "Soil test", v: "Adequate" },
+    { k: "Profile", v: "Drying" },
+    { k: "Reaching the root", v: "Behind" },
+  ],
+};
+
+const readLeaf: SceneStage = {
+  kicker: "Through the leaf",
+  heading: "Foliar potassium starts at the leaf.",
+  body: "It doesn't wait on soil moisture or the root. KMEP Ultra® puts potassium on the leaf, and it moves into the tissue from where it lands, in the weeks the crop is filling.",
+  legend: [{ tone: 1, label: "Potassium" }],
+  callouts: [
+    { label: "Droplet", note: "Where the potassium lands" },
+    { label: "Into the tissue", note: "Moves in from the leaf" },
+    { label: "Vein", note: "The route through the leaf" },
+  ],
+  readout: [
+    { k: "Starts at", v: "The leaf" },
+    { k: "Waits on soil", v: "No" },
+    { k: "Analysis", v: "1-1-15" },
+  ],
+};
+
+const readPass: SceneStage = {
+  kicker: "In your pass",
+  heading: "In the spray pass you already run.",
+  body: "KMEP Ultra® rides in the tank you are already filling, at 16 fl oz per acre. No extra trip, no new weather window. The potassium goes out with the insecticide you already chose.",
+  legend: [],
+  callouts: [
+    { label: "Nozzle", note: "Same nozzle, same schedule" },
+    { label: "Spray", note: "Potassium in the same tank" },
+    { label: "Canopy", note: "Where it lands" },
+  ],
+  readout: [
+    { k: "Rate", v: "16 fl oz/ac" },
+    { k: "Extra trips", v: "0" },
+    { k: "Tank", v: "Same" },
+  ],
+};
+
+/** Versão A — entra pela necessidade: a espiga, a raiz, a folha, a passada. */
+export const sceneA: Scene = {
+  steps: ["Demand peaks", "Soil stalls", "Through the leaf", "In your pass"],
+  stages: [readEar, readRoots, readLeaf, readPass],
+};
+
+/** Versão A — o preto: o que a falta de potássio custa, e onde aparece. */
 export const blackoutA: Blackout = {
-  headline: ["Small losses you never see", "add up to a number you do."],
-  body: "Two things happen when a pass underperforms.",
+  headline: ["Small shortfalls you never see", "add up to a number you do."],
+  body: "Potassium that arrives late leaves no symptom you can photograph. It shows up in three places.",
   chapters: [
     {
-      kicker: "The obvious one",
-      heading: "The re-spray.",
-      body: "Another trip, more diesel, another weather window you did not plan for.",
-      image: "/img/kmep/blackout/respray.webp",
-      alt: "A sprayer boom passing over young corn at first light, mist hanging over the rows",
-    },
-    {
-      kicker: "The quieter one",
-      heading: "The potassium the crop needed in the same stretch.",
-      body: "And did not get, because the demand peaked while the soil was dry and the root could not move it fast enough.",
+      kicker: "In the soil",
+      heading: "The soil test said it was there.",
+      body: "It was. It just couldn't reach the root fast enough while the demand peaked and the profile dried.",
       image: "/img/kmep/blackout/dryroots.webp",
       alt: "Brace roots of a corn plant gripping dry, cracked soil in late summer",
     },
     {
+      kicker: "In the fill",
+      heading: "It shows up in size, quality and shelf life.",
+      body: "Potassium is what carries sugar into the grain, the tuber and the fruit. When it runs short in the fill, the harvest carries the difference.",
+      image: "/img/kmep/potassium-pods.webp",
+      alt: "Soybean pods filling on the plant in late summer",
+    },
+    {
       kicker: "At harvest",
-      heading: "Both show up in the yield monitor.",
-      body: "Neither shows up as a symptom you can photograph. A trial strip with its untreated check makes the result measurable.",
+      heading: "Nine bushels, same pass.",
+      body: "One trial, published whole, with the check strip beside it: 221.2 against 212.3 bu/ac in corn. The product went in with a spray that was already on the schedule.",
       image: "/img/kmep/blackout/monitor.webp",
       alt: "A yield map glowing on the in-cab monitor of a combine at dusk during corn harvest",
       proof: true,
@@ -853,75 +830,40 @@ export const blackoutA: Blackout = {
 /** Versão B — a headline da versão 2 do teste A/B no hero (K1). */
 export const heroB = {
   heading: "One pass. Two jobs.",
-  /* O título curto do pé é a headline da versão 1, que aqui desce para lá. */
-  aside: { heading: ["You won't see the loss", "until you harvest."] },
-  body: "KMEP Ultra® goes in with the insecticide you already chose. It improves coverage and deposition on the day you spray, and it puts potassium on the leaf for the window where demand peaks.",
+  /* O título curto do pé é a headline da versão A, que aqui desce para lá. */
+  aside: { heading: ["Potassium when", "the crop needs it most."] },
+  body: "KMEP Ultra® goes in the tank you already fill. It puts potassium on the leaf for the weeks that set yield and quality.",
+  /** HOLD P2 — sai sem tocar no resto do hero. */
+  hold: "And in the same tank, it helps the insecticide reach the pests hiding from it." as string | undefined,
 };
 
-/** Versão B — uma passada, dois trabalhos. */
+/** Versão B — entra pelo produto: a passada, a folha, a raiz, a espiga. */
 export const sceneB: Scene = {
-  steps: ["One pass", "Job 1", "Job 2", "Filling"],
+  steps: ["One pass", "Job 1", "Why the leaf", "Filling"],
   stages: [
     {
+      ...readPass,
       kicker: "One pass",
       heading: "One pass. Two jobs.",
       body: "KMEP Ultra® goes in the tank with the insecticide you already chose, on the pass you already scheduled. No separate trip across the field.",
-      legend: [],
-      callouts: [
-        { label: "Nozzle", note: "Same nozzle, same rate" },
-        { label: "Spray fan", note: "Rides with the insecticide you chose" },
-        { label: "Canopy", note: "The pass you already scheduled" },
-      ],
-      readout: [
-        { k: "Extra trips", v: "0" },
-        { k: "Tank", v: "Same" },
-        { k: "Rate", v: "Same" },
-      ],
     },
     {
-      kicker: "Job 1 · The day you spray",
-      heading: "What the droplet does before it dries.",
-      body: "KMEP Ultra® improves how the spray covers the leaf surface and how well it deposits, so more of what you bought reaches the target you aimed it at.",
-      legend: [{ tone: 1, label: "Spray that stays" }],
-      callouts: [
-        { label: "Coverage", note: "Spread across the leaf surface" },
-        { label: "Deposition", note: "Stays where it lands" },
-        { label: "Same rate", note: "Nothing changes on the label" },
-      ],
-      readout: [
-        { k: "Happens in", v: "20 minutes" },
-        { k: "Rate", v: "Same" },
-        { k: "Nozzle", v: "Same" },
-      ],
+      ...readLeaf,
+      kicker: "Job 1 · Foliar potassium",
+      heading: "Potassium, in through the leaf.",
+      body: "KMEP Ultra® is a 1-1-15 liquid potassium. It lands on the leaf and moves into the tissue from there, without waiting on soil moisture or the root.",
     },
     {
-      kicker: "Job 2 · The rest of the season",
-      heading: "Foliar potassium starts at the leaf.",
-      body: "Soil potassium has to dissolve, travel to the root and ride up to the leaf, and every step slows down when the profile dries. Foliar potassium moves into the tissue from where it lands.",
-      legend: [{ tone: 1, label: "Potassium" }],
-      callouts: [
-        { label: "Droplet", note: "Where the potassium lands" },
-        { label: "Into the tissue", note: "Moves in from the leaf" },
-        { label: "Vein", note: "The route through the leaf" },
-      ],
-      readout: [
-        { k: "Starts at", v: "The leaf" },
-        { k: "Waits on soil", v: "No" },
-        { k: "Runs for", v: "The season" },
-      ],
+      ...readRoots,
+      kicker: "Why the leaf",
     },
     {
+      ...readEar,
       kicker: "Filling",
       heading: "Potassium in the weeks that set the yield.",
-      body: "Potassium demand peaks late, while the grain, the tuber or the fruit is filling, exactly when a dry stretch limits what the soil can move. The late pass on the label puts it on the leaf in that window.",
-      legend: [{ tone: 1, label: "Filling" }],
-      callouts: [
-        { label: "Kernels", note: "Where the demand peaks" },
-        { label: "Husk", note: "Ear formation: the last pass" },
-        { label: "Silks", note: "Pollination" },
-      ],
+      body: "Potassium demand peaks late, while the grain, the tuber or the fruit is filling. The late passes on the label put it on the leaf in that window.",
       readout: [
-        { k: "Passes", v: "By crop label" },
+        { k: "Passes", v: "By crop" },
         { k: "Demand", v: "Peaks late" },
         { k: "Extra trips", v: "0" },
       ],
@@ -929,18 +871,11 @@ export const sceneB: Scene = {
   ],
 };
 
-/** Versão B — o preto: a perda, que aqui vem depois do produto. */
+/** Versão B — o preto: a falta, que aqui vem depois do produto. */
 export const blackoutB: Blackout = {
-  headline: ["You won't see the loss", "until you harvest."],
-  body: "Part of every application never does the work you paid for.",
+  headline: ["You won't see the shortfall", "until you harvest."],
+  body: "Part of the potassium the crop needs never arrives in time.",
   chapters: [
-    {
-      kicker: "On the leaf",
-      heading: "Part of every pass misses.",
-      body: "Some of the spray stops on the top of the canopy, some bounces, and some dries before it reaches the leaf surface that mattered. None of it shows from the cab.",
-      image: "/img/kmep/blackout/canopy.webp",
-      alt: "Spray droplets beaded on the top leaf of a corn plant at dawn, the leaves below in shadow",
-    },
     {
       kicker: "In the soil",
       heading: "In the ground is not in the plant.",
@@ -949,9 +884,16 @@ export const blackoutB: Blackout = {
       alt: "Brace roots of a corn plant gripping dry, cracked soil in late summer",
     },
     {
+      kicker: "In the fill",
+      heading: "It shows up in size, quality and shelf life.",
+      body: "Potassium is what carries sugar into the grain, the tuber and the fruit. When it runs short in the fill, the harvest carries the difference.",
+      image: "/img/kmep/potassium-pods.webp",
+      alt: "Soybean pods filling on the plant in late summer",
+    },
+    {
       kicker: "At harvest",
       heading: "Nine bushels, same pass.",
-      body: "One trial, published whole, with the check strip beside it. The product went in with an insecticide application that was already on the schedule.",
+      body: "One trial, published whole, with the check strip beside it. The product went in with a spray that was already on the schedule.",
       image: "/img/kmep/blackout/monitor.webp",
       alt: "A yield map glowing on the in-cab monitor of a combine at dusk during corn harvest",
       proof: true,

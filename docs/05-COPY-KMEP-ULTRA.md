@@ -13,6 +13,50 @@ Se houver divergência entre este arquivo, o protótipo `site/kmep-ultra.html` e
 
 ---
 
+## 0. Revisão de 24/09/2026: nutrição primeiro. **Esta seção vale sobre todo o resto do documento**
+
+Decisão do cliente: o KMEP Ultra® é **antes de tudo nutrição** (potássio foliar). A ação desalojante
+vem **em segundo lugar**, como o benefício que ajuda o inseticida a render mais. A parte de
+**tecnologia de aplicação** do folheto americano (a calda que gruda na folha, espalha mais,
+cobertura, deposição) **não é o posicionamento** e saiu da página. As seções 1 e 2 abaixo, que
+abriam pela perda na aplicação, ficam como histórico.
+
+**Nova hierarquia:** 1. potássio foliar 1-1-15 nas semanas que definem produtividade e qualidade;
+2. ação desalojante (HOLD P2), como segundo trabalho da mesma passada; 3. vai na passada que o
+produtor já faz (conveniência operacional, não tecnologia de aplicação).
+
+**"Render mais", dito do jeito certo:** mais do inseticida que já está no tanque alcançando a
+população, **nunca** menos inseticida. A ressalva do K8 virou *"More out of the insecticide, never
+less of it. Same rate, same label, same tank."*
+
+**Nova ordem da página** (`/kmep` e `/kmep-b`, copy em `web/src/content/kmep.ts`):
+
+| # | Seção | O que mudou |
+|---|---|---|
+| `K1` | Hero | *"Potassium when the crop needs it most."* Olho: Foliar potassium · Tank-mix partner. Sub fala do 1-1-15; a frase da ação desalojante é um `hold` removível |
+| Cena | Partículas | A: espiga (onde a demanda chega ao pico) → raiz no solo (desenho novo: potássio preso abaixo da camada compactada) → potássio pela folha → a passada. B: a mesma, começando pela passada. Saíram as leituras de gota (topo do dossel, quicou, secou, gota espalhada) |
+| Preto | Blackout | O que a falta de potássio custa: no solo, no enchimento (tamanho, qualidade, vida de prateleira), na colheita (o ensaio) |
+| `K5` | Uma passada, dois trabalhos | Trabalho 1 = potássio (cartão largo, régua da safra); trabalho 2 = ação desalojante (cartão estreito, 20 min, HOLD P2) |
+| `K7` | Potássio | Seção central. Ganhou *"Why potassium matters"* (açúcar para a colheita, tecido firme, qualidade — como agronomia do nutriente, nunca efeito do produto) e o cartão da análise garantida 1-1-15 |
+| `K8` | Ação desalojante | Logo depois do potássio, como *Job 2 · An added advantage*. Genérica para várias culturas |
+| `K9` | Operação | Cards: potássio, tanque, ação desalojante (card inteiro em HOLD P2), ensaio |
+| `K14` | Para quem é | Saiu *"If all you need is potassium, buy potassium"*, que contradiz a nutrição na frente. Entrou *"It is not a potash program, and it does not replace one."* |
+| `K16` | Perguntas | Nova: *"How much potassium is in one pass?"* → cerca de 3 oz de K₂O por acre (16 fl oz × 10 lb/gal × 15%). KTS e dose do inseticida reescritas |
+| — | **Saíram** | `K3` (problema na aplicação), `K4` (custo da perda na aplicação), `K6` (deposição), `K12` (credencial de tecnologia de aplicação, túnel de vento/DESATA). Componentes e imagens apagados |
+
+**O que ficou de fora do folheto de morango, de propósito:** a desorientação do ácaro, o óleo
+essencial (não consta no *derived from* do rótulo americano) e o *"+20%"*, que não tem testemunha
+nem fonte.
+
+**Pendente de revisão do técnico da Juma:** as três funções do potássio em `K7` e a conta de
+3 oz de K₂O por acre.
+
+**Removível pela P2:** `Flush.tsx` (K8), o cartão `flush` do `twoJobs`, o card 3 da `operation`, os
+`hold` de `hero`, `heroB` e `questions`. A Home não depende da P2: o card do KMEP diz só potássio e
+tanque.
+
+---
+
 ## 1. Posicionamento
 
 O folheto americano e a resposta da Juma não dizem a mesma coisa, e essa divergência já custou uma

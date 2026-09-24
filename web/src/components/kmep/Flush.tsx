@@ -1,11 +1,14 @@
 "use client";
 
 /**
- * K8 — Vantagem adicional: a ação desalojante. HOLD P2.
- * Se a validação regulatória vier restritiva, apague este arquivo, a linha de
- * import e a de JSX em app/kmep/page.tsx, o trecho marcado do card 3 em
- * Operation.tsx e a pergunta correspondente em Questions.tsx. Nada mais na
- * página depende daqui.
+ * K8 — Trabalho 2, a vantagem adicional: a ação desalojante. HOLD P2.
+ * Desde 24/09/2026 vem logo depois do potássio (K7), como o segundo trabalho
+ * da mesma passada.
+ * Se a validação regulatória vier restritiva, apague este arquivo e a linha
+ * de import e a de JSX em app/kmep/page.tsx e app/kmep-b/page.tsx; tire o
+ * card 3 de `operation`, os `hold` de `hero`, `heroB` e `questions`, e o
+ * cartão `flush` do `twoJobs` (em content/kmep.ts e no espelho pt/), e o
+ * cartão do trabalho 2 em TwoJobs.tsx.
  */
 
 import { useRef } from "react";

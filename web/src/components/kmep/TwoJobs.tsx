@@ -8,8 +8,9 @@ import { eyebrow, fix, microCaps } from "./ui";
 
 /* ------------------------------------------------------------ geometria */
 /* Uma passada que se bifurca em dois cartões. A largura de cada cartão já é
-   a escala de tempo: o do minuto é estreito (5/12), o da safra é largo
-   (7/12). A bifurcação sai da pílula "One pass", que fica sobre a emenda dos
+   a escala de tempo: o da safra (trabalho 1, o potássio) é largo e vem
+   primeiro (7/12); o do minuto (trabalho 2, a ação desalojante) é estreito
+   (5/12). A bifurcação sai da pílula "One pass", que fica sobre a emenda dos
    dois cartões, e desce até o centro de cada um. */
 
 /* O quadro da bifurcação: a largura é esticada até a da grade
@@ -18,7 +19,7 @@ import { eyebrow, fix, microCaps } from "./ui";
    dois lados, para o centro do cartão cair exatamente no centro da coluna. */
 const FORK_W = 1200;
 const FORK_H = 76;
-const SEAM = (FORK_W * 5) / 12;
+const SEAM = (FORK_W * 7) / 12;
 const A_X = SEAM / 2;
 const B_X = SEAM + (FORK_W - SEAM) / 2;
 /* Sai do pé da pílula, abre na horizontal a meia altura e desce reto até o
@@ -34,7 +35,7 @@ const elbow = (x: number) => {
 const FORK_A = elbow(A_X);
 const FORK_B = elbow(B_X);
 
-/* O mostrador do trabalho 1: 20 minutos num curso de 270°, abrindo embaixo. */
+/* O mostrador do trabalho 2: 20 minutos num curso de 270°, abrindo embaixo. */
 const GAUGE = { c: 100, r: 78 };
 const MINUTES = 20;
 const angle = (k: number) => 135 + (270 * k) / MINUTES;
@@ -52,8 +53,8 @@ const GAUGE_TICKS = Array.from({ length: MINUTES + 1 }, (_, k) => {
   return { k, major, x1, y1, x2, y2 };
 });
 
-/* A régua da safra do trabalho 2, em % da largura. O primeiro trecho, em
-   lima, é o dia da aplicação — o trabalho 1 inteiro cabe nele. */
+/* A régua da safra do trabalho 1, em % da largura. O primeiro trecho, em
+   lima, é o dia da aplicação — o trabalho 2 inteiro cabe nele. */
 const SLIVER = 1.6;
 const STAGES = [40, 70, 100];
 /* A linha do tempo da cena: onde a régua começa a correr e quanto dura. */
@@ -62,9 +63,9 @@ const BAR_LEN = 0.42;
 
 /**
  * K5 — a Big Idea. Uma passada que se abre em dois cartões, e cada cartão
- * mostra a sua escala de tempo: o mostrador de minutos do trabalho 1 dá a
- * volta depressa; a régua da safra do trabalho 2 corre devagar, da
- * aplicação até a colheita. No desktop a cena fica presa (o padrão do
+ * mostra a sua escala de tempo: a régua da safra do trabalho 1 (o potássio)
+ * corre devagar, da aplicação até a colheita; o mostrador de minutos do
+ * trabalho 2 (a ação desalojante, HOLD P2) dá a volta depressa. No desktop a cena fica presa (o padrão do
  * Converge da LP B) enquanto a bifurcação desce, os cartões sobem e os dois
  * relógios andam, cada um no seu compasso.
  *
@@ -224,7 +225,7 @@ export function TwoJobs() {
               descendo até a pilha de cartões. */}
           <div className="relative flex flex-col items-center lg:block lg:h-[76px]">
             <p
-              className={`tj-pass ${microCaps} relative z-10 inline-flex items-center gap-2.5 rounded-full border border-cream/30 bg-night/60 px-4 py-2 text-[11px] text-cream backdrop-blur-md lg:absolute lg:top-0 lg:left-[41.6667%] lg:-translate-x-1/2`}
+              className={`tj-pass ${microCaps} relative z-10 inline-flex items-center gap-2.5 rounded-full border border-cream/30 bg-night/60 px-4 py-2 text-[11px] text-cream backdrop-blur-md lg:absolute lg:top-0 lg:left-[58.3333%] lg:-translate-x-1/2`}
             >
               <span aria-hidden className="size-1.5 rounded-full bg-lime shadow-[0_0_10px_var(--color-lime)]" />
               {scene.pass}
@@ -271,15 +272,82 @@ export function TwoJobs() {
             </svg>
           </div>
 
-          <div className="grid gap-4 lg:-mx-3 lg:grid-cols-[5fr_7fr] lg:gap-0">
-            {/* ---------------------------------------------- trabalho 1 */}
+          <div className="grid gap-4 lg:-mx-3 lg:grid-cols-[7fr_5fr] lg:gap-0">
+            {/* ------------------------------ trabalho 1: o potássio (a safra) */}
             <div className="lg:px-3">
               <article className="tj-card relative flex h-full flex-col rounded-[22px] border border-lime/25 bg-[radial-gradient(120%_80%_at_50%_0%,color-mix(in_srgb,var(--color-lime)_10%,transparent),transparent_70%)] p-5 sm:p-6 lg:p-7">
                 <span
                   aria-hidden
                   className="tj-node absolute -top-[5px] left-1/2 -ml-[5px] size-[10px] rounded-full bg-lime shadow-[0_0_12px_var(--color-lime)] max-lg:hidden"
                 />
-                <p className={`${eyebrow} text-lime`}>{scene.jobA.tag}</p>
+                <p className={`${eyebrow} text-lime`}>{scene.potassium.tag}</p>
+
+                {/* A régua da safra. Tudo em HTML, posicionado em %: o texto
+                    fica nítido e a régua estica com o cartão. */}
+                <div className="relative my-6 flex flex-1 flex-col justify-center lg:my-4">
+                  <div className="flex items-end justify-between gap-3 whitespace-nowrap">
+                    <p className="leading-none">
+                      <span className="block font-display text-[22px] tracking-[-0.02em] text-lime">{scene.potassium.start}</span>
+                    </p>
+                    <p className={`tj-season ${microCaps} text-right text-[10px] text-cream`}>{scene.potassium.time} →</p>
+                  </div>
+
+                  <div className="relative mt-4 h-3">
+                    <div className="absolute inset-0 rounded-full bg-cream/10" />
+                    <div className="tj-fill absolute inset-0 rounded-full bg-[linear-gradient(90deg,var(--color-lime)_0%,var(--color-sage)_45%,var(--color-cream)_100%)] opacity-90" />
+                    {/* O dia da aplicação: o trabalho 2 inteiro cabe aqui. */}
+                    <div
+                      className="tj-sliver absolute inset-y-[-5px] left-0 origin-left rounded-full bg-lime shadow-[0_0_14px_var(--color-lime)]"
+                      style={{ width: `max(5px, ${SLIVER}%)` }}
+                    />
+                    <span
+                      aria-hidden
+                      className="tj-head absolute top-1/2 left-full size-4 -translate-x-1/2 -translate-y-1/2 rounded-full bg-cream shadow-[0_0_16px_4px_color-mix(in_srgb,var(--color-cream)_55%,transparent)]"
+                    />
+                    {STAGES.map((pct, i) => (
+                      <span
+                        key={pct}
+                        aria-hidden
+                        className={`tj-mark-${i} absolute top-full mt-1.5 h-2.5 w-px bg-cream/70`}
+                        style={{ left: pct === 100 ? "calc(100% - 1px)" : `${pct}%` }}
+                      />
+                    ))}
+                  </div>
+
+                  {/* No celular o marco do meio desce uma linha: em 360px
+                      "Filling" (e "Enchimento", em PT) encostaria em "Harvest". */}
+                  <ol className="relative mt-7 h-[34px] lg:h-4">
+                    {scene.potassium.marks.map((mark, i) => (
+                      <li
+                        key={mark}
+                        className={`tj-mark-${i} ${microCaps} absolute top-0 text-[10px] whitespace-nowrap text-cream/85 ${
+                          STAGES[i] === 100 ? "right-0" : "-translate-x-1/2"
+                        } ${i === 1 ? "max-lg:top-[18px]" : ""}`}
+                        style={STAGES[i] === 100 ? undefined : { left: `${STAGES[i]}%` }}
+                      >
+                        {mark}
+                      </li>
+                    ))}
+                  </ol>
+                </div>
+
+                <div className="mt-auto">
+                  <h3 className="font-display text-[clamp(24px,2vw,32px)] leading-[1.05] tracking-[-0.02em]">
+                    {scene.potassium.title}
+                  </h3>
+                  <p className="mt-2 text-[15px] leading-[1.5] text-cream/65">{scene.potassium.body}</p>
+                </div>
+              </article>
+            </div>
+
+            {/* ------- trabalho 2: a ação desalojante (o minuto) — HOLD P2 */}
+            <div className="lg:px-3">
+              <article className="tj-card relative flex h-full flex-col rounded-[22px] border border-cream/15 bg-[radial-gradient(120%_80%_at_50%_0%,color-mix(in_srgb,var(--color-cream)_6%,transparent),transparent_70%)] p-5 sm:p-6 lg:p-7">
+                <span
+                  aria-hidden
+                  className="tj-node absolute -top-[5px] left-1/2 -ml-[5px] size-[10px] rounded-full bg-cream shadow-[0_0_12px_var(--color-cream)] max-lg:hidden"
+                />
+                <p className={`${eyebrow} text-cream/80`}>{scene.flush.tag}</p>
 
                 <div className="my-5 flex flex-col items-center lg:my-4">
                   <div className="relative w-[168px] lg:w-[min(176px,20svh)]">
@@ -312,7 +380,7 @@ export function TwoJobs() {
                         pathLength={1}
                         strokeDasharray="1 1"
                         fill="none"
-                        stroke="#B7C73E"
+                        stroke="#EEEBE0"
                         strokeWidth="10"
                         strokeLinecap="round"
                         filter="url(#tj-glow)"
@@ -325,92 +393,24 @@ export function TwoJobs() {
                       >
                         {MINUTES}
                       </span>
-                      <span className={`${microCaps} mt-1 text-lime`}>min</span>
+                      <span className={`${microCaps} mt-1 text-cream/70`}>min</span>
                     </p>
                   </div>
-                  <p className={`tj-gauge-time ${microCaps} -mt-2 text-[10px] text-cream/70`}>{scene.jobA.time}</p>
+                  <p className={`tj-gauge-time ${microCaps} -mt-2 text-[10px] text-cream/70`}>{scene.flush.time}</p>
                 </div>
 
                 <div className="mt-auto">
                   <h3 className="font-display text-[clamp(24px,2vw,32px)] leading-[1.05] tracking-[-0.02em]">
-                    {scene.jobA.title}
+                    {scene.flush.title}
                   </h3>
-                  <p className="mt-2 text-[15px] leading-[1.5] text-cream/65">{scene.jobA.body}</p>
-                </div>
-              </article>
-            </div>
-
-            {/* ---------------------------------------------- trabalho 2 */}
-            <div className="lg:px-3">
-              <article className="tj-card relative flex h-full flex-col rounded-[22px] border border-cream/15 bg-[radial-gradient(120%_80%_at_50%_0%,color-mix(in_srgb,var(--color-cream)_6%,transparent),transparent_70%)] p-5 sm:p-6 lg:p-7">
-                <span
-                  aria-hidden
-                  className="tj-node absolute -top-[5px] left-1/2 -ml-[5px] size-[10px] rounded-full bg-cream shadow-[0_0_12px_var(--color-cream)] max-lg:hidden"
-                />
-                <p className={`${eyebrow} text-cream/80`}>{scene.jobB.tag}</p>
-
-                {/* A régua da safra. Tudo em HTML, posicionado em %: o texto
-                    fica nítido e a régua estica com o cartão. */}
-                <div className="relative my-6 flex flex-1 flex-col justify-center lg:my-4">
-                  <div className="flex items-end justify-between gap-3 whitespace-nowrap">
-                    <p className="leading-none">
-                      <span className="block font-display text-[22px] tracking-[-0.02em] text-lime">{scene.jobA.clock}</span>
-                      <span className={`${microCaps} mt-1.5 block text-[10px] text-cream/60`}>{scene.jobB.start}</span>
-                    </p>
-                    <p className={`tj-season ${microCaps} text-right text-[10px] text-cream`}>{scene.jobB.time} →</p>
-                  </div>
-
-                  <div className="relative mt-4 h-3">
-                    <div className="absolute inset-0 rounded-full bg-cream/10" />
-                    <div className="tj-fill absolute inset-0 rounded-full bg-[linear-gradient(90deg,var(--color-lime)_0%,var(--color-sage)_45%,var(--color-cream)_100%)] opacity-90" />
-                    {/* O dia da aplicação: o trabalho 1 inteiro cabe aqui. */}
-                    <div
-                      className="tj-sliver absolute inset-y-[-5px] left-0 origin-left rounded-full bg-lime shadow-[0_0_14px_var(--color-lime)]"
-                      style={{ width: `max(5px, ${SLIVER}%)` }}
-                    />
-                    <span
-                      aria-hidden
-                      className="tj-head absolute top-1/2 left-full size-4 -translate-x-1/2 -translate-y-1/2 rounded-full bg-cream shadow-[0_0_16px_4px_color-mix(in_srgb,var(--color-cream)_55%,transparent)]"
-                    />
-                    {STAGES.map((pct, i) => (
-                      <span
-                        key={pct}
-                        aria-hidden
-                        className={`tj-mark-${i} absolute top-full mt-1.5 h-2.5 w-px bg-cream/70`}
-                        style={{ left: pct === 100 ? "calc(100% - 1px)" : `${pct}%` }}
-                      />
-                    ))}
-                  </div>
-
-                  {/* No celular o marco do meio desce uma linha: em 360px
-                      "Filling" (e "Enchimento", em PT) encostaria em "Harvest". */}
-                  <ol className="relative mt-7 h-[34px] lg:h-4">
-                    {scene.jobB.marks.map((mark, i) => (
-                      <li
-                        key={mark}
-                        className={`tj-mark-${i} ${microCaps} absolute top-0 text-[10px] whitespace-nowrap text-cream/85 ${
-                          STAGES[i] === 100 ? "right-0" : "-translate-x-1/2"
-                        } ${i === 1 ? "max-lg:top-[18px]" : ""}`}
-                        style={STAGES[i] === 100 ? undefined : { left: `${STAGES[i]}%` }}
-                      >
-                        {mark}
-                      </li>
-                    ))}
-                  </ol>
-                </div>
-
-                <div className="mt-auto">
-                  <h3 className="font-display text-[clamp(24px,2vw,32px)] leading-[1.05] tracking-[-0.02em]">
-                    {scene.jobB.title}
-                  </h3>
-                  <p className="mt-2 text-[15px] leading-[1.5] text-cream/65">{scene.jobB.body}</p>
+                  <p className="mt-2 text-[15px] leading-[1.5] text-cream/65">{scene.flush.body}</p>
                 </div>
               </article>
             </div>
           </div>
         </div>
 
-        <p className="tj-close wrap font-display text-[clamp(22px,2.2vw,38px)] leading-[1.12] tracking-[-0.025em] text-balance text-cream">
+<p className="tj-close wrap font-display text-[clamp(22px,2.2vw,38px)] leading-[1.12] tracking-[-0.025em] text-balance text-cream">
           {twoJobs.close}
         </p>
       </div>

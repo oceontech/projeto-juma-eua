@@ -2,12 +2,11 @@ import type { Metadata } from "next";
 import { Hero } from "@/components/kmep/Hero";
 import { Specimen } from "@/components/kmep/Specimen";
 import { Blackout } from "@/components/kmep/Blackout";
-import { Deposition } from "@/components/kmep/Deposition";
+import { TwoJobs } from "@/components/kmep/TwoJobs";
 import { Potassium } from "@/components/kmep/Potassium";
 import { Flush } from "@/components/kmep/Flush"; // HOLD P2 — remover junto com Flush.tsx
 import { Operation } from "@/components/kmep/Operation";
 import { Proof } from "@/components/kmep/Proof";
-import { Credential } from "@/components/kmep/Credential";
 import { Timing } from "@/components/kmep/Timing";
 import { Fit } from "@/components/kmep/Fit";
 import { Strip } from "@/components/kmep/Strip";
@@ -17,7 +16,7 @@ import { Final } from "@/components/kmep/Final";
 export const metadata: Metadata = {
   title: "KMEP Ultra®",
   description:
-    "One pass, two jobs: better spray coverage and deposition, plus foliar potassium in the weeks that set the yield. For orchards, vegetables, ornamentals and row crops, in the spray pass you already run.",
+    "One pass, two jobs: foliar potassium in the weeks that set yield and quality, in the spray pass you already run. For orchards, vegetables, ornamentals and row crops.",
   /* Versão B do teste A/B: a canônica é /kmep. */
   alternates: { canonical: "/kmep" },
 };
@@ -26,14 +25,14 @@ export const metadata: Metadata = {
  * LP do KMEP Ultra®, versão B (rota /kmep-b) — a candidata do teste A/B que
  * entra pelo produto (docs/05, K1 versão 2). A versão A está em /kmep.
  *
- * O hero leva a headline da versão 2, e a cena de partículas conta uma
- * passada, dois trabalhos: a barra, a gota que fica (trabalho 1), o
- * potássio entrando pela folha (trabalho 2) e a espiga no enchimento — é o
- * K5 em desenho, e por isso o TwoJobs não entra. A perda vem depois, no
- * preto: o que a cabine não mostra, o potássio que o solo não entrega a
- * tempo, e o ensaio. O Problem e o Cost ficam de fora pelo mesmo motivo da A.
+ * O hero leva a headline da versão 2, e a cena de partículas conta o produto
+ * antes da necessidade: a passada, o potássio entrando pela folha, por que a
+ * folha (a raiz que não recebe a tempo) e a espiga no enchimento. A falta vem
+ * depois, no preto.
  *
- * Daí em diante a página é a mesma da versão A.
+ * Daí em diante a página é a mesma da versão A. O TwoJobs fica, mesmo com a
+ * cena abrindo em "One pass. Two jobs.": é ali que o segundo trabalho, a ação
+ * desalojante, aparece pela primeira vez.
  */
 export default function KmepBPage() {
   return (
@@ -42,13 +41,12 @@ export default function KmepBPage() {
         <Hero variant="b" />
       </Specimen>
       <Blackout variant="b" />
-      <Deposition />
+      <TwoJobs />
       <Potassium />
       {/* HOLD P2 — remover junto com Flush.tsx */}
       <Flush />
       <Operation />
       <Proof />
-      <Credential />
       <Timing />
       <Fit />
       <Strip />

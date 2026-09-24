@@ -27,14 +27,15 @@ import { microCaps } from "./ui";
  *
  * Duas versões, a mesma engrenagem (`variant`):
  *
- *   a — a perda que não se vê: a passada vista da cabine, o que parou no
- *       topo do dossel, o que quicou e secou, e a mesma folha com o KMEP;
- *   b — uma passada, dois trabalhos: a passada, a gota que fica, o potássio
- *       entrando pela folha, a espiga no enchimento.
+ *   a — entra pela necessidade: onde a demanda de potássio chega ao pico (a
+ *       espiga), onde o solo trava (a raiz), o potássio pela folha, e a
+ *       passada que o produtor já faz;
+ *   b — entra pelo produto: a passada, o potássio pela folha, por que a
+ *       folha (a raiz), a espiga no enchimento.
  *
- * O que muda em relação ao Aminosan é o registro das cores, que segue a regra
- * do acento do KMEP (docs/06-PROMPT-LP-KMEP.md): cobre marca o que se perde,
- * lima o que fica e trabalha, e os dois nunca na mesma leitura.
+ * O que muda em relação ao Aminosan é o registro das cores: cobre marca o
+ * potássio que não chega à raiz a tempo, lima o que chega e trabalha, e os
+ * dois nunca na mesma leitura.
  *
  * Este componente **embrulha o hero** (`children`): os dois travam juntos, e
  * a foto de verdade só sai de cena no quadro em que a nuvem — que mostra

@@ -6,13 +6,17 @@ import type * as en from "../kmep";
  *
  * O inglês é a copy real e sai de docs/05-COPY-KMEP-ULTRA.md. Aqui os
  * números seguem em unidade americana, como aparecem na página publicada.
+ * Revisão de 24/09/2026: nutrição primeiro, ação desalojante depois, sem
+ * tecnologia de aplicação — ver o cabeçalho de ../kmep.ts.
  */
 
 export const hero: typeof en.hero = {
-  eyebrow: ["Performance de aplicação", "Potássio foliar"],
-  heading: "Faça cada passada valer.",
+  eyebrow: ["Potássio foliar", "Parceiro de tanque"],
+  heading: "Potássio quando a lavoura mais precisa.",
   aside: { heading: ["Uma passada.", "Dois trabalhos."] },
-  body: "O KMEP Ultra® vai no tanque que você já enche. Mais calda fica na folha, e o potássio chega nas semanas que definem a produtividade.",
+  body: "O KMEP Ultra® é um potássio líquido 1-1-15 que vai na aplicação que você já faz e coloca potássio na folha nas semanas que definem produtividade e qualidade.",
+  /* HOLD P2 */
+  hold: "No mesmo tanque, ele ajuda o inseticida a alcançar as pragas que se escondem dele.",
   badge: "potássio foliar",
   cta: { label: "Faça uma faixa de teste na sua área", href: "#trial-form" },
   secondary: { label: "Ver o ensaio", href: "#proof" },
@@ -29,97 +33,63 @@ export const proofBand: typeof en.proofBand = {
   source: "Milho · Ensaio Rehagro · Brasil",
 };
 
-export const problem: typeof en.problem = {
-  heading: "Você fez a aplicação certa. Parte dela ainda errou.",
-  body: [
-    "Você usou o produto que escolheu, na dose do rótulo, numa janela que era boa de verdade. Da cabine, a passada pareceu limpa. O que não dá para ver de lá é quanto da calda parou no topo do dossel, quanto ricocheteou e quanto secou antes de chegar à superfície da folha que importava.",
-    "Perdas escondidas na performance de aplicação custam produtividade, qualidade e lucro sem deixar um único sinal visível no campo. Quando o monitor mostra, a aplicação ficou quatro meses para trás e não há mais nada para corrigir.",
-  ],
-  captions: ["Topo do dossel", "A folha que importava"],
-  ledger: {
-    label: "O que a cabine não mostra",
-    items: ["Parou no topo do dossel", "Ricocheteou", "Secou antes de chegar à folha"],
-  },
-  alt: "Close do cartucho de um milho jovem ao amanhecer, com gotas sobre a superfície da folha",
-};
-
-export const cost: typeof en.cost = {
-  heading: "Pequenas perdas que você não vê somam um número que você vê.",
-  intro: "Duas coisas acontecem quando uma aplicação rende menos.",
-  blocks: [
-    {
-      kicker: "A óbvia",
-      title: "A reaplicação",
-      body: "Outra viagem, mais diesel, outra janela de clima que você não planejou.",
-    },
-    {
-      kicker: "A silenciosa",
-      title: "O potássio de que a lavoura precisava no mesmo trecho da safra",
-      body: "E não recebeu, porque a demanda chegou ao pico com o solo seco e a raiz não conseguiu movê-lo rápido o bastante.",
-    },
-  ],
-  close: [
-    "Nenhuma das duas aparece como sintoma que dá para fotografar.",
-    "As duas aparecem no monitor de colheita.",
-  ],
-};
-
 export const twoJobs: typeof en.twoJobs = {
   eyebrow: "Mesmo tanque · Mesma passada",
   heading: "Uma passada. Dois trabalhos.",
-  lead: "O KMEP Ultra® vai no tanque com o inseticida que você já escolheu, na aplicação que você já agendou. Sem viagem extra pelo talhão. A partir daí ele faz duas coisas: muda como a calda se comporta no caminho até a folha e entrega potássio que o tecido consegue absorver enquanto está lá.",
-  close: "O primeiro trabalho acontece nos vinte minutos em que o pulverizador está naquele talhão. O segundo segue pelo resto da safra.",
+  lead: "O KMEP Ultra® vai no tanque numa aplicação que você já agendou. Sem viagem extra pelo talhão. O primeiro trabalho, e o motivo de comprar, é potássio que a folha consegue absorver nas semanas em que a lavoura está enchendo. O segundo é uma vantagem adicional para o inseticida que está no mesmo tanque.",
+  close: "O potássio trabalha pelo resto da safra. O segundo trabalho termina nos vinte minutos em que o pulverizador está naquele talhão.",
   scene: {
     pass: "Uma passada",
-    jobA: {
+    potassium: {
       tag: "Trabalho 1",
-      title: "Cobertura e deposição",
-      body: "Muda como a calda se comporta no caminho até a folha.",
-      clock: "20 min",
-      time: "Vinte minutos naquele talhão",
-    },
-    jobB: {
-      tag: "Trabalho 2",
       title: "Potássio foliar",
-      body: "Entrega potássio que o tecido consegue absorver enquanto está lá.",
+      body: "Potássio que a folha consegue absorver, nas semanas que definem produtividade e qualidade.",
       time: "O resto da safra",
       start: "Dia da aplicação",
       marks: ["Florada", "Enchimento", "Colheita"],
     },
+    /* HOLD P2 */
+    flush: {
+      tag: "Trabalho 2 · Vantagem adicional",
+      title: "Ação desalojante",
+      body: "Tira as pragas do abrigo e as coloca em contato com o inseticida que você já escolheu.",
+      clock: "20 min",
+      time: "Vinte minutos naquele talhão",
+    },
   },
 };
 
-export const deposition: typeof en.deposition = {
-  label: "Trabalho 1 · O dia da aplicação",
-  heading: "O que a gota faz antes de secar.",
-  stages: [
-    {
-      n: "01",
-      kicker: "Sai do bico",
-      body: "Uma gota de pulverização tem uma carreira curta. Ela sai do bico, atravessa ar em movimento, pousa numa superfície que pode ser cerosa e vertical, e fica ali tempo suficiente para trabalhar ou não fica. O KMEP Ultra® atua nesse trecho: melhora como a calda cobre a superfície da folha e como ela deposita, para que mais do que você comprou chegue ao alvo em que você mirou.",
-    },
-    {
-      n: "02",
-      kicker: "Atravessa ar em movimento",
-      title: "Uma aplicação às 7h e uma às 14h não são a mesma aplicação.",
-      body: "Ele também mantém esse comportamento mais estável ao longo das condições que um dia de verdade oferece, que é onde as aplicações costumam se separar umas das outras.",
-    },
-    {
-      n: "03",
-      kicker: "Pousa numa superfície cerosa e vertical",
-      title: "Nada muda no seu bico nem na sua dose.",
-      body: "O que muda é quantas dessas gotas ficam onde você as colocou.",
-    },
-  ],
-  hours: ["7h", "14h"],
-  scene: { air: "Ar em movimento", surface: "Superfície cerosa da folha" },
-  alt: "Diagrama do caminho de uma gota de pulverização: sai do bico, atravessa o ar em movimento e pousa numa folha cerosa e inclinada",
-};
-
 export const potassium: typeof en.potassium = {
-  label: "Trabalho 2 · O resto da safra",
+  label: "Trabalho 1 · O resto da safra",
   heading: "A produtividade se define com potássio que a raiz pode não entregar a tempo.",
   body: "A demanda de potássio chega ao pico tarde, da florada ao enchimento do grão, do tubérculo ou do fruto, que é exatamente quando um veranico, uma camada compactada ou um sistema radicular raso limitam quanto o solo consegue de fato mover.",
+  roles: {
+    label: "Por que o potássio importa",
+    items: [
+      {
+        title: "Ele leva o açúcar para a colheita.",
+        body: "O potássio é o nutriente que a planta usa para carregar o açúcar e levá-lo para o grão, o tubérculo e o fruto. É por isso que a demanda chega ao pico quando a lavoura enche.",
+      },
+      {
+        title: "Ele mantém o tecido firme.",
+        body: "Ele segura a água nas células e comanda a abertura e o fechamento dos estômatos, o controle da própria planta sobre a água num veranico.",
+      },
+      {
+        title: "Ele aparece na qualidade.",
+        body: "Tamanho do fruto, teor de açúcar e vida de prateleira são as marcas clássicas de quanto potássio a lavoura teve enquanto enchia.",
+      },
+    ],
+    analysis: {
+      label: "O que vai na bombona",
+      formula: "1-1-15",
+      rows: [
+        { k: "Nitrogênio (N)", v: "1,2%" },
+        { k: "Fósforo (P₂O₅)", v: "1,0%" },
+        { k: "Potássio (K₂O)", v: "15,0%" },
+      ],
+      note: "Tudo solúvel em água. Análise garantida do rótulo americano.",
+    },
+  },
   quote: "O potássio está no solo. A sua análise diz isso. Não é a mesma coisa que tê-lo na planta durante as semanas que definem a produtividade.",
   zone: {
     steps: [
@@ -152,35 +122,37 @@ export const potassium: typeof en.potassium = {
 
 /* HOLD P2 — remover junto com Flush.tsx */
 export const flush: typeof en.flush = {
-  label: "Uma vantagem adicional",
+  label: "Trabalho 2 · Uma vantagem adicional",
   heading: "O que você não alcançou é o que volta.",
-  body: "A aplicação estava certa. O produto estava certo. Parte da população simplesmente nunca encontrou a calda, porque estava no cartucho, embaixo da folha, na bainha. O KMEP Ultra® vai na mesma gota e tira o alvo desse abrigo, colocando-o em contato com o inseticida que você já pagou.",
+  body: "A aplicação estava certa. O produto estava certo. Parte da população simplesmente nunca encontrou a calda, porque estava embaixo da folha, no cartucho, no fundo do dossel. O KMEP Ultra® vai no mesmo tanque, tira essas pragas do abrigo e as mantém em movimento, para que mais delas entrem em contato com o inseticida que você já pagou.",
   stages: [
-    { n: "01", title: "Abrigado", body: "Onde a gota nunca iria chegar." },
-    { n: "02", title: "Desalojado", body: "Ele sai por conta própria." },
+    { n: "01", title: "Abrigado", body: "Onde a calda nunca iria chegar." },
+    { n: "02", title: "Desalojado", body: "Ele sai e continua se movendo." },
     { n: "03", title: "Exposto", body: "Na frente do produto que você já comprou." },
   ],
   caveatLabel: "Mesma dose, mesmo rótulo",
-  caveat: "Isto não é motivo para reduzir a dose do seu inseticida. Mesma dose, mesmo rótulo, mesmo tanque. O que muda é quanto da população o inseticida de fato alcança.",
-  alt: "Diagrama do cartucho do milho em três tempos: o alvo abrigado dentro, saindo, e exposto na folha aberta",
+  caveat: "Mais do inseticida, nunca menos inseticida. Mesma dose, mesmo rótulo, mesmo tanque. O que muda é quanto da população o inseticida de fato alcança.",
+  alt: "Diagrama do cartucho do milho em três tempos: a praga abrigada dentro, saindo, e exposta na folha aberta",
 };
 
 export const operation: typeof en.operation = {
   heading: "O que ele faz pela operação.",
   cards: [
     {
+      title: "Potássio numa forma que a folha absorve.",
+      body: "Na folha, na janela em que a demanda de fato chega ao pico, em vez de esperar pela umidade do solo.",
+      image: "/img/kmep/operation-potassium.webp",
+    },
+    {
       title: "Vai no tanque que você já está enchendo.",
       body: "Compatível em mistura de tanque. Sem passada separada, sem diesel extra, sem nova janela de clima para esperar.",
+      image: "/img/kmep/operation-tank.webp",
     },
+    /* HOLD P2 — o card inteiro */
     {
-      title: "Mais da calda faz o seu trabalho.",
-      body: "Melhor cobertura e deposição na superfície da folha em que você mirou, na mesma dose, no mesmo rótulo.",
-    },
-    {
-      title: "Potássio numa forma que a folha absorve.",
-      body: "Posicionado para a janela em que a demanda de fato chega ao pico, em vez de esperar pela umidade do solo.",
-      /* HOLD P2 — remover junto com Flush.tsx */
-      hold: "E a vantagem adicional da ação desalojante coloca mais da população em contato com a calda.",
+      title: "Mais da população encontra o inseticida.",
+      body: "A ação desalojante tira as pragas do abrigo, na dose que já está no rótulo do inseticida.",
+      image: "/img/kmep/cigarrinha-do-milho-parada.webp",
     },
   ],
   offer: {
@@ -268,16 +240,6 @@ export const economics: typeof en.economics = {
     scaleStep: 10,
   },
   footnote: "Resposta de produtividade do ensaio Rehagro no Brasil. Preços do milho mostrados como referência. O seu resultado vai variar com clima, solo e manejo.",
-};
-
-export const credential: typeof en.credential = {
-  heading: "Tecnologia de aplicação é um programa de pesquisa aqui, não um slogan.",
-  before: "Desde 2021, a Juma Agro conduz o projeto DESATA ",
-  institutions: "com a UENP e com o NITEC, o laboratório de tecnologia de aplicação e máquinas da UNESP",
-  after: ": túnel de vento estudando espectro de gotas, deriva e deposição. É essa a disciplina por trás deste produto, e é por isso que podemos falar do que uma gota faz antes de secar em vez do que gostaríamos que ela fizesse.",
-  topics: ["Túnel de vento", "Espectro de gotas", "Deriva", "Deposição"],
-  scene: { nozzle: "Bico", air: "Fluxo de ar", collectors: "Coletores de deposição" },
-  sceneAlt: "Desenho técnico de um túnel de vento: um bico sobre uma fileira de coletores, com o fluxo de ar levando as gotas mais finas",
 };
 
 export const timing: typeof en.timing = {
@@ -489,22 +451,22 @@ export const fit: typeof en.fit = {
     lead: "Para uma operação que",
     items: [
       "Já tem aplicações no calendário, em pomares, hortaliças, ornamentais ou grandes culturas",
+      "Quer potássio na folha nas semanas em que a lavoura está enchendo",
       "Conduz as próprias faixas testemunha",
-      "Quer mais de uma aplicação que já está no orçamento",
     ],
   },
   notFit: {
     label: "Não serve",
     lead: "Para quem quer",
     items: [
-      "Substituir o potássio de solo",
+      "Substituir um programa de potássio no solo",
       "Reduzir a dose de inseticida",
       "Comprar um produto que funcione sem uma aplicação que já ia sair",
     ],
   },
   close: [
-    "Se você só precisa de potássio, compre potássio.",
-    "O KMEP Ultra® é comprado pelo que a aplicação faz, e o potássio vai junto.",
+    "Não é um programa de potássio, e não substitui um.",
+    "É potássio na folha nas semanas que contam, numa passada que ia sair de qualquer jeito.",
   ],
 };
 
@@ -541,14 +503,20 @@ export const questions: typeof en.questions = {
       a: "Existe um trabalho revisado por pares. Algodão, safra 2021, delineamento de blocos casualizados, conduzido em estação experimental independente em Rio Verde, Goiás, e publicado na Revista Foco em 2023 (DOI 10.54751/revistafoco.v16n2-129). Três dos quatro autores são agrônomos da Juma-Agro e o quarto é pesquisador do Instituto Goiano de Agricultura. Está escrito nesta página em vez de deixar você descobrir sozinho. É um artigo, não um corpo de literatura, e preferimos dizer isso com todas as letras.",
     },
     {
+      q: "Quanto potássio vai numa aplicação?",
+      a: "Onças, não libras. Na dose do rótulo, 16 fl oz por acre, uma aplicação coloca cerca de 3 oz de K₂O em cada acre, na folha, nas semanas que contam. O seu programa de solo sustenta a safra. Este é o potássio que não precisa esperar pela raiz.",
+    },
+    {
       q: "Qual a diferença para um 0-0-25 comum ou KTS?",
-      a: "Um 0-0-25 é uma fonte de potássio e nada além disso. Este produto entra no tanque do inseticida para mudar como a calda cobre e deposita, e leva potássio foliar enquanto está lá. Se você só precisa de potássio, compre potássio.",
+      a: "Um 0-0-25 é uma fonte de potássio e nada além disso. O KMEP Ultra® é um 1-1-15 feito para ir no tanque de pulverização, para que o potássio chegue à folha numa passada que você já está fazendo.",
       /* HOLD P2 — remover junto com Flush.tsx */
-      hold: "Ele também tira o alvo do abrigo, colocando-o em contato com o inseticida que você já pagou.",
+      hold: "No mesmo tanque, ele também tira as pragas do abrigo e as coloca em contato com o inseticida que você já pagou.",
     },
     {
       q: "Posso reduzir a dose do inseticida usando ele?",
-      a: "Não. Ele não faz o inseticida render mais e não muda a dose daquele rótulo. Use a sua dose normal.",
+      a: "Não. Ele não muda a dose daquele rótulo e não é motivo para baixá-la. Use a sua dose normal.",
+      /* HOLD P2 — remover junto com Flush.tsx */
+      hold: "O que ele muda é quanto da população essa dose alcança.",
     },
     {
       q: "Posso misturar com o meu inseticida ou fungicida?",
@@ -568,98 +536,103 @@ export const final: typeof en.final = {
 
 /* As cenas de partículas e o preto, versões A e B — ver ../kmep.ts. */
 
-export const sceneA: typeof en.sceneA = {
-  steps: ["Da cabine", "Parou no topo", "Quicou, secou", "Com KMEP Ultra®"],
-  stages: [
-    {
-      kicker: "Da cabine",
-      heading: "Da cabine, a passada pareceu limpa.",
-      body: "Você usou o produto que escolheu, na dose do rótulo, numa janela que era boa de verdade. O que não dá para ver de lá é onde a calda foi parar de fato.",
-      legend: [],
-      callouts: [
-        { label: "Bico", note: "Dose do rótulo, como planejado" },
-        { label: "Leque", note: "Sai do bico parecendo uniforme" },
-        { label: "Dossel", note: "Onde a passada mira" },
-      ],
-      readout: [
-        { k: "Dose", v: "Rótulo" },
-        { k: "Janela", v: "Boa" },
-        { k: "Perda visível", v: "Nenhuma" },
-      ],
-    },
-    {
-      kicker: "Parou no topo",
-      heading: "Parte dela parou no topo do dossel.",
-      body: "As folhas de cima pegam a calda primeiro. A superfície da folha que importava fica abaixo delas, e da cabine tudo parece igual.",
-      legend: [{ tone: 2, label: "Calda que não fez o trabalho" }],
-      callouts: [
-        { label: "Folhas de cima", note: "Onde a calda parou" },
-        { label: "Dossel de baixo", note: "A superfície da folha que importava" },
-        { label: "Cartucho", note: "Fechado, em pé, difícil de alcançar" },
-      ],
-      readout: [
-        { k: "Topo do dossel", v: "Molhado" },
-        { k: "Dossel de baixo", v: "Seco" },
-        { k: "Visto da cabine", v: "Não" },
-      ],
-    },
-    {
-      kicker: "Quicou. Secou.",
-      heading: "Parte dela quicou. Parte dela secou.",
-      body: "A gota pousa numa superfície que pode ser cerosa e vertical, e fica lá tempo suficiente para trabalhar ou não fica. Perdas escondidas assim não deixam sinal visível no campo.",
-      legend: [{ tone: 2, label: "Perdida da folha" }],
-      callouts: [
-        { label: "Quicou", note: "Bateu na cera e saiu da folha" },
-        { label: "Secou", note: "Sumiu antes de trabalhar" },
-        { label: "Folha cerosa", note: "Em pé e repelente à água" },
-      ],
-      readout: [
-        { k: "Pousou", v: "Sim" },
-        { k: "Ficou", v: "Nem toda" },
-        { k: "Sinal visível", v: "Nenhum" },
-      ],
-    },
-    {
-      kicker: "Com KMEP Ultra®",
-      heading: "Nada muda no seu bico nem na sua dose.",
-      body: "O que muda é quantas dessas gotas ficam onde você as colocou. O KMEP Ultra® vai no tanque que você já está enchendo, melhora como a calda cobre e deposita, e leva potássio foliar na mesma gota.",
-      legend: [{ tone: 1, label: "Calda que fica" }],
-      callouts: [
-        { label: "Gota espalhada", note: "Cobre e deposita na folha" },
-        { label: "Superfície da folha", note: "O alvo que você mirou" },
-        { label: "Potássio", note: "Vai na mesma gota" },
-      ],
-      readout: [
-        { k: "Dose", v: "A mesma" },
-        { k: "Passada", v: "A mesma" },
-        { k: "Leva", v: "Potássio" },
-      ],
-    },
+type Stage = (typeof en.sceneA)["stages"][number];
+
+const readEar: Stage = {
+  kicker: "Onde a demanda chega ao pico",
+  heading: "A produtividade se define nas últimas semanas da safra.",
+  body: "A demanda de potássio chega ao pico tarde, da florada ao enchimento do grão, do tubérculo ou do fruto. É quando a lavoura mais move açúcar, e é o potássio que o carrega.",
+  legend: [{ tone: 1, label: "Enchimento" }],
+  callouts: [
+    { label: "Grãos", note: "Onde a demanda chega ao pico" },
+    { label: "Palha", note: "O enchimento: grão, tubérculo ou fruto" },
+    { label: "Estilos", note: "Florada" },
+  ],
+  readout: [
+    { k: "Demanda", v: "Pico tardio" },
+    { k: "Janela", v: "Da florada ao enchimento" },
+    { k: "Sinal visível", v: "Nenhum ainda" },
   ],
 };
 
+const readRoots: Stage = {
+  kicker: "Onde o solo trava",
+  heading: "No solo não é na planta.",
+  body: "O potássio está no solo. A sua análise diz isso. Mas ele se move com a água, e um veranico ou uma camada compactada o freiam justamente quando a lavoura mais pede.",
+  legend: [{ tone: 2, label: "Potássio que não chega à raiz a tempo" }],
+  callouts: [
+    { label: "Raiz", note: "Só absorve o que chega até ela" },
+    { label: "Potássio", note: "Preso num perfil secando" },
+    { label: "Camada compactada", note: "Freia a água" },
+  ],
+  readout: [
+    { k: "Análise de solo", v: "Adequada" },
+    { k: "Perfil", v: "Secando" },
+    { k: "Chegando à raiz", v: "Atrasado" },
+  ],
+};
+
+const readLeaf: Stage = {
+  kicker: "Pela folha",
+  heading: "O potássio foliar começa na folha.",
+  body: "Ele não espera a umidade do solo nem a raiz. O KMEP Ultra® coloca potássio na folha, e ele entra no tecido a partir de onde pousa, nas semanas em que a lavoura está enchendo.",
+  legend: [{ tone: 1, label: "Potássio" }],
+  callouts: [
+    { label: "Gota", note: "Onde o potássio pousa" },
+    { label: "Para o tecido", note: "Entra a partir da folha" },
+    { label: "Nervura", note: "O caminho pela folha" },
+  ],
+  readout: [
+    { k: "Começa em", v: "A folha" },
+    { k: "Espera o solo", v: "Não" },
+    { k: "Análise", v: "1-1-15" },
+  ],
+};
+
+const readPass: Stage = {
+  kicker: "Na sua passada",
+  heading: "Na aplicação que você já faz.",
+  body: "O KMEP Ultra® vai no tanque que você já está enchendo, a 16 fl oz por acre. Sem viagem extra, sem nova janela de clima. O potássio sai junto com o inseticida que você já escolheu.",
+  legend: [],
+  callouts: [
+    { label: "Bico", note: "Mesmo bico, mesmo calendário" },
+    { label: "Calda", note: "Potássio no mesmo tanque" },
+    { label: "Dossel", note: "Onde ele pousa" },
+  ],
+  readout: [
+    { k: "Dose", v: "16 fl oz/ac" },
+    { k: "Viagens a mais", v: "0" },
+    { k: "Tanque", v: "O mesmo" },
+  ],
+};
+
+export const sceneA: typeof en.sceneA = {
+  steps: ["Pico da demanda", "O solo trava", "Pela folha", "Na sua passada"],
+  stages: [readEar, readRoots, readLeaf, readPass],
+};
+
 export const blackoutA: typeof en.blackoutA = {
-  headline: ["Pequenas perdas que você não vê", "somam um número que você vê."],
-  body: "Duas coisas acontecem quando uma aplicação rende menos.",
+  headline: ["Pequenas faltas que você não vê", "somam um número que você vê."],
+  body: "Potássio que chega tarde não deixa sintoma que dê para fotografar. Ele aparece em três lugares.",
   chapters: [
     {
-      kicker: "A óbvia",
-      heading: "A reaplicação.",
-      body: "Outra viagem, mais diesel, outra janela de clima que você não planejou.",
-      image: "/img/kmep/blackout/respray.webp",
-      alt: "Barra de pulverizador passando sobre milho jovem ao amanhecer, com névoa sobre as linhas",
-    },
-    {
-      kicker: "A silenciosa",
-      heading: "O potássio de que a lavoura precisava no mesmo trecho.",
-      body: "E não recebeu, porque a demanda chegou ao pico com o solo seco e a raiz não conseguiu movê-lo rápido o bastante.",
+      kicker: "No solo",
+      heading: "A análise de solo disse que ele estava lá.",
+      body: "E estava. Só não conseguiu chegar à raiz rápido o bastante enquanto a demanda chegava ao pico e o perfil secava.",
       image: "/img/kmep/blackout/dryroots.webp",
       alt: "Raízes de suporte de um milho presas em solo seco e rachado no fim do verão",
     },
     {
+      kicker: "No enchimento",
+      heading: "Aparece no tamanho, na qualidade e na vida de prateleira.",
+      body: "O potássio é o que carrega o açúcar para o grão, o tubérculo e o fruto. Quando ele falta no enchimento, é a colheita que carrega a diferença.",
+      image: "/img/kmep/potassium-pods.webp",
+      alt: "Vagens de soja enchendo na planta no fim do verão",
+    },
+    {
       kicker: "Na colheita",
-      heading: "As duas aparecem no monitor de produtividade.",
-      body: "Nenhuma delas aparece como sintoma que dê para fotografar. Uma faixa de ensaio com a testemunha ao lado permite medir o resultado.",
+      heading: "Nove bushels, mesma passada.",
+      body: "Um ensaio, publicado inteiro, com a faixa testemunha ao lado: 221,2 contra 212,3 bu/ac no milho. O produto entrou numa aplicação que já estava no calendário.",
       image: "/img/kmep/blackout/monitor.webp",
       alt: "Mapa de produtividade aceso no monitor da cabine de uma colheitadeira ao entardecer, na colheita do milho",
       proof: true,
@@ -669,73 +642,38 @@ export const blackoutA: typeof en.blackoutA = {
 
 export const heroB: typeof en.heroB = {
   heading: "Uma passada. Dois trabalhos.",
-  aside: { heading: ["Você não vai ver a perda", "até colher."] },
-  body: "O KMEP Ultra® entra com o inseticida que você já escolheu. Ele melhora a cobertura e a deposição no dia da aplicação e coloca potássio na folha para a janela em que a demanda chega ao pico.",
+  aside: { heading: ["Potássio quando", "a lavoura mais precisa."] },
+  body: "O KMEP Ultra® vai no tanque que você já enche. Ele coloca potássio na folha para as semanas que definem produtividade e qualidade.",
+  /* HOLD P2 */
+  hold: "E, no mesmo tanque, ajuda o inseticida a alcançar as pragas que se escondem dele.",
 };
 
 export const sceneB: typeof en.sceneB = {
-  steps: ["Uma passada", "Trabalho 1", "Trabalho 2", "Enchimento"],
+  steps: ["Uma passada", "Trabalho 1", "Por que a folha", "Enchimento"],
   stages: [
     {
+      ...readPass,
       kicker: "Uma passada",
       heading: "Uma passada. Dois trabalhos.",
       body: "O KMEP Ultra® vai no tanque com o inseticida que você já escolheu, na aplicação que você já agendou. Nenhuma viagem a mais pelo talhão.",
-      legend: [],
-      callouts: [
-        { label: "Bico", note: "Mesmo bico, mesma dose" },
-        { label: "Leque", note: "Vai com o inseticida que você escolheu" },
-        { label: "Dossel", note: "A aplicação que você já agendou" },
-      ],
-      readout: [
-        { k: "Viagens a mais", v: "0" },
-        { k: "Tanque", v: "O mesmo" },
-        { k: "Dose", v: "A mesma" },
-      ],
     },
     {
-      kicker: "Trabalho 1 · O dia da aplicação",
-      heading: "O que a gota faz antes de secar.",
-      body: "O KMEP Ultra® melhora como a calda cobre a superfície da folha e como ela deposita, para que mais do que você comprou chegue ao alvo que você mirou.",
-      legend: [{ tone: 1, label: "Calda que fica" }],
-      callouts: [
-        { label: "Cobertura", note: "Espalhada pela superfície da folha" },
-        { label: "Deposição", note: "Fica onde pousa" },
-        { label: "Mesma dose", note: "Nada muda no rótulo" },
-      ],
-      readout: [
-        { k: "Acontece em", v: "20 minutos" },
-        { k: "Dose", v: "A mesma" },
-        { k: "Bico", v: "O mesmo" },
-      ],
+      ...readLeaf,
+      kicker: "Trabalho 1 · Potássio foliar",
+      heading: "Potássio, entrando pela folha.",
+      body: "O KMEP Ultra® é um potássio líquido 1-1-15. Ele pousa na folha e entra no tecido a partir dali, sem esperar a umidade do solo nem a raiz.",
     },
     {
-      kicker: "Trabalho 2 · O resto da safra",
-      heading: "O potássio foliar começa na folha.",
-      body: "O potássio do solo precisa se dissolver, chegar à raiz e subir até a folha, e cada etapa desacelera quando o perfil seca. O potássio foliar entra no tecido a partir de onde pousa.",
-      legend: [{ tone: 1, label: "Potássio" }],
-      callouts: [
-        { label: "Gota", note: "Onde o potássio pousa" },
-        { label: "Para o tecido", note: "Entra a partir da folha" },
-        { label: "Nervura", note: "O caminho pela folha" },
-      ],
-      readout: [
-        { k: "Começa em", v: "A folha" },
-        { k: "Espera o solo", v: "Não" },
-        { k: "Dura", v: "A safra" },
-      ],
+      ...readRoots,
+      kicker: "Por que a folha",
     },
     {
+      ...readEar,
       kicker: "Enchimento",
       heading: "Potássio nas semanas que definem a produtividade.",
-      body: "A demanda de potássio chega ao pico tarde, enquanto o grão, o tubérculo ou o fruto enche, justamente quando um veranico limita o que o solo consegue mover. A aplicação tardia do rótulo coloca o potássio na folha nessa janela.",
-      legend: [{ tone: 1, label: "Enchimento" }],
-      callouts: [
-        { label: "Grãos", note: "Onde a demanda chega ao pico" },
-        { label: "Palha", note: "Formação da espiga: a última passada" },
-        { label: "Estilos", note: "Polinização" },
-      ],
+      body: "A demanda de potássio chega ao pico tarde, enquanto o grão, o tubérculo ou o fruto enche. As aplicações tardias do rótulo colocam o potássio na folha nessa janela.",
       readout: [
-        { k: "Aplicações", v: "Pelo rótulo da cultura" },
+        { k: "Aplicações", v: "Por cultura" },
         { k: "Demanda", v: "Pico tardio" },
         { k: "Viagens a mais", v: "0" },
       ],
@@ -744,16 +682,9 @@ export const sceneB: typeof en.sceneB = {
 };
 
 export const blackoutB: typeof en.blackoutB = {
-  headline: ["Você não vai ver a perda", "até colher."],
-  body: "Parte de toda aplicação nunca faz o trabalho pelo qual você pagou.",
+  headline: ["Você não vai ver a falta", "até colher."],
+  body: "Parte do potássio de que a lavoura precisa nunca chega a tempo.",
   chapters: [
-    {
-      kicker: "Na folha",
-      heading: "Parte de toda passada erra.",
-      body: "Parte da calda para no topo do dossel, parte quica e parte seca antes de chegar à superfície da folha que importava. Nada disso aparece da cabine.",
-      image: "/img/kmep/blackout/canopy.webp",
-      alt: "Gotas de calda sobre a folha de cima de um milho ao amanhecer, com as folhas de baixo na sombra",
-    },
     {
       kicker: "No solo",
       heading: "No solo não é na planta.",
@@ -762,9 +693,16 @@ export const blackoutB: typeof en.blackoutB = {
       alt: "Raízes de suporte de um milho presas em solo seco e rachado no fim do verão",
     },
     {
+      kicker: "No enchimento",
+      heading: "Aparece no tamanho, na qualidade e na vida de prateleira.",
+      body: "O potássio é o que carrega o açúcar para o grão, o tubérculo e o fruto. Quando ele falta no enchimento, é a colheita que carrega a diferença.",
+      image: "/img/kmep/potassium-pods.webp",
+      alt: "Vagens de soja enchendo na planta no fim do verão",
+    },
+    {
       kicker: "Na colheita",
       heading: "Nove bushels, mesma passada.",
-      body: "Um ensaio, publicado inteiro, com a faixa testemunha ao lado. O produto entrou com uma aplicação de inseticida que já estava no calendário.",
+      body: "Um ensaio, publicado inteiro, com a faixa testemunha ao lado. O produto entrou numa aplicação que já estava no calendário.",
       image: "/img/kmep/blackout/monitor.webp",
       alt: "Mapa de produtividade aceso no monitor da cabine de uma colheitadeira ao entardecer, na colheita do milho",
       proof: true,

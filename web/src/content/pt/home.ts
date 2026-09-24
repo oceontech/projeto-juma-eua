@@ -81,9 +81,9 @@ export const expertise: typeof en.expertise = {
 export const products: typeof en.products = [
   {
     id: "kmep",
-    category: "Performance de aplicação · Potássio foliar",
+    category: "Potássio foliar · Parceiro de tanque",
     title: "KMEP Ultra®",
-    body: "Vai no tanque com o seu inseticida, melhora como a calda cobre e deposita, e leva potássio foliar para o enchimento de grãos.",
+    body: "Um potássio líquido 1-1-15 que vai no tanque com o seu inseticida e coloca potássio na folha nas semanas que definem a produtividade.",
     href: "/kmep",
     image: { src: "/img/pack-kmep-us.webp", alt: "Galão de 2,5 gal do KMEP Ultra com rótulo americano" },
   },
