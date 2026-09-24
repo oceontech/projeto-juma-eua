@@ -3,7 +3,7 @@
 import { Fragment, useEffect, useRef } from "react";
 import Image from "next/image";
 import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
-import { booted } from "@/lib/boot";
+import { whenBooted } from "@/lib/boot";
 import { useContent } from "@/components/layout/LocaleProvider";
 
 /**
@@ -196,7 +196,7 @@ export function Hero() {
              primeiro terço do gesto acontece sob um véu que já está quase
              transparente (ver a saída encurtada em Preloader.tsx), e o que se
              vê é uma cena que já vinha se montando quando a tela abriu. */
-          void booted.then(() => {
+          void whenBooted().then(() => {
             if (!root.current) return;
             /* Se já rolaram por baixo do véu, a cena não é mais a de abertura. */
             if (window.scrollY > 4) {

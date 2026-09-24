@@ -2,7 +2,7 @@
 
 import { useRef } from "react";
 import { useContent } from "@/components/layout/LocaleProvider";
-import { booted } from "@/lib/boot";
+import { whenBooted } from "@/lib/boot";
 import { gsap, ScrollTrigger, SplitText, useGSAP } from "@/lib/gsap";
 import {
   buildFromPoints,
@@ -82,6 +82,15 @@ const SWITCH = 0.62;
    primeira forma não pode ficar sobre a nuvem enquanto ela se desfaz de
    volta na foto. Ela sai assim que a molécula começa a se desmanchar. */
 const HERO_BACK = 0.94;
+
+/* O disco preto: as partículas fecham um disco pequeno (1,0 a 1,08) e ele
+   cresce daí até cobrir a tela, em fração da linha do tempo. O crescimento
+   começa quase no fim do fechamento — antes disso as partículas se
+   espalhariam num disco grande demais e sumiriam, e o sólido surgiria já
+   com meia tela. Ele tem trecho próprio no fim da cena, longo e suave nas
+   duas pontas: com `power2.in` em 0,09 terminava na velocidade máxima, e o
+   fim do scroll levava o círculo de meia tela à tela cheia de uma vez. */
+const GROW = { at: 1.07, run: 0.15, ease: "sine.inOut" };
 
 /* O rótulo da bombona, em fração da foto a partir do centro (y para cima).
    É para lá que o zoom anda. */
@@ -271,7 +280,7 @@ export function Specimen({ children }: { children: React.ReactNode }) {
               ending.fill > 0 ||
               black.style.opacity ||
               (timeline?.scrollTrigger?.progress ?? 0) *
-                (timeline?.duration() || 1.16) >=
+                (timeline?.duration() || 1.22) >=
                 1.0
             ) {
               const w = stage.clientWidth;
@@ -290,15 +299,15 @@ export function Specimen({ children }: { children: React.ReactNode }) {
                  o raio nunca fica atrás do que o dedo já rolou. É contínuo —
                  chega a 1 exatamente no fim do pin —, então não há salto de
                  um círculo pela metade para a tela cheia. */
-              const tReal = real * (timeline?.duration() || 1.16);
+              const tReal = real * (timeline?.duration() || 1.22);
               const fill = Math.max(
                 ending.fill,
                 gsap.utils.clamp(0, 1, (tReal - 1.0) / 0.08),
               );
               const grow = Math.max(
                 ending.grow,
-                gsap.parseEase("power2.in")(
-                  gsap.utils.clamp(0, 1, (tReal - 1.07) / 0.09),
+                gsap.parseEase(GROW.ease)(
+                  gsap.utils.clamp(0, 1, (tReal - GROW.at) / GROW.run),
                 ),
               );
               const full = grow >= 1 ? 1 : 0;
@@ -514,8 +523,9 @@ export function Specimen({ children }: { children: React.ReactNode }) {
                 trigger: stage,
                 start: "top top",
                 /* 760% da cena, mais o fechamento em disco no fim (1,0 a
-                   1,16 da linha do tempo), no mesmo compasso por tela. */
-                end: "+=880%",
+                   1,22 da linha do tempo), no mesmo compasso por tela: 880% para 1,16
+                   era o compasso antes de o crescimento ganhar trecho próprio. */
+                end: "+=925%",
                 scrub: 0.7,
                 pin: true,
                 anticipatePin: 1,
@@ -599,7 +609,7 @@ export function Specimen({ children }: { children: React.ReactNode }) {
                fechar o disco, recortada na borda exata. O disco das
                partículas é bem pequeno — 6% do menor lado —, e com
                `u.gather` em 1 (1,08) a nuvem dá lugar a um elemento sólido,
-               que segue crescendo até cobrir a tela em 1,16, o fim da cena. A seção
+               que segue crescendo até cobrir a tela em 1,22, o fim da cena. A seção
                seguinte (Field.tsx) já começa toda preta: a emenda é preto
                sobre preto. */
             tl.fromTo(
@@ -617,10 +627,10 @@ export function Specimen({ children }: { children: React.ReactNode }) {
               .fromTo(
                 ending,
                 { grow: 0 },
-                { grow: 1, duration: 0.09, ease: "power2.in" },
+                { grow: 1, duration: GROW.run, ease: GROW.ease },
                 /* A expansão começa antes de o disco fechar: as duas curvas
                    se somam, e não há parada entre encher e crescer. */
-                1.07,
+                GROW.at,
               )
               .to(
                 rail,
@@ -642,7 +652,7 @@ export function Specimen({ children }: { children: React.ReactNode }) {
           /* ------------------------------------------------- a nuvem */
 
           void (async () => {
-            await booted;
+            await whenBooted();
             if (!alive) return;
             await document.fonts?.ready;
             if (!alive) return;

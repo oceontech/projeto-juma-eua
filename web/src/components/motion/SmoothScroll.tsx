@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import Lenis from "lenis";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
-import { booted } from "@/lib/boot";
+import { whenBooted } from "@/lib/boot";
 
 /**
  * Rolagem suave do site inteiro.
@@ -122,7 +122,7 @@ export function SmoothScroll() {
       instance = lenis;
 
       lenis.stop();
-      booted.then(() => {
+      whenBooted().then(() => {
         if (alive && lenis) lenis.start();
       });
 

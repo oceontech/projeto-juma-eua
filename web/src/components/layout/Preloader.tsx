@@ -115,15 +115,16 @@ export function Preloader() {
       /* A entrada do hero começa junto com a saída do véu: as duas se
          sobrepõem, e a cena já está andando quando aparece. */
       markBooted();
-      /* A marca avança um passo e some antes do véu: a página não aparece por
-         trás de um logo parado, e sim depois de ele se afastar. */
+      /* A saída é a cortina do véu da troca de página (PageTransition.tsx):
+         a marca sobe e some primeiro, puxando o véu, que sobe inteiro e sai
+         pelo alto, opaco até o fim — o que revela a página é a borda de baixo
+         passando. A entrada do hero já está andando por baixo dela. */
       gsap
         .timeline({ onComplete: () => setGone(true) })
-        /* Saída curta de propósito: a entrada do hero parte junto com este
-           gesto (ver Hero.tsx), então cada décimo a mais aqui é um décimo do
-           movimento dela acontecendo atrás de um véu. */
-        .to(stage.current, { opacity: 0, scale: 1.08, duration: 0.4, ease: "power2.in" }, 0)
-        .to(veil, { opacity: 0, duration: 0.5, ease: "power2.inOut" }, 0.12);
+        /* Relativo, e não `y` absoluto: o palco já está erguido pela classe
+           de centralização (`-translate-y-[8.9%]`), que o GSAP lê como `y`. */
+        .to(stage.current, { opacity: 0, y: `-=${window.innerHeight * 0.12}`, duration: 0.5, ease: "power2.in" }, 0)
+        .to(veil, { yPercent: -100, duration: 0.9, ease: "power4.inOut" }, 0.1);
     });
 
     return () => {
@@ -145,10 +146,12 @@ export function Preloader() {
           (`meet`), então a proporção precisa estar declarada — sem ela o SVG
           fica com altura zero. A largura mínima impede a marca de virar um
           selo em telas estreitas: o que sobra sai pelas laterais e o véu
-          corta. Sobe um pouco do centro óptico, que é onde a marca assenta. */}
+          corta. A marca (selo e bandeiras) fica 8,9% da altura da composição
+          abaixo do centro dela, e o palco sobe exatamente isso: o desenho
+          fica no centro vertical da tela, como no véu da troca de página. */}
       <div
         ref={stage}
-        className="aspect-video w-[min(600px,78vw)] min-w-[420px] -translate-y-[6vh]"
+        className="aspect-video w-[min(600px,78vw)] min-w-[420px] -translate-y-[8.9%]"
       />
     </div>
   );

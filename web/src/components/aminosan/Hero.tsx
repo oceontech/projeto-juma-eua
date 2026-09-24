@@ -4,7 +4,7 @@ import { Fragment, useRef } from "react";
 import Image from "next/image";
 import { Building2, FlaskConical, Hourglass, Sprout, type LucideIcon } from "lucide-react";
 import { gsap, useGSAP } from "@/lib/gsap";
-import { booted } from "@/lib/boot";
+import { whenBooted } from "@/lib/boot";
 import { useContent } from "@/components/layout/LocaleProvider";
 import { scroller } from "@/components/motion/SmoothScroll";
 
@@ -916,7 +916,7 @@ export function Hero() {
           window.addEventListener("touchmove", onTouchMove, { passive: false, capture: true });
           window.addEventListener("keydown", onKeyDown, { capture: true });
           window.addEventListener("scroll", onScroll, { passive: true });
-          void booted.then(() => {
+          void whenBooted().then(() => {
             if (video.readyState >= 2 && reverseVideo.readyState >= 1) startIntro();
             else video.addEventListener("canplay", startIntro, { once: true });
           });

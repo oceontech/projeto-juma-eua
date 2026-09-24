@@ -2,7 +2,7 @@
 
 import { Fragment, useRef } from "react";
 import { useContent } from "@/components/layout/LocaleProvider";
-import { booted } from "@/lib/boot";
+import { whenBooted } from "@/lib/boot";
 import { gsap, useGSAP } from "@/lib/gsap";
 
 /**
@@ -99,7 +99,7 @@ export function Hero({ variant = "a" }: { variant?: "a" | "b" }) {
           swing("rotation", 0.5, 7.4, 2.1);
         };
 
-        void booted.then(() => {
+        void whenBooted().then(() => {
           if (!alive) return;
           intro = gsap
             .timeline({ defaults: { ease: "power3.out" } })

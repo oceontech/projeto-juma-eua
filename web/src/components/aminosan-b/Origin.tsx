@@ -2,7 +2,7 @@
 
 import { useRef } from "react";
 import { useContent } from "@/components/layout/LocaleProvider";
-import { booted } from "@/lib/boot";
+import { whenBooted } from "@/lib/boot";
 import { gsap, ScrollTrigger, SplitText, useGSAP } from "@/lib/gsap";
 import { buildField, cover, paintStill, shapeClouds } from "@/lib/origin/build";
 import { createField, type Field, type Uniforms } from "@/lib/origin/field";
@@ -393,7 +393,7 @@ export function Origin({ children }: { children: React.ReactNode }) {
           void (async () => {
             /* Depois do véu: a linha do tempo só é útil quando a página
                destrava, e é aí também que as fontes já chegaram. */
-            await booted;
+            await whenBooted();
             if (!alive) return;
             await document.fonts?.ready;
             if (!alive) return;

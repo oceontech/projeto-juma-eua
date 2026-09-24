@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Archivo, DM_Sans, Inter } from "next/font/google";
 import { LocaleProvider } from "@/components/layout/LocaleProvider";
+import { PageTransition } from "@/components/layout/PageTransition";
 import { Preloader } from "@/components/layout/Preloader";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
@@ -80,6 +81,9 @@ export default async function RootLayout({
           }}
         />
         <Preloader />
+        {/* O véu das trocas de página: mesma marca, em loop até a página
+            nova chegar. */}
+        <PageTransition />
         <ScrollRefresh />
         <SmoothAnchors />
         <SmoothScroll />
