@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { preload } from "react-dom";
 import { Archivo, DM_Sans, Inter } from "next/font/google";
 import { LocaleProvider } from "@/components/layout/LocaleProvider";
 import { PageTransition } from "@/components/layout/PageTransition";
@@ -57,6 +58,10 @@ export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   const locale = await getLocale();
+  /* O JSON da animação do véu começa a baixar com o HTML, e não depois de o
+     JavaScript chegar (ver Preloader.tsx). `crossOrigin` casa com o modo do
+     `fetch`, para o pedido reaproveitar este. */
+  preload("/anim/preloader.json", { as: "fetch", crossOrigin: "anonymous" });
 
   return (
     <html

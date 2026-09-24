@@ -3,7 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import type { AnimationItem } from "lottie-web";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
-import { markBooted } from "@/lib/boot";
+import { markBooted, markCovered, whenPrepared } from "@/lib/boot";
+import { lockScroll } from "@/lib/scroll-lock";
 
 /**
  * Véu de carregamento com a animação da marca (Lottie).
@@ -30,6 +31,21 @@ import { markBooted } from "@/lib/boot";
  */
 const MAX_MS = 9000;
 
+/**
+ * O player e o JSON começam a vir quando este módulo é avaliado, e não no
+ * efeito do componente: o efeito só roda depois da hidratação da página
+ * inteira, e aí a rede já teria ficado parada esperando por ela. Assim o
+ * download corre junto com a hidratação, e o que sobra para depois dela é só
+ * montar a animação.
+ */
+const assets: Promise<[typeof import("lottie-web/build/player/lottie_light"), unknown] | null> | null =
+  typeof window !== "undefined" && !window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ? Promise.all([
+        import("lottie-web/build/player/lottie_light"),
+        fetch("/anim/preloader.json").then((r) => r.json() as Promise<unknown>),
+      ]).catch(() => null)
+    : null;
+
 export function Preloader() {
   const root = useRef<HTMLDivElement>(null);
   const stage = useRef<HTMLDivElement>(null);
@@ -45,10 +61,11 @@ export function Preloader() {
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     /* Enquanto o véu está de pé a página não rola: a cena do hero avançaria
-       por baixo sem ninguém ver. */
-    const html = document.documentElement;
-    const scrollWas = html.style.overflow;
-    html.style.overflow = "hidden";
+       por baixo sem ninguém ver. A barra de rolagem continua na tela, e a
+       trava é só de entrada (ver lib/scroll-lock.ts): esconder a barra com
+       `overflow: hidden` e devolvê-la na saída mudava a largura da página no
+       primeiro quadro da cortina. */
+    const lock = lockScroll();
 
     /* O zero da rolagem já aconteceu — ver o script inline em layout.tsx,
        que roda antes de qualquer hidratação. useGSAP usa useLayoutEffect, que
@@ -56,7 +73,7 @@ export function Preloader() {
        teria montado seu ScrollTrigger com a posição antiga. */
 
     const unlock = () => {
-      html.style.overflow = scrollWas;
+      lock.release();
       /* As medidas do ScrollTrigger foram tiradas com a página parada. Rodar
          isto é caro e é síncrono: por isso acontece com o véu ainda opaco e
          parado, antes da saída, e não no meio dela. */
@@ -73,20 +90,21 @@ export function Preloader() {
       }
       void (async () => {
         try {
-          const [mod, data] = await Promise.all([
-            import("lottie-web/build/player/lottie_light"),
-            fetch("/anim/preloader.json").then((r) => r.json()),
-          ]);
-          if (killed || !stage.current) {
+          const loaded = await assets;
+          if (!loaded || killed || !stage.current) {
             resolve();
             return;
           }
+          const [mod, data] = loaded;
           const item = mod.default.loadAnimation({
             container: stage.current,
             renderer: "svg",
             loop: false,
             autoplay: true,
             animationData: data,
+            /* Monta os elementos conforme cada camada entra, e não os ~250 de
+               uma vez no primeiro quadro — que era a travada do começo. */
+            rendererSettings: { progressiveLoad: true },
           });
           /* Mais rápido que o original: como véu, a marca precisa se montar
              sem virar espera. */
@@ -111,7 +129,14 @@ export function Preloader() {
     void Promise.race([
       Promise.all([loaded, played, document.fonts?.ready]),
       capped,
-    ]).then(() => {
+    ]).then(async () => {
+      if (killed) return;
+      /* A animação terminou e a marca está parada, inteira: é aqui que a
+         página faz o trabalho pesado (cena de partículas, amostragem da
+         foto — ver lib/boot.ts). Feito na saída do véu, congelava a cortina;
+         feito durante a animação, travava a marca. */
+      markCovered();
+      await whenPrepared();
       if (killed) return;
       unlock();
       /* O refresh acima ocupou um quadro inteiro. Com `lagSmoothing(0)` o
@@ -141,7 +166,7 @@ export function Preloader() {
     return () => {
       killed = true;
       player?.destroy();
-      html.style.overflow = scrollWas;
+      lock.release();
     };
   }, []);
 

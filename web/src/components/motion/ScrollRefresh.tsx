@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { ScrollTrigger } from "@/lib/gsap";
+import { isBooted } from "@/lib/boot";
 
 /**
  * Recalcula as posições de todos os ScrollTriggers quando a página termina
@@ -12,10 +13,18 @@ import { ScrollTrigger } from "@/lib/gsap";
  * seção disparar cedo demais ou nunca disparar.
  *
  * Fica montado uma vez, no layout raiz.
+ *
+ * Com o véu ainda de pé, este refresh não roda: o do próprio véu (Preloader),
+ * feito na saída, já espera o `load` e as fontes — e este, síncrono e de uns
+ * 130 ms, cairia no meio da animação da marca, que é onde se via a travada.
+ * Só vale quando o `load` ou as fontes chegam DEPOIS de o véu sair (rede
+ * lenta, teto do véu).
  */
 export function ScrollRefresh() {
   useEffect(() => {
-    const refresh = () => ScrollTrigger.refresh();
+    const refresh = () => {
+      if (isBooted()) ScrollTrigger.refresh();
+    };
 
     /* As fontes ainda mudam a altura ao trocar de métrica. */
     if (document.fonts?.status !== "loaded") {

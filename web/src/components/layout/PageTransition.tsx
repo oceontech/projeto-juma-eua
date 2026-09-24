@@ -4,8 +4,9 @@ import { useEffect, useRef } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import type { AnimationItem } from "lottie-web";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
-import { holdBoot, markBooted, whenBooted } from "@/lib/boot";
+import { holdBoot, markBooted, markCovered, whenBooted, whenPrepared } from "@/lib/boot";
 import { scroller } from "@/components/motion/SmoothScroll";
+import { lockScroll, type ScrollLock } from "@/lib/scroll-lock";
 
 /**
  * O véu da troca de página: o mesmo fundo e o mesmo tamanho de marca do
@@ -18,21 +19,30 @@ import { scroller } from "@/components/motion/SmoothScroll";
  *           escala volta ao repouso. Tocado a 1,7×, a marca fica montada em
  *           ~0,8 s, que é o tempo mínimo do véu na tela (MIN_MS): menos que
  *           isso e a entrada seria cortada no meio;
- *   PULSE — quadros 58 a 120: um ciclo inteiro do pulso de escala (100 → 104
- *           → 100), em loop, na velocidade original. O 58 é o fundo da
- *           escala, então a emenda entre os dois trechos não tem tranco.
+ *   PULSE — o pulso de escala (100 → 104 → 100) dos quadros 58 a 120, que aqui
+ *           NÃO é o player: a marca fica parada no quadro 58 e quem pulsa é uma
+ *           animação CSS de `transform` (`.pt-pulse`, em globals.css), com as
+ *           mesmas duas curvas do Lottie. O Lottie roda na main thread, e é
+ *           exatamente quando o pulso toca que a página nova monta e prepara
+ *           a cena; uma animação de transform corre no compositor e segue lisa
+ *           com a main thread ocupada. O 58 é o fundo da escala, então a
+ *           emenda entre os dois trechos não tem tranco.
  *
  * O caminho de uma troca:
  *
  *   1. o clique num link para outra página é segurado (o `next/link` respeita
  *      `defaultPrevented`); o portão do boot fecha (`holdBoot`) e a rolagem
  *      trava;
- *   2. o véu cobre a tela e a marca começa a entrada;
- *   3. com o véu opaco, a rolagem volta a zero **antes** de a rota mudar — a
- *      página nova precisa montar os ScrollTriggers com a janela no topo (ver
- *      o script inline em layout.tsx: montar rolado corrompe o ScrollTrigger);
- *   4. a rota muda; o véu espera o tempo mínimo e as imagens da primeira
- *      dobra, pulsando se preciso, com um teto (MAX_MS) contra rede ruim;
+ *   2. o véu cobre a tela e a marca faz a entrada — com a página antiga
+ *      parada e a main thread livre, que é o que deixa a entrada lisa;
+ *   3. com a marca montada, a rolagem volta a zero **antes** de a rota mudar —
+ *      a página nova precisa montar os ScrollTriggers com a janela no topo
+ *      (ver o script inline em layout.tsx: montar rolado corrompe o
+ *      ScrollTrigger);
+ *   4. a rota muda e a marca pulsa (CSS). Atrás dela a página nova monta e
+ *      prepara o que é pesado (`whenCovered`/`prepare`, em lib/boot.ts). O véu
+ *      espera isso, o tempo mínimo e as imagens da primeira dobra, com um teto
+ *      (MAX_MS) contra rede ruim;
  *   5. sai como uma cortina: a marca sobe e some, e o véu inteiro sobe
  *      atrás dela, revelando a página de baixo para cima. O portão abre no
  *      começo do gesto: a entrada do hero novo acontece enquanto a cortina
@@ -49,8 +59,11 @@ const MAX_MS = 8000;
 /** Quanto o véu leva para cobrir a tela depois do clique. */
 const COVER_S = 0.25;
 
+/** Se a entrada da marca não terminar (player que não sobe, aba escondida), a
+    rota muda mesmo assim depois disto, contado do clique. */
+const ENTRY_CAP_MS = 1800;
+
 const ENTRY: [number, number] = [0, 58];
-const PULSE: [number, number] = [58, 120];
 const ENTRY_SPEED = 1.7;
 
 /* O centro vertical exato da marca: o desenho fica 0,93% da altura da
@@ -75,7 +88,8 @@ export function PageTransition() {
   const lastPath = useRef(pathname);
   const cap = useRef<number | undefined>(undefined);
   const finish = useRef<() => void>(() => {});
-  const scrollWas = useRef("");
+  const lock = useRef<ScrollLock | null>(null);
+  const pulse = useRef<HTMLDivElement>(null);
 
   /* ------------------------------------------------------------ o player */
 
@@ -108,22 +122,23 @@ export function PageTransition() {
     return loading.current;
   };
 
-  /** A entrada, e o pulso em loop quando ela termina. */
-  const play = (item: AnimationItem) => {
+  /** A entrada; ao terminar, a marca fica parada no quadro 58 e o pulso passa
+      para o CSS. `onEntered` avisa que a marca já está montada. */
+  const play = (item: AnimationItem, onEntered: () => void) => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       item.goToAndStop(ENTRY[1], true);
+      onEntered();
       return;
     }
     item.loop = false;
     item.setSpeed(ENTRY_SPEED);
-    const toPulse = () => {
-      item.removeEventListener("complete", toPulse);
-      if (phase.current === "idle") return;
-      item.loop = true;
-      item.setSpeed(1);
-      item.playSegments(PULSE, true);
+    const done = () => {
+      item.removeEventListener("complete", done);
+      item.goToAndStop(ENTRY[1], true);
+      if (phase.current !== "idle") pulse.current?.classList.add("pt-pulse");
+      onEntered();
     };
-    item.addEventListener("complete", toPulse);
+    item.addEventListener("complete", done);
     item.playSegments(ENTRY, true);
   };
 
@@ -153,8 +168,6 @@ export function PageTransition() {
   /* ----------------------------------------------------- abrir o véu */
 
   useEffect(() => {
-    const html = document.documentElement;
-
     const begin = (go: (() => void) | null, instant: boolean) => {
       if (phase.current !== "idle") {
         /* Um segundo clique com o véu já subindo: segue para o destino novo. */
@@ -169,23 +182,37 @@ export function PageTransition() {
       phase.current = "covering";
       holdBoot();
 
-      /* A página não rola com o véu de pé. */
+      /* A página não rola com o véu de pé — mas a barra de rolagem fica onde
+         está: escondê-la e devolvê-la mudava a largura da página no primeiro
+         quadro da saída (ver lib/scroll-lock.ts). */
       scroller()?.stop();
-      scrollWas.current = html.style.overflow;
-      html.style.overflow = "hidden";
+      lock.current?.release();
+      lock.current = lockScroll();
 
       shownAt.current = performance.now();
+      /* A entrada terminou (ou desistimos dela): é a hora de mudar a rota. */
+      let entered: () => void = () => {};
+      const entry = new Promise<void>((resolve) => {
+        entered = resolve;
+      });
+      const entryCap = window.setTimeout(() => entered(), ENTRY_CAP_MS);
+      void entry.then(() => window.clearTimeout(entryCap));
+      pulse.current?.classList.remove("pt-pulse");
       void load().then((item) => {
-        if (!item || phase.current === "idle") return;
+        if (!item || phase.current === "idle") {
+          entered();
+          return;
+        }
         /* O mínimo conta do começo da entrada, não do clique: se o player
            demorou a subir, a marca ainda precisa do tempo inteiro. */
         shownAt.current = performance.now();
         gsap.set(stage.current, { opacity: 1, y: 0 });
-        play(item);
+        play(item, entered);
       });
 
       const covered = () => {
         /* Com o véu opaco: o topo da página, e só então a rota. */
+        lock.current?.pin(0);
         scroller()?.scrollTo(0, { immediate: true, force: true });
         window.scrollTo(0, 0);
         go?.();
@@ -197,7 +224,10 @@ export function PageTransition() {
         gsap.set(el, { opacity: 1 });
         covered();
       } else {
-        gsap.fromTo(el, { opacity: 0 }, { opacity: 1, duration: COVER_S, ease: "power2.out", onComplete: covered });
+        /* A rota só muda depois da entrada da marca: a montagem da página
+           nova ocupa a main thread por centenas de milissegundos, e feita
+           durante a entrada ela travava a marca. */
+        gsap.fromTo(el, { opacity: 0 }, { opacity: 1, duration: COVER_S, ease: "power2.out", onComplete: () => void entry.then(covered) });
       }
 
       /* O teto vale desde o clique: rota que não muda, página que não chega. */
@@ -237,20 +267,21 @@ export function PageTransition() {
       document.removeEventListener("click", onClick, true);
       window.removeEventListener("popstate", onPop);
       window.clearTimeout(cap.current);
+      lock.current?.release();
+      lock.current = null;
     };
   }, [router]);
 
   /* ----------------------------------------------------- fechar o véu */
 
   useEffect(() => {
-    const html = document.documentElement;
-
     finish.current = () => {
       if (phase.current === "idle" || phase.current === "leaving") return;
       phase.current = "leaving";
       window.clearTimeout(cap.current);
 
-      html.style.overflow = scrollWas.current;
+      lock.current?.release();
+      lock.current = null;
       window.scrollTo(0, 0);
       /* As seções novas mediram a página com o véu por cima e a rolagem
          travada. */
@@ -270,6 +301,7 @@ export function PageTransition() {
           .timeline({
             onComplete: () => {
               gsap.set(veil.current, { display: "none", yPercent: 0 });
+              pulse.current?.classList.remove("pt-pulse");
               player.current?.stop();
               phase.current = "idle";
             },
@@ -291,6 +323,9 @@ export function PageTransition() {
     lastPath.current = pathname;
     if (phase.current !== "covering") return;
     phase.current = "waiting";
+    /* A página nova montou atrás do véu: as cenas podem preparar (nuvem de
+       partículas, amostragem da foto). O véu só sai quando terminarem. */
+    markCovered();
 
     let alive = true;
     const frame = () => new Promise<void>((r) => requestAnimationFrame(() => r()));
@@ -321,6 +356,7 @@ export function PageTransition() {
             }),
         ),
       ]);
+      await whenPrepared();
       /* O mínimo pode ter passado enquanto as imagens chegavam no meio de
          uma volta do pulso; sair ali é o esperado — o gesto de saída leva a
          marca embora de qualquer ponto. */
@@ -349,10 +385,12 @@ export function PageTransition() {
           topo em vez de centralizar — a marca descia ~50 px. A centralização
           e o ajuste óptico são do GSAP (ver STAGE_Y), para não brigar com o
           `y` da saída. */}
-      <div
-        ref={stage}
-        className="absolute top-1/2 left-1/2 aspect-[9/16] w-[calc(min(600px,78vw)*0.936)] min-w-[393px]"
-      />
+      <div ref={pulse} className="absolute inset-0">
+        <div
+          ref={stage}
+          className="absolute top-1/2 left-1/2 aspect-[9/16] w-[calc(min(600px,78vw)*0.936)] min-w-[393px]"
+        />
+      </div>
     </div>
   );
 }

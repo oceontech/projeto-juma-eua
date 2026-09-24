@@ -2,7 +2,7 @@
 
 import { useRef } from "react";
 import { useContent } from "@/components/layout/LocaleProvider";
-import { whenBooted } from "@/lib/boot";
+import { prepare, whenCovered } from "@/lib/boot";
 import { gsap, ScrollTrigger, SplitText, useGSAP } from "@/lib/gsap";
 import {
   buildFromPoints,
@@ -659,60 +659,64 @@ export function Specimen({
 
           /* ------------------------------------------------- a nuvem */
 
-          void (async () => {
-            await whenBooted();
-            if (!alive) return;
-            await document.fonts?.ready;
-            if (!alive) return;
-            timeline = build();
-            try {
-              /* A textura é o hero inteiro: o fundo com as folhas da frente
-                 por cima (as mesmas do hero do Aminosan, como no Hero.tsx
-                 daqui), compostos num canvas. Assim a foto que se fragmenta
-                 é a mesma que o leitor estava olhando, com as duas camadas. */
-              const suffix = narrow ? "-mobile" : "";
-              const [bg, leaves] = await Promise.all([
-                loadImage(`/img/kmep/hero-bg${suffix}.webp`),
-                loadImage(`/img/aminosan-b/hero-leaves${suffix}.webp`),
-              ]);
+          /* Com o véu opaco e antes de ele subir (ver lib/boot.ts): montar a
+             nuvem é main thread puro e congelaria a cortina. */
+          void prepare(
+            (async () => {
+              await whenCovered();
               if (!alive) return;
-              const photo = document.createElement("canvas");
-              photo.width = bg.naturalWidth;
-              photo.height = bg.naturalHeight;
-              const ctx = photo.getContext("2d");
-              if (!ctx) throw new Error("kmep scene: sem canvas 2D");
-              ctx.drawImage(bg, 0, 0);
-              ctx.drawImage(leaves, 0, 0, photo.width, photo.height);
-              aspect = photo.width / photo.height;
+              await document.fonts?.ready;
+              if (!alive) return;
+              timeline = build();
+              try {
+                /* A textura é o hero inteiro: o fundo com as folhas da frente
+                   por cima (as mesmas do hero do Aminosan, como no Hero.tsx
+                   daqui), compostos num canvas. Assim a foto que se fragmenta
+                   é a mesma que o leitor estava olhando, com as duas camadas. */
+                const suffix = narrow ? "-mobile" : "";
+                const [bg, leaves] = await Promise.all([
+                  loadImage(`/img/kmep/hero-bg${suffix}.webp`),
+                  loadImage(`/img/aminosan-b/hero-leaves${suffix}.webp`),
+                ]);
+                if (!alive) return;
+                const photo = document.createElement("canvas");
+                photo.width = bg.naturalWidth;
+                photo.height = bg.naturalHeight;
+                const ctx = photo.getContext("2d");
+                if (!ctx) throw new Error("kmep scene: sem canvas 2D");
+                ctx.drawImage(bg, 0, 0);
+                ctx.drawImage(leaves, 0, 0, photo.width, photo.height);
+                aspect = photo.width / photo.height;
 
-              /* O pontilhado: denso onde a foto é escura, vazio no céu, com a
-                 bombona e o nome dela reforçados — ver lib/scan/stipple.ts. */
-              const dots = stipplePhoto(
-                bg,
-                leaves,
-                narrow ? COUNT.narrow : COUNT.wide,
-                FRAMES[narrow ? "narrow" : "wide"],
-              );
-              const data = buildFromPoints(
-                dots.uv,
-                dots.depth,
-                forms.map((f) => f.points),
-              );
-              if (!alive) return;
-              count = data.count;
-              field = createScan(surface, photo, data);
-              if (!field) {
-                goStill();
-                timeline?.scrollTrigger?.kill();
-                timeline?.kill();
-                timeline = null;
-                return;
+                /* O pontilhado: denso onde a foto é escura, vazio no céu, com a
+                   bombona e o nome dela reforçados — ver lib/scan/stipple.ts. */
+                const dots = stipplePhoto(
+                  bg,
+                  leaves,
+                  narrow ? COUNT.narrow : COUNT.wide,
+                  FRAMES[narrow ? "narrow" : "wide"],
+                );
+                const data = buildFromPoints(
+                  dots.uv,
+                  dots.depth,
+                  forms.map((f) => f.points),
+                );
+                if (!alive) return;
+                count = data.count;
+                field = createScan(surface, photo, data);
+                if (!field) {
+                  goStill();
+                  timeline?.scrollTrigger?.kill();
+                  timeline?.kill();
+                  timeline = null;
+                  return;
+                }
+                fit();
+              } catch {
+                if (alive) goStill();
               }
-              fit();
-            } catch {
-              if (alive) goStill();
-            }
-          })();
+            })(),
+          );
 
           gsap.ticker.add(tick);
           document.addEventListener("visibilitychange", onVisibility);

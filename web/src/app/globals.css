@@ -3222,3 +3222,35 @@ html[data-proof-overlap] .expertise-layer--dark .expertise-bg {
 .ec-range:focus-visible { outline: none; }
 .ec-range:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 2px var(--color-lime), 0 0 0 6px rgb(183 199 62 / 0.35); }
 .ec-range:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 2px var(--color-lime), 0 0 0 6px rgb(183 199 62 / 0.35); }
+
+/* O pulso da marca no véu da troca de página (PageTransition.tsx): a mesma
+   escala 100 → 104 → 100 dos quadros 58–120 do Lottie, com as duas curvas
+   dele (cubic-bezier .333,0,.667,1 na ida e .167,0,.667,1 na volta), 62
+   quadros a 30 fps. Em CSS, e não no player, porque `transform` corre no
+   compositor: a página nova monta atrás do véu e ocupa a main thread, e o
+   pulso não pode travar junto. Fica fora de @layer para não perder para os
+   utilitários. */
+.pt-pulse {
+  will-change: transform;
+  animation: pt-pulse 2.067s linear infinite;
+}
+
+@keyframes pt-pulse {
+  0% {
+    transform: scale(1);
+    animation-timing-function: cubic-bezier(0.333, 0, 0.667, 1);
+  }
+  53% {
+    transform: scale(1.04);
+    animation-timing-function: cubic-bezier(0.167, 0, 0.667, 1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pt-pulse {
+    animation: none;
+  }
+}
