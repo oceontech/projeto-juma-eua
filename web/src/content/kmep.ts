@@ -585,6 +585,7 @@ export const timing = {
     },
   ],
   jugAlt: "KMEP Ultra® 2.5 gal jug with the U.S. label",
+  logoAlt: "KMEP Ultra® logo",
 };
 
 /* -------------------------------------------------------------------- K14 */

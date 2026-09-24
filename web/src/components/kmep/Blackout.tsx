@@ -113,7 +113,7 @@ export function Blackout({ variant = "a" }: { variant?: "a" | "b" }) {
         <div className="fd-layout absolute inset-0 z-[3] mx-auto grid max-w-[var(--container-wrap)] grid-cols-[minmax(0,0.72fr)_minmax(0,2.5fr)] items-center gap-[clamp(16px,2vw,42px)] px-[var(--spacing-gut)] opacity-0 max-[900px]:grid-cols-1">
           <div className="fd-product flex justify-center max-[900px]:absolute max-[900px]:top-[clamp(28px,8svh,72px)] max-[900px]:left-[var(--spacing-gut)]">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/img/pack-kmep-us.webp" alt="KMEP Ultra®" width={1280} height={1280} loading="lazy" decoding="async" className="h-auto w-[clamp(125px,13vw,200px)] object-contain max-[900px]:w-[clamp(58px,11vw,100px)]" />
+            <img src="/img/kmep/kmep-ultra-logo.webp" alt="KMEP Ultra®" width={800} height={397} loading="lazy" decoding="async" className="h-auto w-[clamp(150px,15vw,250px)] object-contain max-[900px]:w-[clamp(96px,24vw,150px)]" />
           </div>
           <div className="fd-main relative grid h-[min(72svh,650px)] min-h-[440px] items-center max-[900px]:h-[min(70svh,650px)] max-[900px]:min-h-[380px]">
             {blackout.chapters.map((chapter) => (

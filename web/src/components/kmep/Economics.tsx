@@ -225,12 +225,13 @@ export function Economics() {
                 {cols.map((col) =>
                   col.key === "cost" ? (
                     /* O rótulo do custo é o próprio produto: o que os $6 compram. */
-                    <div key={col.key} className="relative mx-auto h-[clamp(72px,8vw,124px)] w-full max-w-[104px]">
+                    <div key={col.key} className="relative mx-auto h-[clamp(52px,5.6vw,92px)] w-full max-w-[clamp(104px,11vw,176px)]">
                       <Image
-                        src="/img/pack-kmep-us.webp"
+                        src="/img/kmep/kmep-ultra-logo.webp"
                         alt={col.label}
                         fill
-                        sizes="130px"
+                        sizes="176px"
+                        quality={90}
                         className="object-contain object-bottom"
                       />
                     </div>

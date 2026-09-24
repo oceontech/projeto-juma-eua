@@ -295,11 +295,12 @@ export function Potassium() {
         {kind === "foliar" && (
           <div className="kp-product-frame relative col-start-2 mt-4 aspect-[376/235] w-full max-w-[376px] lg:absolute lg:top-10 lg:right-0 lg:mt-0 lg:w-[min(33%,376px)]">
             <Image
-              src="/img/pack-kmep-us.webp"
-              alt={timing.jugAlt}
+              src="/img/kmep/kmep-ultra-logo.webp"
+              alt={timing.logoAlt}
               fill
               sizes="(min-width: 1024px) 376px, 100vw"
-              className="kp-product object-contain drop-shadow-[0_18px_24px_rgba(22,38,27,0.18)]"
+              quality={90}
+              className="kp-product object-contain drop-shadow-[0_14px_18px_rgba(22,38,27,0.16)]"
             />
           </div>
         )}

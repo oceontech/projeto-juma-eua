@@ -661,7 +661,7 @@ export function Timing() {
 
       {/* A ficha: dose e embalagem de um lado, mistura do outro, a bombona no meio. */}
       <div className="wrap pb-sec">
-        <div className="tm-spec relative mt-[clamp(56px,8vw,120px)] grid items-center gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(220px,300px)_minmax(0,1fr)] lg:gap-0">
+        <div className="tm-spec relative mt-[clamp(56px,8vw,120px)] grid items-center gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(240px,clamp(300px,30vw,440px))_minmax(0,1fr)] lg:gap-0">
           {timing.details.map((detail, i) => (
             <div
               key={detail.k}
@@ -686,7 +686,7 @@ export function Timing() {
             </div>
           ))}
 
-          <div className="relative order-first mx-auto aspect-square w-[min(260px,66vw)] lg:order-none lg:col-start-2 lg:row-start-1 lg:w-full">
+          <div className="relative order-first mx-auto aspect-square w-[min(360px,84vw)] lg:order-none lg:col-start-2 lg:row-start-1 lg:w-full">
             {/* Os dois anéis: incompletos e grossos, um preto e um vermelho, girando
                 em sentidos opostos e em velocidades diferentes — o gesto de uma
                 embalagem em giro, não de um alvo perfeito. */}
@@ -709,7 +709,7 @@ export function Timing() {
                 src="/img/pack-kmep-us.webp"
                 alt={timing.jugAlt}
                 fill
-                sizes="(min-width: 1024px) 300px, 260px"
+                sizes="(min-width: 1024px) 440px, 360px"
                 className="object-contain drop-shadow-[0_24px_30px_rgba(22,38,27,0.25)]"
               />
             </div>

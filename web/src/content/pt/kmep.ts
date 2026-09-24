@@ -479,6 +479,7 @@ export const timing: typeof en.timing = {
     },
   ],
   jugAlt: "Galão de 2,5 gal do KMEP Ultra® com o rótulo americano",
+  logoAlt: "Logo do KMEP Ultra®",
 };
 
 export const fit: typeof en.fit = {

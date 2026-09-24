@@ -171,13 +171,14 @@ export function Proof() {
                       <span className="mt-2 block text-[clamp(12px,1vw,16px)] tracking-[0.02em] text-cream/55">{pair.unit}</span>
                     </dd>
                   </div>
-                  {/* O jarro, no pé da barra — o que fez a diferença acima dele. */}
-                  <div className="pr-jug absolute right-[clamp(10px,1.4vw,24px)] bottom-[clamp(10px,1.4vw,24px)] left-[clamp(10px,1.4vw,24px)] h-[clamp(90px,11vw,180px)]">
+                  {/* A marca, no pé da barra — o que fez a diferença acima dela. */}
+                  <div className="pr-jug absolute right-[clamp(10px,1.4vw,24px)] bottom-[clamp(10px,1.4vw,24px)] left-[clamp(10px,1.4vw,24px)] h-[clamp(60px,7.5vw,120px)]">
                     <Image
-                      src="/img/pack-kmep-us.webp"
+                      src="/img/kmep/kmep-ultra-logo.webp"
                       alt=""
                       fill
                       sizes="(min-width: 1024px) 20vw, 40vw"
+                      quality={90}
                       className="object-contain object-bottom"
                     />
                   </div>
