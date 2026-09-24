@@ -85,6 +85,12 @@
     max-width: 100%;
     overflow-x: clip;
     overscroll-behavior-x: none;
+    /* Reserva o espaço da barra de rolagem mesmo quando ela some. Os véus
+       (Preloader e PageTransition) travam a página com `overflow: hidden`, e
+       sem a reserva a barra volta no instante em que o véu começa a sair: a
+       largura útil muda, a página inteira refaz o layout e a marca do véu
+       dá um salto lateral, bem no primeiro quadro da saída. */
+    scrollbar-gutter: stable;
   }
 
   /* Sem scroll-behavior: smooth aqui de propósito — a rolagem nativa suave

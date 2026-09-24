@@ -256,25 +256,32 @@ export function PageTransition() {
          travada. */
       ScrollTrigger.refresh();
       scroller()?.start();
-      /* A entrada do hero novo começa junto com a saída, como na primeira
-         entrada no site. */
-      markBooted();
 
-      gsap
-        .timeline({
-          onComplete: () => {
-            gsap.set(veil.current, { display: "none", yPercent: 0 });
-            player.current?.stop();
-            phase.current = "idle";
-          },
-        })
-        /* A marca sai primeiro, subindo um pouco mais depressa que o véu —
-           é ela que puxa a cortina. */
-        .to(stage.current, { opacity: 0, y: "-12vh", duration: 0.5, ease: "power2.in" }, 0)
-        /* A cortina: o véu inteiro sobe e sai pelo alto. Opaco até o fim —
-           o que revela a página é a borda de baixo passando, não um
-           esmaecimento. */
-        .to(veil.current, { yPercent: -100, duration: 0.9, ease: "power4.inOut" }, 0.1);
+      /* O refresh ocupou um quadro inteiro e `lagSmoothing(0)` não perdoa
+         quadro longo: a saída começaria adiantada. Um tick do relógio do GSAP
+         depois, ela parte de um quadro limpo (mesmo cuidado do Preloader). */
+      gsap.ticker.add(function start() {
+        gsap.ticker.remove(start);
+        /* A entrada do hero novo começa junto com a saída, como na primeira
+           entrada no site. */
+        markBooted();
+
+        gsap
+          .timeline({
+            onComplete: () => {
+              gsap.set(veil.current, { display: "none", yPercent: 0 });
+              player.current?.stop();
+              phase.current = "idle";
+            },
+          })
+          /* A marca sai primeiro, subindo um pouco mais depressa que o véu —
+             é ela que puxa a cortina. */
+          .to(stage.current, { opacity: 0, y: "-12vh", duration: 0.5, ease: "power2.in" }, 0)
+          /* A cortina: o véu inteiro sobe e sai pelo alto. Opaco até o fim —
+             o que revela a página é a borda de baixo passando, não um
+             esmaecimento. */
+          .to(veil.current, { yPercent: -100, duration: 0.9, ease: "power4.inOut" }, 0.1);
+      });
     };
   });
 

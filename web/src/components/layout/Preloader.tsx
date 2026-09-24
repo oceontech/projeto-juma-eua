@@ -57,7 +57,9 @@ export function Preloader() {
 
     const unlock = () => {
       html.style.overflow = scrollWas;
-      /* As medidas do ScrollTrigger foram tiradas com a página parada. */
+      /* As medidas do ScrollTrigger foram tiradas com a página parada. Rodar
+         isto é caro e é síncrono: por isso acontece com o véu ainda opaco e
+         parado, antes da saída, e não no meio dela. */
       ScrollTrigger.refresh();
     };
 
@@ -112,19 +114,28 @@ export function Preloader() {
     ]).then(() => {
       if (killed) return;
       unlock();
-      /* A entrada do hero começa junto com a saída do véu: as duas se
-         sobrepõem, e a cena já está andando quando aparece. */
-      markBooted();
-      /* A saída é a cortina do véu da troca de página (PageTransition.tsx):
-         a marca sobe e some primeiro, puxando o véu, que sobe inteiro e sai
-         pelo alto, opaco até o fim — o que revela a página é a borda de baixo
-         passando. A entrada do hero já está andando por baixo dela. */
-      gsap
-        .timeline({ onComplete: () => setGone(true) })
-        /* Relativo, e não `y` absoluto: o palco já está erguido pela classe
-           de centralização (`-translate-y-[8.9%]`), que o GSAP lê como `y`. */
-        .to(stage.current, { opacity: 0, y: `-=${window.innerHeight * 0.12}`, duration: 0.5, ease: "power2.in" }, 0)
-        .to(veil, { yPercent: -100, duration: 0.9, ease: "power4.inOut" }, 0.1);
+      /* O refresh acima ocupou um quadro inteiro. Com `lagSmoothing(0)` o
+         GSAP não perdoa quadro longo: uma linha do tempo criada agora
+         herdaria o tempo do quadro perdido e a saída começaria já adiantada,
+         como um tranco. Esperar um tick do relógio dele começa a saída — e a
+         entrada do hero, junto — de um quadro limpo. */
+      gsap.ticker.add(function start() {
+        gsap.ticker.remove(start);
+        if (killed) return;
+        /* A entrada do hero começa junto com a saída do véu: as duas se
+           sobrepõem, e a cena já está andando quando aparece. */
+        markBooted();
+        /* A saída é a cortina do véu da troca de página (PageTransition.tsx):
+           a marca sobe e some primeiro, puxando o véu, que sobe inteiro e sai
+           pelo alto, opaco até o fim — o que revela a página é a borda de
+           baixo passando. A entrada do hero já está andando por baixo dela. */
+        gsap
+          .timeline({ onComplete: () => setGone(true) })
+          /* Relativo, e não `y` absoluto: o palco já está erguido pela classe
+             de centralização (`-translate-y-[8.9%]`), que o GSAP lê como `y`. */
+          .to(stage.current, { opacity: 0, y: `-=${window.innerHeight * 0.12}`, duration: 0.5, ease: "power2.in" }, 0)
+          .to(veil, { yPercent: -100, duration: 0.9, ease: "power4.inOut" }, 0.1);
+      });
     });
 
     return () => {
