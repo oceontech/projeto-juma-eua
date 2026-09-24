@@ -340,30 +340,37 @@ export const timing = {
   alt: "Hands holding a soybean plant with full pods",
 };
 
+/* A seção de culturas segue a tese da Juma para os EUA: specialty crops
+   (frutas e hortaliças da Flórida), não row crop. Não há estágio, dose nem
+   número aqui de propósito — o Aminosan® ainda não tem as culturas americanas
+   confirmadas em rótulo, e o que se afirma é só o encaixe na passada que o
+   produtor já faz, com dose e época definidas com o agrônomo dele.
+   TODO(P6): confirmar com a Juma/regulatório em quais dessas culturas o
+   Aminosan® pode ser posicionado nos EUA antes de publicar. */
 export const season = {
-  heading: ["Fits the crops", "you already grow."],
-  intro: "One jug, two row crops, and the spray passes already on your calendar.",
+  heading: ["Made for the crops", "you grow for market."],
+  intro: "One jug across berries, vegetables and citrus, riding in the spray passes already on your calendar.",
   cards: [
     {
-      tag: "Soybeans",
-      title: "V2–V3 through R5",
-      body: "Alone or in tank mix, from early vegetative stages through pod fill.",
-      image: "/img/aminosan-b/cut-soy.webp",
-      alt: "Soybean plant with pods",
+      tag: "Berries",
+      title: "Strawberry",
+      body: "Alone or in tank mix, in the passes already on your winter-season schedule.",
+      image: "/img/aminosan-b/cut-strawberry-v2.webp",
+      alt: "Strawberry plant with ripe fruit and roots",
     },
     {
-      tag: "Corn",
-      title: "V2 through V8",
-      body: "In the early vegetative window, riding along with a pass you already make.",
-      image: "/img/aminosan-b/cut-corn.webp",
-      alt: "Young corn plant",
+      tag: "Vegetables",
+      title: "Tomato",
+      body: "Fits the fertility and spray program you already run. Rate and timing set with your agronomist.",
+      image: "/img/aminosan-b/cut-tomato-v2.webp",
+      alt: "Tomato plant with ripe fruit and roots",
     },
     {
-      tag: "In the tank",
-      title: "Aminosan®",
-      body: "A small rate per acre, with the rate and mixing order right on the label.",
-      image: "/img/aminosan-b/cut-jug.webp",
-      alt: "Aminosan jug",
+      tag: "Groves",
+      title: "Citrus",
+      body: "Rides in the foliar pass you already make across the grove. Rate and timing set with your agronomist.",
+      image: "/img/aminosan-b/cut-citrus-v2.webp",
+      alt: "Young citrus tree with oranges and roots",
     },
   ],
 };

@@ -8,8 +8,8 @@ import { SplitLines } from "@/components/motion/SplitLines";
 import { microCaps } from "./ui";
 
 /**
- * Onde entra na safra: fichas verdes em escada, com o recorte (soja, milho,
- * a bombona) saindo pelo topo de cada uma — o desenho dos cards de produto
+ * As culturas do produtor (specialty crops): fichas verdes em escada, com o recorte da cultura (morango,
+ * tomate, citros: a planta inteira, com raiz) saindo pelo topo de cada uma — o desenho dos cards de produto
  * da referência. A entrada é presa ao scroll, nos dois sentidos: as fichas
  * sobem de baixo enquanto a seção entra (e voltam a descer se o scroll
  * voltar); os recortes andam num compasso próprio, então a figura escorrega

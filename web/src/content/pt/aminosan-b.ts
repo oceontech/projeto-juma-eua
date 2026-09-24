@@ -289,29 +289,29 @@ export const timing: typeof en.timing = {
 };
 
 export const season: typeof en.season = {
-  heading: ["Entra nas culturas", "que você já planta."],
-  intro: "Uma bombona, duas culturas e as pulverizações que já estão no seu calendário.",
+  heading: ["Feito para as culturas", "que você planta para vender."],
+  intro: "Uma bombona para frutas vermelhas, hortaliças e citros, nas passadas de pulverização que já estão no seu calendário.",
   cards: [
     {
-      tag: "Soja",
-      title: "V2–V3 até R5",
-      body: "Sozinho ou em mistura de tanque, dos estágios vegetativos iniciais até o enchimento de vagem.",
-      image: "/img/aminosan-b/cut-soy.webp",
-      alt: "Planta de soja com vagens",
+      tag: "Frutas vermelhas",
+      title: "Morango",
+      body: "Sozinho ou em mistura de tanque, nas passadas que já fazem parte da sua safra de inverno.",
+      image: "/img/aminosan-b/cut-strawberry-v2.webp",
+      alt: "Planta de morango com frutos maduros e raízes",
     },
     {
-      tag: "Milho",
-      title: "V2 até V8",
-      body: "Na janela vegetativa inicial, junto de uma passada que você já faz.",
-      image: "/img/aminosan-b/cut-corn.webp",
-      alt: "Planta jovem de milho",
+      tag: "Hortaliças",
+      title: "Tomate",
+      body: "Encaixa no programa de fertilidade e pulverização que você já roda. Dose e época definidas com o seu agrônomo.",
+      image: "/img/aminosan-b/cut-tomato-v2.webp",
+      alt: "Planta de tomate com frutos maduros e raízes",
     },
     {
-      tag: "No tanque",
-      title: "Aminosan®",
-      body: "Uma dose pequena por acre, com dose e ordem de mistura no próprio rótulo.",
-      image: "/img/aminosan-b/cut-jug.webp",
-      alt: "Bombona de Aminosan",
+      tag: "Pomares",
+      title: "Citros",
+      body: "Vai na passada foliar que você já faz no pomar. Dose e época definidas com o seu agrônomo.",
+      image: "/img/aminosan-b/cut-citrus-v2.webp",
+      alt: "Citros jovem com laranjas e raízes",
     },
   ],
 };
