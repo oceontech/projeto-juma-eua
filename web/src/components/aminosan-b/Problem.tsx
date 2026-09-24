@@ -85,12 +85,12 @@ export function Problem() {
 <div className="pb-vee relative mx-auto mt-8 lg:col-start-2 lg:row-start-1 aspect-[10/7.6] w-full max-w-[860px]">
           <div className="pb-sphere absolute top-[2%] left-1/2 aspect-square w-[62%] -translate-x-1/2 will-change-transform">
             <Image
-              src="/img/aminosan/leaf-sphere.webp"
+              src="/img/aminosan/plant-top.webp"
               alt=""
               fill
               sizes="(min-width: 1024px) 40vw, 80vw"
               quality={90}
-              className="object-contain mix-blend-multiply"
+              className="object-contain"
             />
           </div>
 

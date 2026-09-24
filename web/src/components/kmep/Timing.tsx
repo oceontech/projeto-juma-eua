@@ -13,6 +13,20 @@ const ARC = { cx: 500, cy: 520, r: 420 };
 const VIEW = { w: 1000, h: 560 };
 const TICKS = Array.from({ length: 41 }, (_, i) => i / 40);
 const CORN_STAGE_IMAGES = ["/img/kmep/corn-v4.webp", "/img/kmep/corn-v6.webp", "/img/kmep/corn-ear.webp"];
+/* Cortes no espaço entre plantas de cada sprite, em pixels da imagem original. */
+const STAGE_SPRITES: Record<string, { src: string; width: number; height: number; cuts: number[] }> = {
+  citrus: { src: "/img/kmep/stages/citrus.png", width: 1774, height: 887, cuts: [0, 567, 1138, 1774] },
+  fruit: { src: "/img/kmep/stages/fruit.png", width: 1774, height: 887, cuts: [0, 605, 1139, 1774] },
+  veg: { src: "/img/kmep/stages/veg.png", width: 2172, height: 724, cuts: [0, 633, 1361, 2172] },
+  tomato: { src: "/img/kmep/stages/tomato.png", width: 1942, height: 809, cuts: [0, 458, 916, 1432, 1942] },
+  ornamental: { src: "/img/kmep/stages/ornamental.png", width: 1774, height: 887, cuts: [0, 532, 1119, 1774] },
+  potato: { src: "/img/kmep/stages/potato.png", width: 1881, height: 836, cuts: [0, 558, 1176, 1881] },
+  onion: { src: "/img/kmep/stages/onion.png", width: 1942, height: 809, cuts: [0, 566, 1256, 1942] },
+  roots: { src: "/img/kmep/stages/roots.png", width: 1774, height: 887, cuts: [0, 473, 1064, 1774] },
+  soy: { src: "/img/kmep/stages/soy.png", width: 1774, height: 887, cuts: [0, 537, 1171, 1774] },
+  cotton: { src: "/img/kmep/stages/cotton.png", width: 1974, height: 797, cuts: [0, 468, 952, 1473, 1974] },
+  beans: { src: "/img/kmep/stages/beans.png", width: 1774, height: 887, cuts: [0, 552, 1142, 1774] },
+};
 /* As gotas que saltam do estágio quando a passada chega nele. */
 const DROPS = Array.from({ length: 9 }, (_, k) => ({ deg: k * 40 + 12, dist: k % 2 ? 46 : 68 }));
 
@@ -564,7 +578,7 @@ export function Timing() {
               {/* O centro: um painel por estágio, empilhados no mesmo lugar. */}
               <div
                 aria-hidden
-                className={`grid text-center lg:absolute lg:inset-x-[17%] lg:mt-0 ${crop.id === "corn" ? "mt-8 lg:top-[24%] lg:bottom-[3%]" : "mt-12 lg:bottom-[9%]"}`}
+                className="mt-8 grid text-center lg:absolute lg:inset-x-[17%] lg:top-[24%] lg:bottom-[16%] lg:mt-0"
               >
                 <div data-i={-1} className="tm-say col-start-1 row-start-1 flex flex-col items-center justify-end" key={`${crop.id}-intro`}>
                   <p className={`tm-meta ${eyebrow} text-[10px] text-moss`}>{timing.cropLabel}</p>
@@ -575,26 +589,39 @@ export function Timing() {
                 </div>
                 {crop.marks.map((mark, i) => {
                   const big = mark.display || mark.code;
-                  const stageTitleSize = crop.id === "corn"
-                    ? big.length > 6 ? "text-[length:clamp(30px,min(4vw,6svh),64px)]" : "text-[length:clamp(44px,min(6vw,9svh),90px)]"
-                    : big.length > 6 ? "text-[length:clamp(34px,min(5.4vw,8.5svh),96px)]" : "text-[length:clamp(56px,min(11vw,17svh),170px)]";
+                  const stageTitleSize = big.length > 6 ? "text-[length:clamp(30px,min(4vw,6svh),64px)]" : "text-[length:clamp(44px,min(6vw,9svh),90px)]";
+                  const sprite = STAGE_SPRITES[crop.id];
+                  const left = sprite?.cuts[i] ?? 0;
+                  const width = sprite ? sprite.cuts[i + 1] - left : 0;
                   return (
                     <div
                       key={`${crop.id}-${i}`}
                       data-i={i}
                       className="tm-say invisible col-start-1 row-start-1 flex flex-col items-center justify-end"
                     >
-                      {crop.id === "corn" && (
-                        <div className="tm-photo relative mb-2 h-[clamp(170px,25svh,290px)] w-[min(72vw,360px)] lg:h-[clamp(190px,29svh,320px)] lg:w-[min(38vw,400px)]">
-                          <Image
-                            src={CORN_STAGE_IMAGES[i]}
-                            alt=""
-                            fill
-                            sizes="(min-width: 1024px) 400px, 72vw"
-                            className="object-contain"
-                          />
-                        </div>
-                      )}
+                      <div className="tm-photo relative mb-2 flex h-[clamp(170px,25svh,290px)] w-[min(72vw,360px)] items-center justify-center lg:h-[clamp(160px,24svh,280px)] lg:w-[min(38vw,400px)]">
+                        {sprite ? (
+                          <div className="relative h-full shrink-0 overflow-hidden" style={{ aspectRatio: width / sprite.height }}>
+                            <Image
+                              src={sprite.src}
+                              alt=""
+                              fill
+                              sizes="1280px"
+                              className="object-cover"
+                              style={{
+                                objectPosition: `${(left / (sprite.width - width)) * 100}% center`,
+                                maskImage: crop.id === "fruit" ? [
+                                  "linear-gradient(to right, black 0%, black 92%, transparent 100%)",
+                                  "linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)",
+                                  "linear-gradient(to right, transparent 0%, black 8%, black 100%)",
+                                ][i] : undefined,
+                              }}
+                            />
+                          </div>
+                        ) : (
+                          <Image src={CORN_STAGE_IMAGES[i]} alt="" fill sizes="(min-width: 1024px) 400px, 72vw" className="object-contain" />
+                        )}
+                      </div>
                       <p className={`tm-meta ${eyebrow} text-[10px] text-moss`}>
                         {timing.pass} {String(i + 1).padStart(2, "0")} / {total}
                       </p>

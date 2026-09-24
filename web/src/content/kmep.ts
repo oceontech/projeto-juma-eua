@@ -117,11 +117,20 @@ export const twoJobs = {
   /* Rótulos da cena: o rastro que entra, e as duas pontas da bifurcação. */
   scene: {
     pass: "One pass",
-    jobA: { tag: "Job 1", title: "Coverage and deposition", clock: "20 min", time: "Twenty minutes in that field" },
+    /* `body` de cada trabalho é a frase do lead canônico que o descreve. */
+    jobA: {
+      tag: "Job 1",
+      title: "Coverage and deposition",
+      body: "Changes how the spray behaves on the way to the leaf.",
+      clock: "20 min",
+      time: "Twenty minutes in that field",
+    },
     jobB: {
       tag: "Job 2",
       title: "Foliar potassium",
+      body: "Delivers potassium the tissue can take up while it is there.",
       time: "The rest of the season",
+      start: "Spray day",
       marks: ["Flowering", "Filling", "Harvest"],
     },
   },
@@ -816,7 +825,7 @@ export const blackoutA: Blackout = {
     {
       kicker: "At harvest",
       heading: "Both show up in the yield monitor.",
-      body: "Neither of those shows up as a symptom you can photograph. One trial, with the check strip beside it:",
+      body: "Neither shows up as a symptom you can photograph. A trial strip with its untreated check makes the result measurable.",
       image: "/img/kmep/blackout/monitor.webp",
       alt: "A yield map glowing on the in-cab monitor of a combine at dusk during corn harvest",
       proof: true,

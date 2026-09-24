@@ -71,11 +71,19 @@ export const twoJobs: typeof en.twoJobs = {
   close: "O primeiro trabalho acontece nos vinte minutos em que o pulverizador está naquele talhão. O segundo segue pelo resto da safra.",
   scene: {
     pass: "Uma passada",
-    jobA: { tag: "Trabalho 1", title: "Cobertura e deposição", clock: "20 min", time: "Vinte minutos naquele talhão" },
+    jobA: {
+      tag: "Trabalho 1",
+      title: "Cobertura e deposição",
+      body: "Muda como a calda se comporta no caminho até a folha.",
+      clock: "20 min",
+      time: "Vinte minutos naquele talhão",
+    },
     jobB: {
       tag: "Trabalho 2",
       title: "Potássio foliar",
+      body: "Entrega potássio que o tecido consegue absorver enquanto está lá.",
       time: "O resto da safra",
+      start: "Dia da aplicação",
       marks: ["Florada", "Enchimento", "Colheita"],
     },
   },
@@ -636,7 +644,7 @@ export const blackoutA: typeof en.blackoutA = {
     {
       kicker: "Na colheita",
       heading: "As duas aparecem no monitor de produtividade.",
-      body: "Nenhuma delas aparece como sintoma que dê para fotografar. Um ensaio, com a faixa testemunha ao lado:",
+      body: "Nenhuma delas aparece como sintoma que dê para fotografar. Uma faixa de ensaio com a testemunha ao lado permite medir o resultado.",
       image: "/img/kmep/blackout/monitor.webp",
       alt: "Mapa de produtividade aceso no monitor da cabine de uma colheitadeira ao entardecer, na colheita do milho",
       proof: true,
