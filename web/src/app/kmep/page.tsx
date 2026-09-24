@@ -8,7 +8,6 @@ import { Potassium } from "@/components/kmep/Potassium";
 import { Flush } from "@/components/kmep/Flush"; // HOLD P2 — remover junto com Flush.tsx
 import { Operation } from "@/components/kmep/Operation";
 import { Proof } from "@/components/kmep/Proof";
-import { Economics } from "@/components/kmep/Economics";
 import { Credential } from "@/components/kmep/Credential";
 import { Timing } from "@/components/kmep/Timing";
 import { Fit } from "@/components/kmep/Fit";
@@ -19,7 +18,7 @@ import { Final } from "@/components/kmep/Final";
 export const metadata: Metadata = {
   title: "KMEP Ultra®",
   description:
-    "One pass, two jobs: better spray coverage and deposition, plus foliar potassium for grain fill. Six dollars an acre, in the insecticide pass you already run.",
+    "One pass, two jobs: better spray coverage and deposition, plus foliar potassium in the weeks that set the yield. For row crops, vegetables and orchards, in the spray pass you already run.",
 };
 
 /**
@@ -56,7 +55,6 @@ export default function KmepPage() {
       <Flush />
       <Operation />
       <Proof />
-      <Economics />
       <Credential />
       <Timing />
       <Fit />

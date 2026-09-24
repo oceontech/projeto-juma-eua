@@ -16,6 +16,14 @@ const CORN_STAGE_IMAGES = ["/img/kmep/corn-v4.webp", "/img/kmep/corn-v6.webp", "
 /* As gotas que saltam do estágio quando a passada chega nele. */
 const DROPS = Array.from({ length: 9 }, (_, k) => ({ deg: k * 40 + 12, dist: k % 2 ? 46 : 68 }));
 
+/* O nome da cultura em corpo grande encolhe com o comprimento: "Corn" cabe
+   em 160px, "Tomatoes & peppers" não. */
+function nameSize(label: string) {
+  if (label.length <= 9) return "text-[length:clamp(56px,min(10vw,16svh),160px)]";
+  if (label.length <= 12) return "text-[length:clamp(44px,min(7.2vw,12svh),118px)]";
+  return "text-[length:clamp(34px,min(5.2vw,9svh),86px)]";
+}
+
 /* Ponto do arco na fração t da safra. */
 function onArc(t: number, r = ARC.r): [number, number] {
   const a = Math.PI * (1 - t);
@@ -234,6 +242,7 @@ export function Timing() {
   const veil = useRef<HTMLDivElement>(null);
   const veilWord = useRef<HTMLSpanElement>(null);
   const tabs = useRef<(HTMLButtonElement | null)[]>([]);
+  const tablist = useRef<HTMLDivElement>(null);
   const live = useRef<Live>({ p: 0, shown: -2, lit: -1 });
   const motion = useRef(false);
   /* A íris está no meio do gesto: fechada sobre a cena, esperando a troca. */
@@ -299,6 +308,13 @@ export function Timing() {
   useLayoutEffect(() => {
     const root = scope.current;
     if (!root) return;
+    /* No celular as culturas correm numa faixa com rolagem lateral: a ativa
+       vai para o centro dela, sem mexer no scroll da página. */
+    const list = tablist.current;
+    const tab = tabs.current[active];
+    if (list && tab && list.scrollWidth > list.clientWidth) {
+      list.scrollTo({ left: tab.offsetLeft - (list.clientWidth - tab.offsetWidth) / 2, behavior: "smooth" });
+    }
     live.current.shown = -2;
     draw(root, live.current, 1, true);
 
@@ -335,7 +351,10 @@ export function Timing() {
     busy.current = true;
     const b = from.getBoundingClientRect();
     const at = `${b.left + b.width / 2 - s.left}px ${b.top + b.height / 2 - s.top}px`;
-    if (veilWord.current) veilWord.current.textContent = timing.crops[i].label;
+    if (veilWord.current) {
+      veilWord.current.textContent = timing.crops[i].label;
+      veilWord.current.style.fontSize = timing.crops[i].label.length > 10 ? "clamp(40px,7vw,130px)" : "";
+    }
     gsap.fromTo(
       veil.current,
       { clipPath: `circle(0px at ${at})` },
@@ -354,6 +373,7 @@ export function Timing() {
 
   const noteFor = (i: number) => crop.spans.find((s) => i >= s.from && i <= s.to)?.note ?? "";
   const total = String(crop.marks.length).padStart(2, "0");
+  const ends = crop.ends ?? timing.ends;
 
   return (
     <section ref={scope} className="relative bg-cream text-forest">
@@ -369,7 +389,14 @@ export function Timing() {
           {/* O alternador: as culturas em corpo grande, a apagada só no contorno, centradas na tela. */}
           <div className="flex flex-col items-center text-center">
             <p className={`${eyebrow} text-[10px] text-moss`}>{timing.cropLabel}</p>
-            <div role="tablist" aria-label={timing.cropLabel} className="mt-2 flex items-baseline justify-center gap-[clamp(18px,2.8vw,48px)]">
+            {/* Onze culturas: no desktop quebram em duas linhas centradas; no
+                celular correm numa faixa só, com rolagem lateral. */}
+            <div
+              ref={tablist}
+              role="tablist"
+              aria-label={timing.cropLabel}
+              className="relative mt-3 flex w-full max-w-[1180px] items-baseline gap-x-[clamp(16px,2vw,34px)] gap-y-2 overflow-x-auto px-4 [scrollbar-width:none] max-lg:[mask-image:linear-gradient(90deg,transparent,#000_8%,#000_92%,transparent)] lg:flex-wrap lg:justify-center lg:overflow-visible [&::-webkit-scrollbar]:hidden"
+            >
               {timing.crops.map((c, i) => {
                 const on = i === active;
                 return (
@@ -390,7 +417,7 @@ export function Timing() {
                       tabs.current[n]?.focus();
                       choose(n, tabs.current[n]);
                     }}
-                    className={`group relative pb-2 font-display text-[clamp(30px,3.6vw,64px)] leading-none tracking-[-0.035em] transition-[color,opacity] duration-500 ${
+                    className={`group relative shrink-0 pb-2 font-display text-[clamp(22px,2.1vw,36px)] leading-none tracking-[-0.03em] whitespace-nowrap transition-[color,opacity] duration-500 ${
                       on ? "text-forest" : "text-transparent opacity-50 [-webkit-text-stroke:1px_var(--color-forest)] hover:opacity-100"
                     }`}
                   >
@@ -530,8 +557,8 @@ export function Timing() {
                 })}
 
                 {/* As pontas da safra. */}
-                <p className={`${eyebrow} absolute top-[97%] left-[8%] -translate-x-1/2 text-[9px] text-forest/45`}>{timing.ends[0]}</p>
-                <p className={`${eyebrow} absolute top-[97%] right-[8%] translate-x-1/2 text-[9px] text-forest/45`}>{timing.ends[1]}</p>
+                <p className={`${eyebrow} absolute top-[97%] left-[8%] -translate-x-1/2 text-[9px] text-forest/45`}>{ends[0]}</p>
+                <p className={`${eyebrow} absolute top-[97%] right-[8%] translate-x-1/2 text-[9px] text-forest/45`}>{ends[1]}</p>
               </div>
 
               {/* O centro: um painel por estágio, empilhados no mesmo lugar. */}
@@ -541,7 +568,7 @@ export function Timing() {
               >
                 <div data-i={-1} className="tm-say col-start-1 row-start-1 flex flex-col items-center justify-end" key={`${crop.id}-intro`}>
                   <p className={`tm-meta ${eyebrow} text-[10px] text-moss`}>{timing.cropLabel}</p>
-                  <p className="mt-2 font-display text-[length:clamp(56px,min(10vw,16svh),160px)] leading-[0.9] tracking-[-0.05em] text-transparent [-webkit-text-stroke:1.5px_var(--color-forest)]">
+                  <p className={`mt-2 font-display ${nameSize(crop.label)} leading-[0.9] tracking-[-0.05em] text-transparent [-webkit-text-stroke:1.5px_var(--color-forest)]`}>
                     <Roll text={crop.label} />
                   </p>
                   <p className={`tm-meta ${microCaps} mt-2 text-[10px] text-forest/60`}>{timing.hint} →</p>
@@ -583,7 +610,12 @@ export function Timing() {
               </div>
             </div>
 
-            <p className="mx-auto mt-[clamp(24px,5svh,56px)] min-h-[4.2em] max-w-[62ch] text-center font-display text-[clamp(15px,1.2vw,19px)] leading-[1.4] tracking-[-0.01em] text-forest/80">
+            {/* A dose da cultura, convertida da ficha, em cima do resumo. */}
+            <p className="mt-[clamp(24px,5svh,56px)] text-center">
+              <span className={`${eyebrow} text-[10px] text-moss`}>{timing.rateLabel}</span>
+              <span className="ml-3 font-display text-[clamp(17px,1.4vw,22px)] tracking-[-0.01em] text-forest">{crop.rate}</span>
+            </p>
+            <p className="mx-auto mt-2 min-h-[4.2em] max-w-[62ch] text-center font-display text-[clamp(15px,1.2vw,19px)] leading-[1.4] tracking-[-0.01em] text-forest/80">
               {crop.summary}
             </p>
           </div>

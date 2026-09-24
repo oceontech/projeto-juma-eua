@@ -1,12 +1,10 @@
 "use client";
 
 import { useRef } from "react";
-import Image from "next/image";
 import { useContent } from "@/components/layout/LocaleProvider";
-import { Counter } from "@/components/motion/Counter";
 import { SplitLines } from "@/components/motion/SplitLines";
 import { gsap, useGSAP } from "@/lib/gsap";
-import { eyebrow, microCaps } from "./ui";
+import { microCaps } from "./ui";
 
 /* O túnel de vento, num quadro de 600 × 360: o bico no teto, o ar correndo
    da esquerda, e as trajetórias das gotas — as grossas caem perto, as finas
@@ -28,26 +26,16 @@ const FLIGHTS = [
 }));
 const AIRFLOW = [92, 140, 188, 236];
 
-/* Os três cartões de contexto sobem em velocidades diferentes. */
-const DRIFT = [
-  { from: 60, to: -20 },
-  { from: 110, to: -40 },
-  { from: 160, to: -10 },
-];
-
 /**
  * K12 — a credencial. Tecnologia de aplicação como programa de pesquisa:
  * o parágrafo do DESATA, o desenho do método (túnel de vento: espectro,
- * deriva, deposição) e, embaixo, o bloco de contexto — estatística pública
- * da cigarrinha nos EUA, em cartões que sobem em compassos diferentes, como
- * os bilhetes do Inside da LP B.
- *
- * FIFRA: o bloco de contexto é dado público. Ele não atribui controle da
- * praga ao produto, e nada ao redor sugere isso.
+ * deriva, deposição). O bloco de contexto da cigarrinha-do-milho saiu em
+ * 24/09/2026: a página fala de várias culturas, e ele prendia a credencial a
+ * uma praga do milho.
  */
 export function Credential() {
   const { credential } = useContent().kmep;
-  const { context, scene } = credential;
+  const { scene } = credential;
   const scope = useRef<HTMLElement>(null);
 
   useGSAP(
@@ -72,18 +60,6 @@ export function Credential() {
 
       mm.add("(prefers-reduced-motion: no-preference)", () => {
         buildScene(gsap.timeline({ scrollTrigger: { trigger: ".cr-scene", start: "top 85%", end: "bottom 35%", scrub: 0.8 } }));
-
-        gsap.utils.toArray<HTMLElement>(".cr-card").forEach((card, i) => {
-          gsap.fromTo(
-            card,
-            { y: DRIFT[i].from },
-            {
-              y: DRIFT[i].to,
-              ease: "none",
-              scrollTrigger: { trigger: ".cr-context", start: "top bottom", end: "bottom top", scrub: 0.6 },
-            },
-          );
-        });
       });
       mm.add("(prefers-reduced-motion: reduce)", () => {
         buildScene(gsap.timeline({ paused: true })).progress(1);
@@ -187,39 +163,6 @@ export function Credential() {
               {scene.collectors.toUpperCase()}
             </text>
           </svg>
-        </div>
-      </div>
-
-      {/* Contexto: estatística pública. */}
-      <div className="cr-context wrap mt-[clamp(72px,9vw,150px)] grid gap-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:items-center">
-        <div>
-          <p className={`${eyebrow} text-lime-bright`}>{context.label}</p>
-          <p className="mt-5 max-w-[30ch] font-display text-[clamp(22px,2vw,34px)] leading-[1.15] tracking-[-0.015em]">{context.body}</p>
-          <p className={`${microCaps} mt-5 text-[10px] text-offwhite/55`}>{context.source}</p>
-          <Image
-            src="/img/kmep/cigarrinha-do-milho-parada.webp"
-            alt="Cigarrinha-do-milho adulta em detalhe"
-            width={768}
-            height={288}
-            unoptimized
-            className="mt-8 h-auto w-full max-w-[400px]"
-          />
-        </div>
-
-        <div className="relative grid grid-cols-3 gap-3 pt-6 lg:gap-4 lg:pt-0 lg:pb-[clamp(40px,5vw,80px)]">
-          {context.stats.map((stat, i) => (
-            <div
-              key={stat.label}
-              className="cr-card flex flex-col rounded-[clamp(12px,1.05vw,20px)] border border-kmep-light/30 bg-kmep p-[clamp(12px,1.6vw,24px)] text-offwhite"
-              style={{ marginTop: `calc(${i} * clamp(0px, 3vw, 48px))` }}
-            >
-              <span aria-hidden className="block h-[2px] w-8 rounded-full bg-night" />
-              <p className="mt-[clamp(28px,4vw,64px)] font-display text-[clamp(30px,4.2vw,76px)] leading-[0.85] tracking-[-0.045em]">
-                {i < 2 ? <Counter to={stat.value} duration={1.6} /> : stat.value}
-              </p>
-              <p className={`${microCaps} mt-2 text-[10px] text-offwhite/75`}>{stat.label}</p>
-            </div>
-          ))}
         </div>
       </div>
     </section>

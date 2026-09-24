@@ -68,8 +68,10 @@ Fator: 1 L/ha = 13,68 fl oz/ac. A ficha usa 400 L/ha de calda quando a dose vem 
 1. **A régua de estágios do `K13` já estava certa.** Milho em V4, V6 e formação da espiga, e soja
    em V6/V7 com repetição de 10 a 15 dias, batem com a ficha. Agora o que o canônico chamava de
    "rótulo 2026" tem documento de origem.
-2. **Isso não fecha P4.** É rótulo brasileiro. E a ficha supõe 400 L/ha de calda (≈43 gal/ac),
-   enquanto o pulverizador terrestre americano trabalha em volume bem menor. Ver P34.
+2. **Isso fecha P4 para o KMEP.** O cliente confirmou em 24/09/2026 que o produto americano é o
+   mesmo do Brasil. As doses convertidas estão publicadas na régua do `K13`. Nas frutíferas, que se
+   aplicam por diluição, a conversão é por 100 gal: **26 a 38 fl oz por 100 gal** (1 mL/100 L =
+   0,128 fl oz/100 gal). A pergunta sobre o volume de calda americano continua em P34.
 
 ### 2.3 Embalagens
 
@@ -187,6 +189,9 @@ Se $6 for a dose mínima, quem aplica a máxima paga cerca de $12. A conta ainda
 o texto atual. Com a resposta, escrever *"at X fl oz/ac"* ao lado do preço.
 
 ### 4.5 Culturas além de milho e soja
+
+> **Feito em 24/09/2026** por decisão do cliente: a régua do `K13` tem 11 culturas, sem dose. Ver a
+> revisão no topo do canônico. O bloco *"Growing something else?"* ficou desnecessário.
 
 A ficha posiciona 14 culturas. O `K13` diz *"Cotton and specialty crops are under technical
 review"*, e o bloco *"Growing something else?"* previsto no canônico não existe na página. **Citros

@@ -110,7 +110,7 @@ export const products: Product[] = [
     id: "kmep",
     category: "Spray performance · Foliar potassium",
     title: "KMEP Ultra®",
-    body: "It rides in the tank with your insecticide, improves how the spray covers and lands, and carries foliar potassium into grain fill. Six dollars an acre.",
+    body: "It rides in the tank with your insecticide, improves how the spray covers and lands, and carries foliar potassium into grain fill.",
     href: "/kmep",
     image: { src: "/img/pack-kmep-us.webp", alt: "KMEP Ultra 2.5 gal jug with U.S. label" },
   },

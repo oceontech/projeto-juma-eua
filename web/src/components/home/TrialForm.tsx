@@ -25,16 +25,19 @@ const CROP_ICONS = ["corn", "soybean", "cotton"];
  * `compact` é a variante reduzida das LPs: nome, e-mail, estado e cultura.
  * Os campos que saem chegam vazios ao action, que já os trata como opcionais —
  * o contrato não muda. `crops` troca as fichas de cultura quando a página
- * posiciona outras (a ordem continua casando com CROP_ICONS).
+ * posiciona outras, e `cropIcons` troca os ícones na mesma ordem (sem ele,
+ * vale CROP_ICONS).
  */
 export function TrialForm({
   source,
   compact = false,
   crops,
+  cropIcons = CROP_ICONS,
 }: {
   source?: string;
   compact?: boolean;
   crops?: readonly string[];
+  cropIcons?: readonly string[];
 }) {
   const { form } = useContent().home.usOperation;
   const cropOptions = crops ?? form.crop.options;
@@ -96,8 +99,8 @@ export function TrialForm({
             <label key={option} className={s.chip}>
               <input type="radio" name="crop" value={option} defaultChecked={i === 0} className={s.srOnly} />
               <span className={s.chipFace}>
-                {CROP_ICONS[i] ? (
-                  <CropIcon id={CROP_ICONS[i]} className={s.chipIcon} />
+                {cropIcons[i] ? (
+                  <CropIcon id={cropIcons[i]} className={s.chipIcon} />
                 ) : (
                   <span aria-hidden className={s.chipDot} />
                 )}

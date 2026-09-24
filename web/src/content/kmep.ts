@@ -35,12 +35,15 @@ export type Question = {
 /* ---------------------------------------------------------------- K1 + K2 */
 
 export const hero = {
-  eyebrow: ["Spray performance", "Foliar potassium", "Tank-mix partner"],
-  heading: "You won't see the loss until you harvest.",
+  eyebrow: ["Spray performance", "Foliar potassium"],
+  /* Encurtada em 24/09/2026. Ecoa as duas peças da Juma: "Potencialize sua
+     aplicação" (ficha BR) e "Optimize every application" (folheto US). A
+     anterior, "You won't see the loss until you harvest.", segue na cena. */
+  heading: "Make every pass count.",
   /* O título curto do pé (K1, aside) é a headline da versão 2 do teste
      A/B — que entra pelo produto —, partida na frase. Não é copy nova. */
-  aside: { heading: ["One pass. Two jobs.", "Six dollars an acre."] },
-  body: "Part of every application never does the work you paid for. KMEP Ultra® rides in the tank you are already filling. It improves how the spray covers and lands, and it carries foliar potassium into the weeks when grain fill is setting the yield. Six dollars an acre.",
+  aside: { heading: ["One pass.", "Two jobs."] },
+  body: "KMEP Ultra® rides in the tank you already fill. More of the spray stays on the leaf, and potassium lands in the weeks that set the yield.",
   /* Sub da versão 2, para o teste A/B — anotada, sem rota própria:
      "KMEP Ultra® goes in with the insecticide you already chose. It improves coverage and deposition on the day you spray, and it puts potassium on the leaf for the window where demand peaks." */
   /** O selo do canto: a folha com o texto em arco, como na LP B. */
@@ -119,7 +122,7 @@ export const twoJobs = {
       tag: "Job 2",
       title: "Foliar potassium",
       time: "The rest of the season",
-      marks: ["Pollination", "Grain fill", "Harvest"],
+      marks: ["Flowering", "Filling", "Harvest"],
     },
   },
 };
@@ -159,10 +162,10 @@ export const deposition = {
 
 export const potassium = {
   label: "Job 2 · The rest of the season",
-  heading: "Grain fill runs on potassium the root may not deliver in time.",
-  body: "Potassium demand peaks late, through pollination and grain fill, which is exactly when a dry stretch, a compaction layer or a shallow root system limits how much the soil can actually move.",
+  heading: "Yield is set on potassium the root may not deliver in time.",
+  body: "Potassium demand peaks late, from flowering through the fill of the grain, the tuber or the fruit, which is exactly when a dry stretch, a compaction layer or a shallow root system limits how much the soil can actually move.",
   /* Entra sozinha, em máscara, depois que as duas rotas completam. */
-  quote: "The potassium is in the ground. Your soil test says so. That is not the same as having it in the plant during the three weeks that set the kernel.",
+  quote: "The potassium is in the ground. Your soil test says so. That is not the same as having it in the plant during the weeks that set the yield.",
   routes: {
     heading: "Two routes, two clocks.",
     body: "Soil potassium moves with water. It has to dissolve, travel to the root surface, cross into the xylem and ride up to the leaf, and every one of those steps slows down when the profile dries. Foliar potassium starts at the leaf and moves into the tissue from where it lands.",
@@ -223,10 +226,10 @@ export const operation = {
   /* O card 4 tem tratamento próprio: custo e ganho em linhas separadas,
      cada um na sua cor, com a testemunha embaixo. */
   offer: {
-    title: "Six dollars an acre, against 8.9 bushels.",
-    cost: { value: "$6", unit: "/acre", label: "Product cost, one spray" },
+    title: "Nine more bushels, from a pass you were making anyway.",
+    check: { value: "212.3", unit: "bu/ac", label: "Untreated check" },
     gain: { value: "+8.9", unit: "bu/ac", label: "Trial response" },
-    witness: "221.2 vs 212.3 bu/ac untreated check · Rehagro trial, Brazil",
+    witness: "221.2 vs 212.3 bu/ac · Corn · Rehagro trial, Brazil",
     cta: { label: "Ask us for the full trial report", href: "#trial-form" },
   },
 };
@@ -301,8 +304,9 @@ export const proof = {
 
 /* -------------------------------------------------------------------- K11 */
 
-/* TODO(P4): se a dose do rótulo americano mudar o custo, esta é a única
-   tabela da página onde o número aparece. */
+/* FORA DA PÁGINA desde 24/09/2026: o cliente decidiu não publicar preço.
+   Economics.tsx saiu de /kmep e /kmep-b; o conteúdo fica para quando o
+   preço voltar. */
 export const economics = {
   heading: "What nine bushels is worth on your acres.",
   body: "At $4.30 corn, 8.9 bushels is $38.27 an acre. The product costs six dollars an acre at the label rate for one spray. We publish both numbers together, because the gap between them is the whole decision.",
@@ -341,68 +345,198 @@ export const credential = {
   topics: ["Wind tunnel", "Droplet spectrum", "Drift", "Deposition"],
   scene: { nozzle: "Nozzle", air: "Airflow", collectors: "Deposition collectors" },
   sceneAlt: "Line drawing of a wind tunnel: a nozzle over a row of collectors, with airflow carrying the finest droplets downwind",
-  /* Bloco de contexto: estatística pública. Não atribui controle ao produto,
-     e o texto ao redor não pode sugerir isso. */
-  context: {
-    label: "Context · Public data",
-    stats: [
-      { value: 185, label: "Counties" },
-      { value: 16, label: "States" },
-      { value: 2025, label: "Season" },
-    ],
-    body: "Corn leafhopper was confirmed in 185 counties across 16 states in the 2025 season. Brazil has been managing it for more than a decade.",
-    source: "Pioneer, 2025, public data.",
-  },
 };
 
 /* -------------------------------------------------------------------- K13 */
 
 export const timing = {
   heading: "When it goes in.",
-  body: "In the insecticide pass you already have on the schedule. Corn and soybeans are the two crops positioned for the U.S. today. Cotton and specialty crops are under technical review.",
+  body: "In a spray pass you already have on the schedule. Row crops, vegetables and orchards each have their own window, and the timing below follows the Juma label for each one. Pick your crop.",
   cropLabel: "Crop",
+  rateLabel: "Rate",
   season: "Season",
   /* As pontas do arco da safra e a deixa antes do primeiro estágio. */
   ends: ["Planting", "Harvest"],
   hint: "Scroll through the season",
   pass: "Pass",
-  /* A régua é ordinal: marca os estágios do rótulo 2026, sem pretender ser
-     escala de dias. `at` é a posição na régua, de 0 a 1. */
+  /* A régua é ordinal: marca os estágios do rótulo, sem pretender ser escala
+     de dias. `at` é a posição na régua, de 0 a 1. As culturas e as janelas
+     vêm da ficha técnica da Juma (docs/assets/kmep-ultra-ficha-br.pdf), em
+     nomenclatura americana. Café ficou de fora: não é cultura dos EUA. `ends`
+     troca as pontas do arco quando a safra não começa no plantio.
+     `rate` é a dose da ficha convertida (o produto é o mesmo nos dois
+     países): L/ha × 13,684 = fl oz/ac. Doses por concentração (mL/100 L) usam
+     os 400 L/ha da ficha; nas frutíferas, que se aplicam por diluição, a
+     conversão é por 100 gal (1 mL/100 L = 0,128 fl oz/100 gal). */
   crops: [
     {
       id: "corn",
       label: "Corn",
+      rate: "14–27 fl oz/ac",
       marks: [
         { code: "V4", at: 0.18 },
         { code: "V6", at: 0.32 },
         { code: "Ear formation", at: 0.62 },
       ],
       spans: [
-        { from: 0, to: 1, note: "Ride with insecticide passes you already scheduled" },
+        { from: 0, to: 1, note: "Ride with passes you already scheduled" },
         { from: 2, to: 2, note: "The potassium arriving where the demand is" },
       ],
-      summary: "V4, V6, and again at ear formation. The corn timing has two halves and both matter. The first two ride with insecticide passes you already scheduled, and the one at ear formation is the potassium arriving where the demand is.",
+      summary: "V4, V6, and again at ear formation. The corn timing has two halves and both matter. The first two ride with passes you already scheduled, and the one at ear formation is the potassium arriving where the demand is.",
     },
     {
       id: "soy",
       label: "Soybeans",
+      rate: "11–21 fl oz/ac",
       marks: [
-        /* As repetições não têm estágio próprio: marca sem rótulo, e a nota
-           do colchete diz o intervalo. */
         { code: "V6/V7", at: 0.3 },
         { code: "", display: "+10–15 days", at: 0.47, minor: true },
         { code: "", display: "+10–15 days", at: 0.64, minor: true },
       ],
-      spans: [{ from: 0, to: 2, note: "Repeating every 10 to 15 days" }],
+      spans: [
+        { from: 0, to: 2, note: "Repeating every 10 to 15 days" },
+      ],
       summary: "Soybeans: V6/V7, repeating every 10 to 15 days.",
+    },
+    {
+      id: "cotton",
+      label: "Cotton",
+      rate: "21–27 fl oz/ac",
+      marks: [
+        { code: "Day 40", at: 0.3 },
+        { code: "", display: "+7 days", at: 0.42, minor: true },
+        { code: "", display: "+7 days", at: 0.54, minor: true },
+        { code: "", display: "+7 days", at: 0.66, minor: true },
+      ],
+      spans: [
+        { from: 0, to: 3, note: "Four to six passes, a week apart" },
+      ],
+      summary: "Cotton: starting 40 days after emergence, four to six passes a week apart.",
+    },
+    {
+      id: "beans",
+      label: "Dry beans",
+      rate: "14–27 fl oz/ac",
+      marks: [
+        { code: "Bloom", at: 0.42 },
+        { code: "", display: "+10–15 days", at: 0.57, minor: true },
+        { code: "", display: "+10–15 days", at: 0.72, minor: true },
+      ],
+      spans: [
+        { from: 0, to: 2, note: "After bloom, every 10 to 15 days" },
+      ],
+      summary: "Dry beans: after bloom, repeating every 10 to 15 days.",
+    },
+    {
+      id: "potato",
+      label: "Potatoes",
+      rate: "14–27 fl oz/ac",
+      marks: [
+        { code: "Day 50", at: 0.38 },
+        { code: "", display: "+7 days", at: 0.51, minor: true },
+        { code: "", display: "+7 days", at: 0.64, minor: true },
+      ],
+      spans: [
+        { from: 0, to: 2, note: "Weekly, from day 50" },
+      ],
+      summary: "Potatoes: weekly, starting 50 days after emergence.",
+    },
+    {
+      id: "onion",
+      label: "Onions & garlic",
+      rate: "14–27 fl oz/ac",
+      ends: ["Transplant", "Harvest"],
+      marks: [
+        { code: "Day 50", at: 0.4 },
+        { code: "", display: "+7 days", at: 0.53, minor: true },
+        { code: "", display: "+7 days", at: 0.66, minor: true },
+      ],
+      spans: [
+        { from: 0, to: 2, note: "Weekly, from day 50 after transplant" },
+      ],
+      summary: "Onions and garlic: weekly, starting 50 days after transplant.",
+    },
+    {
+      id: "roots",
+      label: "Carrots & beets",
+      rate: "14–27 fl oz/ac",
+      marks: [
+        { code: "Day 40", at: 0.34 },
+        { code: "", display: "+7 days", at: 0.47, minor: true },
+        { code: "", display: "+7 days", at: 0.6, minor: true },
+      ],
+      spans: [
+        { from: 0, to: 2, note: "Weekly, from day 40" },
+      ],
+      summary: "Carrots and beets: weekly, starting 40 days after emergence.",
+    },
+    {
+      id: "tomato",
+      label: "Tomatoes & peppers",
+      rate: "11–16 fl oz/ac",
+      ends: ["Transplant", "Harvest"],
+      marks: [
+        { code: "Day 40", at: 0.3 },
+        { code: "", display: "+7 days", at: 0.42, minor: true },
+        { code: "", display: "+7 days", at: 0.54, minor: true },
+        { code: "", display: "+7 days", at: 0.66, minor: true },
+      ],
+      spans: [
+        { from: 0, to: 3, note: "Weekly, from day 40 after transplant" },
+      ],
+      summary: "Tomatoes and peppers: weekly, starting 40 days after transplant.",
+    },
+    {
+      id: "citrus",
+      label: "Citrus",
+      rate: "27 fl oz/ac",
+      ends: ["Bloom", "Harvest"],
+      marks: [
+        { code: "Fruit set", at: 0.25 },
+        { code: "", display: "+14 days", at: 0.42, minor: true },
+        { code: "", display: "+14 days", at: 0.59, minor: true },
+      ],
+      spans: [
+        { from: 0, to: 2, note: "Every two weeks while the fruit develops" },
+      ],
+      summary: "Citrus: every two weeks through fruit development.",
+    },
+    {
+      id: "fruit",
+      label: "Tree fruit",
+      rate: "26–38 fl oz per 100 gal",
+      ends: ["Bloom", "Harvest"],
+      marks: [
+        { code: "After bloom", at: 0.22 },
+        { code: "", display: "Next pass", at: 0.42, minor: true },
+        { code: "", display: "Next pass", at: 0.62, minor: true },
+      ],
+      spans: [
+        { from: 0, to: 2, note: "Three to four passes a season" },
+      ],
+      summary: "Tree fruit: three to four passes a season, starting after bloom.",
+    },
+    {
+      id: "veg",
+      label: "Vegetables",
+      rate: "8–11 fl oz/ac",
+      ends: ["Seeding", "Harvest"],
+      marks: [
+        { code: "Day 30", at: 0.3 },
+        { code: "", display: "+14 days", at: 0.46, minor: true },
+        { code: "", display: "+14 days", at: 0.62, minor: true },
+      ],
+      spans: [
+        { from: 0, to: 2, note: "Every two weeks, from day 30" },
+      ],
+      summary: "Other vegetables: every two weeks, starting 30 days after germination or transplant.",
     },
   ],
   details: [
     {
       k: "Rate and pack",
-      /* TODO(P4): trocar pela dose do rótulo americano, em fl oz/acre.
-         TODO(P1): acrescentar as embalagens americanas. */
-      v: "Rates in fl oz per acre come from the U.S. label; tell us your crop and we'll send it.",
+      /* TODO(P35): acrescentar as embalagens americanas. */
+      v: "From 8 to 27 fl oz per acre, by crop, as shown above. Tree fruit is mixed at 26 to 38 fl oz per 100 gallons.",
     },
     {
       k: "Tank mix",
@@ -420,7 +554,7 @@ export const fit = {
     label: "It fits",
     lead: "An operation that",
     items: [
-      "Already sprays insecticide on corn or soybeans",
+      "Already has spray passes on the schedule, in row crops, vegetables or orchards",
       "Runs its own check strips",
       "Wants more out of a pass that is already budgeted",
     ],
@@ -493,10 +627,6 @@ export const questions = {
       q: "Can I tank mix it with my insecticide or fungicide?",
       a: "Yes. That's how it's meant to be used. Mixing order and known incompatibilities are on the label. Jar-test any combination you haven't run before.",
     },
-    {
-      q: "How much does it cost per acre?",
-      a: "Six dollars an acre per spray at label rate. The trial it sits next to returned 8.9 bu/ac (221.2 vs 212.3 bu/ac untreated), which is $38.27 at $4.30 corn. We publish both numbers on the same screen.",
-    },
     /* Pendentes — fora da tela até a resposta chegar. Voltam descomentadas.
     {
       // Aguarda resposta técnica da Juma (espuma, filtro, temperatura, umidade).
@@ -521,13 +651,13 @@ export const questions = {
 
 export const final = {
   heading: "Run a trial strip. We supply the product.",
-  /* Versão 2: "Six dollars an acre, on one strip of your worst field." */
   body: "Pick a field, leave an untreated check strip beside it, and we will come back at harvest with you. Tell us your crop and your state and we will send the label, rates in fl oz per acre, and the full trial report first.",
   /* Ressalva obrigatória, dentro da seção. */
   disclaimer: "KMEP Ultra® is applied in tank mix with an insecticide and never in place of one. It does not change the rate on the insecticide label. Always read and follow the label directions of the pesticide you are applying.",
   /* As culturas do formulário reduzido: as duas posicionadas, a que está em
      revisão e uma saída. A ordem casa com os ícones do TrialForm. */
-  crops: ["Corn", "Soybeans", "Cotton", "Other"],
+  crops: ["Row crops", "Vegetables", "Citrus & fruit", "Other"],
+  cropIcons: ["corn", "vegetables", "citrus"],
   alt: "Corn harvest at sunset, grain unloading into a cart beside the combine",
 };
 
@@ -680,7 +810,7 @@ export const blackoutA: Blackout = {
 
 /** Versão B — a headline da versão 2 do teste A/B no hero (K1). */
 export const heroB = {
-  heading: "One pass. Two jobs. Six dollars an acre.",
+  heading: "One pass. Two jobs.",
   /* O título curto do pé é a headline da versão 1, que aqui desce para lá. */
   aside: { heading: ["You won't see the loss", "until you harvest."] },
   body: "KMEP Ultra® goes in with the insecticide you already chose. It improves coverage and deposition on the day you spray, and it puts potassium on the leaf for the window where demand peaks.",
@@ -688,7 +818,7 @@ export const heroB = {
 
 /** Versão B — uma passada, dois trabalhos. */
 export const sceneB: Scene = {
-  steps: ["One pass", "Job 1", "Job 2", "Grain fill"],
+  steps: ["One pass", "Job 1", "Job 2", "Filling"],
   stages: [
     {
       kicker: "One pass",
@@ -703,7 +833,7 @@ export const sceneB: Scene = {
       readout: [
         { k: "Extra trips", v: "0" },
         { k: "Tank", v: "Same" },
-        { k: "Cost", v: "$6 / acre" },
+        { k: "Rate", v: "Same" },
       ],
     },
     {
@@ -739,17 +869,17 @@ export const sceneB: Scene = {
       ],
     },
     {
-      kicker: "Grain fill",
-      heading: "Potassium in the weeks that set the kernel.",
-      body: "Potassium demand peaks late, through pollination and grain fill, exactly when a dry stretch limits what the soil can move. The corn pass at ear formation puts it on the leaf in that window.",
-      legend: [{ tone: 1, label: "Grain fill" }],
+      kicker: "Filling",
+      heading: "Potassium in the weeks that set the yield.",
+      body: "Potassium demand peaks late, while the grain, the tuber or the fruit is filling, exactly when a dry stretch limits what the soil can move. The late pass on the label puts it on the leaf in that window.",
+      legend: [{ tone: 1, label: "Filling" }],
       callouts: [
         { label: "Kernels", note: "Where the demand peaks" },
         { label: "Husk", note: "Ear formation: the last pass" },
         { label: "Silks", note: "Pollination" },
       ],
       readout: [
-        { k: "Corn passes", v: "V4 · V6 · Ear" },
+        { k: "Passes", v: "By crop label" },
         { k: "Demand", v: "Peaks late" },
         { k: "Extra trips", v: "0" },
       ],
@@ -772,7 +902,7 @@ export const blackoutB: Blackout = {
     {
       kicker: "In the soil",
       heading: "In the ground is not in the plant.",
-      body: "The potassium is in the ground. Your soil test says so. That is not the same as having it in the plant during the three weeks that set the kernel.",
+      body: "The potassium is in the ground. Your soil test says so. That is not the same as having it in the plant during the weeks that set the yield.",
       image: "/img/kmep/blackout/dryroots.webp",
       alt: "Brace roots of a corn plant gripping dry, cracked soil in late summer",
     },

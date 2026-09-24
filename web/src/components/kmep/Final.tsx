@@ -70,7 +70,7 @@ export function Final() {
           </div>
 
           <div className="fn-card relative rounded-[clamp(18px,1.8vw,30px)] bg-white p-[clamp(20px,2.4vw,40px)] text-ink shadow-[0_30px_80px_-30px_rgba(0,0,0,0.55)]">
-            <TrialForm source="kmep" compact crops={final.crops} />
+            <TrialForm source="kmep" compact crops={final.crops} cropIcons={final.cropIcons} />
           </div>
         </div>
 

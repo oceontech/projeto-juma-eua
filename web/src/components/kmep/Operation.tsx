@@ -99,10 +99,10 @@ export function Operation() {
 
             <dl className="relative mt-8 grid gap-5 sm:grid-cols-2 xl:mt-auto xl:grid-cols-1 xl:gap-8 xl:pt-8">
               <div className="border-t border-offwhite/20 pt-4">
-                <dt className={`${eyebrow} text-[10px] text-offwhite/60`}>{offer.cost.label}</dt>
+                <dt className={`${eyebrow} text-[10px] text-offwhite/60`}>{offer.check.label}</dt>
                 <dd className="mt-2 font-display text-[clamp(52px,5vw,80px)] leading-none tracking-[-0.05em] text-kmep-light">
-                  {offer.cost.value}
-                  <span className="ml-2 text-[0.3em] tracking-[0.02em] text-offwhite/60">{offer.cost.unit}</span>
+                  {offer.check.value}
+                  <span className="ml-2 text-[0.3em] tracking-[0.02em] text-offwhite/60">{offer.check.unit}</span>
                 </dd>
               </div>
               <div className="rounded-[16px] bg-lime px-5 py-5 text-forest xl:py-7">

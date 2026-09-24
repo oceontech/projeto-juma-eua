@@ -72,6 +72,8 @@ Vídeo institucional: `youtube.com/watch?v=xuDR_M6-0iI`
 | Garantias (ficha BR) | N 1,2% (14,4 g/L) · P₂O₅ 1,0% (12,0 g/L) · K₂O 15,0% (180,0 g/L), todos solúveis em água. Densidade implícita 1,20 kg/L ≈ 10,0 lb/gal. Não é o Guaranteed Analysis americano (P3): falta o *derived from* |
 | Categoria na ficha BR | "Fertilizante foliar líquido à base de potássio, fósforo e nitrogênio", para "aumento de translocação de açúcares". **A ficha não menciona inseticida em nenhum ponto** |
 | Posicionamento típico | Milho entre V4 e V6 e nas aplicações dirigidas a cigarrinha |
+| Rótulo americano (visto em 24/09/2026) | 1-1-15 · N 1,2% · P₂O₅ 1,0% · K₂O 15,0% · *Derived from:* ácido fosfórico, ácido cítrico, cloreto de potássio, ureia e hidróxido de potássio · 2,5 gal (25 lb, ≈10 lb/gal) · **Modo de uso: "16 Oz per acre in every insecticide application"** · Juma-Agro Fertilizer LLC F003480, Lakeland/FL · validade de 2 anos. Dúvidas abertas no pedido ao Rodrigo (`04-PENDENCIAS.md`) |
+| Produto nos EUA | **O mesmo produto do Brasil** (confirmado pelo cliente em 24/09/2026). Garantias e doses da ficha BR valem, convertidas para unidade americana |
 | Material técnico BR | [`assets/kmep-ultra-ficha-br.pdf`](assets/kmep-ultra-ficha-br.pdf): garantias, dose por cultura (14 culturas), embalagens. Leitura completa em [`07-CURADORIA-KMEP.md`](07-CURADORIA-KMEP.md) |
 | Custo nos EUA | **$6 por acre por aplicação**, na dose de rótulo (folheto americano) |
 | Material oficial nos EUA | [`assets/kmep-ultra-folheto-us.pdf`](assets/kmep-ultra-folheto-us.pdf) |

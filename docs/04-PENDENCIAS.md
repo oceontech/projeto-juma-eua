@@ -32,10 +32,10 @@ projeto, porque muda o que as páginas podem afirmar.
 
 | ID | Pendência | A quem pedir | O que trava |
 |---|---|---|---|
-| **P1** | Rótulo americano aprovado dos dois produtos, em PDF | Regulatório da LLC | Resolve P2, P3 e parte de P4 |
+| **P1** | Rótulo americano aprovado dos dois produtos, em PDF | Regulatório da LLC | **KMEP: rótulo visto em 24/09/2026** (Guaranteed Analysis, *derived from*, 2,5 gal, 16 oz/acre). Falta o PDF oficial e o do Aminosan. O rótulo abriu um conflito de dose com a ficha BR, que está na pergunta ao Rodrigo |
 | **P2** | Validação regulatória da copy — **dos dois produtos** | Regulatório / consultoria FIFRA | Toda a copy do site |
 | **P3** | Guaranteed Analysis completo | Regulatório / técnico | Ficha técnica das LPs. Sem ela, dealer não valida a página |
-| **P4** | Dose em `fl oz/acre` ou `gal/acre`, por cultura e estágio | Técnico | Ficha técnica e tabela de aplicação |
+| ~~**P4**~~ | ~~Dose em `fl oz/acre` ou `gal/acre`, por cultura e estágio~~ | Técnico | **KMEP: respondida em 24/09/2026.** O produto americano é o mesmo do Brasil, então a dose é a da ficha BR convertida (ver `07-CURADORIA-KMEP.md`, 2.2). Continua aberta para o Aminosan |
 | **P5** | Mercado-alvo: **row crop × specialty crop** | Diretoria / comercial | Culturas, mapa, CTA, tom da copy — e o design da Home |
 | **P6** | Culturas americanas em que cada produto funciona | Técnico / agronômico | Seção de culturas, mapa e a tabela estado→cultura |
 | **P7** | Modelo de venda: direto, distribuidor, retail ou private label | Comercial | O CTA e possivelmente a premissa de conversão |

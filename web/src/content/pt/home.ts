@@ -83,7 +83,7 @@ export const products: typeof en.products = [
     id: "kmep",
     category: "Performance de aplicação · Potássio foliar",
     title: "KMEP Ultra®",
-    body: "Vai no tanque com o seu inseticida, melhora como a calda cobre e deposita, e leva potássio foliar para o enchimento de grãos. Seis dólares por acre.",
+    body: "Vai no tanque com o seu inseticida, melhora como a calda cobre e deposita, e leva potássio foliar para o enchimento de grãos.",
     href: "/kmep",
     image: { src: "/img/pack-kmep-us.webp", alt: "Galão de 2,5 gal do KMEP Ultra com rótulo americano" },
   },

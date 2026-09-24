@@ -9,10 +9,10 @@ import type * as en from "../kmep";
  */
 
 export const hero: typeof en.hero = {
-  eyebrow: ["Performance de aplicação", "Potássio foliar", "Parceiro de tanque"],
-  heading: "Você não vai ver a perda até colher.",
-  aside: { heading: ["Uma passada, dois trabalhos.", "Seis dólares por acre."] },
-  body: "Parte de toda aplicação nunca faz o trabalho pelo qual você pagou. O KMEP Ultra® vai no tanque que você já está enchendo. Ele melhora como a calda cobre e deposita, e leva potássio foliar para as semanas em que o enchimento de grãos define a produtividade. Seis dólares por acre.",
+  eyebrow: ["Performance de aplicação", "Potássio foliar"],
+  heading: "Faça cada passada valer.",
+  aside: { heading: ["Uma passada.", "Dois trabalhos."] },
+  body: "O KMEP Ultra® vai no tanque que você já enche. Mais calda fica na folha, e o potássio chega nas semanas que definem a produtividade.",
   badge: "potássio foliar",
   cta: { label: "Faça uma faixa de teste na sua área", href: "#trial-form" },
   secondary: { label: "Ver o ensaio", href: "#proof" },
@@ -76,7 +76,7 @@ export const twoJobs: typeof en.twoJobs = {
       tag: "Trabalho 2",
       title: "Potássio foliar",
       time: "O resto da safra",
-      marks: ["Polinização", "Enchimento de grãos", "Colheita"],
+      marks: ["Florada", "Enchimento", "Colheita"],
     },
   },
 };
@@ -110,9 +110,9 @@ export const deposition: typeof en.deposition = {
 
 export const potassium: typeof en.potassium = {
   label: "Trabalho 2 · O resto da safra",
-  heading: "O enchimento de grãos depende de potássio que a raiz pode não entregar a tempo.",
-  body: "A demanda de potássio chega ao pico tarde, na polinização e no enchimento de grãos, que é exatamente quando um veranico, uma camada compactada ou um sistema radicular raso limitam quanto o solo consegue de fato mover.",
-  quote: "O potássio está no solo. A sua análise diz isso. Não é a mesma coisa que tê-lo na planta durante as três semanas que formam o grão.",
+  heading: "A produtividade se define com potássio que a raiz pode não entregar a tempo.",
+  body: "A demanda de potássio chega ao pico tarde, da florada ao enchimento do grão, do tubérculo ou do fruto, que é exatamente quando um veranico, uma camada compactada ou um sistema radicular raso limitam quanto o solo consegue de fato mover.",
+  quote: "O potássio está no solo. A sua análise diz isso. Não é a mesma coisa que tê-lo na planta durante as semanas que definem a produtividade.",
   routes: {
     heading: "Duas rotas, dois relógios.",
     body: "O potássio do solo se move com a água. Ele precisa se dissolver, chegar até a superfície da raiz, entrar no xilema e subir até a folha, e cada uma dessas etapas desacelera quando o perfil seca. O potássio foliar começa na folha e entra no tecido a partir de onde pousou.",
@@ -162,10 +162,10 @@ export const operation: typeof en.operation = {
     },
   ],
   offer: {
-    title: "Seis dólares por acre, contra 8,9 bushels.",
-    cost: { value: "$6", unit: "/acre", label: "Custo do produto, uma aplicação" },
+    title: "Nove bushels a mais, de uma passada que você ia fazer de qualquer jeito.",
+    check: { value: "212,3", unit: "bu/ac", label: "Testemunha sem tratamento" },
     gain: { value: "+8,9", unit: "bu/ac", label: "Resposta no ensaio" },
-    witness: "221,2 vs 212,3 bu/ac na testemunha · Ensaio Rehagro, Brasil",
+    witness: "221,2 vs 212,3 bu/ac · Milho · Ensaio Rehagro, Brasil",
     cta: { label: "Peça o relatório completo do ensaio", href: "#trial-form" },
   },
 };
@@ -256,22 +256,13 @@ export const credential: typeof en.credential = {
   topics: ["Túnel de vento", "Espectro de gotas", "Deriva", "Deposição"],
   scene: { nozzle: "Bico", air: "Fluxo de ar", collectors: "Coletores de deposição" },
   sceneAlt: "Desenho técnico de um túnel de vento: um bico sobre uma fileira de coletores, com o fluxo de ar levando as gotas mais finas",
-  context: {
-    label: "Contexto · Dado público",
-    stats: [
-      { value: 185, label: "Condados" },
-      { value: 16, label: "Estados" },
-      { value: 2025, label: "Safra" },
-    ],
-    body: "A cigarrinha-do-milho foi confirmada em 185 condados de 16 estados na safra 2025. O Brasil convive com ela há mais de uma década.",
-    source: "Pioneer, 2025, dado público.",
-  },
 };
 
 export const timing: typeof en.timing = {
   heading: "Quando ele entra.",
-  body: "Na aplicação de inseticida que você já tem no calendário. Milho e soja são as duas culturas posicionadas para os EUA hoje. Algodão e culturas especiais estão em revisão técnica.",
+  body: "Numa aplicação que você já tem no calendário. Grandes culturas, hortaliças e pomares têm cada um a sua janela, e as datas abaixo seguem o rótulo da Juma para cada cultura. Escolha a sua.",
   cropLabel: "Cultura",
+  rateLabel: "Dose",
   season: "Safra",
   ends: ["Plantio", "Colheita"],
   hint: "Role pela safra",
@@ -280,33 +271,170 @@ export const timing: typeof en.timing = {
     {
       id: "corn",
       label: "Milho",
+      rate: "14 a 27 fl oz/ac",
       marks: [
         { code: "V4", at: 0.18 },
         { code: "V6", at: 0.32 },
         { code: "Formação da espiga", at: 0.62 },
       ],
       spans: [
-        { from: 0, to: 1, note: "Vão junto com aplicações de inseticida já agendadas" },
+        { from: 0, to: 1, note: "Vão junto com aplicações já agendadas" },
         { from: 2, to: 2, note: "O potássio chegando onde está a demanda" },
       ],
-      summary: "V4, V6 e de novo na formação da espiga. A janela do milho tem duas metades e as duas importam. As duas primeiras vão junto com aplicações de inseticida já agendadas, e a da formação da espiga é o potássio chegando onde está a demanda.",
+      summary: "V4, V6 e de novo na formação da espiga. A janela do milho tem duas metades e as duas importam. As duas primeiras vão junto com aplicações já agendadas, e a da formação da espiga é o potássio chegando onde está a demanda.",
     },
     {
       id: "soy",
       label: "Soja",
+      rate: "11 a 21 fl oz/ac",
       marks: [
         { code: "V6/V7", at: 0.3 },
         { code: "", display: "+10 a 15 dias", at: 0.47, minor: true },
         { code: "", display: "+10 a 15 dias", at: 0.64, minor: true },
       ],
-      spans: [{ from: 0, to: 2, note: "Repetindo a cada 10 a 15 dias" }],
+      spans: [
+        { from: 0, to: 2, note: "Repetindo a cada 10 a 15 dias" },
+      ],
       summary: "Soja: V6/V7, repetindo a cada 10 a 15 dias.",
+    },
+    {
+      id: "cotton",
+      label: "Algodão",
+      rate: "21 a 27 fl oz/ac",
+      marks: [
+        { code: "Dia 40", at: 0.3 },
+        { code: "", display: "+7 dias", at: 0.42, minor: true },
+        { code: "", display: "+7 dias", at: 0.54, minor: true },
+        { code: "", display: "+7 dias", at: 0.66, minor: true },
+      ],
+      spans: [
+        { from: 0, to: 3, note: "De quatro a seis aplicações, uma por semana" },
+      ],
+      summary: "Algodão: a partir de 40 dias após a emergência, de quatro a seis aplicações com uma semana de intervalo.",
+    },
+    {
+      id: "beans",
+      label: "Feijão",
+      rate: "14 a 27 fl oz/ac",
+      marks: [
+        { code: "Florada", at: 0.42 },
+        { code: "", display: "+10 a 15 dias", at: 0.57, minor: true },
+        { code: "", display: "+10 a 15 dias", at: 0.72, minor: true },
+      ],
+      spans: [
+        { from: 0, to: 2, note: "Após a florada, a cada 10 a 15 dias" },
+      ],
+      summary: "Feijão: após a florada, repetindo a cada 10 a 15 dias.",
+    },
+    {
+      id: "potato",
+      label: "Batata",
+      rate: "14 a 27 fl oz/ac",
+      marks: [
+        { code: "Dia 50", at: 0.38 },
+        { code: "", display: "+7 dias", at: 0.51, minor: true },
+        { code: "", display: "+7 dias", at: 0.64, minor: true },
+      ],
+      spans: [
+        { from: 0, to: 2, note: "Semanal, a partir do dia 50" },
+      ],
+      summary: "Batata: semanal, a partir de 50 dias após a emergência.",
+    },
+    {
+      id: "onion",
+      label: "Cebola e alho",
+      rate: "14 a 27 fl oz/ac",
+      ends: ["Transplante", "Colheita"],
+      marks: [
+        { code: "Dia 50", at: 0.4 },
+        { code: "", display: "+7 dias", at: 0.53, minor: true },
+        { code: "", display: "+7 dias", at: 0.66, minor: true },
+      ],
+      spans: [
+        { from: 0, to: 2, note: "Semanal, a partir do dia 50 após o transplante" },
+      ],
+      summary: "Cebola e alho: semanal, a partir de 50 dias após o transplante.",
+    },
+    {
+      id: "roots",
+      label: "Cenoura e beterraba",
+      rate: "14 a 27 fl oz/ac",
+      marks: [
+        { code: "Dia 40", at: 0.34 },
+        { code: "", display: "+7 dias", at: 0.47, minor: true },
+        { code: "", display: "+7 dias", at: 0.6, minor: true },
+      ],
+      spans: [
+        { from: 0, to: 2, note: "Semanal, a partir do dia 40" },
+      ],
+      summary: "Cenoura e beterraba: semanal, a partir de 40 dias após a emergência.",
+    },
+    {
+      id: "tomato",
+      label: "Tomate e pimentão",
+      rate: "11 a 16 fl oz/ac",
+      ends: ["Transplante", "Colheita"],
+      marks: [
+        { code: "Dia 40", at: 0.3 },
+        { code: "", display: "+7 dias", at: 0.42, minor: true },
+        { code: "", display: "+7 dias", at: 0.54, minor: true },
+        { code: "", display: "+7 dias", at: 0.66, minor: true },
+      ],
+      spans: [
+        { from: 0, to: 3, note: "Semanal, a partir do dia 40 após o transplante" },
+      ],
+      summary: "Tomate e pimentão: semanal, a partir de 40 dias após o transplante.",
+    },
+    {
+      id: "citrus",
+      label: "Citros",
+      rate: "27 fl oz/ac",
+      ends: ["Florada", "Colheita"],
+      marks: [
+        { code: "Pegamento", at: 0.25 },
+        { code: "", display: "+14 dias", at: 0.42, minor: true },
+        { code: "", display: "+14 dias", at: 0.59, minor: true },
+      ],
+      spans: [
+        { from: 0, to: 2, note: "Quinzenal, enquanto o fruto se forma" },
+      ],
+      summary: "Citros: quinzenal, durante a formação do fruto.",
+    },
+    {
+      id: "fruit",
+      label: "Frutíferas",
+      rate: "26 a 38 fl oz por 100 gal",
+      ends: ["Florada", "Colheita"],
+      marks: [
+        { code: "Pós-florada", at: 0.22 },
+        { code: "", display: "Próxima", at: 0.42, minor: true },
+        { code: "", display: "Próxima", at: 0.62, minor: true },
+      ],
+      spans: [
+        { from: 0, to: 2, note: "De três a quatro aplicações por safra" },
+      ],
+      summary: "Frutíferas: de três a quatro aplicações por safra, a partir da florada.",
+    },
+    {
+      id: "veg",
+      label: "Hortaliças",
+      rate: "8 a 11 fl oz/ac",
+      ends: ["Semeadura", "Colheita"],
+      marks: [
+        { code: "Dia 30", at: 0.3 },
+        { code: "", display: "+14 dias", at: 0.46, minor: true },
+        { code: "", display: "+14 dias", at: 0.62, minor: true },
+      ],
+      spans: [
+        { from: 0, to: 2, note: "Quinzenal, a partir do dia 30" },
+      ],
+      summary: "Outras hortaliças: quinzenal, a partir de 30 dias após a germinação ou o transplante.",
     },
   ],
   details: [
     {
       k: "Dose e embalagem",
-      v: "As doses em fl oz por acre vêm do rótulo americano; diga a sua cultura e nós enviamos.",
+      v: "De 8 a 27 fl oz por acre, conforme a cultura, como mostrado acima. Nas frutíferas, 26 a 38 fl oz por 100 galões de calda.",
     },
     {
       k: "Mistura de tanque",
@@ -322,7 +450,7 @@ export const fit: typeof en.fit = {
     label: "Serve",
     lead: "Para uma operação que",
     items: [
-      "Já aplica inseticida em milho ou soja",
+      "Já tem aplicações no calendário, em grandes culturas, hortaliças ou pomares",
       "Conduz as próprias faixas testemunha",
       "Quer mais de uma aplicação que já está no orçamento",
     ],
@@ -388,10 +516,6 @@ export const questions: typeof en.questions = {
       q: "Posso misturar com o meu inseticida ou fungicida?",
       a: "Sim. É assim que ele foi feito para ser usado. A ordem de mistura e as incompatibilidades conhecidas estão no rótulo. Faça teste de jarro em qualquer combinação que você ainda não usou.",
     },
-    {
-      q: "Quanto custa por acre?",
-      a: "Seis dólares por acre por aplicação, na dose do rótulo. O ensaio ao lado dele deu 8,9 bu/ac (221,2 vs 212,3 bu/ac na testemunha), o que são $38,27 com o milho a $4,30. Publicamos os dois números na mesma tela.",
-    },
   ],
 };
 
@@ -399,7 +523,8 @@ export const final: typeof en.final = {
   heading: "Faça uma faixa de teste. O produto é por nossa conta.",
   body: "Escolha um talhão, deixe uma faixa testemunha sem tratar ao lado, e voltamos na colheita com você. Diga a sua cultura e o seu estado e enviamos antes o rótulo, as doses em fl oz por acre e o relatório completo do ensaio.",
   disclaimer: "O KMEP Ultra® é aplicado em mistura de tanque com um inseticida e nunca no lugar de um. Ele não muda a dose do rótulo do inseticida. Sempre leia e siga as instruções do rótulo do defensivo que você está aplicando.",
-  crops: ["Milho", "Soja", "Algodão", "Outra"],
+  crops: ["Grandes culturas", "Hortaliças", "Citros e frutas", "Outra"],
+  cropIcons: ["corn", "vegetables", "citrus"],
   alt: "Colheita de milho ao pôr do sol, com o grão sendo descarregado na carreta ao lado da colheitadeira",
 };
 
@@ -505,7 +630,7 @@ export const blackoutA: typeof en.blackoutA = {
 };
 
 export const heroB: typeof en.heroB = {
-  heading: "Uma passada. Dois trabalhos. Seis dólares por acre.",
+  heading: "Uma passada. Dois trabalhos.",
   aside: { heading: ["Você não vai ver a perda", "até colher."] },
   body: "O KMEP Ultra® entra com o inseticida que você já escolheu. Ele melhora a cobertura e a deposição no dia da aplicação e coloca potássio na folha para a janela em que a demanda chega ao pico.",
 };
@@ -526,7 +651,7 @@ export const sceneB: typeof en.sceneB = {
       readout: [
         { k: "Viagens a mais", v: "0" },
         { k: "Tanque", v: "O mesmo" },
-        { k: "Custo", v: "$6 / acre" },
+        { k: "Dose", v: "A mesma" },
       ],
     },
     {
@@ -563,16 +688,16 @@ export const sceneB: typeof en.sceneB = {
     },
     {
       kicker: "Enchimento",
-      heading: "Potássio nas semanas que definem o grão.",
-      body: "A demanda de potássio chega ao pico tarde, na polinização e no enchimento, justamente quando um veranico limita o que o solo consegue mover. A aplicação no milho na formação da espiga coloca o potássio na folha nessa janela.",
-      legend: [{ tone: 1, label: "Enchimento de grãos" }],
+      heading: "Potássio nas semanas que definem a produtividade.",
+      body: "A demanda de potássio chega ao pico tarde, enquanto o grão, o tubérculo ou o fruto enche, justamente quando um veranico limita o que o solo consegue mover. A aplicação tardia do rótulo coloca o potássio na folha nessa janela.",
+      legend: [{ tone: 1, label: "Enchimento" }],
       callouts: [
         { label: "Grãos", note: "Onde a demanda chega ao pico" },
         { label: "Palha", note: "Formação da espiga: a última passada" },
         { label: "Estilos", note: "Polinização" },
       ],
       readout: [
-        { k: "Passadas no milho", v: "V4 · V6 · Espiga" },
+        { k: "Aplicações", v: "Pelo rótulo da cultura" },
         { k: "Demanda", v: "Pico tardio" },
         { k: "Viagens a mais", v: "0" },
       ],
@@ -594,7 +719,7 @@ export const blackoutB: typeof en.blackoutB = {
     {
       kicker: "No solo",
       heading: "No solo não é na planta.",
-      body: "O potássio está no solo. A sua análise diz isso. Não é o mesmo que tê-lo na planta durante as três semanas que definem o grão.",
+      body: "O potássio está no solo. A sua análise diz isso. Não é o mesmo que tê-lo na planta durante as semanas que definem a produtividade.",
       image: "/img/kmep/blackout/dryroots.webp",
       alt: "Raízes de suporte de um milho presas em solo seco e rachado no fim do verão",
     },

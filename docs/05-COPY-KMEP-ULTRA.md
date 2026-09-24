@@ -47,6 +47,39 @@ tocar no resto.** Ver P2 em `04-PENDENCIAS.md`.
 
 ---
 
+### Revisão de 24/09/2026: sem preço no site
+
+Decisão do cliente: **o site não publica valor.** Saíram o "$6 an acre" do hero (A e B), o card 4 do
+`K9` (agora mostra a testemunha, 212.3 bu/ac, contra o ganho de +8.9), a pergunta de custo do `K16`,
+a leitura "Cost" da cena B, a meta description e o card do KMEP na Home. **O `K11` (a conta por
+acre) saiu da página inteiro**, porque a seção existe para comparar custo e retorno. O componente
+`Economics.tsx` e o conteúdo `economics` ficam no código para quando o preço voltar. Onde este
+documento cita $6 ou $38,27, leia como histórico.
+
+### Revisão de 24/09/2026: várias culturas, não só milho e soja
+
+Decisão do cliente: **o foco do KMEP nos EUA são várias culturas.** A página deixou de se apresentar
+como produto de milho e soja. O que mudou na copy publicada (`web/src/content/kmep.ts`):
+
+- **`K13`:** a régua passou de 2 para 11 culturas (milho, soja, algodão, feijão, batata, cebola e
+  alho, cenoura e beterraba, tomate e pimentão, citros, frutíferas, hortaliças), com as janelas da
+  ficha técnica da Juma (`assets/kmep-ultra-ficha-br.pdf`). Café ficou de fora. O texto de abertura
+  passou a ser *"In a spray pass you already have on the schedule. Row crops, vegetables and orchards
+  each have their own window…"*. A frase *"Corn and soybeans are the two crops positioned for the
+  U.S. today"* saiu.
+- **`K1`, `K7` e a cena B:** *grain fill* / *the kernel* viraram *the weeks that set the yield* e
+  *the fill of the grain, the tuber or the fruit*.
+- **`K12`:** o bloco de contexto da cigarrinha-do-milho saiu, junto com a foto do inseto.
+- **`K14`:** *"Already sprays insecticide on corn or soybeans"* virou *"Already has spray passes on
+  the schedule, in row crops, vegetables or orchards"*.
+- **`K17`:** as culturas do formulário viraram *Row crops · Vegetables · Citrus & fruit · Other*.
+
+**O que continua sendo de milho, e deve continuar:** a prova (`K2`, `K10`, `K11`, `K16`). É o único
+ensaio que existe, e ele diz de que cultura é. Ensaios de outras culturas entram quando existirem.
+Doses por cultura seguem em P4, e a lista de culturas americanas em P6.
+
+---
+
 ## 2. Arquitetura narrativa
 
 **Big Idea:** a aplicação que você já vai fazer pode entregar duas coisas em vez de uma, por seis
@@ -112,6 +145,15 @@ Dezessete blocos, contra os onze da versão anterior. As seções novas estão m
 Texto em inglês americano, pronto para o ar. Onde há duas versões, a primeira é a recomendada.
 
 ### `K1` Hero
+
+> **Publicado desde 24/09/2026 (versão curta, pedido do cliente):**
+> Olho: SPRAY PERFORMANCE · FOLIAR POTASSIUM
+> Headline: **Make every pass count.** Ecoa a ficha BR ("Potencialize sua aplicação") e o folheto
+> US ("Optimize every application").
+> Sub: *KMEP Ultra® rides in the tank you already fill. More of the spray stays on the leaf, and
+> potassium lands in the weeks that set the yield.*
+> A headline abaixo ("You won't see the loss until you harvest.") saiu do hero da versão A e segue
+> na versão B e na cena. O texto abaixo é o histórico.
 
 **Olho:** SPRAY PERFORMANCE · FOLIAR POTASSIUM · TANK-MIX PARTNER
 
