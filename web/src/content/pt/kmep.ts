@@ -113,6 +113,20 @@ export const potassium: typeof en.potassium = {
   heading: "A produtividade se define com potássio que a raiz pode não entregar a tempo.",
   body: "A demanda de potássio chega ao pico tarde, da florada ao enchimento do grão, do tubérculo ou do fruto, que é exatamente quando um veranico, uma camada compactada ou um sistema radicular raso limitam quanto o solo consegue de fato mover.",
   quote: "O potássio está no solo. A sua análise diz isso. Não é a mesma coisa que tê-lo na planta durante as semanas que definem a produtividade.",
+  zone: {
+    steps: [
+      { title: "Uma raiz em equilíbrio", body: "O potássio está no solo, em volta de um sistema radicular. Por enquanto, nada pede muito." },
+      { title: "Ele se move com a água", body: "O potássio do solo viaja dissolvido na água do solo, levado pelos mesmos caminhos que a água faz até a raiz." },
+      { title: "Ele precisa chegar", body: "Só o potássio que alcança a superfície da raiz pode ser absorvido. Quem faz toda a entrega é o solo e a raiz." },
+      { title: "A demanda sobe", body: "Da florada ao enchimento, a lavoura pede mais potássio, e mais rápido. A rota inteira fica sob pressão." },
+      { title: "A entrega fica para trás", body: "Um perfil secando ou uma camada compactada freia a água, e o potássio chega mais devagar do que a lavoura precisa." },
+      { title: "Estar no solo não é chegar à raiz", body: "Disponibilidade de potássio não é só estar no solo. É se mover e chegar à raiz a tempo." },
+    ],
+    legend: { k: "Potássio (K⁺)", water: "Água do solo" },
+    meters: { demand: "Demanda da lavoura", delivered: "Chegando à raiz" },
+    labels: { dry: "Perfil secando", compact: "Camada compactada" },
+    alt: "Corte animado do solo em volta de um sistema radicular: o potássio vai até a raiz com a água do solo e é absorvido; quando a demanda sobe e o perfil seca, menos dele chega à raiz a tempo.",
+  },
   routes: {
     heading: "Duas rotas, dois relógios.",
     body: "O potássio do solo se move com a água. Ele precisa se dissolver, chegar até a superfície da raiz, entrar no xilema e subir até a folha, e cada uma dessas etapas desacelera quando o perfil seca. O potássio foliar começa na folha e entra no tecido a partir de onde pousou.",
