@@ -175,6 +175,22 @@ export const potassium = {
   body: "Potassium demand peaks late, from flowering through the fill of the grain, the tuber or the fruit, which is exactly when a dry stretch, a compaction layer or a shallow root system limits how much the soil can actually move.",
   /* Entra sozinha, em máscara, depois que as duas rotas completam. */
   quote: "The potassium is in the ground. Your soil test says so. That is not the same as having it in the plant during the weeks that set the yield.",
+  /* AN-01. Só subsolo: uma raiz, o potássio, a água e o gargalo. Sem número —
+     os medidores são relativos, não medem nada de uma lavoura real. */
+  zone: {
+    steps: [
+      { title: "A root in balance", body: "Potassium sits in the soil around one root system. Nothing is asking for much yet." },
+      { title: "It moves with water", body: "Soil potassium travels dissolved in soil water, carried along the same paths water takes toward the root." },
+      { title: "It has to arrive", body: "Only potassium that reaches the root surface can be taken up. The soil and the root do all of the delivering." },
+      { title: "Demand climbs", body: "From flowering into fill, the crop asks for more potassium, and faster. The whole route is under pressure." },
+      { title: "Delivery falls behind", body: "A drying profile or a compacted layer slows the water down, and potassium arrives slower than the crop needs it." },
+      { title: "In the soil is not at the root", body: "Potassium availability is not only about being in the soil. It is about moving, and reaching the root in time." },
+    ],
+    legend: { k: "Potassium (K⁺)", water: "Soil water" },
+    meters: { demand: "Crop demand", delivered: "Reaching the root" },
+    labels: { dry: "Drying profile", compact: "Compacted layer" },
+    alt: "Animated cross-section of the soil around one root system: potassium drifts toward the root with soil water and is taken up; as demand rises and the profile dries, less of it reaches the root in time.",
+  },
   routes: {
     heading: "Two routes, two clocks.",
     body: "Soil potassium moves with water. It has to dissolve, travel to the root surface, cross into the xylem and ride up to the leaf, and every one of those steps slows down when the profile dries. Foliar potassium starts at the leaf and moves into the tissue from where it lands.",

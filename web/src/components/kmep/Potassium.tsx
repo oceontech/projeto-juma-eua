@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useRef } from "react";
 import { useContent } from "@/components/layout/LocaleProvider";
 import { SplitLines } from "@/components/motion/SplitLines";
+import { RootZone } from "./RootZone";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { eyebrow, fix, microCaps } from "./ui";
 
@@ -318,15 +319,8 @@ export function Potassium() {
         <p className={`${microCaps} text-[12px] text-forest/75`}>{potassium.body}</p>
       </div>
 
-      <div className="wrap mt-[clamp(32px,4vw,56px)]">
-        <Image
-          src="/img/kmep/potassium-pods.webp"
-          alt=""
-          width={1774}
-          height={887}
-          sizes="(min-width: 1024px) 680px, 100vw"
-          className="mx-auto h-auto w-full max-w-[680px]"
-        />
+      <div className="mt-[clamp(16px,2vw,32px)]">
+        <RootZone />
       </div>
 
       <div className="kp-stage flex min-h-[100svh] flex-col justify-center py-[clamp(64px,9svh,110px)]">
