@@ -91,13 +91,15 @@ export function Potassium() {
           const spark = `.kp-${kind} .kp-spark`;
           const hand = `.kp-${kind} .kp-hand`;
           const color = kind === "soil" ? "#435630" : "#B7C73E";
+          /* O nó apagado: claro no cartão claro, grafite no cartão do KMEP. */
+          const off = kind === "soil" ? "#E9EBCB" : "#46483C";
           const n = nodes.length;
           let t = 0;
           nodes.forEach((node, k) => {
             /* O nó não só troca de cor — dá um pequeno solavanco (`back.out`)
                ao acender, como um clique, em vez de só esmaecer de uma cor
                para outra. */
-            tl.fromTo(node, { backgroundColor: "#E9EBCB", scale: 1 }, { backgroundColor: color, scale: 1.4, duration: 0.16, ease: "back.out(3)" }, t)
+            tl.fromTo(node, { backgroundColor: off, scale: 1 }, { backgroundColor: color, scale: 1.4, duration: 0.16, ease: "back.out(3)" }, t)
               .to(node, { scale: 1, duration: 0.3, ease: "power2.out" }, t + 0.16)
               .fromTo(node.nextElementSibling, { opacity: 0.35 }, { opacity: 1, duration: 0.3, ease: "sine.out" }, t)
               .fromTo(rings[k], { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 0.8, ease: "none" }, t)
@@ -142,14 +144,18 @@ export function Potassium() {
 
       mm.add(
         {
+          /* Desktop: linha do tempo horizontal, presa num pin. Tablet: a mesma
+             linha horizontal, sem pin. Celular: etapas empilhadas, o traço
+             desce (`scaleY`). O corte do layout é o `md:` do JSX (768px). */
           desktop: "(min-width: 1024px) and (prefers-reduced-motion: no-preference)",
-          mobile: "(max-width: 1023px) and (prefers-reduced-motion: no-preference)",
+          tablet: "(min-width: 768px) and (max-width: 1023px) and (prefers-reduced-motion: no-preference)",
+          phone: "(max-width: 767px) and (prefers-reduced-motion: no-preference)",
           still: "(prefers-reduced-motion: reduce)",
         },
         (ctx) => {
-          const { desktop, still } = ctx.conditions as { desktop: boolean; still: boolean };
+          const { desktop, tablet, still } = ctx.conditions as { desktop: boolean; tablet: boolean; still: boolean };
           if (still) {
-            build(gsap.timeline({ paused: true }), desktop ? "scaleX" : "scaleY").progress(1);
+            build(gsap.timeline({ paused: true }), window.matchMedia("(min-width: 768px)").matches ? "scaleX" : "scaleY").progress(1);
             return;
           }
           const timeline = build(
@@ -159,7 +165,7 @@ export function Potassium() {
                 ? { trigger: ".kp-stage", start: "top top", end: "+=90%", scrub: 0.6, pin: true, anticipatePin: 1 }
                 : { trigger: ".kp-routes", start: "top 80%", end: "bottom 55%", scrub: 0.6 },
             }),
-            desktop ? "scaleX" : "scaleY",
+            desktop || tablet ? "scaleX" : "scaleY",
           );
           if (desktop) {
             timeline.fromTo(".kp-product", { scale: 0.6 }, { scale: 1, duration: timeline.duration(), ease: "none" }, 0);
@@ -181,12 +187,27 @@ export function Potassium() {
     const n = data.steps.length;
     const ringArcs = arcs(n);
     const fillArcs = arcs(n, RING.fillR);
+    /* A rota foliar é o cartão do KMEP: fundo grafite/preto da marca, com a
+       logo dentro. A do solo é um cartão claro e discreto, com a mesma malha —
+       as etapas das duas rotas continuam alinhadas coluna a coluna. */
+    const dark = kind === "foliar";
+    const ink = dark ? "#F6FFEE" : "#16261B";
+    const card = dark
+      ? "overflow-hidden border border-white/10 bg-linear-[122.93deg,var(--color-night-warm)_2.4%,var(--color-night-deep)_60.23%] text-cream"
+      : "border border-forest/12 bg-forest/[0.035]";
     return (
       <div
-        className={`kp-${kind} relative grid grid-cols-[76px_minmax(0,1fr)] items-start gap-x-5 gap-y-4 border-t border-forest/15 pt-6 lg:grid-cols-[180px_minmax(0,1fr)] lg:items-center lg:gap-x-10 lg:pt-8`}
+        className={`kp-${kind} relative grid grid-cols-1 items-start gap-y-5 rounded-[clamp(14px,1.4vw,24px)] px-[clamp(16px,2.4vw,40px)] py-[clamp(18px,2.4svh,32px)] md:grid-cols-[120px_minmax(0,1fr)] md:items-center md:gap-x-8 lg:grid-cols-[180px_minmax(0,1fr)] lg:gap-x-10 ${card}`}
       >
-        <div className="flex flex-col items-start gap-3">
-          <svg viewBox="0 0 100 100" aria-hidden className="w-[64px] lg:w-[104px]">
+        {dark && (
+          /* O calor da marca: um brilho vermelho suave no canto da logo. */
+          <span
+            aria-hidden
+            className="pointer-events-none absolute -right-[6%] -bottom-[40%] h-[120%] w-[46%] bg-[radial-gradient(closest-side,rgba(203,53,27,0.24),transparent)] max-md:right-1/2 max-md:h-[70%] max-md:w-[90%] max-md:translate-x-1/2"
+          />
+        )}
+        <div className="relative flex flex-row items-center gap-4 md:flex-col md:items-start md:gap-3">
+          <svg viewBox="0 0 100 100" aria-hidden className="w-[58px] shrink-0 md:w-[clamp(72px,11svh,96px)] lg:w-[clamp(72px,11svh,104px)]">
             <defs>
               {/* O brilho da faísca que corre na ponta do arco enquanto ele
                   se enche. */}
@@ -198,8 +219,8 @@ export function Potassium() {
                 </feMerge>
               </filter>
             </defs>
-            <circle cx={RING.c} cy={RING.c} r={RING.r} fill="none" stroke="#16261B" strokeOpacity="0.1" strokeWidth="7" />
-            <circle cx={RING.c} cy={RING.c} r={RING.fillR} fill="none" stroke="#16261B" strokeOpacity="0.06" strokeWidth="19" />
+            <circle cx={RING.c} cy={RING.c} r={RING.r} fill="none" stroke={ink} strokeOpacity={dark ? 0.16 : 0.1} strokeWidth="7" />
+            <circle cx={RING.c} cy={RING.c} r={RING.fillR} fill="none" stroke={ink} strokeOpacity={dark ? 0.09 : 0.06} strokeWidth="19" />
             {fillArcs.map((d) => (
               <path
                 key={d}
@@ -251,7 +272,7 @@ export function Potassium() {
                         className="kp-bubble-float"
                         style={{ animationDuration: `${2.8 + i * 0.6 + (k % 2) * 0.35}s`, animationDelay: `${-(k * BUBBLES.length + i) * 0.53}s` }}
                       >
-                        <circle className="kp-bubble" cx={cx} cy={cy} r={size} fill="#435630" opacity="0" />
+                        <circle className="kp-bubble" cx={cx} cy={cy} r={size} fill={dark ? "#E2EBA6" : "#435630"} opacity="0" />
                       </g>
                     );
                   })}
@@ -259,24 +280,24 @@ export function Potassium() {
               );
             })}
             {/* O ponteiro, desenhado no fim do curso. */}
-            <line className="kp-hand" x1={RING.c} y1={RING.c} x2={RING.c} y2={RING.c - 30} stroke="#16261B" strokeWidth="2.5" strokeLinecap="round" />
-            <circle cx={RING.c} cy={RING.c} r="3.5" fill="#16261B" />
+            <line className="kp-hand" x1={RING.c} y1={RING.c} x2={RING.c} y2={RING.c - 30} stroke={ink} strokeWidth="2.5" strokeLinecap="round" />
+            <circle cx={RING.c} cy={RING.c} r="3.5" fill={ink} />
           </svg>
-          <p className={`${eyebrow} text-[10px] text-moss lg:text-[11px]`}>{data.label}</p>
+          <p className={`${eyebrow} text-[10px] lg:text-[11px] ${dark ? "text-sage" : "text-moss"}`}>{data.label}</p>
         </div>
 
-        <ol className="flex flex-col lg:grid lg:grid-cols-4">
+        <ol className="relative flex flex-col md:grid md:grid-cols-4">
           {data.steps.map((step, k) => (
-            <li key={step} className="relative pb-6 pl-7 last:pb-0 lg:pt-8 lg:pr-4 lg:pb-0 lg:pl-0">
+            <li key={step} className="relative pb-6 pl-7 last:pb-0 md:pt-8 md:pr-3 md:pb-0 md:pl-0 lg:pr-4">
               {k < n - 1 && (
-                <span className="absolute top-[12px] left-[5px] h-[calc(100%-2px)] w-[2px] bg-forest/10 lg:top-[5px] lg:left-[6px] lg:h-[2px] lg:w-full">
+                <span className={`absolute top-[12px] left-[5px] h-[calc(100%-2px)] w-[2px] md:top-[5px] md:left-[6px] md:h-[2px] md:w-full ${dark ? "bg-white/15" : "bg-forest/10"}`}>
                   <span
-                    className={`kp-seg absolute inset-0 origin-top lg:origin-left ${kind === "soil" ? "bg-olive" : "bg-lime"}`}
+                    className={`kp-seg absolute inset-0 origin-top md:origin-left ${kind === "soil" ? "bg-olive" : "bg-lime"}`}
                   />
                   {kind === "soil" && (
                     <span
                       aria-hidden
-                      className="kp-brake absolute top-1/2 left-1/2 flex -translate-x-1/2 -translate-y-1/2 flex-col gap-[3px] lg:rotate-90"
+                      className="kp-brake absolute top-1/2 left-1/2 flex -translate-x-1/2 -translate-y-1/2 flex-col gap-[3px] md:rotate-90"
                     >
                       <span className="block h-[2px] w-3.5 bg-kmep" />
                       <span className="block h-[2px] w-3.5 bg-kmep" />
@@ -285,22 +306,27 @@ export function Potassium() {
                 </span>
               )}
               <span
-                className="kp-node absolute top-[2px] left-0 size-3 rounded-full border-2 lg:top-0"
+                className="kp-node absolute top-[2px] left-0 size-3 rounded-full border-2 md:top-0"
                 style={{ borderColor: kind === "soil" ? "#435630" : "#6E7D44", backgroundColor: kind === "soil" ? "#435630" : "#B7C73E" }}
               />
-              <p className="font-display text-[clamp(16px,1.35vw,21px)] leading-[1.15] tracking-[-0.01em]">{step}</p>
+              <p className="font-display text-[clamp(16px,1.35vw,21px)] leading-[1.15] tracking-[-0.01em] text-balance">{step}</p>
             </li>
           ))}
         </ol>
-        {kind === "foliar" && (
-          <div className="kp-product-frame relative col-start-2 mt-4 aspect-[376/235] w-full max-w-[376px] lg:absolute lg:top-10 lg:right-0 lg:mt-0 lg:w-[min(33%,376px)]">
+        {dark && (
+          /* Celular: linha própria, centrada, embaixo das etapas. A partir do
+             tablet: no vão livre à direita das duas etapas, centrada na altura
+             do cartão e limitada por ela — o tamanho vem da ALTURA (o aspecto
+             fixa a largura), então numa tela baixa a logo encolhe em vez de
+             encostar na borda. */
+          <div className="kp-product-frame relative mx-auto mt-1 aspect-[800/397] w-[min(78%,280px)] md:absolute md:top-1/2 md:right-[clamp(20px,2.4vw,40px)] md:mx-0 md:mt-0 md:h-[min(60%,170px)] md:w-auto md:-translate-y-1/2 lg:h-[min(74%,170px)]">
             <Image
               src="/img/kmep/kmep-ultra-logo.webp"
               alt={timing.logoAlt}
               fill
-              sizes="(min-width: 1024px) 376px, 100vw"
+              sizes="(min-width: 1024px) 340px, (min-width: 768px) 260px, 280px"
               quality={90}
-              className="kp-product object-contain drop-shadow-[0_14px_18px_rgba(22,38,27,0.16)]"
+              className="kp-product object-contain drop-shadow-[0_10px_18px_rgba(0,0,0,0.5)]"
             />
           </div>
         )}
@@ -324,14 +350,14 @@ export function Potassium() {
         <RootZone />
       </div>
 
-      <div className="kp-stage flex min-h-[100svh] flex-col justify-center py-[clamp(64px,9svh,110px)]">
+      <div className="kp-stage flex min-h-[100svh] flex-col justify-center py-[clamp(40px,7svh,110px)]">
         <div className="wrap">
           <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,440px)] lg:gap-16">
             <h3 className="text-[clamp(28px,2.8vw,50px)] leading-[1] tracking-[-0.03em]">{routes.heading}</h3>
             <p className={`${microCaps} text-[12px] text-forest/75`}>{routes.body}</p>
           </div>
 
-          <div className="kp-routes mt-[clamp(32px,5svh,56px)] grid gap-[clamp(24px,4svh,40px)]">
+          <div className="kp-routes mt-[clamp(28px,4.5svh,56px)] grid gap-[clamp(14px,2.4svh,24px)]">
             {route("soil")}
             {route("foliar")}
           </div>
