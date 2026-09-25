@@ -35,8 +35,8 @@ export const metadata: Metadata = {
  * montagem do nitrogênio e as duas rotas (Assembly, A3–A4), o produto em
  * bento (Meet), a lente dentro da folha (Cell), a tabela contra o hidrolisado
  * típico (Compare, A4), a prova pela regra da testemunha (Rule, A6), a
- * história mais antiga que a empresa (Heritage, A8), a janela no mostrador
- * da safra (Timing, A9) com as culturas de mercado (Season), a ficha da
+ * história mais antiga que a empresa (Heritage, A8), as culturas de mercado
+ * (Season) e a janela no mostrador da safra (Timing, A9), a ficha da
  * bombona (Label), para quem é (Fit), a faixa de teste (Strip), as perguntas
  * (A11) e o pedido.
  */
@@ -57,8 +57,8 @@ export default function AminosanPage() {
       <Compare />
       <Rule />
       <Heritage />
-      <Timing />
       <Season />
+      <Timing />
       <Label />
       <Fit />
       <Strip />

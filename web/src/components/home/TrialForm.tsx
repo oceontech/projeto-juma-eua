@@ -10,9 +10,22 @@ import s from "./TrialForm.module.css";
 
 const INITIAL: TrialRequestState = { status: "idle", message: "", errors: {} };
 
-/* Ícone por posição: as opções de cultura chegam traduzidas, a ordem é a
-   mesma nos dois idiomas. Sem ícone, a ficha leva um marcador. */
-const CROP_ICONS = ["corn", "soybean", "cotton"];
+/* As fichas de cultura são as da seção de timing do KMEP (mesmos ids, mesmos
+   rótulos nos dois idiomas), cada uma com o seu recorte de estúdio. */
+const CROP_ICONS: Record<string, string> = {
+  citrus: "citrus",
+  fruit: "tree-fruit",
+  veg: "vegetables",
+  tomato: "tomato-pepper",
+  ornamental: "ornamentals",
+  potato: "potato",
+  onion: "onion-garlic",
+  roots: "carrot-beet",
+  corn: "corn",
+  soy: "soybean",
+  cotton: "cotton",
+  beans: "beans",
+};
 
 /**
  * Formulário do pedido de faixa de teste.
@@ -24,23 +37,18 @@ const CROP_ICONS = ["corn", "soybean", "cotton"];
  *
  * `compact` é a variante reduzida das LPs: nome, e-mail, estado e cultura.
  * Os campos que saem chegam vazios ao action, que já os trata como opcionais —
- * o contrato não muda. `crops` troca as fichas de cultura quando a página
- * posiciona outras, e `cropIcons` troca os ícones na mesma ordem (sem ele,
- * vale CROP_ICONS).
+ * o contrato não muda. As culturas são as mesmas nas três páginas.
  */
 export function TrialForm({
   source,
   compact = false,
-  crops,
-  cropIcons = CROP_ICONS,
 }: {
   source?: string;
   compact?: boolean;
-  crops?: readonly string[];
-  cropIcons?: readonly string[];
 }) {
-  const { form } = useContent().home.usOperation;
-  const cropOptions = crops ?? form.crop.options;
+  const content = useContent();
+  const { form } = content.home.usOperation;
+  const cropOptions = content.kmep.timing.crops;
   const [state, action, pending] = useActionState(submitTrialRequest, INITIAL);
   const id = useId();
   const formRef = useRef<HTMLFormElement>(null);
@@ -96,15 +104,15 @@ export function TrialForm({
         <legend className={s.label}>{form.crop.label}</legend>
         <div className={s.chips}>
           {cropOptions.map((option, i) => (
-            <label key={option} className={s.chip}>
-              <input type="radio" name="crop" value={option} defaultChecked={i === 0} className={s.srOnly} />
+            <label key={option.id} className={s.chip}>
+              <input type="radio" name="crop" value={option.label} defaultChecked={i === 0} className={s.srOnly} />
               <span className={s.chipFace}>
-                {cropIcons[i] ? (
-                  <CropIcon id={cropIcons[i]} className={s.chipIcon} />
+                {CROP_ICONS[option.id] ? (
+                  <CropIcon id={CROP_ICONS[option.id]} className={s.chipIcon} />
                 ) : (
                   <span aria-hidden className={s.chipDot} />
                 )}
-                {option}
+                {option.label}
               </span>
             </label>
           ))}

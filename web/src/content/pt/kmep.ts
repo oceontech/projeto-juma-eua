@@ -529,8 +529,6 @@ export const final: typeof en.final = {
   heading: "Faça uma faixa de teste. O produto é por nossa conta.",
   body: "Escolha um talhão, deixe uma faixa testemunha sem tratar ao lado, e voltamos na colheita com você. Diga a sua cultura e o seu estado e enviamos antes o rótulo, as doses em fl oz por acre e o relatório completo do ensaio.",
   disclaimer: "O KMEP Ultra® é aplicado em mistura de tanque com um inseticida e nunca no lugar de um. Ele não muda a dose do rótulo do inseticida. Sempre leia e siga as instruções do rótulo do defensivo que você está aplicando.",
-  crops: ["Citros e frutas", "Hortaliças", "Ornamentais", "Grandes culturas", "Outra"],
-  cropIcons: ["citrus", "vegetables", "ornamentals", "corn"],
   alt: "Colheita de milho ao pôr do sol, com o grão sendo descarregado na carreta ao lado da colheitadeira",
 };
 

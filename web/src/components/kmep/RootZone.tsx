@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef, useState, type CSSProperties } from "react";
 import { useContent } from "@/components/layout/LocaleProvider";
 import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
 import { BAND, STEPS, createRootZone, type ZoneState } from "@/lib/rootzone";
@@ -128,12 +128,12 @@ export function RootZone() {
   );
 
   return (
-    <div ref={scope} className="rz-stage flex min-h-[100svh] flex-col justify-center py-[clamp(28px,6svh,80px)]">
-      <div className="wrap">
+    <div ref={scope} className="rz-stage flex min-h-[100svh] flex-col justify-center py-[clamp(28px,6svh,80px)] max-lg:justify-start max-lg:pt-[76px]">
+      <div className="wrap lg:grid lg:grid-cols-[minmax(190px,250px)_minmax(0,1fr)] lg:gap-x-[clamp(24px,3vw,48px)] lg:gap-y-6">
         <div
           role="img"
           aria-label={zone.alt}
-          className="relative aspect-[4/5] max-h-[60svh] w-full overflow-hidden rounded-[4px] bg-[#2A2A1E] lg:aspect-[16/8] lg:max-h-[66svh]"
+          className="relative aspect-[4/5] max-h-[60svh] w-full overflow-hidden rounded-[4px] bg-[#2A2A1E] lg:col-start-2 lg:row-start-1 lg:aspect-[16/8] lg:max-h-[66svh]"
         >
           <canvas ref={canvas} className="absolute inset-0 size-full" />
 
@@ -167,7 +167,7 @@ export function RootZone() {
         </div>
 
         {still ? (
-          <ol className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          <ol className="mt-6 grid gap-5 sm:grid-cols-2 lg:col-span-2 lg:grid-cols-3">
             {zone.steps.map((s, k) => (
               <li key={s.title}>
                 <p className={`${eyebrow} text-[10px] text-moss`}>{String(k + 1).padStart(2, "0")}</p>
@@ -177,35 +177,48 @@ export function RootZone() {
             ))}
           </ol>
         ) : (
-          <div className="mt-[clamp(16px,3svh,32px)] grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,440px)] lg:gap-16">
-            <ol className="grid grid-cols-6 gap-1.5 self-start lg:gap-3">
-              {zone.steps.map((s, k) => (
-                <li key={s.title} className="grid gap-2">
-                  <span className="relative block h-[2px] bg-forest/12">
-                    <span
-                      className="absolute inset-0 origin-left bg-olive transition-transform duration-500"
-                      style={{ transform: `scaleX(${k <= step ? 1 : 0})` }}
-                    />
-                  </span>
-                  <span
-                    className={`${eyebrow} hidden text-[10px] transition-colors duration-500 lg:block ${k === step ? "text-forest" : "text-forest/40"}`}
+          <div className="mt-[clamp(16px,3svh,32px)] grid gap-4 lg:contents">
+            {/* No desktop, os indicadores ficam numa trilha vertical à esquerda:
+                a etapa da vez assume o destaque; as que já passaram recuam, e
+                as próximas esperam quase apagadas. */}
+            <ol className="grid grid-cols-6 gap-1.5 self-start lg:col-start-1 lg:row-span-2 lg:row-start-1 lg:flex lg:flex-col lg:gap-6">
+              {zone.steps.map((s, k) => {
+                const on = k === step;
+                return (
+                  <li
+                    key={s.title}
+                    aria-current={on ? "step" : undefined}
+                    className="grid content-start gap-2 lg:grid-cols-[3px_minmax(0,1fr)] lg:gap-4"
                   >
-                    {String(k + 1).padStart(2, "0")} · {s.title}
-                  </span>
-                </li>
-              ))}
+                    <span className={`relative block bg-forest/12 transition-[height,width] duration-500 ${on ? "h-[2px] lg:h-auto lg:w-[3px]" : "h-[2px] lg:h-auto lg:w-[2px]"}`}>
+                      <span
+                        className={`absolute inset-0 origin-left [transform:scaleX(var(--p))] transition-[transform,background-color] duration-500 lg:origin-top lg:[transform:scaleY(var(--p))] ${on ? "bg-olive" : "bg-olive/50"}`}
+                        style={{ "--p": k <= step ? 1 : 0 } as CSSProperties}
+                      />
+                    </span>
+                    <span
+                      className={`hidden py-0.5 font-display leading-[1.15] tracking-[-0.015em] transition-[color,font-size] duration-500 lg:block ${
+                        on ? "text-[22px] text-forest" : k < step ? "text-[15px] text-forest/55" : "text-[15px] text-forest/35"
+                      }`}
+                    >
+                      {s.title}
+                    </span>
+                  </li>
+                );
+              })}
             </ol>
-            <div className="relative min-h-[118px] lg:min-h-[130px]">
+            <div className="relative min-h-[118px] lg:col-start-2 lg:row-start-2 lg:mt-[clamp(16px,3svh,32px)] lg:min-h-[130px]">
               {zone.steps.map((s, k) => (
                 <div
                   key={s.title}
                   aria-hidden={k !== step}
-                  className={`absolute inset-x-0 top-0 transition-[opacity,transform] duration-500 ${k === step ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-2 opacity-0"}`}
+                  className={`absolute inset-x-0 top-0 transition-[opacity,transform] ${
+                    k === step
+                      ? "translate-y-0 opacity-100 duration-500 delay-150"
+                      : `pointer-events-none opacity-0 duration-200 ${k < step ? "-translate-y-2" : "translate-y-2"}`
+                  }`}
                 >
-                  <p className={`${eyebrow} text-[10px] text-moss`}>
-                    {String(k + 1).padStart(2, "0")} / {String(zone.steps.length).padStart(2, "0")}
-                  </p>
-                  <p className="mt-1.5 font-display text-[clamp(20px,1.8vw,30px)] leading-[1.08] tracking-[-0.015em]">{s.title}</p>
+                  <p className="font-display text-[clamp(20px,1.8vw,30px)] leading-[1.08] tracking-[-0.015em]">{s.title}</p>
                   <p className="mt-2 text-[14px] leading-[1.45] text-forest/75 lg:text-[15px]">{s.body}</p>
                 </div>
               ))}

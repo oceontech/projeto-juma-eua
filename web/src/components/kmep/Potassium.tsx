@@ -361,40 +361,39 @@ export function Potassium() {
           produto) e, no último cartão, o que vai na bombona. */}
       <div className="wrap mt-[clamp(36px,5vw,72px)]">
         <p className={`${eyebrow} text-moss`}>{roles.label}</p>
-        <ol className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4 xl:gap-4">
-          {roles.items.map((item, i) => (
+        <ol className="mt-5 grid grid-cols-2 gap-2.5 sm:gap-3 xl:grid-cols-4 xl:gap-4">
+          {roles.items.map((item) => (
             <li
               key={item.title}
-              className="kp-role flex flex-col rounded-[clamp(12px,1.05vw,20px)] border border-forest/12 bg-forest/[0.035] p-[clamp(18px,1.8vw,28px)]"
+              className="kp-role flex flex-col rounded-[clamp(12px,1.05vw,20px)] border border-forest/12 bg-forest/[0.035] p-[clamp(12px,1.8vw,28px)]"
             >
-              <p className={`${microCaps} text-[10px] text-moss`}>{String(i + 1).padStart(2, "0")}</p>
-              <h3 className="mt-3 text-[clamp(21px,1.6vw,27px)] leading-[1.1] tracking-[-0.02em] text-balance">{item.title}</h3>
-              <p className="mt-3 text-[15px] leading-[1.5] text-forest/75">{item.body}</p>
+              <h3 className="text-[clamp(16px,1.6vw,27px)] leading-[1.1] tracking-[-0.02em] text-balance">{item.title}</h3>
+              <p className="mt-2 text-[12px] leading-[1.4] text-forest/75 md:mt-3 md:text-[15px] md:leading-[1.5]">{item.body}</p>
             </li>
           ))}
-          <li className="kp-role relative flex flex-col overflow-hidden rounded-[clamp(12px,1.05vw,20px)] bg-linear-[122.93deg,var(--color-night-warm)_2.4%,var(--color-night-deep)_60.23%] p-[clamp(18px,1.8vw,28px)] text-cream">
+          <li className="kp-role relative flex flex-col overflow-hidden rounded-[clamp(12px,1.05vw,20px)] bg-linear-[122.93deg,var(--color-night-warm)_2.4%,var(--color-night-deep)_60.23%] p-[clamp(12px,1.8vw,28px)] text-cream">
             <span
               aria-hidden
               className="pointer-events-none absolute -right-[20%] -bottom-[30%] h-[80%] w-[80%] bg-[radial-gradient(closest-side,rgba(203,53,27,0.22),transparent)]"
             />
-            <p className={`${microCaps} relative text-[10px] text-sage`}>{roles.analysis.label}</p>
-            <p className="relative mt-3 font-display text-[clamp(48px,4.4vw,72px)] leading-none tracking-[-0.05em]">
+            <p className={`${microCaps} relative text-[8px] leading-[1.3] text-sage md:text-[10px]`}>{roles.analysis.label}</p>
+            <p className="relative mt-2 font-display text-[clamp(28px,4.4vw,72px)] leading-none tracking-[-0.05em]">
               {roles.analysis.formula}
             </p>
-            <dl className="relative mt-auto grid gap-2 pt-6">
+            <dl className="relative mt-auto grid gap-1.5 pt-3 md:gap-2 md:pt-6">
               {roles.analysis.rows.map((row) => (
-                <div key={row.k} className="flex items-baseline justify-between gap-4 border-t border-cream/15 pt-2">
-                  <dt className={`${microCaps} text-[10px] text-cream/70`}>{row.k}</dt>
-                  <dd className="font-display text-[18px] tabular-nums tracking-[-0.01em]">{row.v}</dd>
+                <div key={row.k} className="flex items-baseline justify-between gap-1 border-t border-cream/15 pt-1.5 md:gap-2 md:pt-2">
+                  <dt className={`${microCaps} text-[8px] text-cream/70 md:text-[10px]`}>{row.k}</dt>
+                  <dd className="font-display text-[13px] tabular-nums md:text-[18px] tracking-[-0.01em]">{row.v}</dd>
                 </div>
               ))}
             </dl>
-            <p className={`${microCaps} relative mt-4 text-[10px] text-cream/55`}>{roles.analysis.note}</p>
+            <p className={`${microCaps} relative mt-2 text-[7px] leading-[1.3] text-cream/55 md:mt-4 md:text-[10px]`}>{roles.analysis.note}</p>
           </li>
         </ol>
       </div>
 
-      <div className="mt-[clamp(16px,2vw,32px)]">
+      <div className="mt-0 lg:mt-[clamp(16px,2vw,32px)]">
         <RootZone />
       </div>
 

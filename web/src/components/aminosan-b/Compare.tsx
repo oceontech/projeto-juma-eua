@@ -11,7 +11,7 @@ import { AMINO, eyebrow, microCaps } from "./ui";
  * A4, a tabela — origem, processo e forma. A coluna do Aminosan® é um cartão
  * branco contínuo, de cima a baixo, com a faixa azul do rótulo e o logo no
  * topo: a mesma gramática do cartão da rota na seção de cima. A da categoria
- * é só o contorno tracejado, com o texto mais apagado. Nunca um concorrente
+ * tem fundo escuro e divisórias tracejadas. Nunca um concorrente
  * com nome, sempre "often" — docs/03-SITE.md.
  *
  * A entrada: as duas colunas sobem, os fios de cada linha se desenham da
@@ -77,12 +77,19 @@ export function Compare() {
               </div>
             ))}
           </div>
-          <div className="cp-m rounded-[16px] border border-dashed border-forest/30 px-4 py-4">
-            <p className="font-display text-[16px] leading-[1.1] tracking-[-0.02em] text-forest/55">{compare.columns.theirs}</p>
+          <div className="cp-m rounded-[16px] border border-dashed border-cream/35 bg-forest px-4 py-4 text-cream">
+            <p className="font-display text-[16px] leading-[1.1] tracking-[-0.02em]">{compare.columns.theirs}</p>
             {compare.rows.map((row) => (
-              <div key={row.k} className="mt-3 border-t border-dashed border-forest/25 pt-3">
-                <p className={`${eyebrow} text-moss/80`}>{row.k}</p>
-                <p className="mt-1.5 text-[13px] leading-[1.4] text-forest/60">{row.theirs}</p>
+              <div key={row.k} className="mt-3 border-t border-dashed border-cream/30 pt-3">
+                <p className={`${eyebrow} text-sage`}>{row.k}</p>
+                <p className="mt-1.5 text-[13px] leading-[1.4] text-cream/85">
+                  <span aria-hidden className="mr-2 inline-grid size-[0.9em] translate-y-[0.06em] place-items-center rounded-full bg-red-600 text-white">
+                    <svg viewBox="0 0 16 16" className="size-[0.55em]">
+                      <path d="M4 4l8 8m0-8-8 8" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" />
+                    </svg>
+                  </span>
+                  {row.theirs}
+                </p>
               </div>
             ))}
           </div>
@@ -103,7 +110,7 @@ export function Compare() {
           </div>
           <div
             aria-hidden
-            className="cp-col col-start-2 row-start-1 rounded-[clamp(14px,1.4vw,24px)] border border-dashed border-forest/30 md:col-start-3"
+            className="cp-col col-start-2 row-start-1 rounded-[clamp(14px,1.4vw,24px)] border border-dashed border-cream/35 bg-forest md:col-start-3"
             style={{ gridRow: `1 / span ${rows + 1}` }}
           />
 
@@ -114,7 +121,7 @@ export function Compare() {
             </div>
           </div>
           <div className="relative col-start-2 row-start-1 flex items-end px-[clamp(14px,2vw,32px)] pt-[clamp(24px,2.6vw,40px)] pb-4 md:col-start-3">
-            <p className="font-display text-[clamp(17px,1.5vw,24px)] leading-[1.1] tracking-[-0.02em] text-forest/55">{compare.columns.theirs}</p>
+            <p className="font-display text-[clamp(17px,1.5vw,24px)] leading-[1.1] tracking-[-0.02em] text-cream">{compare.columns.theirs}</p>
           </div>
 
           {compare.rows.map((row, i) => (
@@ -142,8 +149,15 @@ export function Compare() {
                 </p>
               </div>
               <div className="relative col-start-2 px-[clamp(14px,2vw,32px)] pt-10 pb-6 md:col-start-3 md:py-7" style={{ gridRow: i + 2 }}>
-                <span aria-hidden className="cp-rule absolute inset-x-[clamp(14px,2vw,32px)] top-0 h-px origin-left border-t border-dashed border-forest/25" />
-                <p className="cp-cell text-[clamp(14px,1.15vw,17px)] leading-[1.4] text-forest/60">{row.theirs}</p>
+                <span aria-hidden className="cp-rule absolute inset-x-[clamp(14px,2vw,32px)] top-0 h-px origin-left border-t border-dashed border-cream/30" />
+                <p className="cp-cell text-[clamp(14px,1.15vw,17px)] leading-[1.4] text-cream/85">
+                  <span aria-hidden className="mr-2 inline-grid size-[0.9em] translate-y-[0.06em] place-items-center rounded-full bg-red-600 text-white">
+                    <svg viewBox="0 0 16 16" className="size-[0.55em]">
+                      <path d="M4 4l8 8m0-8-8 8" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" />
+                    </svg>
+                  </span>
+                  {row.theirs}
+                </p>
               </div>
             </div>
           ))}

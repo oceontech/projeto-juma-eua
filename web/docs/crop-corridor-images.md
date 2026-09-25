@@ -2,7 +2,19 @@
 
 Generated using the built-in image_gen tool. Final images live in `public/img/crop-corridor/`.
 
-18 distinct portrait photographs. Each WebP is 576 × 800 pixels (18:25), quality 80. Resize uses a centered proportional crop. The generated originals remain in the image tool's output directory.
+The homepage corridor uses 18 distinct portrait photographs. Each WebP is 576 × 800 pixels (18:25), quality 80. Resize uses a centered proportional crop. The generated originals remain in the image tool's output directory.
+
+Five additional photos in the same folder are used by the KMEP crop carousel: tomato and pepper, potato, onion and garlic, carrot and beet, and beans. They use the same dimensions and quality as the homepage set.
+
+## Additional KMEP carousel prompts
+
+- `tomato-pepper`: Tomato and bell pepper growing on separate plants together in a greenhouse.
+- `potato`: A potato partly exposed among the leaves of a healthy plant, with tubers in cultivated soil.
+- `onion-garlic`: A golden onion and a white garlic bulb with green tops growing in field soil.
+- `carrot-beet`: An orange carrot and a red beetroot growing together in a vegetable field.
+- `beans`: A common bean plant with green pods attached among fresh leaves.
+
+Each follows the existing set's natural editorial photography, portrait 18:25 framing, soft daylight and farm setting, with no text, logos, collage or illustration.
 
 `src/content/crop-corridor.ts` defines opposing pairs. The stream assigns even indices to one rail and odd indices to the other: 18 unique images on desktop, 14 on mobile, with no repeated photographs across sides. The existing motion and geometry are retained.
 

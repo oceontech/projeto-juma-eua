@@ -453,30 +453,7 @@ export const timing = {
    Aminosan® pode ser posicionado nos EUA antes de publicar. */
 export const season = {
   heading: ["And the crops", "you grow for market."],
-  intro: "One jug across berries, vegetables and citrus, riding in the spray passes already on your calendar. Rate and timing set with your agronomist.",
-  cards: [
-    {
-      tag: "Berries",
-      title: "Strawberry",
-      body: "Alone or in tank mix, in the passes already on your winter-season schedule.",
-      image: "/img/aminosan-b/cut-strawberry-v2.webp",
-      alt: "Strawberry plant with ripe fruit and roots",
-    },
-    {
-      tag: "Vegetables",
-      title: "Tomato",
-      body: "Fits the fertility and spray program you already run.",
-      image: "/img/aminosan-b/cut-tomato-v2.webp",
-      alt: "Tomato plant with ripe fruit and roots",
-    },
-    {
-      tag: "Groves",
-      title: "Citrus",
-      body: "Rides in the foliar pass you already make across the grove.",
-      image: "/img/aminosan-b/cut-citrus-v2.webp",
-      alt: "Young citrus tree with oranges and roots",
-    },
-  ],
+  intro: "From orchards and vegetables to ornamentals and field crops, explore crops covered by the Aminosan application calendar.",
 };
 
 /**

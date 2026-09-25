@@ -175,11 +175,14 @@ export function TwoJobs() {
           /* Só prende quando a cena cabe inteira na altura da tela; abaixo
              disso, a mesma linha do tempo corre presa ao scroll comum. */
           pinned: "(min-width: 1024px) and (min-height: 760px) and (prefers-reduced-motion: no-preference)",
+          /* Celular: o título rola e as cenas (passada, os dois trabalhos)
+             travam sob a barra enquanto a linha do tempo corre. */
+          phone: "(max-width: 767px) and (prefers-reduced-motion: no-preference)",
           motion: "(prefers-reduced-motion: no-preference)",
           still: "(prefers-reduced-motion: reduce)",
         },
         (ctx) => {
-          const { pinned, still } = ctx.conditions as { pinned: boolean; still: boolean };
+          const { pinned, phone, still } = ctx.conditions as { pinned: boolean; phone: boolean; still: boolean };
 
           if (still) {
             stages(build(gsap.timeline({ paused: true }))).progress(1);
@@ -192,7 +195,9 @@ export function TwoJobs() {
               gsap.timeline({
                 scrollTrigger: pinned
                   ? { trigger: ".tj-stage", start: "top top", end: "+=180%", scrub: 0.8, pin: true, anticipatePin: 1 }
-                  : { trigger: ".tj-scene", start: "top 85%", end: "bottom 55%", scrub: 0.8 },
+                  : phone
+                    ? { trigger: ".tj-scene", start: "top 11%", end: "+=200%", scrub: 0.8, pin: true, pinSpacing: true }
+                    : { trigger: ".tj-scene", start: "top 85%", end: "bottom 55%", scrub: 0.8 },
               }),
             ),
           );

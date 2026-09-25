@@ -668,10 +668,6 @@ export const final = {
   body: "Pick a field, leave an untreated check strip beside it, and we will come back at harvest with you. Tell us your crop and your state and we will send the label, rates in fl oz per acre, and the full trial report first.",
   /* Ressalva obrigatória, dentro da seção. */
   disclaimer: "KMEP Ultra® is applied in tank mix with an insecticide and never in place of one. It does not change the rate on the insecticide label. Always read and follow the label directions of the pesticide you are applying.",
-  /* As culturas do formulário reduzido: as duas posicionadas, a que está em
-     revisão e uma saída. A ordem casa com os ícones do TrialForm. */
-  crops: ["Citrus & fruit", "Vegetables", "Ornamentals", "Row crops", "Other"],
-  cropIcons: ["citrus", "vegetables", "ornamentals", "corn"],
   alt: "Corn harvest at sunset, grain unloading into a cart beside the combine",
 };
 

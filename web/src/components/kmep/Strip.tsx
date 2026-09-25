@@ -10,12 +10,6 @@ import { Cta, eyebrow, microCaps } from "./ui";
 
 export type StripData = typeof kmepContent.strip;
 
-const stepImages = [
-  "/img/aminosan-b/season-sprayer.webp",
-  "/img/aminosan-b/trial-strip.webp",
-  "/img/step-3-harvest.webp",
-];
-
 /**
  * K15 — como funciona a faixa de teste. É a resposta operacional para "vocês
  * não têm dado americano": transforma a ausência de dado local na oferta da
@@ -81,17 +75,9 @@ export function Strip({ data }: { data?: StripData }) {
           {strip.steps.map((step, i) => (
             <li
               key={step.n}
-              className="st-card relative flex md:mt-[calc(var(--i)*clamp(0px,6vw,96px))] min-h-[clamp(320px,27vw,410px)] flex-col justify-end overflow-hidden rounded-[clamp(12px,1.05vw,20px)] border border-offwhite/15 bg-forest p-[clamp(20px,2vw,32px)]"
+              className="st-card relative flex md:mt-[calc(var(--i)*clamp(0px,6vw,96px))] min-h-[clamp(200px,17vw,260px)] flex-col justify-end overflow-hidden rounded-[clamp(16px,1.4vw,26px)] border border-offwhite/25 bg-offwhite/10 p-[clamp(22px,2.2vw,36px)] shadow-[0_24px_60px_-24px_rgba(0,0,0,0.55),inset_0_1px_0_rgba(255,255,255,0.28)] backdrop-blur-xl backdrop-saturate-150"
               style={{ "--i": i } as CSSProperties}
             >
-              <Image
-                src={stepImages[i]}
-                alt=""
-                fill
-                sizes="(min-width: 768px) 33vw, 100vw"
-                className="object-cover"
-              />
-              <span aria-hidden className="absolute inset-x-0 bottom-0 h-[60%] bg-gradient-to-t from-forest via-forest/85 to-transparent" />
               <h3 className="relative text-[clamp(21px,1.7vw,28px)] leading-[1.1] tracking-[-0.02em]">
                 {step.title}
               </h3>

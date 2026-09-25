@@ -349,30 +349,7 @@ export const timing: typeof en.timing = {
 
 export const season: typeof en.season = {
   heading: ["E as culturas que", "você planta para o mercado."],
-  intro: "Uma bombona para morango, hortaliças e citros, nas passadas de pulverização que já estão no seu calendário. Dose e época definidas com o seu agrônomo.",
-  cards: [
-    {
-      tag: "Berries",
-      title: "Morango",
-      body: "Sozinho ou em mistura de tanque, nas passadas que já estão na sua programação de inverno.",
-      image: "/img/aminosan-b/cut-strawberry-v2.webp",
-      alt: "Pé de morango com frutos maduros e raízes",
-    },
-    {
-      tag: "Hortaliças",
-      title: "Tomate",
-      body: "Entra no programa de adubação e pulverização que você já conduz.",
-      image: "/img/aminosan-b/cut-tomato-v2.webp",
-      alt: "Pé de tomate com frutos maduros e raízes",
-    },
-    {
-      tag: "Pomares",
-      title: "Citros",
-      body: "Vai na passada foliar que você já faz no pomar.",
-      image: "/img/aminosan-b/cut-citrus-v2.webp",
-      alt: "Pé de citros jovem com laranjas e raízes",
-    },
-  ],
+  intro: "De pomares e hortaliças a ornamentais e grandes culturas, veja as culturas do calendário de aplicação do Aminosan.",
 };
 
 export const label: typeof en.label = {

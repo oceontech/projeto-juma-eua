@@ -37,12 +37,8 @@ export function Meet() {
             </div>
           </li>
 
-          <li className="relative flex min-h-[190px] md:min-h-[250px] flex-col overflow-hidden rounded-[24px] bg-white p-4 md:p-[clamp(24px,2.5vw,36px)] text-forest row-span-2 md:row-span-1 md:col-span-1 lg:col-span-5 xl:col-span-3 xl:min-h-[220px] xl:p-6">
-            <div className="relative min-h-0 flex-1 md:hidden">
-              <Image src="/img/aminosan-b/aminosan-logo.webp" alt="Aminosan®" fill sizes="50vw" className="pointer-events-none object-contain object-left" />
-            </div>
-            <Image src="/img/aminosan-b/aminosan-logo.webp" alt="" aria-hidden width={1004} height={392} className="pointer-events-none absolute right-6 top-6 hidden h-auto w-[clamp(120px,10vw,160px)] object-contain md:block" />
-            <div className="relative pt-3 md:mt-auto md:pt-8 xl:pt-0">
+          <li className="relative flex min-h-[190px] md:min-h-[250px] flex-col overflow-hidden rounded-[24px] bg-cream p-4 md:p-[clamp(24px,2.5vw,36px)] text-forest row-span-2 md:row-span-1 md:col-span-1 lg:col-span-5 xl:col-span-3 xl:min-h-[220px] xl:p-6">
+            <div className="mt-auto">
               <h3 className="max-w-[16ch] text-[clamp(20px,5.2vw,28px)] md:text-[clamp(28px,2.7vw,43px)] leading-[1.05] tracking-[-0.03em] xl:text-[clamp(26px,2.2vw,32px)]">{mix.title}</h3>
               <p className="mt-2 max-w-[42ch] text-xs md:mt-4 md:text-sm leading-relaxed text-forest/75">{mix.body}</p>
             </div>

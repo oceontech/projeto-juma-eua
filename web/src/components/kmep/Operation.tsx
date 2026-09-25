@@ -73,10 +73,10 @@ export function Operation() {
                   <Image
                     src={card.image}
                     alt=""
-                    width={640}
-                    height={640}
-                    sizes="(min-width: 1280px) 220px, (min-width: 640px) 180px, 200px"
-                    className="relative h-auto max-h-[190px] w-[min(100%,200px)] object-contain"
+                    width={wide ? 960 : 640}
+                    height={wide ? 480 : 640}
+                    sizes={wide ? "(min-width: 1280px) 260px, 200px" : "(min-width: 1280px) 220px, (min-width: 640px) 180px, 200px"}
+                    className={`relative h-auto max-h-[190px] object-contain ${wide ? "w-[min(100%,260px)]" : "w-[min(100%,200px)]"}`}
                   />
                 </div>
                 <p className={`${microCaps} mt-auto text-offwhite/70 ${wide ? "xl:col-start-1 xl:row-start-2 xl:self-end" : ""}`}>

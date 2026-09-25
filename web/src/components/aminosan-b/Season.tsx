@@ -1,54 +1,33 @@
 "use client";
 
 import Image from "next/image";
-import { useRef, type CSSProperties } from "react";
+import type { CSSProperties } from "react";
 import { useContent } from "@/components/layout/LocaleProvider";
-import { gsap, useGSAP } from "@/lib/gsap";
 import { SplitLines } from "@/components/motion/SplitLines";
 import { microCaps } from "./ui";
 
-/**
- * As culturas do produtor (specialty crops): fichas verdes em escada, com o recorte da cultura (morango,
- * tomate, citros: a planta inteira, com raiz) saindo pelo topo de cada uma — o desenho dos cards de produto
- * da referência. A entrada é presa ao scroll, nos dois sentidos: as fichas
- * sobem de baixo enquanto a seção entra (e voltam a descer se o scroll
- * voltar); os recortes andam num compasso próprio, então a figura escorrega
- * sobre a ficha em vez de estar colada nela. Não há animação de saída: ao
- * rolar para baixo, os cards ficam onde estão.
- */
+const CROP_IMAGES: Record<string, string> = {
+  citrus: "/img/crop-corridor/citrus.webp",
+  fruit: "/img/crop-corridor/blueberry.webp",
+  veg: "/img/crop-corridor/broccoli.webp",
+  tomato: "/img/crop-corridor/tomato-pepper.webp",
+  ornamental: "/img/crop-corridor/ornamentals.webp",
+  potato: "/img/crop-corridor/potato.webp",
+  onion: "/img/crop-corridor/onion-garlic.webp",
+  roots: "/img/crop-corridor/carrot-beet.webp",
+  corn: "/img/crop-corridor/corn.webp",
+  soy: "/img/crop-corridor/soybean.webp",
+  cotton: "/img/crop-corridor/cotton.webp",
+  beans: "/img/crop-corridor/beans.webp",
+};
+
 export function Season() {
-  const { season } = useContent().aminosanB;
-  const scope = useRef<HTMLElement>(null);
-
-  useGSAP(
-    () => {
-      const mm = gsap.matchMedia();
-      mm.add("(prefers-reduced-motion: no-preference)", () => {
-        const cards = gsap.utils.toArray<HTMLElement>(".ss-card");
-
-        cards.forEach((card, i) => {
-          const cut = card.querySelector(".ss-cut");
-          const trigger = { trigger: card, scrub: 0.6 };
-
-          /* Entrada: de baixo, e mais de baixo quanto mais à direita. */
-          gsap.fromTo(
-            card,
-            { y: 220 + i * 90, opacity: 0 },
-            { y: 0, opacity: 1, ease: "power2.out", scrollTrigger: { ...trigger, start: "top bottom", end: "top 55%" } },
-          );
-          gsap.fromTo(
-            cut,
-            { y: 120, scale: 0.9 },
-            { y: 0, scale: 1, ease: "power2.out", scrollTrigger: { ...trigger, start: "top bottom", end: "top 50%" } },
-          );
-        });
-      });
-    },
-    { scope },
-  );
+  const content = useContent();
+  const { season } = content.aminosanB;
+  const crops = content.kmep.timing.crops;
 
   return (
-    <section id="season" ref={scope} className="overflow-hidden bg-white pt-[clamp(72px,8vw,124px)] pb-[clamp(96px,12vw,200px)] text-forest">
+    <section id="season" className="overflow-hidden bg-white pt-[clamp(72px,8vw,124px)] pb-[clamp(56px,8vw,120px)] text-forest">
       <div className="wrap grid gap-6 lg:grid-cols-[1fr_380px] lg:items-end">
         <SplitLines className="text-[clamp(34px,3.8vw,68px)] leading-[0.98] tracking-[-0.03em] text-forest">
           {season.heading.map((line) => (
@@ -60,32 +39,90 @@ export function Season() {
         <p className={`${microCaps} text-forest/65`}>{season.intro}</p>
       </div>
 
-      <div className="wrap mt-[clamp(120px,14vw,200px)] grid gap-[112px] md:gap-[clamp(120px,16vw,150px)] md:grid-cols-3 md:items-start md:gap-5">
-        {season.cards.map((card, i) => (
-          <article
-            key={card.tag}
-            className="ss-card group relative flex flex-col md:mt-[calc(var(--i)*clamp(0px,7vw,110px))] rounded-[clamp(12px,1.05vw,20px)] bg-linear-[122.93deg,var(--color-night-warm)_2.4%,var(--color-night-deep)_60.23%] px-5 pt-[clamp(120px,13vw,210px)] pb-6 text-cream"
-            style={{ "--i": i } as CSSProperties}
+      <div
+        className="season-carousel relative mx-auto mt-[clamp(24px,4vw,56px)] grid h-[clamp(500px,46vw,620px)] w-full max-w-[1400px] place-items-center overflow-hidden"
+        style={{
+          perspective: "120em",
+          maskImage: "linear-gradient(90deg, transparent, #000 16% 84%, transparent)",
+          WebkitMaskImage: "linear-gradient(90deg, transparent, #000 16% 84%, transparent)",
+        }}
+      >
+        <div className="season-carousel-center absolute inset-0 grid place-items-center [transform-style:preserve-3d]">
+          <div
+            className="season-carousel-track relative grid aspect-[7/10] w-[var(--card-width)] place-items-center [transform-style:preserve-3d]"
+            style={{
+              "--count": crops.length,
+              "--step": "calc(1turn / var(--count))",
+              "--card-width": "clamp(190px, 24vw, 300px)",
+              "--radius": "calc((0.5 * var(--card-width) + 0.5em) / tan(0.5 * var(--step)))",
+              animation: "season-carousel-spin 32s linear infinite",
+            } as CSSProperties}
           >
-            {/* Vinheta verde no canto, recortada pelo arredondamento do card
-                (o card em si não corta, porque a imagem vaza pelo topo). */}
-            <span aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden rounded-[inherit]">
-              <span className="absolute -top-[14%] -left-[6%] h-[55%] w-[60%] bg-[radial-gradient(closest-side,rgba(183,199,62,0.16),transparent)]" />
-            </span>
-            <div className="ss-cut pointer-events-none absolute -top-[clamp(100px,10vw,170px)] left-4 h-[clamp(220px,22vw,360px)] w-[70%]">
-              <Image
-                src={card.image}
-                alt={card.alt}
-                fill
-                sizes="(min-width: 768px) 24vw, 70vw"
-                className="object-contain object-bottom-left drop-shadow-[0_24px_30px_rgba(22,38,27,0.35)] transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:-translate-y-2"
-              />
-            </div>
-            <p className={`${microCaps} text-lime`}>{card.tag}</p>
-            <h3 className="mt-2 text-[clamp(24px,2vw,34px)] leading-[1.05] tracking-[-0.02em]">{card.title}</h3>
-            <p className={`${microCaps} mt-3 text-cream/80`}>{card.body}</p>
-          </article>
-        ))}
+            <style>{`
+              @keyframes season-carousel-spin {
+                to { transform: rotateY(1turn); }
+              }
+
+              @media (prefers-reduced-motion: reduce) {
+                .season-carousel {
+                  display: block !important;
+                  overflow-x: auto !important;
+                  perspective: none !important;
+                  scroll-snap-type: x mandatory;
+                  mask-image: none !important;
+                  -webkit-mask-image: none !important;
+                }
+                .season-carousel-center {
+                  position: relative !important;
+                  inset: auto !important;
+                  display: flex !important;
+                  width: max-content;
+                  height: 100%;
+                  min-height: 100%;
+                }
+                .season-carousel-track {
+                  display: flex !important;
+                  width: max-content;
+                  height: 100%;
+                  aspect-ratio: auto;
+                  gap: 16px;
+                  padding: 0 24px;
+                  animation: none !important;
+                  transform: none !important;
+                  transform-style: flat !important;
+                }
+                .season-carousel-card {
+                  position: relative !important;
+                  flex: 0 0 clamp(180px, 68vw, 240px);
+                  width: clamp(180px, 68vw, 240px) !important;
+                  transform: none !important;
+                  scroll-snap-align: center;
+                }
+              }
+            `}</style>
+            {crops.map((crop, index) => (
+              <figure
+                key={crop.id}
+                className="season-carousel-card relative [grid-area:1/1] aspect-[7/10] w-[var(--card-width)] overflow-hidden rounded-[16px] bg-forest shadow-[0_24px_60px_rgba(7,20,12,0.28)] [backface-visibility:hidden]"
+                style={{
+                  "--index": index,
+                  transform: "rotateY(calc(var(--index) * var(--step))) translateZ(calc(-1 * var(--radius)))",
+                } as CSSProperties}
+              >
+                <Image
+                  src={CROP_IMAGES[crop.id]}
+                  alt=""
+                  fill
+                  sizes="(min-width: 1280px) 300px, (min-width: 768px) 24vw, 190px"
+                  className="object-cover"
+                />
+                <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#07150e]/95 via-[#07150e]/70 to-transparent px-3 pb-4 pt-14 text-center font-display text-[clamp(15px,1.4vw,19px)] leading-tight tracking-[-0.02em] text-cream">
+                  {crop.label}
+                </figcaption>
+              </figure>
+            ))}
+          </div>
+        </div>
       </div>
     </section>
   );
