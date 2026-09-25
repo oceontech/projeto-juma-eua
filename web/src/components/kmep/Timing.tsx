@@ -1,10 +1,12 @@
 "use client";
 
 import Image from "next/image";
-import { Fragment, useLayoutEffect, useRef, useState } from "react";
+import { Fragment, useLayoutEffect, useRef, useState, useSyncExternalStore } from "react";
+import { createPortal } from "react-dom";
 import { useContent } from "@/components/layout/LocaleProvider";
 import { SplitLines } from "@/components/motion/SplitLines";
-import { gsap, useGSAP } from "@/lib/gsap";
+import { scroller } from "@/components/motion/SmoothScroll";
+import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
 import { eyebrow, fix, microCaps } from "./ui";
 
 /* O arco da safra: meio círculo com o plantio à esquerda e a colheita à
@@ -75,6 +77,7 @@ function warp(p: number, ats: number[]) {
 }
 
 const clamp01 = (n: number) => Math.min(1, Math.max(0, n));
+const noop = () => () => {};
 
 /** O que a cena guarda entre um quadro e outro. */
 type Live = { p: number; shown: number; lit: number };
@@ -262,6 +265,14 @@ export function Timing() {
   /* A íris está no meio do gesto: fechada sobre a cena, esperando a troca. */
   const busy = useRef(false);
   const covered = useRef(false);
+  /* O gatilho do pin, para levar a página para dentro da cena na troca. */
+  const pin = useRef<ScrollTrigger | null>(null);
+  /* A íris vive no body: cobre a tela inteira mesmo com a cena fora do pin. */
+  const portal = useSyncExternalStore(
+    noop,
+    () => document.body,
+    () => null,
+  );
 
   useGSAP(
     () => {
@@ -276,6 +287,7 @@ export function Timing() {
         (ctx) => {
           const { animate } = ctx.conditions as { animate: boolean };
           motion.current = animate;
+          pin.current = null;
           live.current.shown = -2;
 
           if (!animate) {
@@ -285,7 +297,7 @@ export function Timing() {
           }
 
           const state = { p: 0 };
-          gsap.fromTo(
+          const scene = gsap.fromTo(
             state,
             { p: 0 },
             {
@@ -299,6 +311,7 @@ export function Timing() {
               scrollTrigger: { trigger: ".tm-stage", start: "top top", end: "+=260%", scrub: 0.6, pin: true, anticipatePin: 1 },
             },
           );
+          pin.current = scene.scrollTrigger ?? null;
           live.current.p = 0;
           draw(root, live.current, 1, true);
 
@@ -332,39 +345,41 @@ export function Timing() {
     live.current.shown = -2;
     draw(root, live.current, 1, true);
 
-    if (!covered.current || !stage.current || !veil.current) return;
+    if (!covered.current || !veil.current) return;
     covered.current = false;
-    const s = stage.current.getBoundingClientRect();
     const m = root.querySelector(".tm-pass")?.getBoundingClientRect();
-    const at = m ? `${m.left + m.width / 2 - s.left}px ${m.top + m.height / 2 - s.top}px` : "50% 50%";
-    const radius = Math.hypot(s.width, s.height);
-    gsap.to(veilWord.current, { opacity: 0, scale: 1.06, duration: 0.35, ease: "power2.in" });
+    const inView = m && m.top > 0 && m.bottom < window.innerHeight;
+    const at = inView ? `${m.left + m.width / 2}px ${m.top + m.height / 2}px` : "50% 50%";
+    const radius = Math.hypot(window.innerWidth, window.innerHeight);
+    /* A entrada da palavra ainda pode estar correndo: sem matá-la, ela volta a
+       acender a palavra depois do fade — era a piscada no fim da troca. */
+    gsap.killTweensOf(veilWord.current);
+    gsap.to(veilWord.current, { opacity: 0, scale: 1.06, duration: 0.35, delay: 0.2, ease: "power2.in" });
     gsap.fromTo(
       veil.current,
       { clipPath: `circle(${radius}px at ${at})` },
       {
         clipPath: `circle(0px at ${at})`,
         duration: 0.9,
-        delay: 0.1,
+        delay: 0.3,
         ease: "expo.inOut",
         onComplete: () => void (busy.current = false),
       },
     );
     const say = root.querySelector(`.tm-say[data-i="${live.current.shown}"]`);
-    if (say) enter(say, 1, 0.45);
-    for (let i = 0; i <= live.current.lit; i++) burst(root, i, 0.55 + i * 0.12);
+    if (say) enter(say, 1, 0.65);
+    for (let i = 0; i <= live.current.lit; i++) burst(root, i, 0.75 + i * 0.12);
   }, [active]);
 
   function choose(i: number, from: HTMLElement | null) {
     if (i === active || busy.current) return;
-    const s = stage.current?.getBoundingClientRect();
-    if (!motion.current || !s || !from || !veil.current) {
+    if (!motion.current || !from || !veil.current) {
       setActive(i);
       return;
     }
     busy.current = true;
     const b = from.getBoundingClientRect();
-    const at = `${b.left + b.width / 2 - s.left}px ${b.top + b.height / 2 - s.top}px`;
+    const at = `${b.left + b.width / 2}px ${b.top + b.height / 2}px`;
     if (veilWord.current) {
       veilWord.current.textContent = timing.crops[i].label;
       veilWord.current.style.fontSize = timing.crops[i].label.length > 10 ? "clamp(40px,7vw,130px)" : "";
@@ -373,16 +388,35 @@ export function Timing() {
       veil.current,
       { clipPath: `circle(0px at ${at})` },
       {
-        clipPath: `circle(${Math.hypot(s.width, s.height)}px at ${at})`,
+        clipPath: `circle(${Math.hypot(window.innerWidth, window.innerHeight)}px at ${at})`,
         duration: 0.65,
         ease: "power3.in",
         onComplete: () => {
+          intoScene();
           covered.current = true;
           setActive(i);
         },
       },
     );
-    gsap.fromTo(veilWord.current, { opacity: 0, scale: 0.86 }, { opacity: 1, scale: 1, duration: 0.8, delay: 0.25, ease: "expo.out" });
+    gsap.killTweensOf(veilWord.current);
+    gsap.fromTo(veilWord.current, { opacity: 0, scale: 0.86 }, { opacity: 1, scale: 1, duration: 0.6, delay: 0.2, ease: "expo.out" });
+  }
+
+  /* Com a tela coberta, leva a página para dentro da cena presa: quem clicou
+     com a seção pela metade reabre a íris já com o mostrador inteiro na tela.
+     Dentro do pin nada muda — a passada segue no mesmo ponto da safra. */
+  function intoScene() {
+    const st = pin.current;
+    if (!st) return;
+    const y = window.scrollY;
+    const to = y < st.start ? st.start + 1 : y > st.end ? st.end - 1 : null;
+    if (to === null) return;
+    const lenis = scroller();
+    if (lenis) lenis.scrollTo(to, { immediate: true, force: true });
+    else window.scrollTo({ top: to, behavior: "instant" });
+    ScrollTrigger.update();
+    /* O scrub alcança o ponto novo já, e não durante a reabertura. */
+    st.getTween()?.progress(1);
   }
 
   const noteFor = (i: number) => crop.spans.find((s) => i >= s.from && i <= s.to)?.note ?? "";
@@ -398,7 +432,7 @@ export function Timing() {
         </div>
       </div>
 
-      <div ref={stage} className="tm-stage relative flex min-h-[100svh] flex-col justify-start overflow-hidden pt-[clamp(80px,12svh,110px)] pb-[clamp(28px,6svh,64px)] lg:justify-center lg:py-[clamp(28px,6svh,64px)]">
+      <div ref={stage} className="tm-stage relative flex min-h-[100svh] flex-col justify-center overflow-hidden pt-[clamp(80px,12svh,110px)] pb-[clamp(28px,6svh,64px)] lg:justify-center lg:py-[clamp(28px,6svh,64px)]">
         <div className="wrap">
           {/* O alternador: as culturas em corpo grande, a apagada só no contorno, centradas na tela. */}
           <div className="flex flex-col items-center text-center">
@@ -575,10 +609,12 @@ export function Timing() {
                 <p className={`${eyebrow} absolute top-[97%] right-[8%] translate-x-1/2 text-[9px] text-forest/45`}>{ends[1]}</p>
               </div>
 
-              {/* O centro: um painel por estágio, empilhados no mesmo lugar. */}
+              {/* O centro: um painel por estágio, empilhados no mesmo lugar. No
+                  celular a foto sobe para dentro da tigela do arco, e o texto
+                  fica logo abaixo da base dele. */}
               <div
                 aria-hidden
-                className="mt-8 grid text-center lg:absolute lg:inset-x-[17%] lg:top-[24%] lg:bottom-[16%] lg:mt-0"
+                className="mt-[calc(-1*min(25svh,46vw)-4px)] grid text-center lg:absolute lg:inset-x-[17%] lg:top-[24%] lg:bottom-[16%] lg:mt-0"
               >
                 <div data-i={-1} className="tm-say col-start-1 row-start-1 flex flex-col items-center justify-end" key={`${crop.id}-intro`}>
                   <p className={`tm-meta ${eyebrow} text-[10px] text-moss`}>{timing.cropLabel}</p>
@@ -599,7 +635,7 @@ export function Timing() {
                       data-i={i}
                       className="tm-say invisible col-start-1 row-start-1 flex flex-col items-center justify-end"
                     >
-                      <div className="tm-photo relative mb-2 flex h-[clamp(170px,25svh,290px)] w-[min(72vw,360px)] items-center justify-center lg:h-[clamp(160px,24svh,280px)] lg:w-[min(38vw,400px)]">
+                      <div className="tm-photo relative mb-2 flex h-[min(25svh,46vw)] w-[min(72vw,360px)] items-center justify-center lg:h-[clamp(160px,24svh,280px)] lg:w-[min(38vw,400px)]">
                         {sprite ? (
                           <div className="relative h-full shrink-0 overflow-hidden" style={{ aspectRatio: width / sprite.height }}>
                             <Image
@@ -648,15 +684,19 @@ export function Timing() {
           </div>
         </div>
 
-        {/* A íris da troca de cultura. */}
-        <div
-          ref={veil}
-          aria-hidden
-          className="pointer-events-none absolute inset-0 z-30 flex items-center justify-center bg-forest text-cream"
-          style={{ clipPath: "circle(0px at 50% 50%)" }}
-        >
-          <span ref={veilWord} className="font-display text-[clamp(64px,13vw,240px)] leading-none tracking-[-0.05em] opacity-0" />
-        </div>
+        {/* A íris da troca de cultura: fixa na tela, por cima até do cabeçalho. */}
+        {portal &&
+          createPortal(
+            <div
+              ref={veil}
+              aria-hidden
+              className="pointer-events-none fixed inset-0 z-[90] flex items-center justify-center bg-forest px-4 text-center text-cream"
+              style={{ clipPath: "circle(0px at 50% 50%)" }}
+            >
+              <span ref={veilWord} className="font-display text-[clamp(52px,13vw,240px)] leading-none tracking-[-0.05em] opacity-0" />
+            </div>,
+            portal,
+          )}
       </div>
 
       {/* A ficha: dose e embalagem de um lado, mistura do outro, a bombona no meio. */}
