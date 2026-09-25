@@ -4,7 +4,7 @@ import { useRef } from "react";
 import { useContent } from "@/components/layout/LocaleProvider";
 import { SplitLines } from "@/components/motion/SplitLines";
 import { gsap, useGSAP } from "@/lib/gsap";
-import { microCaps } from "./ui";
+import { microText } from "./ui";
 
 /**
  * K16 — as perguntas, no trilho horizontal pinado da LP B: a cena prende e
@@ -92,7 +92,7 @@ export function Questions() {
                   >
                     {item.q}
                   </h3>
-                  <p className={`${microCaps} mt-auto pt-6 relative ${lead ? "text-[12px] text-offwhite/62" : "text-offwhite/62"}`}>
+                  <p className={`${microText} mt-auto pt-6 relative ${lead ? "text-[12px] text-offwhite/62" : "text-offwhite/62"}`}>
                     {item.a}
                     {/* HOLD P2 — remover junto com Flush.tsx */}
                     {item.hold && <> {item.hold}</>}

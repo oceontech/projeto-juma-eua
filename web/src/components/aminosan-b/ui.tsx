@@ -48,6 +48,9 @@ export function Mark({ className }: { className?: string }) {
 }
 
 /** Texto miúdo em caixa alta — o corpo "de legenda" da referência. */
+/** Texto descritivo curto: caixa baixa, com maiúscula só onde a pontuação pede. */
+export const microText = "font-display text-[13px] leading-[1.5] tracking-[0.005em]";
+
 export const microCaps = "font-display text-[11px] leading-[1.5] tracking-[0.14em] uppercase";
 
 /** Rótulo de seção: a caixa alta espaçada que abre um bloco (a mesma do KMEP). */

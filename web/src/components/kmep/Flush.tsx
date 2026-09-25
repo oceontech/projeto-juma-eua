@@ -15,7 +15,7 @@ import { useRef, type CSSProperties } from "react";
 import { useContent } from "@/components/layout/LocaleProvider";
 import { SplitLines } from "@/components/motion/SplitLines";
 import { gsap, useGSAP } from "@/lib/gsap";
-import { eyebrow, microCaps } from "./ui";
+import { eyebrow, microCaps, microText } from "./ui";
 
 /* Onde o alvo está em cada tempo, no quadro de 360 × 300 de cada painel. */
 const AT: [number, number, number][] = [
@@ -114,7 +114,7 @@ export function Flush() {
             {flush.heading}
           </SplitLines>
         </div>
-        <p className={`${microCaps} text-[12px] text-offwhite/70`}>{flush.body}</p>
+        <p className={`${microText} text-offwhite/70`}>{flush.body}</p>
       </div>
 
       <ol
@@ -173,7 +173,7 @@ export function Flush() {
               <span aria-hidden className="fl-rule mt-4 block h-[2px] w-12 origin-left rounded-full bg-kmep" />
               <p className={`${microCaps} mt-4 text-kmep-light`}>{stage.n}</p>
               <h3 className="mt-1 text-[clamp(24px,2vw,34px)] leading-[1.05] tracking-[-0.02em]">{stage.title}</h3>
-              <p className={`${microCaps} mt-2 text-offwhite/65`}>{stage.body}</p>
+              <p className={`${microText} mt-2 text-offwhite/65`}>{stage.body}</p>
             </div>
           </li>
         ))}

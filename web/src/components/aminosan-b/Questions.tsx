@@ -5,7 +5,7 @@ import { useRef } from "react";
 import { useContent } from "@/components/layout/LocaleProvider";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { SplitLines } from "@/components/motion/SplitLines";
-import { microCaps } from "./ui";
+import { microText } from "./ui";
 
 /**
  * As perguntas como o "latest from the community" da referência: a cena
@@ -96,7 +96,7 @@ export function Questions() {
                     <h3 className="mt-2 font-display text-[17px] leading-[1.2] font-medium tracking-[0.02em] uppercase">
                       {item.q}
                     </h3>
-                    <p className={`${microCaps} mt-auto text-forest/70`}>
+                    <p className={`${microText} mt-auto text-forest/70`}>
                       {item.a}
                     </p>
                   </div>

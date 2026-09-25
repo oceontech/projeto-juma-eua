@@ -5,7 +5,7 @@ import { useRef } from "react";
 import { useContent } from "@/components/layout/LocaleProvider";
 import { SplitLines } from "@/components/motion/SplitLines";
 import { gsap, useGSAP } from "@/lib/gsap";
-import { AMINO, eyebrow, microCaps } from "./ui";
+import { AMINO, eyebrow, microText } from "./ui";
 
 /**
  * A4, a tabela — origem, processo e forma. A coluna do Aminosan® é um cartão
@@ -50,7 +50,7 @@ export function Compare() {
               {compare.heading}
             </SplitLines>
           </div>
-          <p className={`${microCaps} text-[12px] text-forest/75`}>{compare.body}</p>
+          <p className={`${microText} text-forest/75`}>{compare.body}</p>
         </div>
 
         {/* A tabela. As duas colunas de fundo ocupam todas as linhas da grade
@@ -163,7 +163,7 @@ export function Compare() {
           ))}
         </div>
 
-        <p className={`${microCaps} mt-6 max-w-[70ch] text-[10px] text-forest/55`}>{compare.note}</p>
+        <p className={`${microText} mt-6 max-w-[70ch] text-forest/55`}>{compare.note}</p>
       </div>
     </section>
   );

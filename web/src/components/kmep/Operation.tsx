@@ -5,7 +5,7 @@ import { useRef } from "react";
 import { useContent } from "@/components/layout/LocaleProvider";
 import { SplitLines } from "@/components/motion/SplitLines";
 import { gsap, useGSAP } from "@/lib/gsap";
-import { Cta, eyebrow, microCaps } from "./ui";
+import { Cta, eyebrow, microText } from "./ui";
 
 /**
  * K9. Os quatro cards na ordem da página: o potássio, o tanque, a ação
@@ -77,9 +77,10 @@ export function Operation() {
                     height={wide ? 480 : 640}
                     sizes={wide ? "(min-width: 1280px) 260px, 200px" : "(min-width: 1280px) 220px, (min-width: 640px) 180px, 200px"}
                     className={`relative h-auto max-h-[190px] object-contain ${wide ? "w-[min(100%,260px)]" : "w-[min(100%,200px)]"}`}
+                    style={i === 1 ? { maskImage: "linear-gradient(to bottom, black 72%, transparent 100%)" } : undefined}
                   />
                 </div>
-                <p className={`${microCaps} mt-auto text-offwhite/70 ${wide ? "xl:col-start-1 xl:row-start-2 xl:self-end" : ""}`}>
+                <p className={`${microText} mt-auto text-offwhite/70 ${wide ? "xl:col-start-1 xl:row-start-2 xl:self-end" : ""}`}>
                   {card.body}
                 </p>
               </article>
@@ -112,7 +113,7 @@ export function Operation() {
                 </dd>
               </div>
             </dl>
-            <p className={`${microCaps} relative mt-5 text-[10px] text-offwhite/60`}>{offer.witness}</p>
+            <p className={`${microText} relative mt-5 text-offwhite/60`}>{offer.witness}</p>
 
             <Cta href={offer.cta.href} className="relative mt-7 self-start xl:w-full">
               {offer.cta.label}

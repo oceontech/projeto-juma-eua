@@ -5,7 +5,7 @@ import { useRef } from "react";
 import { useContent } from "@/components/layout/LocaleProvider";
 import { SplitLines } from "@/components/motion/SplitLines";
 import { gsap, useGSAP } from "@/lib/gsap";
-import { AMINO, eyebrow, microCaps } from "./ui";
+import { AMINO, eyebrow, microText } from "./ui";
 
 /**
  * O que tem na bombona: a ficha do KMEP (bombona no centro, anéis girando,
@@ -51,7 +51,7 @@ export function Label() {
               ))}
             </SplitLines>
           </div>
-          <p className={`${microCaps} text-[12px] text-forest/75`}>{label.body}</p>
+          <p className={`${microText} text-forest/75`}>{label.body}</p>
         </div>
 
         <div className="lb-spec relative mt-[clamp(40px,6vw,96px)] grid items-center gap-0 lg:grid-cols-[minmax(0,1fr)_minmax(240px,clamp(300px,30vw,440px))_minmax(0,1fr)] lg:gap-0">
@@ -110,7 +110,7 @@ export function Label() {
           </div>
         </div>
 
-        <p className={`${microCaps} mt-8 text-center text-[10px] text-forest/55`}>{label.note}</p>
+        <p className={`${microText} mt-8 text-center text-forest/55`}>{label.note}</p>
       </div>
     </section>
   );

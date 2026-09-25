@@ -6,7 +6,7 @@ import { whenBooted } from "@/lib/boot";
 import { gsap, ScrollTrigger, SplitText, useGSAP } from "@/lib/gsap";
 import { buildField, cover, paintStill, shapeClouds } from "@/lib/origin/build";
 import { createField, type Field, type Uniforms } from "@/lib/origin/field";
-import { microCaps } from "./ui";
+import { microCaps, microText } from "./ui";
 
 /**
  * O hero se desfazendo em partículas, e a cadeia que nasce delas.
@@ -545,7 +545,7 @@ export function Origin({ children }: { children: React.ReactNode }) {
                 <p className="og-fade mt-4 max-w-[44ch] text-[clamp(14px,1.02vw,17px)] leading-[1.45] text-muted">
                   {panel.body}
                 </p>
-                <p className={`${microCaps} og-fade mt-4 text-olive/75`}>{panel.caption}</p>
+                <p className={`${microText} og-fade mt-4 text-olive/75`}>{panel.caption}</p>
               </article>
             ))}
           </div>

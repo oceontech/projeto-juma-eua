@@ -5,7 +5,7 @@ import { useId, useRef, useState } from "react";
 import { useContent, useLocale } from "@/components/layout/LocaleProvider";
 import { SplitLines } from "@/components/motion/SplitLines";
 import { gsap, useGSAP } from "@/lib/gsap";
-import { eyebrow, microCaps } from "./ui";
+import { eyebrow, microCaps, microText } from "./ui";
 
 /**
  * K11 — a conta por acre, como calculadora.
@@ -115,8 +115,8 @@ export function Economics() {
             {economics.heading}
           </SplitLines>
           <div>
-            <p className={`${microCaps} text-[12px] text-offwhite`}>{economics.body}</p>
-            <p className={`${microCaps} mt-4 border-l-2 border-lime pl-3 text-[10px] text-offwhite/90`}>{economics.witness}</p>
+            <p className={`${microText} text-offwhite`}>{economics.body}</p>
+            <p className={`${microText} mt-4 border-l-2 border-lime pl-3 text-offwhite/90`}>{economics.witness}</p>
           </div>
         </div>
 
@@ -337,7 +337,7 @@ export function Economics() {
           </div>
         </div>
 
-        <p className={`${microCaps} mt-[clamp(28px,3vw,44px)] max-w-[80ch] text-[10px] text-offwhite/90 [text-shadow:0_1px_6px_rgba(0,0,0,0.8)]`}>{economics.footnote}</p>
+        <p className={`${microText} mt-[clamp(28px,3vw,44px)] max-w-[80ch] text-offwhite/90 [text-shadow:0_1px_6px_rgba(0,0,0,0.8)]`}>{economics.footnote}</p>
       </div>
     </section>
   );

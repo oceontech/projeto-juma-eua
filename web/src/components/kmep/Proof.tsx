@@ -6,7 +6,7 @@ import { useContent } from "@/components/layout/LocaleProvider";
 import { Counter } from "@/components/motion/Counter";
 import { SplitLines } from "@/components/motion/SplitLines";
 import { gsap, useGSAP } from "@/lib/gsap";
-import { eyebrow, microCaps } from "./ui";
+import { eyebrow, microCaps, microText } from "./ui";
 
 /**
  * K10 — a prova. A seção mais sóbria da página, de propósito: aqui o leitor
@@ -107,7 +107,7 @@ export function Proof() {
               {proof.heading}
             </SplitLines>
           </div>
-          <p className={`${microCaps} text-[12px] text-night/75`}>{proof.body}</p>
+          <p className={`${microText} text-night/75`}>{proof.body}</p>
         </div>
 
         {/* O gráfico: barras verticais numa escala que começa em zero, com o
@@ -121,7 +121,7 @@ export function Proof() {
               {pair.diff.value}
               <span className="ml-1 text-[0.45em] tracking-[0.02em] text-night/55">{pair.unit}</span>
             </p>
-            <p className={`${microCaps} text-night/60`}>{pair.diff.note}</p>
+            <p className={`${microText} text-night/60`}>{pair.diff.note}</p>
           </div>
 
           <p className={`${microCaps} mb-3 text-[10px] text-night/55`}>{scale.unit}</p>
@@ -203,7 +203,7 @@ export function Proof() {
                       {pair.diff.value}
                       <span className="ml-1 text-[0.32em] tracking-[0.02em] text-night/55">{pair.unit}</span>
                     </dd>
-                    <dd className={`${microCaps} mt-2 text-night/60`}>{pair.diff.note}</dd>
+                    <dd className={`${microText} mt-2 text-night/60`}>{pair.diff.note}</dd>
                   </div>
                 </div>
               </dl>
@@ -223,7 +223,7 @@ export function Proof() {
         <div className="pr-table mt-[clamp(56px,7vw,112px)]">
           <div className="flex flex-col gap-2 sm:flex-row sm:items-baseline sm:justify-between sm:gap-10">
             <p className={`${eyebrow} text-kmep`}>{table.label}</p>
-            <p className={`${microCaps} max-w-[62ch] text-[11px] text-night/60 sm:text-right`}>{table.intro}</p>
+            <p className={`${microText} max-w-[62ch] text-night/60 sm:text-right`}>{table.intro}</p>
           </div>
 
           <dl className="mt-6 grid grid-cols-2 gap-px overflow-hidden border border-night/15 bg-night/15 lg:grid-cols-4">
@@ -332,7 +332,7 @@ export function Proof() {
                   </span>
                 ))}
               </div>
-              <figcaption className={`${microCaps} mt-4 text-[10px] text-night/50`}>{paper.scheme.note}</figcaption>
+              <figcaption className={`${microText} mt-4 text-night/50`}>{paper.scheme.note}</figcaption>
             </figure>
 
             <p className="mt-5 flex items-start gap-3 font-display text-[clamp(17px,1.4vw,22px)] leading-snug tracking-[-0.01em]">
@@ -371,7 +371,7 @@ export function Proof() {
           </div>
         </div>
 
-        <p className={`${microCaps} mt-[clamp(40px,5vw,72px)] max-w-[80ch] text-[10px] text-night/55`}>{proof.footnote}</p>
+        <p className={`${microText} mt-[clamp(40px,5vw,72px)] max-w-[80ch] text-night/55`}>{proof.footnote}</p>
       </div>
     </section>
   );

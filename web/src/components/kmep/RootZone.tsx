@@ -133,7 +133,7 @@ export function RootZone() {
         <div
           role="img"
           aria-label={zone.alt}
-          className="relative aspect-[4/5] max-h-[60svh] w-full overflow-hidden rounded-[4px] bg-[#2A2A1E] lg:col-start-2 lg:row-start-1 lg:aspect-[16/8] lg:max-h-[66svh]"
+          className="relative aspect-[4/5] max-h-[60svh] w-full overflow-hidden rounded-[clamp(14px,1.4vw,24px)] bg-[#2A2A1E] lg:col-start-2 lg:row-start-1 lg:aspect-[16/8] lg:max-h-[66svh]"
         >
           <canvas ref={canvas} className="absolute inset-0 size-full" />
 
@@ -181,7 +181,7 @@ export function RootZone() {
             {/* No desktop, os indicadores ficam numa trilha vertical à esquerda:
                 a etapa da vez assume o destaque; as que já passaram recuam, e
                 as próximas esperam quase apagadas. */}
-            <ol className="grid grid-cols-6 gap-1.5 self-start lg:col-start-1 lg:row-span-2 lg:row-start-1 lg:flex lg:flex-col lg:gap-6">
+            <ol className="grid grid-cols-6 gap-1.5 self-start lg:self-center lg:col-start-1 lg:row-start-1 lg:flex lg:flex-col lg:gap-6">
               {zone.steps.map((s, k) => {
                 const on = k === step;
                 return (

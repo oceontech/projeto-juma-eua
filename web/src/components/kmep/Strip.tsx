@@ -6,7 +6,7 @@ import { useContent } from "@/components/layout/LocaleProvider";
 import { SplitLines } from "@/components/motion/SplitLines";
 import type * as kmepContent from "@/content/kmep";
 import { gsap, useGSAP } from "@/lib/gsap";
-import { Cta, eyebrow, microCaps } from "./ui";
+import { Cta, eyebrow, microText } from "./ui";
 
 export type StripData = typeof kmepContent.strip;
 
@@ -81,7 +81,7 @@ export function Strip({ data }: { data?: StripData }) {
               <h3 className="relative text-[clamp(21px,1.7vw,28px)] leading-[1.1] tracking-[-0.02em]">
                 {step.title}
               </h3>
-              <p className={`${microCaps} relative mt-3 text-offwhite/75`}>{step.body}</p>
+              <p className={`${microText} relative mt-3 text-offwhite/75`}>{step.body}</p>
             </li>
           ))}
         </ol>

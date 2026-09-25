@@ -5,7 +5,7 @@ import { Fragment, useRef } from "react";
 import { useContent } from "@/components/layout/LocaleProvider";
 import { SplitLines } from "@/components/motion/SplitLines";
 import { gsap, useGSAP } from "@/lib/gsap";
-import { AMINO, eyebrow, fix, microCaps } from "./ui";
+import { AMINO, eyebrow, fix, microCaps, microText } from "./ui";
 
 /* Cada etapa ocupa uma unidade da linha do tempo; cada freio, meia. */
 const BRAKE = 0.5;
@@ -348,7 +348,7 @@ export function Assembly() {
             {assembly.heading}
           </SplitLines>
         </div>
-        <p className={`${microCaps} text-[12px] text-forest/75`}>{assembly.body}</p>
+        <p className={`${microText} text-forest/75`}>{assembly.body}</p>
       </div>
 
       {/* O que a planta faz com o nitrato: a química em corpo grande, uma
@@ -378,7 +378,7 @@ export function Assembly() {
         <div className="wrap">
           <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,440px)] lg:items-end lg:gap-16">
             <h3 className="text-[clamp(32px,3.4vw,62px)] leading-[0.96] tracking-[-0.035em]">{routes.heading}</h3>
-            <p className={`${microCaps} text-[12px] text-forest/75`}>{routes.body}</p>
+            <p className={`${microText} text-forest/75`}>{routes.body}</p>
           </div>
 
           <div className="as-routes mt-[clamp(28px,4.5svh,56px)] grid gap-[clamp(14px,2.4svh,24px)]">

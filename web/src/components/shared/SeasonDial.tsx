@@ -6,7 +6,7 @@ import { createPortal } from "react-dom";
 import { SplitLines } from "@/components/motion/SplitLines";
 import { CropIcon } from "@/components/home/CropIcon";
 import { scroller } from "@/components/motion/SmoothScroll";
-import { eyebrow, fix, microCaps } from "@/components/kmep/ui";
+import { eyebrow, fix, microCaps, microText } from "@/components/kmep/ui";
 import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
 
 /** Um estágio no arco. `at` é a posição na régua ordinal, de 0 a 1. */
@@ -461,7 +461,7 @@ export function SeasonDial({
             {timing.label && <p className={`${eyebrow} mb-4 text-moss`}>{timing.label}</p>}
             <SplitLines className="text-[clamp(44px,5.6vw,108px)] leading-[0.93] tracking-[-0.04em]">{timing.heading}</SplitLines>
           </div>
-          <p className={`${microCaps} text-[12px] text-forest/75`}>{timing.body}</p>
+          <p className={`${microText} text-forest/75`}>{timing.body}</p>
         </div>
       </div>
 
@@ -702,7 +702,7 @@ export function SeasonDial({
                       >
                         <Roll text={big} />
                       </p>
-                      <p className={`tm-meta ${microCaps} mt-3 max-w-[34ch] text-[10px] text-forest/70`}>{noteFor(i)}</p>
+                      <p className={`tm-meta ${microText} mt-3 max-w-[34ch] text-forest/70`}>{noteFor(i)}</p>
                     </div>
                   );
                 })}

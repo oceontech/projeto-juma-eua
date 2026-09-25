@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 import { useContent } from "@/components/layout/LocaleProvider";
 import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
-import { microCaps } from "./ui";
+import { microCaps, microText } from "./ui";
 
 /**
  * Dentro da folha: continua o mergulho do "Meet", que termina com a calda
@@ -271,7 +271,7 @@ export function Cell() {
               <h3 className="cl-in mt-4 max-w-[16ch] text-[clamp(30px,3.2vw,56px)] leading-[1] tracking-[-0.03em]">
                 {stage.title}
               </h3>
-              <p className={`cl-in ${microCaps} mt-5 max-w-[44ch] text-[12px] text-forest/75`}>{stage.body}</p>
+              <p className={`cl-in ${microText} mt-5 max-w-[44ch] text-forest/75`}>{stage.body}</p>
             </article>
           ))}
         </div>

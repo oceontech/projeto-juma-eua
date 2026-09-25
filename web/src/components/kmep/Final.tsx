@@ -6,7 +6,7 @@ import { useContent } from "@/components/layout/LocaleProvider";
 import { SplitLines } from "@/components/motion/SplitLines";
 import { TrialForm } from "@/components/home/TrialForm";
 import { gsap, useGSAP } from "@/lib/gsap";
-import { microCaps } from "./ui";
+import { microText } from "./ui";
 
 /**
  * K17 — o pedido. O desenho do Final da LP B: bloco floresta arredondado
@@ -66,7 +66,7 @@ export function Final() {
             <SplitLines className="max-w-[13ch] text-[clamp(40px,4.6vw,88px)] leading-[0.95] tracking-[-0.035em] text-balance">
               {final.heading}
             </SplitLines>
-            <p className={`${microCaps} max-w-[50ch] text-[12px] text-cream/85`}>{final.body}</p>
+            <p className={`${microText} max-w-[50ch] text-cream/85`}>{final.body}</p>
           </div>
 
           <div className="fn-card relative max-md:-mr-px max-md:w-[calc(100%+1px)] rounded-[clamp(18px,1.8vw,30px)] bg-white p-[clamp(20px,2.4vw,40px)] text-ink shadow-[0_30px_80px_-30px_rgba(0,0,0,0.55)]">
@@ -74,7 +74,7 @@ export function Final() {
           </div>
         </div>
 
-        <p className={`${microCaps} mx-auto mt-[clamp(20px,2.4vw,36px)] max-w-[92ch] text-center text-[10px] text-forest/65`}>
+        <p className={`${microText} mx-auto mt-[clamp(20px,2.4vw,36px)] max-w-[92ch] text-center text-forest/65`}>
           {final.disclaimer}
         </p>
       </div>

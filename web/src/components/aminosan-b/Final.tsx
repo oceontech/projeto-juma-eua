@@ -6,7 +6,7 @@ import { useContent } from "@/components/layout/LocaleProvider";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { SplitLines } from "@/components/motion/SplitLines";
 import { TrialForm } from "@/components/home/TrialForm";
-import { microCaps } from "./ui";
+import { microText } from "./ui";
 
 /**
  * Fecho da página: o pedido de faixa de teste. Usa o mesmo formulário da
@@ -62,7 +62,7 @@ export function Final() {
                 </span>
               ))}
             </SplitLines>
-            <p className={`${microCaps} max-w-[50ch] text-cream/80`}>{final.body}</p>
+            <p className={`${microText} max-w-[50ch] text-cream/80`}>{final.body}</p>
           </div>
 
           <div className="fn-card relative max-md:-mr-px max-md:w-[calc(100%+1px)] rounded-[clamp(18px,1.8vw,30px)] bg-white p-[clamp(20px,2.4vw,40px)] text-ink shadow-[0_30px_80px_-30px_rgba(0,0,0,0.55)]">

@@ -5,7 +5,7 @@ import { useContent } from "@/components/layout/LocaleProvider";
 import { SplitLines } from "@/components/motion/SplitLines";
 import { Cta } from "@/components/kmep/ui";
 import { gsap, useGSAP } from "@/lib/gsap";
-import { eyebrow, microCaps } from "./ui";
+import { eyebrow, microCaps, microText } from "./ui";
 
 /**
  * A6 — a prova é a regra. A seção mais sóbria da página, como a prova do
@@ -106,7 +106,7 @@ export function Rule() {
                 ))}
               </dl>
 
-              <p className={`${microCaps} mt-5 text-[10px] text-offwhite/50`}>
+              <p className={`${microText} mt-5 text-offwhite/50`}>
                 {labels.results} · {trial.results}
               </p>
               {/* Um par de barras por resultado. No celular, os pares empilham:
@@ -195,7 +195,7 @@ export function Rule() {
           </Cta>
         </div>
 
-        <p className={`${microCaps} mt-6 max-w-[80ch] text-[10px] text-offwhite/45`}>{rule.footnote}</p>
+        <p className={`${microText} mt-6 max-w-[80ch] text-offwhite/45`}>{rule.footnote}</p>
       </div>
     </section>
   );

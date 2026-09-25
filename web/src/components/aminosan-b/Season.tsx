@@ -4,7 +4,7 @@ import Image from "next/image";
 import type { CSSProperties } from "react";
 import { useContent } from "@/components/layout/LocaleProvider";
 import { SplitLines } from "@/components/motion/SplitLines";
-import { microCaps } from "./ui";
+import { microText } from "./ui";
 
 const CROP_IMAGES: Record<string, string> = {
   citrus: "/img/crop-corridor/citrus.webp",
@@ -36,7 +36,7 @@ export function Season() {
             </span>
           ))}
         </SplitLines>
-        <p className={`${microCaps} text-forest/65`}>{season.intro}</p>
+        <p className={`${microText} text-forest/65`}>{season.intro}</p>
       </div>
 
       <div

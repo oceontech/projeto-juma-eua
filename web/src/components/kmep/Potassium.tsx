@@ -6,7 +6,7 @@ import { useContent } from "@/components/layout/LocaleProvider";
 import { SplitLines } from "@/components/motion/SplitLines";
 import { RootZone } from "./RootZone";
 import { gsap, useGSAP } from "@/lib/gsap";
-import { eyebrow, fix, microCaps } from "./ui";
+import { eyebrow, fix, microCaps, microText } from "./ui";
 
 /* Cada etapa ocupa uma unidade da linha do tempo; cada freio, meia. */
 const BRAKE = 0.5;
@@ -347,7 +347,7 @@ export function Potassium() {
             {potassium.heading}
           </SplitLines>
         </div>
-        <p className={`${microCaps} text-[12px] text-forest/75`}>{potassium.body}</p>
+        <p className={`${microText} text-forest/75`}>{potassium.body}</p>
       </div>
 
       {/* Por que o potássio importa (agronomia do nutriente, não efeito do
@@ -394,7 +394,7 @@ export function Potassium() {
         <div className="wrap">
           <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,440px)] lg:gap-16">
             <h3 className="text-[clamp(28px,2.8vw,50px)] leading-[1] tracking-[-0.03em]">{routes.heading}</h3>
-            <p className={`${microCaps} text-[12px] text-forest/75`}>{routes.body}</p>
+            <p className={`${microText} text-forest/75`}>{routes.body}</p>
           </div>
 
           <div className="kp-routes mt-[clamp(28px,4.5svh,56px)] grid gap-[clamp(14px,2.4svh,24px)]">
