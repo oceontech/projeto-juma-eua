@@ -1,10 +1,12 @@
 /**
- * Copy da LP B do Aminosan® (teste A/B), em inglês americano.
+ * Copy da LP principal do Aminosan® (rota /aminosan), em inglês americano.
  *
- * Página de venda do produto, escrita do zero sobre o ritmo da referência
- * editorial: hero de produto, problema em tela dividida, convergência,
- * apresentação, prova, janela crítica, encaixe na safra, o que tem na
- * bombona, perguntas e pedido.
+ * O arco segue docs/03-SITE.md (A1–A11), revisto em 25/09/2026: hero e cena
+ * de partículas, o campo, a linha de montagem do nitrogênio e as duas rotas
+ * (A3–A4), o produto, dentro da folha, a tabela contra o hidrolisado (A4), a
+ * prova pela regra da testemunha (A6), a história (A8), a janela (A9), as
+ * culturas de mercado, a ficha da bombona, para quem é, a faixa de teste, as
+ * perguntas (A11) e o pedido. `origin` só serve o Origin.tsx, fora da página.
  *
  * O que a página afirma sai do rótulo (100% L-aminoácidos livres, não
  * hormonal, N-P-K) e da ficha do produto (origem vegetal, fermentação
@@ -204,60 +206,78 @@ export const field = {
   ],
 };
 
-export const problem = {
-  image: {
-    heading: "Most nitrogen arrives unfinished.",
-    body: "Nitrate from the soil or the bag is raw material. Before it becomes protein, the plant has to reduce it, aminate it and assemble it, and every step spends energy your crop made for leaves, pods and grain.",
-    alt: "Young corn plant at first light",
+/**
+ * A4 — "Five steps, or one." (docs/03-SITE.md). Abre pelo que o nitrogênio é
+ * antes de virar proteína (A3), conta o que a planta faz com ele em três
+ * cartões e fecha nas duas rotas, lado a lado: a da planta, com um freio
+ * âmbar em cada conversão (o âmbar é a mesma cor da "ligação a abrir" da cena
+ * de partículas), e a do Aminosan®, um passo só.
+ *
+ * Descrever a fisiologia da planta é seguro; prometer efeito do produto sobre
+ * ela não é. A rota do produto diz só o que ele entrega (o aminoácido pronto)
+ * e nunca "poupa energia" ou "acelera" — ver 02-MERCADO-USA.md, Achado 1. A
+ * comparação conta etapas, não horas: não há número de tempo com fonte.
+ */
+export const assembly = {
+  label: "The assembly line",
+  heading: "Nitrogen is not an amino acid.",
+  body: "Nitrate from the soil or the bag is raw material. Before it becomes protein, the plant has to reduce it, attach it and hand it on, and every step runs on energy and carbon the crop made in the leaf.",
+  steps: {
+    label: "What the crop does with nitrate",
+    items: [
+      {
+        title: "It reduces it.",
+        formula: "NO₃⁻ → NO₂⁻ → NH₄⁺",
+        body: "Nitrate to nitrite, nitrite to ammonium. Two enzymes, two conversions, both paid for with energy made in the leaf.",
+      },
+      {
+        title: "It attaches it.",
+        formula: "NH₄⁺ + Glu → Gln",
+        body: "Ammonium is fixed onto glutamate, making glutamine: the first form of nitrogen the plant can build with.",
+      },
+      {
+        title: "It hands it on.",
+        formula: "Gln → Asp · Ala · Ser …",
+        body: "From there, the nitrogen is passed along, one transfer at a time, to build each of the other amino acids.",
+      },
+    ],
   },
-  stat: {
-    value: 4,
-    heading: "conversions stand between nitrate and an amino acid your crop can use.",
-    source: "Nitrogen assimilation in plants, simplified.",
+  routes: {
+    heading: "Five steps, or one.",
+    body: "The crop's own route runs from nitrate to a finished amino acid, with a cost at every conversion. Aminosan® goes on the leaf as the finished amino acid.",
+    crop: {
+      label: "The crop's own route",
+      steps: ["Nitrate", "Nitrite", "Ammonium", "Glutamine", "Amino acids"],
+    },
+    aminosan: {
+      label: "With Aminosan®",
+      steps: ["Sprayed on the leaf", "Amino acids, ready-made"],
+    },
+    cost: "Each conversion spends energy and carbon the crop made in the leaf",
+    logoAlt: "Aminosan®",
   },
-  chain: [
-    { formula: "NO₃⁻", name: "Nitrate" },
-    { formula: "NO₂⁻", name: "Nitrite" },
-    { formula: "NH₄⁺", name: "Ammonium" },
-    { formula: "Glu", name: "Glutamate" },
-    { formula: "AA", name: "Amino acid" },
-  ],
+  quote: "The plant can build amino acids. Or you can hand it the finished ones.",
 };
 
-export const converge = {
-  heading: "What if your crop could skip the assembly line?",
-  aside: {
-    heading: ["We hand it the", "finished part."],
-    body: "Aminosan® puts free-form L-amino acids on the leaf, already in the form the plant builds protein from. No conversion to wait on, no detour through the soil.",
-    cta: { label: "See how it works", href: "#meet" },
-  },
-  /* A comparação numa linha só: a rota do nitrato, etapa por etapa, e o
-     Aminosan® que salta do primeiro ponto ao último. Conta etapas, não
-     horas — não há número de tempo com fonte. */
-  routes: {
-    label: "The crop's own route: from soil nitrate to amino acids",
-    steps: ["Nitrate", "Nitrite", "Ammonium", "Glutamate", "Amino acids"],
-    with: {
-      label: "With Aminosan®",
-      note: "Applied on the leaf, straight to the amino acids",
-      jugAlt: "Aminosan® jug",
-    },
-    conversion: "Each conversion spends the crop's energy",
-  },
-  cards: [
-    {
-      title: "100% free-form",
-      body: "Single L-amino acids, not peptide chains. Nothing left for the plant to cut apart.",
-    },
-    {
-      title: "N, P and K on board",
-      body: "Nitrogen, phosphate and potash ride along in the same spray.",
-    },
-    {
-      title: "Non-hormonal",
-      body: "No hormones in the formula: amino acids plus N, P and K.",
-    },
+/**
+ * A4, a tabela: origem, processo e forma. A coluna da direita é sempre a
+ * categoria em geral, nunca um concorrente com nome, e sempre com "often" —
+ * docs/03-SITE.md. O que a coluna do Aminosan® afirma sai do rótulo e da
+ * ficha (100% L-aminoácidos livres, origem vegetal, fermentação enzimática).
+ * TODO(P3): o percentual de aminoácidos livres do Guaranteed Analysis
+ * americano, que é o número que sustenta esta tabela (A10).
+ */
+export const compare = {
+  label: "Not all amino acids",
+  heading: "Amino acid products aren't all built the same.",
+  body: "Most of the category starts from a protein and breaks it down. What it starts from, how it's broken down and how far the breaking goes decide what ends up in the jug.",
+  columns: { ours: "Aminosan®", theirs: "A typical hydrolysate" },
+  rows: [
+    { k: "Starts from", ours: "Plant protein", theirs: "Often animal by-products" },
+    { k: "Broken down by", ours: "Enzymatic fermentation", theirs: "Often acid hydrolysis, with strong acid and heat" },
+    { k: "What comes out", ours: "100% free-form L-amino acids", theirs: "Often a mix of free amino acids and peptide chains" },
   ],
+  note: "The right-hand column describes the category in general, not any one product. Whatever you compare, read its label.",
 };
 
 export const meet = {
@@ -319,38 +339,121 @@ export const cell = {
   alt: "Macro zoom from a leaf into its cells",
 };
 
-export const proof = {
-  heading: ["Field-proven.", "Grower-trusted."],
-  alt: "Farmer checking a soybean field at golden hour",
-  stats: [
-    { value: 100, suffix: "%", label: "free-form L-amino acids" },
-    { value: 4, suffix: "", label: "conversion steps your crop skips" },
-    { value: 0, suffix: "", label: "extra passes: it rides in your spray" },
-    { value: 40, suffix: "+", label: "years of seasons in the field" },
-  ] satisfies { value: number; suffix: string; label: string }[],
-  note: "Field performance varies with crop, weather and management. Always read and follow the label.",
-};
-
-export const timing = {
-  heading: "Built for the weeks that decide your yield.",
-  body: [
-    "Flowering, pod set, grain fill. Your crop's demand for nitrogen peaks right when heat and dry spells make it hardest for the roots to keep up.",
-    "Aminosan® puts amino acids on the leaf in those weeks, in the form the plant uses, so its nitrogen supply isn't waiting on the soil.",
+/**
+ * A6 — a prova é a regra (docs/03-SITE.md). Os dois ensaios de soja existem e
+ * aparecem com local e fonte, mas os números ficam retidos até chegar a
+ * testemunha (P9). Aplicar a própria regra em público, quando custa caro, é a
+ * prova mais forte de que ela é real.
+ *
+ * Os resultados retidos (docs/01-PRODUTO.md): DETEC, +11 e +14 sc/ha; Terras
+ * Gerais, +10 sc/ha. NÃO entram na página enquanto P9 estiver aberta.
+ * TODO(P19): autorização para citar DETEC e Terras Gerais nominalmente.
+ */
+export const rule = {
+  label: "The proof",
+  heading: ["Two trials.", "No numbers yet."],
+  body: "Aminosan® has yield results from two soybean trials in Brazil. Neither was published with the untreated check beside it, and a number without its check is a number you can't check. So they stay off this page until the check comes with them. That's the rule for every number on this site.",
+  labels: {
+    crop: "Crop",
+    place: "Location",
+    source: "Source",
+    results: "Yield results",
+    check: "Untreated check",
+    treated: "With Aminosan®",
+    requested: "Requested",
+    withheld: "Withheld",
+  },
+  trials: [
+    { crop: "Soybeans", place: "Taquarivaí, São Paulo", source: "DETEC", results: 2 },
+    { crop: "Soybeans", place: "Lavras, Minas Gerais", source: "Terras Gerais", results: 1 },
   ],
-  cta: { label: "Plan your application", href: "#trial-form" },
-  alt: "Hands holding a soybean plant with full pods",
+  why: {
+    heading: "Why the check matters",
+    body: "Yield swings from field to field and from year to year. An untreated strip, side by side and under the same management, is the only thing that tells a good field from a good product.",
+  },
+  close: ["Until the checks arrive, the best trial is the one you run.", "We supply the product for a strip on your farm."],
+  cta: { label: "Request a trial strip", href: "#trial-form" },
+  footnote: "Results from field trials conducted in Brazil. Field performance varies with climate, soil and management.",
 };
 
-/* A seção de culturas segue a tese da Juma para os EUA: specialty crops
-   (frutas e hortaliças da Flórida), não row crop. Não há estágio, dose nem
-   número aqui de propósito — o Aminosan® ainda não tem as culturas americanas
-   confirmadas em rótulo, e o que se afirma é só o encaixe na passada que o
-   produtor já faz, com dose e época definidas com o agrônomo dele.
+/**
+ * A8 — "Older than the company that makes it." (docs/03-SITE.md,
+ * 01-PRODUTO.md). O frasco é o mesmo da Home (os 17 quadros do GIF de 1988),
+ * aqui preso ao scroll.
+ *
+ * Sem "40 anos": a cronologia não fecha (01-PRODUTO.md, pontos em aberto, 1)
+ * e a página não afirma o que não confere. O que é certo: o produto veio
+ * antes da empresa, e a empresa é de 1988.
+ */
+export const heritage = {
+  label: "Since before 1988",
+  heading: ["Older than the company", "that makes it."],
+  body: "In the late 1980s, Julio Matino kept seeing the same thing in the fields of São Paulo: growers spending more on fertilizer and harvesting less than the crop could give. He formulated a foliar of plant-derived amino acids at a time when the idea sounded strange at the farm store. The demand for it built the company.",
+  timeline: [
+    { year: "1980s", title: "Formulated", body: "Julio Matino develops a foliar of plant-derived amino acids, before there's a company to sell it." },
+    { year: "1988", title: "A company to make it", body: "Juma Agro is founded around the product growers kept asking for." },
+    { year: "Today", title: "Still the flagship", body: "Every batch checked in Juma's own quality-control lab before it ships." },
+    { year: "Now", title: "In the U.S.", body: "Juma-Agro Fertilizer LLC, in Lakeland, Florida." },
+  ],
+  tagline: "Proven where the growing season never stops.",
+  founder: { name: "Julio Matino", role: "Founder, Juma Agro", alt: "Julio Matino, founder of Juma Agro" },
+  bottleAlt: "An Aminosan® bottle from 1988 turning into today's bottle",
+  yearLabel: "Year",
+};
+
+/**
+ * A9 — a janela, no mesmo mostrador do KMEP (SeasonDial). Soja de V2–V3 a
+ * R5 e milho de V2 a V8 (ficha BR, docs/03-SITE.md). A régua é ordinal e as
+ * marcas são as bordas da janela, não passadas: por isso o rótulo do centro
+ * é "Stage", e não "Pass". R1 entra na soja só como referência da régua.
+ * TODO(P4): a dose em fl oz/acre. Até lá, "On the label".
+ */
+export const timing = {
+  label: "The window",
+  heading: "When it goes in.",
+  body: "Foliar, alone or in the tank with a pass already on your calendar. On soybeans and corn, the window opens early in the season. Pick your crop.",
+  cropLabel: "Crop",
+  rateLabel: "Rate",
+  ends: ["Planting", "Harvest"],
+  hint: "Scroll through the season",
+  pass: "Stage",
+  crops: [
+    {
+      id: "soy",
+      label: "Soybeans",
+      rate: "On the label",
+      marks: [
+        { code: "V2–V3", at: 0.16 },
+        { code: "R1", at: 0.44 },
+        { code: "R5", at: 0.72 },
+      ],
+      spans: [{ from: 0, to: 2, note: "From early vegetative into seed fill" }],
+      summary: "Soybeans: from V2–V3 through R5, in passes you already make. Your agronomist sets the timing inside that window.",
+    },
+    {
+      id: "corn",
+      label: "Corn",
+      rate: "On the label",
+      marks: [
+        { code: "V2", at: 0.14 },
+        { code: "V8", at: 0.4 },
+      ],
+      spans: [{ from: 0, to: 1, note: "The early vegetative window" }],
+      summary: "Corn: from V2 through V8, riding with the early-season passes. Your agronomist sets the timing inside that window.",
+    },
+  ],
+};
+
+/* As culturas de mercado seguem a tese da Juma para os EUA: specialty crops
+   (frutas e hortaliças da Flórida). Não há estágio, dose nem número aqui de
+   propósito — o Aminosan® ainda não tem as culturas americanas confirmadas em
+   rótulo, e o que se afirma é só o encaixe na passada que o produtor já faz,
+   com dose e época definidas com o agrônomo dele.
    TODO(P6): confirmar com a Juma/regulatório em quais dessas culturas o
    Aminosan® pode ser posicionado nos EUA antes de publicar. */
 export const season = {
-  heading: ["Made for the crops", "you grow for market."],
-  intro: "One jug across berries, vegetables and citrus, riding in the spray passes already on your calendar.",
+  heading: ["And the crops", "you grow for market."],
+  intro: "One jug across berries, vegetables and citrus, riding in the spray passes already on your calendar. Rate and timing set with your agronomist.",
   cards: [
     {
       tag: "Berries",
@@ -362,43 +465,86 @@ export const season = {
     {
       tag: "Vegetables",
       title: "Tomato",
-      body: "Fits the fertility and spray program you already run. Rate and timing set with your agronomist.",
+      body: "Fits the fertility and spray program you already run.",
       image: "/img/aminosan-b/cut-tomato-v2.webp",
       alt: "Tomato plant with ripe fruit and roots",
     },
     {
       tag: "Groves",
       title: "Citrus",
-      body: "Rides in the foliar pass you already make across the grove. Rate and timing set with your agronomist.",
+      body: "Rides in the foliar pass you already make across the grove.",
       image: "/img/aminosan-b/cut-citrus-v2.webp",
       alt: "Young citrus tree with oranges and roots",
     },
   ],
 };
 
-export const inside = {
-  label: {
-    heading: ["What's in", "every jug."],
-    body: "Everything that matters is printed on the label. Here it is in plain words.",
-    alt: "Aminosan label close-up",
-    facts: [
-      { k: "Amino acids", v: "100% free-form L-amino acids" },
-      { k: "Source", v: "Plant-derived" },
-      { k: "Process", v: "Enzymatic fermentation" },
-      { k: "Nutrients", v: "Nitrogen, phosphate, potash" },
-      { k: "Hormones", v: "None" },
+/**
+ * O que tem na bombona: a ficha com a bombona no centro, os anéis nas cores
+ * do rótulo (o azul da faixa e o verde da marca) e os fatos presos por fios.
+ * TODO(P3): o Guaranteed Analysis americano, com os percentuais.
+ */
+export const label = {
+  label: "The label",
+  heading: ["What's in", "every jug."],
+  body: "Everything that matters is printed on the label. Here it is in plain words.",
+  alt: "A jug of Aminosan®",
+  facts: [
+    { k: "Amino acids", v: "100% free-form L-amino acids" },
+    { k: "Source", v: "Plant-derived" },
+    { k: "Process", v: "Enzymatic fermentation" },
+    { k: "Also on board", v: "Nitrogen, phosphate, potash" },
+    { k: "Hormones", v: "None" },
+    { k: "Use", v: "Foliar, alone or in tank mix" },
+  ],
+  note: "Full guaranteed analysis on the label.",
+};
+
+/** Para quem é e para quem não é: qualifica o lead e responde de antemão à objeção de trocar o programa de nitrogênio. */
+export const fit = {
+  heading: "Who it's for.",
+  fits: {
+    label: "A good fit",
+    lead: "Aminosan® makes sense if you",
+    items: [
+      "Already make foliar passes and want amino acids to ride along",
+      "Want amino acids from a plant source",
+      "Grow soybeans, corn or high-value specialty crops",
+      "Will leave an untreated check strip and compare",
     ],
   },
-  notes: [
-    { label: "Free trial strip", body: "Product for one strip on your farm, with an untreated check beside it." },
-    { label: "Agronomist on call", body: "Help choosing the field, the timing and the rate." },
+  notFit: {
+    label: "Not the right fit",
+    lead: "Look elsewhere if you want",
+    items: [
+      "A replacement for your nitrogen program",
+      "A plant growth regulator or a hormone product",
+      "A yield promise with no check strip beside it",
+      "A reason for an extra trip across the field",
+    ],
+  },
+  close: ["It's a foliar nutrient, not a fertility program.", "It rides in a pass you're already making."],
+};
+
+/** A faixa de teste: a resposta operacional para "vocês não têm dado americano". */
+export const strip = {
+  label: "How the trial strip works",
+  heading: "Put it to the test on your ground.",
+  steps: [
+    { n: "01", title: "Pick a field with a foliar pass already planned.", body: "We send the product for one strip." },
+    { n: "02", title: "Leave a strip untreated, under the same management.", body: "That strip is the whole experiment." },
+    { n: "03", title: "Harvest both and compare.", body: "We come back to look at the numbers with you, whichever way they fall." },
   ],
-  heading: ["Put it to the test", "on your ground."],
-  body: "Pick a field, leave an untreated check strip, and compare at harvest. We supply the product.",
+  promise: ["No cost for the product on the strip.", "No obligation after harvest."],
   cta: { label: "Request a trial strip", href: "#trial-form" },
   alt: "Aerial view of a soybean field with a flagged trial strip",
 };
 
+/**
+ * As perguntas (A11). A mais perigosa é "o que ele faz pela minha lavoura?",
+ * onde a tentação de claim é máxima: a resposta devolve à prova, nunca ao
+ * efeito.
+ */
 export const questions = {
   heading: ["Straight answers", "for growers."],
   prev: "Previous",
@@ -410,6 +556,11 @@ export const questions = {
       image: "/img/aminosan-b/meet-leaf.webp",
     },
     {
+      q: "How is it different from a hydrolysate?",
+      a: "Many amino acid products are hydrolysates, often from animal by-products and broken down with acid and heat. Aminosan® is plant-derived, made by enzymatic fermentation, and 100% free-form.",
+      image: "/img/aminosan-b/season-soy.webp",
+    },
+    {
       q: "Will it fit my spray program?",
       a: "Use it alone or in the tank with a pass you've already planned. Follow the mixing order on the label and jar-test new combinations.",
       image: "/img/aminosan-b/season-sprayer.webp",
@@ -417,22 +568,27 @@ export const questions = {
     {
       q: "When should I apply it?",
       a: "Soybeans from V2–V3 through R5, corn from V2 through V8. Your agronomist can match the timing to your program.",
-      image: "/img/aminosan-b/season-soy.webp",
+      image: "/img/aminosan-b/season-corn.webp",
     },
     {
       q: "Does it contain hormones?",
       a: "No. Aminosan® is non-hormonal: free-form amino acids plus nitrogen, phosphate and potash.",
-      image: "/img/aminosan-b/season-corn.webp",
+      image: "/img/aminosan-b/timing-hands.webp",
+    },
+    {
+      q: "Decades in Brazil. Where's the U.S. data?",
+      a: "Not in yet, and we won't pretend otherwise. That's why we offer a strip on your farm: your field, your check, your yield monitor.",
+      image: "/img/aminosan-b/trial-strip.webp",
+    },
+    {
+      q: "What will it do for my crop?",
+      a: "We describe what's in the jug, not a result we can't show you. What it does on your ground is what a strip with an untreated check is for. We supply the product.",
+      image: "/img/aminosan-b/proof-farmer.webp",
     },
     {
       q: "How much do I need?",
       a: "A small rate per acre, in a pass you're already making. The rate for your crop is on the label.",
-      image: "/img/aminosan-b/timing-hands.webp",
-    },
-    {
-      q: "How do I know it works on my farm?",
-      a: "Run a strip with an untreated check beside it and compare at harvest. We supply the product.",
-      image: "/img/aminosan-b/proof-farmer.webp",
+      image: "/img/aminosan-b/final-grower.webp",
     },
   ],
 };
