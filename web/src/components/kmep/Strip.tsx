@@ -4,8 +4,11 @@ import Image from "next/image";
 import { useRef } from "react";
 import { useContent } from "@/components/layout/LocaleProvider";
 import { SplitLines } from "@/components/motion/SplitLines";
+import type * as kmepContent from "@/content/kmep";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { Cta, eyebrow, microCaps } from "./ui";
+
+export type StripData = typeof kmepContent.strip;
 
 /**
  * K15 — como funciona a faixa de teste. É a resposta operacional para "vocês
@@ -17,9 +20,12 @@ import { Cta, eyebrow, microCaps } from "./ui";
  * Season da LP B, presa ao scroll nos dois sentidos: cada cartão sobe de mais
  * baixo quanto mais à direita, e o número anda num compasso próprio,
  * escorregando sobre o cartão.
+ *
+ * A LP do Aminosan® usa a mesma seção com a própria copy (`data`).
  */
-export function Strip() {
-  const { strip } = useContent().kmep;
+export function Strip({ data }: { data?: StripData }) {
+  const { kmep } = useContent();
+  const strip = data ?? kmep.strip;
   const scope = useRef<HTMLElement>(null);
 
   useGSAP(

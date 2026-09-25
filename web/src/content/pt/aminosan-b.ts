@@ -155,57 +155,58 @@ export const field: typeof en.field = {
   ],
 };
 
-export const problem: typeof en.problem = {
-  image: {
-    heading: "A maior parte do nitrogênio chega inacabada.",
-    body: "O nitrato do solo ou do adubo é matéria-prima. Antes de virar proteína, a planta precisa reduzi-lo, aminá-lo e montá-lo, e cada etapa gasta energia que a lavoura produziu para folha, vagem e grão.",
-    alt: "Planta jovem de milho ao amanhecer",
-  },
-  stat: {
-    value: 4,
-    heading: "conversões separam o nitrato de um aminoácido que a sua lavoura consegue usar.",
-    source: "Assimilação de nitrogênio nas plantas, simplificada.",
-  },
-  chain: [
-    { formula: "NO₃⁻", name: "Nitrato" },
-    { formula: "NO₂⁻", name: "Nitrito" },
-    { formula: "NH₄⁺", name: "Amônio" },
-    { formula: "Glu", name: "Glutamato" },
-    { formula: "AA", name: "Aminoácido" },
-  ],
-};
-
-export const converge: typeof en.converge = {
-  heading: "E se a sua lavoura pulasse a linha de montagem?",
-  aside: {
-    heading: ["Nós entregamos", "a parte pronta."],
-    body: "O Aminosan® leva L-aminoácidos livres à folha, já na forma que a planta usa para montar proteína. Sem conversão para esperar, sem desvio pelo solo.",
-    cta: { label: "Veja como funciona", href: "#meet" },
+export const assembly: typeof en.assembly = {
+  label: "A linha de montagem",
+  heading: "Nitrogênio não é aminoácido.",
+  body: "O nitrato do solo ou do saco é matéria-prima. Antes de virar proteína, a planta precisa reduzi-lo, fixá-lo e repassá-lo, e cada etapa roda com energia e carbono que a lavoura produziu na folha.",
+  steps: {
+    label: "O que a planta faz com o nitrato",
+    items: [
+      {
+        title: "Ela reduz.",
+        formula: "NO₃⁻ → NO₂⁻ → NH₄⁺",
+        body: "Nitrato em nitrito, nitrito em amônio. Duas enzimas, duas conversões, as duas pagas com energia produzida na folha.",
+      },
+      {
+        title: "Ela fixa.",
+        formula: "NH₄⁺ + Glu → Gln",
+        body: "O amônio é fixado no glutamato e vira glutamina: a primeira forma de nitrogênio com que a planta consegue construir.",
+      },
+      {
+        title: "Ela repassa.",
+        formula: "Gln → Asp · Ala · Ser …",
+        body: "Dali o nitrogênio é passado adiante, uma transferência por vez, para construir cada um dos outros aminoácidos.",
+      },
+    ],
   },
   routes: {
-    label: "O caminho da própria lavoura: do nitrato do solo aos aminoácidos",
-    steps: ["Nitrato", "Nitrito", "Amônio", "Glutamato", "Aminoácidos"],
-    with: {
+    heading: "Cinco etapas, ou uma.",
+    body: "A rota da própria planta vai do nitrato ao aminoácido pronto, com um custo em cada conversão. O Aminosan® entra na folha já como o aminoácido pronto.",
+    crop: {
+      label: "A rota da própria planta",
+      steps: ["Nitrato", "Nitrito", "Amônio", "Glutamina", "Aminoácidos"],
+    },
+    aminosan: {
       label: "Com Aminosan®",
-      note: "Aplicado na folha, direto aos aminoácidos",
-      jugAlt: "Bombona do Aminosan®",
+      steps: ["Aplicado na folha", "Aminoácidos, prontos"],
     },
-    conversion: "Cada conversão gasta a energia da lavoura",
+    cost: "Cada conversão gasta energia e carbono que a lavoura produziu na folha",
+    logoAlt: "Aminosan®",
   },
-  cards: [
-    {
-      title: "100% livres",
-      body: "L-aminoácidos soltos, sem cadeias de peptídeos. Não sobra nada para a planta cortar.",
-    },
-    {
-      title: "N, P e K juntos",
-      body: "Nitrogênio, fósforo e potássio vão junto na mesma aplicação.",
-    },
-    {
-      title: "Não hormonal",
-      body: "Sem hormônios na fórmula: aminoácidos mais N, P e K.",
-    },
+  quote: "A planta sabe construir aminoácidos. Ou você pode entregar os prontos.",
+};
+
+export const compare: typeof en.compare = {
+  label: "Nem todo aminoácido",
+  heading: "Produtos de aminoácido não são todos feitos do mesmo jeito.",
+  body: "A maior parte da categoria parte de uma proteína e a quebra. Do que ela parte, como é quebrada e até onde a quebra vai decidem o que acaba na bombona.",
+  columns: { ours: "Aminosan®", theirs: "Um hidrolisado típico" },
+  rows: [
+    { k: "Parte de", ours: "Proteína vegetal", theirs: "Muitas vezes, subprodutos animais" },
+    { k: "Quebrado por", ours: "Fermentação enzimática", theirs: "Muitas vezes, hidrólise ácida, com ácido forte e calor" },
+    { k: "O que sai", ours: "L-aminoácidos 100% livres", theirs: "Muitas vezes, uma mistura de aminoácidos livres e cadeias de peptídeos" },
   ],
+  note: "A coluna da direita descreve a categoria em geral, não um produto específico. Compare o que for, leia o rótulo.",
 };
 
 export const meet: typeof en.meet = {
@@ -267,77 +268,165 @@ export const cell: typeof en.cell = {
   alt: "Zoom macro de uma folha até as suas células",
 };
 
-export const proof: typeof en.proof = {
-  heading: ["Provado no campo.", "Aprovado pelo produtor."],
-  alt: "Produtor conferindo a lavoura de soja no fim da tarde",
-  stats: [
-    { value: 100, suffix: "%", label: "L-aminoácidos livres" },
-    { value: 4, suffix: "", label: "etapas de conversão que a lavoura pula" },
-    { value: 0, suffix: "", label: "passadas extras: vai junto na pulverização" },
-    { value: 40, suffix: "+", label: "anos de safras no campo" },
+export const rule: typeof en.rule = {
+  label: "A prova",
+  heading: ["Dois ensaios.", "Nenhum número, ainda."],
+  body: "O Aminosan® tem resultados de produtividade de dois ensaios de soja no Brasil. Nenhum foi publicado com a testemunha ao lado, e um número sem a testemunha é um número que você não consegue conferir. Por isso eles ficam fora desta página até a testemunha chegar com eles. É a regra para todo número deste site.",
+  labels: {
+    crop: "Cultura",
+    place: "Local",
+    source: "Fonte",
+    results: "Resultados de produtividade",
+    check: "Testemunha",
+    treated: "Com Aminosan®",
+    requested: "Solicitada",
+    withheld: "Retido",
+  },
+  trials: [
+    { crop: "Soja", place: "Taquarivaí, São Paulo", source: "DETEC", results: 2 },
+    { crop: "Soja", place: "Lavras, Minas Gerais", source: "Terras Gerais", results: 1 },
   ],
-  note: "O desempenho no campo varia com cultura, clima e manejo. Sempre leia e siga o rótulo.",
+  why: {
+    heading: "Por que a testemunha importa",
+    body: "A produtividade varia de talhão para talhão e de ano para ano. Uma faixa sem tratamento, lado a lado e sob o mesmo manejo, é a única coisa que separa um bom talhão de um bom produto.",
+  },
+  close: ["Até a testemunha chegar, o melhor ensaio é o que você conduz.", "Nós fornecemos o produto para uma faixa na sua fazenda."],
+  cta: { label: "Peça uma faixa de teste", href: "#trial-form" },
+  footnote: "Resultados de ensaios de campo conduzidos no Brasil. O desempenho em campo varia com clima, solo e manejo.",
+};
+
+export const heritage: typeof en.heritage = {
+  label: "Desde antes de 1988",
+  heading: ["Mais antigo que a empresa", "que o fabrica."],
+  body: "No fim dos anos 80, Julio Matino via sempre a mesma coisa nas lavouras de São Paulo: o produtor gastando mais em adubo e colhendo menos do que a lavoura podia dar. Ele formulou um foliar de aminoácidos de origem vegetal numa época em que a ideia soava estranha na revenda. A procura por ele construiu a empresa.",
+  timeline: [
+    { year: "Anos 80", title: "Formulado", body: "Julio Matino desenvolve um foliar de aminoácidos de origem vegetal, antes de existir empresa para vendê-lo." },
+    { year: "1988", title: "Uma empresa para fabricá-lo", body: "A Juma Agro nasce em torno do produto que os produtores continuavam pedindo." },
+    { year: "Hoje", title: "Ainda o carro-chefe", body: "Cada lote conferido no laboratório de controle de qualidade da própria Juma antes de sair." },
+    { year: "Agora", title: "Nos EUA", body: "Juma-Agro Fertilizer LLC, em Lakeland, Flórida." },
+  ],
+  tagline: "Provado onde a safra nunca para.",
+  founder: { name: "Julio Matino", role: "Fundador, Juma Agro", alt: "Julio Matino, fundador da Juma Agro" },
+  bottleAlt: "Um frasco de Aminosan® de 1988 se transformando no frasco de hoje",
+  yearLabel: "Ano",
 };
 
 export const timing: typeof en.timing = {
-  heading: "Feito para as semanas que decidem a produtividade.",
-  body: [
-    "Florada, pegamento, enchimento de grão. A demanda da lavoura por nitrogênio chega ao pico justo quando o calor e os veranicos dificultam mais a vida da raiz.",
-    "O Aminosan® leva aminoácidos à folha nessas semanas, na forma que a planta usa, para que o nitrogênio dela não fique esperando o solo.",
+  label: "A janela",
+  heading: "Quando ele entra.",
+  body: "Foliar, sozinho ou no tanque com uma passada que já está no seu calendário. Na soja e no milho, a janela abre cedo na safra. Escolha a sua cultura.",
+  cropLabel: "Cultura",
+  rateLabel: "Dose",
+  ends: ["Plantio", "Colheita"],
+  hint: "Role pela safra",
+  pass: "Estágio",
+  crops: [
+    {
+      id: "soy",
+      label: "Soja",
+      rate: "No rótulo",
+      marks: [
+        { code: "V2–V3", at: 0.16 },
+        { code: "R1", at: 0.44 },
+        { code: "R5", at: 0.72 },
+      ],
+      spans: [{ from: 0, to: 2, note: "Do vegetativo inicial ao enchimento de grãos" }],
+      summary: "Soja: de V2–V3 até R5, nas passadas que você já faz. O seu agrônomo define a época dentro dessa janela.",
+    },
+    {
+      id: "corn",
+      label: "Milho",
+      rate: "No rótulo",
+      marks: [
+        { code: "V2", at: 0.14 },
+        { code: "V8", at: 0.4 },
+      ],
+      spans: [{ from: 0, to: 1, note: "A janela do vegetativo inicial" }],
+      summary: "Milho: de V2 até V8, junto com as passadas do começo da safra. O seu agrônomo define a época dentro dessa janela.",
+    },
   ],
-  cta: { label: "Planeje sua aplicação", href: "#trial-form" },
-  alt: "Mãos segurando uma planta de soja com vagens cheias",
 };
 
 export const season: typeof en.season = {
-  heading: ["Feito para as culturas", "que você planta para vender."],
-  intro: "Uma bombona para frutas vermelhas, hortaliças e citros, nas passadas de pulverização que já estão no seu calendário.",
+  heading: ["E as culturas que", "você planta para o mercado."],
+  intro: "Uma bombona para morango, hortaliças e citros, nas passadas de pulverização que já estão no seu calendário. Dose e época definidas com o seu agrônomo.",
   cards: [
     {
-      tag: "Frutas vermelhas",
+      tag: "Berries",
       title: "Morango",
-      body: "Sozinho ou em mistura de tanque, nas passadas que já fazem parte da sua safra de inverno.",
+      body: "Sozinho ou em mistura de tanque, nas passadas que já estão na sua programação de inverno.",
       image: "/img/aminosan-b/cut-strawberry-v2.webp",
-      alt: "Planta de morango com frutos maduros e raízes",
+      alt: "Pé de morango com frutos maduros e raízes",
     },
     {
       tag: "Hortaliças",
       title: "Tomate",
-      body: "Encaixa no programa de fertilidade e pulverização que você já roda. Dose e época definidas com o seu agrônomo.",
+      body: "Entra no programa de adubação e pulverização que você já conduz.",
       image: "/img/aminosan-b/cut-tomato-v2.webp",
-      alt: "Planta de tomate com frutos maduros e raízes",
+      alt: "Pé de tomate com frutos maduros e raízes",
     },
     {
       tag: "Pomares",
       title: "Citros",
-      body: "Vai na passada foliar que você já faz no pomar. Dose e época definidas com o seu agrônomo.",
+      body: "Vai na passada foliar que você já faz no pomar.",
       image: "/img/aminosan-b/cut-citrus-v2.webp",
-      alt: "Citros jovem com laranjas e raízes",
+      alt: "Pé de citros jovem com laranjas e raízes",
     },
   ],
 };
 
-export const inside: typeof en.inside = {
-  label: {
-    heading: ["O que tem em", "cada bombona."],
-    body: "Tudo o que importa está impresso no rótulo. Aqui, em palavras simples.",
-    alt: "Rótulo do Aminosan em detalhe",
-    facts: [
-      { k: "Aminoácidos", v: "L-aminoácidos 100% livres" },
-      { k: "Origem", v: "Vegetal" },
-      { k: "Processo", v: "Fermentação enzimática" },
-      { k: "Nutrientes", v: "Nitrogênio, fósforo, potássio" },
-      { k: "Hormônios", v: "Nenhum" },
+export const label: typeof en.label = {
+  label: "O rótulo",
+  heading: ["O que tem em", "cada bombona."],
+  body: "Tudo o que importa está impresso no rótulo. Aqui está, em palavras simples.",
+  alt: "Uma bombona de Aminosan®",
+  facts: [
+    { k: "Aminoácidos", v: "L-aminoácidos 100% livres" },
+    { k: "Origem", v: "Vegetal" },
+    { k: "Processo", v: "Fermentação enzimática" },
+    { k: "Também leva", v: "Nitrogênio, fósforo, potássio" },
+    { k: "Hormônios", v: "Nenhum" },
+    { k: "Uso", v: "Foliar, sozinho ou em mistura de tanque" },
+  ],
+  note: "Análise garantida completa no rótulo.",
+};
+
+export const fit: typeof en.fit = {
+  heading: "Para quem é.",
+  fits: {
+    label: "Serve",
+    lead: "O Aminosan® faz sentido se você",
+    items: [
+      "Já faz passadas foliares e quer que os aminoácidos vão junto",
+      "Quer aminoácidos de origem vegetal",
+      "Planta soja, milho ou culturas especiais de alto valor",
+      "Vai deixar uma faixa testemunha sem tratamento e comparar",
     ],
   },
-  notes: [
-    { label: "Faixa de teste grátis", body: "Produto para uma faixa na sua fazenda, com a testemunha sem tratamento ao lado." },
-    { label: "Agrônomo à disposição", body: "Ajuda para escolher o talhão, a época e a dose." },
+  notFit: {
+    label: "Não serve",
+    lead: "Procure outra coisa se você quer",
+    items: [
+      "Um substituto para o seu programa de nitrogênio",
+      "Um regulador de crescimento ou um produto hormonal",
+      "Uma promessa de produtividade sem faixa testemunha ao lado",
+      "Um motivo para uma passada a mais no campo",
+    ],
+  },
+  close: ["É um nutriente foliar, não um programa de adubação.", "Vai numa passada que você já está fazendo."],
+};
+
+export const strip: typeof en.strip = {
+  label: "Como funciona a faixa de teste",
+  heading: "Coloque à prova no seu chão.",
+  steps: [
+    { n: "01", title: "Escolha um talhão com uma passada foliar já programada.", body: "Nós mandamos o produto para uma faixa." },
+    { n: "02", title: "Deixe uma faixa sem tratamento, sob o mesmo manejo.", body: "Essa faixa é o experimento inteiro." },
+    { n: "03", title: "Colha as duas e compare.", body: "Nós voltamos para olhar os números com você, seja qual for o resultado." },
   ],
-  heading: ["Coloque à prova", "na sua terra."],
-  body: "Escolha um talhão, deixe uma faixa testemunha e compare na colheita. Nós fornecemos o produto.",
-  cta: { label: "Pedir uma faixa de teste", href: "#trial-form" },
-  alt: "Vista aérea de uma lavoura de soja com faixa de teste marcada por bandeiras",
+  promise: ["Sem custo pelo produto da faixa.", "Sem compromisso depois da colheita."],
+  cta: { label: "Peça uma faixa de teste", href: "#trial-form" },
+  alt: "Vista aérea de uma lavoura de soja com uma faixa de teste sinalizada",
 };
 
 export const questions: typeof en.questions = {
@@ -351,29 +440,39 @@ export const questions: typeof en.questions = {
       image: "/img/aminosan-b/meet-leaf.webp",
     },
     {
+      q: "Qual a diferença para um hidrolisado?",
+      a: "Muitos produtos de aminoácido são hidrolisados, muitas vezes de subprodutos animais e quebrados com ácido e calor. O Aminosan® é de origem vegetal, feito por fermentação enzimática e 100% livre.",
+      image: "/img/aminosan-b/season-soy.webp",
+    },
+    {
       q: "Entra no meu programa de pulverização?",
-      a: "Use sozinho ou no tanque, junto de uma passada já planejada. Siga a ordem de mistura do rótulo e faça teste de jarra em combinações novas.",
+      a: "Use sozinho ou no tanque com uma passada que você já programou. Siga a ordem de mistura do rótulo e faça o teste de calda em combinações novas.",
       image: "/img/aminosan-b/season-sprayer.webp",
     },
     {
       q: "Quando devo aplicar?",
-      a: "Soja de V2–V3 até R5, milho de V2 até V8. Seu agrônomo ajusta a época ao seu manejo.",
-      image: "/img/aminosan-b/season-soy.webp",
+      a: "Soja de V2–V3 até R5, milho de V2 até V8. O seu agrônomo ajusta a época ao seu manejo.",
+      image: "/img/aminosan-b/season-corn.webp",
     },
     {
       q: "Tem hormônio?",
       a: "Não. O Aminosan® é não hormonal: aminoácidos livres mais nitrogênio, fósforo e potássio.",
-      image: "/img/aminosan-b/season-corn.webp",
+      image: "/img/aminosan-b/timing-hands.webp",
+    },
+    {
+      q: "Décadas no Brasil. Cadê o dado americano?",
+      a: "Ainda não temos, e não vamos fingir que temos. É por isso que oferecemos uma faixa na sua fazenda: o seu talhão, a sua testemunha, o seu monitor de colheita.",
+      image: "/img/aminosan-b/trial-strip.webp",
+    },
+    {
+      q: "O que ele vai fazer pela minha lavoura?",
+      a: "Nós descrevemos o que tem na bombona, não um resultado que não podemos mostrar. O que ele faz no seu chão é para isso que serve uma faixa com testemunha. Nós fornecemos o produto.",
+      image: "/img/aminosan-b/proof-farmer.webp",
     },
     {
       q: "Quanto eu preciso?",
       a: "Uma dose pequena por acre, numa passada que você já faz. A dose para a sua cultura está no rótulo.",
-      image: "/img/aminosan-b/timing-hands.webp",
-    },
-    {
-      q: "Como sei que funciona na minha fazenda?",
-      a: "Faça uma faixa com a testemunha sem tratamento ao lado e compare na colheita. Nós fornecemos o produto.",
-      image: "/img/aminosan-b/proof-farmer.webp",
+      image: "/img/aminosan-b/final-grower.webp",
     },
   ],
 };

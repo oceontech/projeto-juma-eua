@@ -49,3 +49,20 @@ export function Mark({ className }: { className?: string }) {
 
 /** Texto miúdo em caixa alta — o corpo "de legenda" da referência. */
 export const microCaps = "font-display text-[11px] leading-[1.5] tracking-[0.14em] uppercase";
+
+/** Rótulo de seção: a caixa alta espaçada que abre um bloco (a mesma do KMEP). */
+export const eyebrow = "font-display text-[11px] leading-[1.4] tracking-[0.22em] uppercase";
+
+/**
+ * As cores da bombona, que são a identidade do Aminosan® na página: o azul da
+ * faixa do rótulo (`amino`), o verde do logotipo e o âmbar que a cena de
+ * partículas usa para "a ligação que ainda precisa ser aberta" — aqui, o custo
+ * de cada conversão.
+ */
+export const AMINO = { blue: "#134777", green: "#1F7A44", amber: "#C9731E" };
+
+/**
+ * Arredonda o que vai para um atributo: trigonometria pode diferir no último
+ * dígito entre o Node e o navegador, e isso é erro de hidratação.
+ */
+export const fix = (n: number, places = 2) => +n.toFixed(places);
