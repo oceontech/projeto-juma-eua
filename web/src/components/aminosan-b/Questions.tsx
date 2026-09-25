@@ -9,7 +9,7 @@ import { microCaps } from "./ui";
 
 /**
  * As perguntas como o "latest from the community" da referência: a cena
- * prende sobre o fundo claro de folhas e o trilho de cartões corre para a esquerda
+ * prende sobre o fundo branco e o trilho de cartões corre para a esquerda
  * conforme a página rola. Cada cartão é uma foto com a caixa creme
  * sobreposta. O título fica centralizado acima e o trilho corre de ponta
  * a ponta, só com o scroll — sem setas.
@@ -43,21 +43,6 @@ export function Questions() {
             invalidateOnRefresh: true,
           },
         });
-
-        gsap.fromTo(
-          ".qs-bg",
-          { scale: 1.15 },
-          {
-            scale: 1,
-            ease: "none",
-            scrollTrigger: {
-              trigger: ".qs-stage",
-              start: "top bottom",
-              end: () => `+=${distance() + window.innerHeight * 2}`,
-              scrub: true,
-            },
-          },
-        );
       });
     },
     { scope },
@@ -72,17 +57,6 @@ export function Questions() {
             "max(var(--spacing-gut), calc((100vw - var(--container-wrap)) / 2))",
         }}
       >
-        <div className="qs-bg absolute inset-0">
-          <Image
-            src="/img/aminosan-b/questions-leaves.webp"
-            alt=""
-            fill
-            sizes="100vw"
-            quality={90}
-            className="object-cover"
-          />
-        </div>
-
         <div className="relative flex h-full flex-col justify-center gap-[clamp(28px,5svh,56px)] pt-[clamp(72px,10svh,110px)] pb-[clamp(32px,6svh,64px)]">
           <div className="px-[var(--spacing-gut)] text-center">
             <SplitLines className="text-[clamp(34px,3.8vw,64px)] leading-[0.98] tracking-[-0.03em]">
