@@ -1,0 +1,51 @@
+/* A terra no topo da seção. As medidas vêm da foto (public/img/soil/):
+   `--soil-ratio` é altura ÷ largura e `--soil-lip` a fração da altura em que
+   os torrões começam — acima deles só a sombra, que nasce transparente. A
+   largura é a da tela e a altura segue a proporção: nada de esticar.
+   `--soil-rise` é quanto a borda fica acima do topo da seção. */
+.bed,
+.fill {
+  --soil-image: url("/img/soil/soil-edge.webp");
+  --soil-ratio: 1336 / 2048;
+  --soil-lip: 0.2388;
+  --soil-rise: clamp(16px, 2vw, 40px);
+  --soil-h: calc(100vw * var(--soil-ratio));
+  position: absolute;
+  z-index: -1;
+  inset-inline: 0;
+  pointer-events: none;
+}
+
+.bed {
+  top: calc(-1 * var(--soil-h) * var(--soil-lip) - var(--soil-rise));
+  height: var(--soil-h);
+}
+
+/* O fundo da seção só começa bem dentro da terra: acima dos torrões não há
+   fundo nenhum, e a cena presa de baixo aparece entre eles. */
+.fill {
+  top: calc(var(--soil-h) * 0.25 - var(--soil-rise));
+  bottom: 0;
+  background: var(--color-night);
+}
+
+/* A textura escurece até a cor da seção; o degradê anda junto no parallax. */
+.texture {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(180deg, transparent 45%, rgb(12 12 14 / 0.35) 70%, var(--color-night) 95%),
+    var(--soil-image);
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  will-change: transform;
+}
+
+@media (max-width: 767px) {
+  .bed,
+  .fill {
+    --soil-image: url("/img/soil/soil-edge-mobile.webp");
+    --soil-ratio: 1894 / 887;
+    --soil-lip: 0.1331;
+  }
+}

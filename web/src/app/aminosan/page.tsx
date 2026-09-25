@@ -31,7 +31,8 @@ export const metadata: Metadata = {
  * sob medida.
  *
  * O hero se desfaz em partículas e a nuvem explica o aminoácido livre; a
- * cena fecha no disco preto que abre o campo (Field). Daí a linha de
+ * cena fecha no disco preto que abre o campo (Field), que a terra do
+ * Assembly cobre ao subir por cima da raiz. Daí a linha de
  * montagem do nitrogênio e as duas rotas (Assembly, A3–A4), o produto em
  * bento (Meet), a lente dentro da folha (Cell), a tabela contra o hidrolisado
  * típico (Compare, A4), a prova pela regra da testemunha (Rule, A6), a

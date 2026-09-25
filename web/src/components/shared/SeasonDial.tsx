@@ -47,6 +47,8 @@ const TICKS = Array.from({ length: 41 }, (_, i) => i / 40);
 const CROP_ICONS: Record<string, string> = {
   citrus: "citrus",
   fruit: "tree-fruit",
+  grape: "tree-fruit",
+  legumes: "beans",
   veg: "vegetables",
   tomato: "tomato-pepper",
   ornamental: "ornamentals",
@@ -662,9 +664,11 @@ export function SeasonDial({
                   const stageTitleSize = big.length > 6 ? "text-[length:clamp(30px,min(4vw,6svh),64px)]" : "text-[length:clamp(44px,min(6vw,9svh),90px)]";
                   const drawing = art[crop.id];
                   const sprite = drawing && !Array.isArray(drawing) ? (drawing as Exclude<StageArt, readonly string[]>) : null;
-                  const still = Array.isArray(drawing) ? (drawing as readonly string[])[i] : null;
-                  const left = sprite?.cuts[i] ?? 0;
-                  const width = sprite ? sprite.cuts[i + 1] - left : 0;
+                  /* Mais passadas do que plantas no desenho: a última planta se repete. */
+                  const still = Array.isArray(drawing) ? (drawing as readonly string[])[Math.min(i, drawing.length - 1)] : null;
+                  const k = sprite ? Math.min(i, sprite.cuts.length - 2) : 0;
+                  const left = sprite?.cuts[k] ?? 0;
+                  const width = sprite ? sprite.cuts[k + 1] - left : 0;
                   return (
                     <div
                       key={`${crop.id}-${i}`}
@@ -682,11 +686,11 @@ export function SeasonDial({
                               className="object-cover"
                               style={{
                                 objectPosition: `${(left / (sprite.width - width)) * 100}% center`,
-                                maskImage: crop.id === "fruit" ? [
+                                maskImage: sprite.src.endsWith("/fruit.png") ? [
                                   "linear-gradient(to right, black 0%, black 92%, transparent 100%)",
                                   "linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)",
                                   "linear-gradient(to right, transparent 0%, black 8%, black 100%)",
-                                ][i] : undefined,
+                                ][k] : undefined,
                               }}
                             />
                           </div>

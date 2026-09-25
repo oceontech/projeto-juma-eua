@@ -4,6 +4,7 @@ import Image from "next/image";
 import { Fragment, useRef } from "react";
 import { useContent } from "@/components/layout/LocaleProvider";
 import { SplitLines } from "@/components/motion/SplitLines";
+import { Soil } from "@/components/shared/Soil";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { AMINO, eyebrow, fix, microCaps } from "./ui";
 
@@ -53,7 +54,7 @@ const ENERGY = [5, 4, 3, 2, 1];
 const bubbleCount = (kind: RouteKind, stage: number) => (kind === "crop" ? (ENERGY[stage] ?? 1) : BUBBLES.length);
 
 const TONE = {
-  crop: { on: "#435630", off: "#E9EBCB", fill: "#435630", fillOpacity: 0.22 },
+  crop: { on: "#B7C73E", off: "#3A3D30", fill: "#B7C73E", fillOpacity: 0.18 },
   aminosan: { on: AMINO.blue, off: "#DDE4EC", fill: AMINO.blue, fillOpacity: 0.16 },
 };
 
@@ -219,8 +220,10 @@ export function Assembly() {
        discreto, com a mesma malha — as etapas continuam alinhadas coluna a
        coluna, e o aminoácido do Aminosan® cai na segunda. */
     const card = product
-      ? "overflow-hidden border border-amino/15 bg-white shadow-[0_30px_60px_-34px_rgba(19,71,119,0.45)]"
-      : "border border-forest/12 bg-forest/[0.035]";
+      ? "overflow-hidden border border-amino/15 bg-white text-forest shadow-[0_30px_60px_-34px_rgba(0,0,0,0.6)]"
+      : "border border-cream/12 bg-night/50 backdrop-blur-md";
+    /* O traço do mostrador: escuro no rótulo branco, claro no cartão escuro. */
+    const ink = product ? "#16261B" : "#EEEBE0";
     return (
       <div
         className={`as-${kind} relative grid grid-cols-1 items-start gap-y-5 rounded-[clamp(14px,1.4vw,24px)] px-[clamp(16px,2.4vw,40px)] py-[clamp(18px,2.4svh,32px)] md:grid-cols-[120px_minmax(0,1fr)] md:items-center md:gap-x-8 lg:grid-cols-[180px_minmax(0,1fr)] lg:gap-x-10 ${card}`}
@@ -246,8 +249,8 @@ export function Assembly() {
                 </feMerge>
               </filter>
             </defs>
-            <circle cx={RING.c} cy={RING.c} r={RING.r} fill="none" stroke="#16261B" strokeOpacity={0.1} strokeWidth="7" />
-            <circle cx={RING.c} cy={RING.c} r={RING.fillR} fill="none" stroke="#16261B" strokeOpacity={0.06} strokeWidth="19" />
+            <circle cx={RING.c} cy={RING.c} r={RING.r} fill="none" stroke={ink} strokeOpacity={0.1} strokeWidth="7" />
+            <circle cx={RING.c} cy={RING.c} r={RING.fillR} fill="none" stroke={ink} strokeOpacity={0.06} strokeWidth="19" />
             {fillArcs.map((d) => (
               <path
                 key={d}
@@ -289,18 +292,18 @@ export function Assembly() {
               );
             })}
             {/* O ponteiro, desenhado no fim do curso. */}
-            <line className="as-hand" x1={RING.c} y1={RING.c} x2={RING.c} y2={RING.c - 30} stroke="#16261B" strokeWidth="2.5" strokeLinecap="round" />
-            <circle cx={RING.c} cy={RING.c} r="3.5" fill="#16261B" />
+            <line className="as-hand" x1={RING.c} y1={RING.c} x2={RING.c} y2={RING.c - 30} stroke={ink} strokeWidth="2.5" strokeLinecap="round" />
+            <circle cx={RING.c} cy={RING.c} r="3.5" fill={ink} />
           </svg>
-          <p className={`${eyebrow} text-[10px] lg:text-[11px] ${product ? "text-amino" : "text-moss"}`}>{data.label}</p>
+          <p className={`${eyebrow} text-[10px] lg:text-[11px] ${product ? "text-amino" : "text-lime"}`}>{data.label}</p>
         </div>
 
         <ol className="relative flex flex-col md:grid md:grid-cols-5">
           {data.steps.map((step, k) => (
             <li key={step} className="relative pb-6 pl-7 last:pb-0 md:pt-8 md:pr-3 md:pb-0 md:pl-0 lg:pr-4">
               {k < n - 1 && (
-                <span className="absolute top-[12px] left-[5px] h-[calc(100%-2px)] w-[2px] bg-forest/10 md:top-[5px] md:left-[6px] md:h-[2px] md:w-full">
-                  <span className={`as-seg absolute inset-0 origin-top md:origin-left ${product ? "bg-amino" : "bg-olive"}`} />
+                <span className={`absolute top-[12px] left-[5px] h-[calc(100%-2px)] w-[2px] ${product ? "bg-forest/10" : "bg-cream/15"} md:top-[5px] md:left-[6px] md:h-[2px] md:w-full`}>
+                  <span className={`as-seg absolute inset-0 origin-top md:origin-left ${product ? "bg-amino" : "bg-lime"}`} />
                   {!product && (
                     <span
                       aria-hidden
@@ -340,35 +343,37 @@ export function Assembly() {
   };
 
   return (
-    <section id="assembly" ref={scope} className="relative overflow-clip bg-white text-forest">
+    <section id="assembly" ref={scope} data-nav-theme="dark" className="relative isolate z-[2] overflow-x-clip text-cream">
+      {/* A terra do topo sobe por cima da raiz do Field, como no TwoJobs do KMEP. */}
+      <Soil />
       <div className="wrap grid gap-6 pt-sec lg:grid-cols-[minmax(0,1fr)_minmax(0,440px)] lg:items-end lg:gap-16">
         <div>
-          <p className={`${eyebrow} text-moss`}>{assembly.label}</p>
+          <p className={`${eyebrow} text-lime`}>{assembly.label}</p>
           <SplitLines className="mt-4 max-w-[15ch] text-[clamp(38px,4.6vw,84px)] leading-[0.95] tracking-[-0.04em] text-balance">
             {assembly.heading}
           </SplitLines>
         </div>
-        <p className={`${microCaps} text-[12px] text-forest/75`}>{assembly.body}</p>
+        <p className={`${microCaps} text-[12px] text-cream/70`}>{assembly.body}</p>
       </div>
 
       {/* O que a planta faz com o nitrato: a química em corpo grande, uma
           conversão por cartão. É fisiologia da planta, não efeito do produto. */}
       <div className="wrap mt-[clamp(40px,5vw,80px)]">
-        <p className={`${eyebrow} text-moss`}>{steps.label}</p>
+        <p className={`${eyebrow} text-lime`}>{steps.label}</p>
         <ol className="as-steps mt-5 grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-4">
           {steps.items.map((item, i) => (
             <li
               key={item.title}
-              className="as-step relative flex flex-col overflow-hidden rounded-[clamp(12px,1.05vw,20px)] border border-forest/12 bg-forest/[0.035] p-[clamp(14px,1.8vw,28px)] max-md:first:col-span-2"
+              className="as-step relative flex flex-col overflow-hidden rounded-[clamp(12px,1.05vw,20px)] border border-cream/15 bg-night/45 p-[clamp(14px,1.8vw,28px)] backdrop-blur-md max-md:first:col-span-2"
             >
-              <p className={`${microCaps} text-[10px] text-moss`}>{String(i + 1).padStart(2, "0")}</p>
+              <p className={`${microCaps} text-[10px] text-lime`}>{String(i + 1).padStart(2, "0")}</p>
               <p className="as-formula mt-[clamp(20px,2.4vw,40px)] font-display text-[clamp(20px,2.2vw,38px)] leading-[1.1] tracking-[-0.03em] md:whitespace-nowrap">
                 <Formula text={item.formula} />
               </p>
-              <h3 className="mt-[clamp(20px,2.4vw,40px)] border-t border-forest/12 pt-4 text-[clamp(21px,1.6vw,27px)] leading-[1.1] tracking-[-0.02em]">
+              <h3 className="mt-[clamp(20px,2.4vw,40px)] border-t border-cream/15 pt-4 text-[clamp(21px,1.6vw,27px)] leading-[1.1] tracking-[-0.02em]">
                 {item.title}
               </h3>
-              <p className="mt-3 text-[15px] leading-[1.5] text-forest/75">{item.body}</p>
+              <p className="mt-3 text-[15px] leading-[1.5] text-cream/70">{item.body}</p>
             </li>
           ))}
         </ol>
@@ -378,7 +383,7 @@ export function Assembly() {
         <div className="wrap">
           <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,440px)] lg:items-end lg:gap-16">
             <h3 className="text-[clamp(32px,3.4vw,62px)] leading-[0.96] tracking-[-0.035em]">{routes.heading}</h3>
-            <p className={`${microCaps} text-[12px] text-forest/75`}>{routes.body}</p>
+            <p className={`${microCaps} text-[12px] text-cream/70`}>{routes.body}</p>
           </div>
 
           <div className="as-routes mt-[clamp(28px,4.5svh,56px)] grid gap-[clamp(14px,2.4svh,24px)]">
@@ -386,7 +391,7 @@ export function Assembly() {
             {route("aminosan")}
           </div>
 
-          <p className={`${microCaps} mt-8 flex items-center gap-3 text-[10px] text-forest/65 lg:text-[11px]`}>
+          <p className={`${microCaps} mt-8 flex items-center gap-3 text-[10px] text-cream/60 lg:text-[11px]`}>
             <span aria-hidden className="flex flex-col gap-[3px]">
               <span className="block h-[2px] w-3.5" style={{ backgroundColor: AMINO.amber }} />
               <span className="block h-[2px] w-3.5" style={{ backgroundColor: AMINO.amber }} />

@@ -6,6 +6,11 @@ import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
 import { microCaps } from "./ui";
 
 const CHAPTER = [0.36, 0.58, 0.78];
+/* O pin, em % da altura do palco. Os últimos 100% são da terra do TwoJobs
+   (Soil), que sobe por cima da raiz: a margem de baixo negativa puxa a seção
+   seguinte para dentro do pin. A linha do tempo ganha esse trecho parado. */
+const PIN = 660;
+const RISE = 100;
 const PLANT = "/img/kmep/blackout/ornamental-continuous.webp";
 
 export function Blackout({ variant = "a" }: { variant?: "a" | "b" }) {
@@ -29,13 +34,14 @@ export function Blackout({ variant = "a" }: { variant?: "a" | "b" }) {
 
       const narrow = window.matchMedia("(max-width: 900px)").matches;
       gsap.set(plant, { yPercent: 20, autoAlpha: 0 });
+      root.style.marginBottom = `-${RISE}svh`;
 
       const tl = gsap.timeline({
         defaults: { ease: "none" },
         scrollTrigger: {
           trigger: stage,
           start: "top top",
-          end: "+=560%",
+          end: `+=${PIN}%`,
           scrub: 0.7,
           pin: true,
           anticipatePin: 1,
@@ -71,12 +77,13 @@ export function Blackout({ variant = "a" }: { variant?: "a" | "b" }) {
       tl.to(plant, { yPercent: 0, autoAlpha: 1, duration: 0.12, ease: "power2.out" }, CHAPTER[0])
         .to(plant, { yPercent: narrow ? -20 : -25, duration: 0.15, ease: "power2.inOut" }, CHAPTER[1])
         .to(plant, { yPercent: -65, duration: 0.06, ease: "power2.inOut" }, CHAPTER[2])
-        .to({}, { duration: 0.02 }, 0.98);
+        .to({}, { duration: RISE / (PIN - RISE) }, 1);
 
       ScrollTrigger.refresh();
       return () => {
         tl.scrollTrigger?.kill();
         tl.kill();
+        root.style.marginBottom = "";
         delete html.dataset.navTheme;
       };
     });
@@ -93,7 +100,7 @@ export function Blackout({ variant = "a" }: { variant?: "a" | "b" }) {
     : "Flowering chrysanthemum with pink blooms, droplets on its leaves, and exposed roots";
 
   return (
-    <section ref={scope} aria-label={blackout.headline.join(" ")} className="fd relative z-[1] -mt-[180svh] text-cream">
+    <section ref={scope} aria-label={blackout.headline.join(" ")} className="fd fd-glass relative z-[1] -mt-[180svh] text-cream">
       <div className="fd-stage relative h-[100svh] min-h-[640px] overflow-hidden">
         <div aria-hidden className="fd-black absolute inset-0 bg-[#060606]" />
         <div className="fd-ask pointer-events-none absolute inset-0 z-[2] grid place-content-center px-[var(--spacing-gut)] text-center opacity-0">

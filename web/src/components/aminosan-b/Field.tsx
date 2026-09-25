@@ -6,8 +6,11 @@ import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
 import { microCaps } from "./ui";
 
 const CHAPTER = [0.36, 0.58, 0.78];
-const CURTAIN_AT = 0.87;
-const CURTAIN_LEN = 0.1;
+/* O pin, em % da altura do palco. Os últimos 100% são da terra (Soil), que
+   sobe por cima da raiz: a margem de baixo negativa puxa a seção seguinte
+   para dentro do pin. A linha do tempo ganha esse trecho parado no fim. */
+const PIN = 660;
+const RISE = 100;
 const PLANT = "/img/aminosan-b/compare/soybean-continuous.webp";
 
 export function Field() {
@@ -25,26 +28,25 @@ export function Field() {
       const bg = root.querySelector<HTMLElement>(".fd-black");
       const cards = gsap.utils.toArray<HTMLElement>(".fd-card", root);
       const plant = root.querySelector<HTMLElement>(".fd-plant");
-      const curtainPlant = root.querySelector<HTMLElement>(".fd-curtain-plant");
-      if (!plant || !curtainPlant) return;
+      if (!plant) return;
 
       const narrow = window.matchMedia("(max-width: 900px)").matches;
       const stemY = narrow ? -15 : -18;
       const rootsY = narrow ? -65 : -55;
       gsap.set(plant, { yPercent: 20, autoAlpha: 0 });
-      gsap.set(curtainPlant, { yPercent: rootsY });
+      root.style.marginBottom = `-${RISE}svh`;
 
       const tl = gsap.timeline({
         defaults: { ease: "none" },
         scrollTrigger: {
           trigger: stage,
           start: "top top",
-          end: "+=560%",
+          end: `+=${PIN}%`,
           scrub: 0.7,
           pin: true,
           anticipatePin: 1,
           onUpdate: (self) => {
-            if (self.progress > 0.14 && self.progress < CURTAIN_AT + CURTAIN_LEN / 2) html.dataset.navTheme = "dark";
+            if (self.progress > 0.14) html.dataset.navTheme = "dark";
             else delete html.dataset.navTheme;
             if (bg) bg.style.opacity = self.progress > 0.14 ? "1" : "0";
           },
@@ -76,14 +78,13 @@ export function Field() {
       tl.to(plant, { yPercent: 0, autoAlpha: 1, duration: 0.12, ease: "power2.out" }, CHAPTER[0])
         .to(plant, { yPercent: stemY, duration: 0.15, ease: "power2.inOut" }, CHAPTER[1])
         .to(plant, { yPercent: rootsY, duration: 0.06, ease: "power2.inOut" }, CHAPTER[2])
-        .fromTo(".fd-curtain", { clipPath: "inset(0 0 0 100%)" },
-          { clipPath: "inset(0 0 0 0%)", duration: CURTAIN_LEN, ease: "power2.inOut" }, CURTAIN_AT)
-        .to({}, { duration: 0.02 }, 0.98);
+        .to({}, { duration: RISE / (PIN - RISE) }, 1);
 
       ScrollTrigger.refresh();
       return () => {
         tl.scrollTrigger?.kill();
         tl.kill();
+        root.style.marginBottom = "";
         delete html.dataset.navTheme;
       };
     });
@@ -97,7 +98,7 @@ export function Field() {
 
   const plantAlt = field.chapters.map((chapter) => chapter.alt).join("; ");
   return (
-    <section ref={scope} aria-label={field.headline.join(" ")} className="fd relative z-[1] -mt-[180svh] text-cream">
+    <section ref={scope} aria-label={field.headline.join(" ")} className="fd fd-glass relative z-[1] -mt-[180svh] text-cream">
       <div className="fd-stage relative h-[100svh] min-h-[640px] overflow-hidden">
         <div aria-hidden className="fd-black absolute inset-0 bg-[#060606]" />
         <div className="fd-ask pointer-events-none absolute inset-0 z-[2] grid place-content-center px-[var(--spacing-gut)] text-center opacity-0">
@@ -127,26 +128,6 @@ export function Field() {
                 <p className="mt-4 max-w-[36ch] text-[clamp(13px,1vw,17px)] leading-[1.5] text-cream/70 max-[900px]:mt-2">{chapter.body}</p>
               </article>
             ))}
-          </div>
-        </div>
-
-        <div aria-hidden className="fd-curtain pointer-events-none absolute inset-0 z-[4] bg-white text-forest" style={{ clipPath: "inset(0 0 0 100%)" }}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={PLANT} alt="" width={1024} height={1536} loading="lazy" decoding="async" className="fd-curtain-plant absolute" />
-          <div className="absolute inset-0 mx-auto grid max-w-[var(--container-wrap)] grid-cols-[minmax(0,0.72fr)_minmax(0,2.5fr)] items-center gap-[clamp(16px,2vw,42px)] px-[var(--spacing-gut)] max-[900px]:grid-cols-1">
-            <div className="fd-logo flex justify-center max-[900px]:absolute max-[900px]:top-[clamp(28px,8svh,72px)] max-[900px]:left-[var(--spacing-gut)]">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/img/aminosan-b/aminosan-logo.webp" alt="" width={1004} height={392} loading="lazy" decoding="async" className="h-auto w-[clamp(150px,15vw,250px)] object-contain max-[900px]:w-[clamp(96px,24vw,150px)]" />
-            </div>
-            <div className="fd-main relative grid h-[min(72svh,650px)] min-h-[440px] items-center max-[900px]:h-[min(70svh,650px)] max-[900px]:min-h-[380px]">
-              {field.chapters.map((chapter, i) => (
-                <article key={chapter.kicker} className={`fd-curtain-card col-start-1 row-start-1 max-w-[min(32vw,480px)] max-[900px]:max-w-[55vw] ${i < field.chapters.length - 1 ? "invisible" : ""}`}>
-                  <p className={microCaps + " flex items-center gap-3 text-olive"}>{chapter.kicker}</p>
-                  <h3 className="mt-4 max-w-[14ch] text-[clamp(27px,3.1vw,52px)] leading-[1.02] tracking-[-0.035em] text-balance max-[900px]:mt-2 max-[900px]:text-[clamp(24px,5vw,38px)]">{chapter.heading}</h3>
-                  <p className="mt-4 max-w-[36ch] text-[clamp(13px,1vw,17px)] leading-[1.5] text-forest/70 max-[900px]:mt-2">{chapter.body}</p>
-                </article>
-              ))}
-            </div>
           </div>
         </div>
       </div>
