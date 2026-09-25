@@ -19,5 +19,5 @@ const ART: Record<string, StageArt> = {
  */
 export function Timing() {
   const { timing } = useContent().aminosanB;
-  return <SeasonDial id="window" data={timing} art={ART} />;
+  return <SeasonDial id="window" data={timing} art={ART} bigTabs />;
 }

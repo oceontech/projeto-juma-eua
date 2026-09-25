@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useRef } from "react";
+import { useRef, type CSSProperties } from "react";
 import { useContent } from "@/components/layout/LocaleProvider";
 import { SplitLines } from "@/components/motion/SplitLines";
 import type * as kmepContent from "@/content/kmep";
@@ -10,16 +10,21 @@ import { Cta, eyebrow, microCaps } from "./ui";
 
 export type StripData = typeof kmepContent.strip;
 
+const stepImages = [
+  "/img/aminosan-b/season-sprayer.webp",
+  "/img/aminosan-b/trial-strip.webp",
+  "/img/step-3-harvest.webp",
+];
+
 /**
  * K15 — como funciona a faixa de teste. É a resposta operacional para "vocês
  * não têm dado americano": transforma a ausência de dado local na oferta da
  * página. Precisa parecer generosa e concreta, não promocional.
  *
  * A aérea com a faixa testemunha fica no fundo, e os
- * três passos são cartões de vidro sobre ela, em escada. A entrada é a do
+ * três passos são cartões fotográficos sobre ela, em escada. A entrada é a do
  * Season da LP B, presa ao scroll nos dois sentidos: cada cartão sobe de mais
- * baixo quanto mais à direita, e o número anda num compasso próprio,
- * escorregando sobre o cartão.
+ * baixo quanto mais à direita.
  *
  * A LP do Aminosan® usa a mesma seção com a própria copy (`data`).
  */
@@ -35,17 +40,19 @@ export function Strip({ data }: { data?: StripData }) {
         /* Empilhados no celular, cada cartão sobe de perto: com a escada do
            desktop, o terceiro passava por cima da linha de promessa. */
         const wide = window.matchMedia("(min-width: 768px)").matches;
+        /* Parallax do fundo: a imagem é maior que a seção e desliza mais
+           devagar que o scroll, nos dois sentidos. */
+        gsap.fromTo(
+          ".st-bg",
+          { yPercent: -9 },
+          { yPercent: 9, ease: "none", scrollTrigger: { trigger: scope.current, scrub: true, start: "top bottom", end: "bottom top" } },
+        );
         gsap.utils.toArray<HTMLElement>(".st-card").forEach((card, i) => {
           const trigger = { trigger: card, scrub: 0.6 };
           gsap.fromTo(
             card,
             { y: wide ? 220 + i * 90 : 90, opacity: 0 },
             { y: 0, opacity: 1, ease: "power2.out", scrollTrigger: { ...trigger, start: "top bottom", end: "top 55%" } },
-          );
-          gsap.fromTo(
-            card.querySelector(".st-num"),
-            { y: 120, scale: 0.9 },
-            { y: 0, scale: 1, ease: "power2.out", scrollTrigger: { ...trigger, start: "top bottom", end: "top 50%" } },
           );
         });
       });
@@ -55,7 +62,7 @@ export function Strip({ data }: { data?: StripData }) {
 
   return (
     <section ref={scope} data-nav-theme="dark" className="relative isolate overflow-hidden bg-forest text-offwhite">
-      <div className="absolute inset-0 -z-20">
+      <div className="st-bg absolute inset-x-0 -top-[12%] -bottom-[12%] -z-20 will-change-transform">
         <Image src="/img/kmep/trial-strip-close-mobile.webp" alt={strip.alt} fill quality={90} sizes="100vw" className="object-cover md:hidden" />
         <Image src="/img/kmep/trial-strip-close.webp" alt={strip.alt} fill quality={90} sizes="100vw" className="hidden object-cover md:block" />
       </div>
@@ -74,17 +81,18 @@ export function Strip({ data }: { data?: StripData }) {
           {strip.steps.map((step, i) => (
             <li
               key={step.n}
-              className="st-card relative flex flex-col overflow-hidden rounded-[clamp(12px,1.05vw,20px)] border border-offwhite/15 bg-forest/60 p-[clamp(20px,2vw,32px)] backdrop-blur-md"
-              style={{ marginTop: `calc(${i} * clamp(0px, 6vw, 96px))` }}
+              className="st-card relative flex md:mt-[calc(var(--i)*clamp(0px,6vw,96px))] min-h-[clamp(320px,27vw,410px)] flex-col justify-end overflow-hidden rounded-[clamp(12px,1.05vw,20px)] border border-offwhite/15 bg-forest p-[clamp(20px,2vw,32px)]"
+              style={{ "--i": i } as CSSProperties}
             >
-              <span
-                aria-hidden
-                className="pointer-events-none absolute -top-[20%] -left-[10%] h-[60%] w-[70%] bg-[radial-gradient(closest-side,rgba(183,199,62,0.14),transparent)]"
+              <Image
+                src={stepImages[i]}
+                alt=""
+                fill
+                sizes="(min-width: 768px) 33vw, 100vw"
+                className="object-cover"
               />
-              <span className="st-num relative font-display text-[clamp(56px,6vw,108px)] leading-[0.8] tracking-[-0.05em] text-lime">
-                {step.n}
-              </span>
-              <h3 className="relative mt-[clamp(28px,3vw,56px)] text-[clamp(21px,1.7vw,28px)] leading-[1.1] tracking-[-0.02em]">
+              <span aria-hidden className="absolute inset-x-0 bottom-0 h-[60%] bg-gradient-to-t from-forest via-forest/85 to-transparent" />
+              <h3 className="relative text-[clamp(21px,1.7vw,28px)] leading-[1.1] tracking-[-0.02em]">
                 {step.title}
               </h3>
               <p className={`${microCaps} relative mt-3 text-offwhite/75`}>{step.body}</p>

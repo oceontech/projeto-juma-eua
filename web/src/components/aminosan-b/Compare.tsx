@@ -30,6 +30,9 @@ export function Compare() {
         gsap.fromTo(".cp-rule", { scaleX: 0 }, { scaleX: 1, stagger: 0.12, duration: 1.2, delay: 0.3, ease: "expo.out", scrollTrigger: once });
         gsap.fromTo(".cp-cell", { y: 18, opacity: 0 }, { y: 0, opacity: 1, stagger: 0.07, duration: 0.8, delay: 0.45, ease: "power3.out", scrollTrigger: once });
         gsap.fromTo(".cp-logo", { scale: 0.7, rotate: -6 }, { scale: 1, rotate: 0, duration: 1.2, delay: 0.2, ease: "back.out(1.6)", scrollTrigger: once });
+        gsap.utils.toArray<HTMLElement>(".cp-m").forEach((card) => {
+          gsap.fromTo(card, { y: 50, opacity: 0 }, { y: 0, opacity: 1, duration: 1, ease: "expo.out", scrollTrigger: { trigger: card, start: "top 85%", once: true } });
+        });
       });
     },
     { scope },
@@ -38,7 +41,7 @@ export function Compare() {
   const rows = compare.rows.length;
 
   return (
-    <section ref={scope} className="bg-cream py-sec text-forest">
+    <section ref={scope} className="bg-white py-sec text-forest">
       <div className="wrap">
         <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,440px)] lg:items-end lg:gap-16">
           <div>
@@ -52,8 +55,41 @@ export function Compare() {
 
         {/* A tabela. As duas colunas de fundo ocupam todas as linhas da grade
             (cabeçalho + linhas); as células se assentam por cima delas. */}
+        {/* Celular: dois cartões empilhados, com a largura toda para o texto. */}
+        <div className="mt-8 flex flex-col gap-3 md:hidden">
+          <div className="cp-m relative overflow-hidden rounded-[16px] border border-amino/15 bg-white px-4 pt-6 pb-2 shadow-[0_30px_60px_-34px_rgba(19,71,119,0.45)]">
+            <span aria-hidden className="absolute inset-x-0 top-0 h-1.5 bg-amino" />
+            <span aria-hidden className="absolute inset-x-0 top-1.5 h-[2px]" style={{ backgroundColor: AMINO.green }} />
+            <div className="relative aspect-[1004/392] w-[min(46%,170px)]">
+              <Image src="/img/aminosan-b/aminosan-logo.webp" alt={compare.columns.ours} fill sizes="230px" className="object-contain object-left" />
+            </div>
+            {compare.rows.map((row) => (
+              <div key={row.k} className="mt-3 border-t border-amino/15 pt-3">
+                <p className={`${eyebrow} text-moss`}>{row.k}</p>
+                <p className="mt-1.5 font-display text-[16px] leading-[1.15] tracking-[-0.02em]">
+                  <span aria-hidden className="mr-2 inline-grid size-[0.9em] translate-y-[0.06em] place-items-center rounded-full bg-amino text-white">
+                    <svg viewBox="0 0 16 16" className="size-[0.55em]">
+                      <path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </span>
+                  {row.ours}
+                </p>
+              </div>
+            ))}
+          </div>
+          <div className="cp-m rounded-[16px] border border-dashed border-forest/30 px-4 py-4">
+            <p className="font-display text-[16px] leading-[1.1] tracking-[-0.02em] text-forest/55">{compare.columns.theirs}</p>
+            {compare.rows.map((row) => (
+              <div key={row.k} className="mt-3 border-t border-dashed border-forest/25 pt-3">
+                <p className={`${eyebrow} text-moss/80`}>{row.k}</p>
+                <p className="mt-1.5 text-[13px] leading-[1.4] text-forest/60">{row.theirs}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
         <div
-          className="cp-table relative mt-[clamp(40px,5vw,88px)] grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)] gap-x-3 md:grid-cols-[minmax(0,0.75fr)_minmax(0,1.15fr)_minmax(0,1fr)] md:gap-x-5"
+          className="cp-table relative mt-[clamp(40px,5vw,88px)] hidden grid-cols-[minmax(0,0.75fr)_minmax(0,1.15fr)_minmax(0,1fr)] gap-x-5 md:grid"
           style={{ gridTemplateRows: `auto repeat(${rows}, auto)` }}
         >
           <div

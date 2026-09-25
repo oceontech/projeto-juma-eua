@@ -4,6 +4,7 @@ import Image from "next/image";
 import { Fragment, useLayoutEffect, useRef, useState, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
 import { SplitLines } from "@/components/motion/SplitLines";
+import { CropIcon } from "@/components/home/CropIcon";
 import { scroller } from "@/components/motion/SmoothScroll";
 import { eyebrow, fix, microCaps } from "@/components/kmep/ui";
 import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
@@ -43,6 +44,20 @@ export type StageArt = { src: string; width: number; height: number; cuts: numbe
 const ARC = { cx: 500, cy: 520, r: 420 };
 const VIEW = { w: 1000, h: 560 };
 const TICKS = Array.from({ length: 41 }, (_, i) => i / 40);
+const CROP_ICONS: Record<string, string> = {
+  citrus: "citrus",
+  fruit: "tree-fruit",
+  veg: "vegetables",
+  tomato: "tomato-pepper",
+  ornamental: "ornamentals",
+  potato: "potato",
+  onion: "onion-garlic",
+  roots: "carrot-beet",
+  corn: "corn",
+  soy: "soybean",
+  cotton: "cotton",
+  beans: "beans",
+};
 /* As gotas que saltam do estágio quando a passada chega nele. */
 const DROPS = Array.from({ length: 9 }, (_, k) => ({ deg: k * 40 + 12, dist: k % 2 ? 46 : 68 }));
 
@@ -269,19 +284,23 @@ export function SeasonDial({
   data: timing,
   art,
   id,
+  bigTabs = false,
   children,
 }: {
   data: DialData;
   art: Record<string, StageArt>;
   id?: string;
+  /* Poucas culturas (o Aminosan® tem duas): abas maiores e centradas. */
+  bigTabs?: boolean;
   children?: React.ReactNode;
 }) {
   const [active, setActive] = useState(0);
+  const [veilIndex, setVeilIndex] = useState(0);
   const crop = timing.crops[active];
   const scope = useRef<HTMLElement>(null);
   const stage = useRef<HTMLDivElement>(null);
   const veil = useRef<HTMLDivElement>(null);
-  const veilWord = useRef<HTMLSpanElement>(null);
+  const veilWord = useRef<HTMLDivElement>(null);
   const tabs = useRef<(HTMLButtonElement | null)[]>([]);
   const tablist = useRef<HTMLDivElement>(null);
   const live = useRef<Live>({ p: 0, shown: -2, lit: -1 });
@@ -332,7 +351,7 @@ export function SeasonDial({
                 live.current.p = state.p;
                 draw(root, live.current, dir, false);
               },
-              scrollTrigger: { trigger: ".tm-stage", start: "top top", end: "+=260%", scrub: 0.6, pin: true, anticipatePin: 1 },
+              scrollTrigger: { trigger: ".tm-stage", start: "top top", end: "+=260%", scrub: 1.2, pin: true },
             },
           );
           pin.current = scene.scrollTrigger ?? null;
@@ -394,10 +413,7 @@ export function SeasonDial({
     busy.current = true;
     const b = from.getBoundingClientRect();
     const at = `${b.left + b.width / 2}px ${b.top + b.height / 2}px`;
-    if (veilWord.current) {
-      veilWord.current.textContent = timing.crops[i].label;
-      veilWord.current.style.fontSize = timing.crops[i].label.length > 10 ? "clamp(40px,7vw,130px)" : "";
-    }
+    setVeilIndex(i);
     gsap.fromTo(
       veil.current,
       { clipPath: `circle(0px at ${at})` },
@@ -438,7 +454,7 @@ export function SeasonDial({
   const ends = crop.ends ?? timing.ends;
 
   return (
-    <section id={id} ref={scope} className="relative bg-cream text-forest">
+    <section id={id} ref={scope} className="relative bg-white text-forest">
       <div className="wrap pt-sec">
         <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,460px)] lg:items-end lg:gap-16">
           <div>
@@ -460,7 +476,7 @@ export function SeasonDial({
               ref={tablist}
               role="tablist"
               aria-label={timing.cropLabel}
-              className="relative mt-3 flex w-full max-w-[1180px] items-baseline gap-x-[clamp(16px,2vw,34px)] gap-y-2 overflow-x-auto px-4 [scrollbar-width:none] max-lg:[mask-image:linear-gradient(90deg,transparent,#000_8%,#000_92%,transparent)] lg:flex-wrap lg:justify-center lg:overflow-visible [&::-webkit-scrollbar]:hidden"
+              className={`relative mt-3 flex w-full max-w-[1180px] items-center gap-x-[clamp(12px,1.5vw,24px)] gap-y-2 overflow-x-auto px-4 [scrollbar-width:none] ${bigTabs ? "justify-center" : "max-lg:[mask-image:linear-gradient(90deg,transparent,#000_8%,#000_92%,transparent)]"} lg:flex-wrap lg:justify-center lg:overflow-visible [&::-webkit-scrollbar]:hidden`}
             >
               {timing.crops.map((c, i) => {
                 const on = i === active;
@@ -482,11 +498,12 @@ export function SeasonDial({
                       tabs.current[n]?.focus();
                       choose(n, tabs.current[n]);
                     }}
-                    className={`group relative shrink-0 pb-2 font-display text-[clamp(22px,2.1vw,36px)] leading-none tracking-[-0.03em] whitespace-nowrap transition-[color,opacity] duration-500 ${
+                    className={`group relative inline-flex shrink-0 items-center ${bigTabs ? "gap-2.5 text-[clamp(30px,8.4vw,52px)] lg:text-[clamp(36px,3vw,56px)]" : "gap-1.5 text-[clamp(21px,1.9vw,32px)]"} pb-2 font-display leading-none tracking-[-0.03em] whitespace-nowrap transition-[color,opacity] duration-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest ${
                       on ? "text-forest" : "text-transparent opacity-50 [-webkit-text-stroke:1px_var(--color-forest)] hover:opacity-100"
                     }`}
                   >
-                    {c.label}
+                    <CropIcon id={CROP_ICONS[c.id]} className={`shrink-0 object-contain ${bigTabs ? "size-[1.05em] lg:size-11" : "size-7"}`} />
+                    <span>{c.label}</span>
                     <span
                       aria-hidden
                       className={`absolute inset-x-0 bottom-0 h-[3px] rounded-full bg-lime transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
@@ -712,7 +729,14 @@ export function SeasonDial({
               className="pointer-events-none fixed inset-0 z-[90] flex items-center justify-center bg-forest px-4 text-center text-cream"
               style={{ clipPath: "circle(0px at 50% 50%)" }}
             >
-              <span ref={veilWord} className="font-display text-[clamp(52px,13vw,240px)] leading-none tracking-[-0.05em] opacity-0" />
+              <div
+                ref={veilWord}
+                className="flex max-w-full flex-col items-center justify-center gap-[0.18em] font-display text-[clamp(52px,13vw,240px)] leading-none tracking-[-0.05em] opacity-0"
+                style={{ fontSize: timing.crops[veilIndex].label.length > 10 ? "clamp(40px,7vw,130px)" : undefined }}
+              >
+                <span>{timing.crops[veilIndex].label}</span>
+                <CropIcon id={CROP_ICONS[timing.crops[veilIndex].id]} loading="eager" className="size-[clamp(58px,0.7em,112px)] shrink-0 object-contain" />
+              </div>
             </div>,
             portal,
           )}

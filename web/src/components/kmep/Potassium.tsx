@@ -346,7 +346,7 @@ export function Potassium() {
   };
 
   return (
-    <section ref={scope} className="relative overflow-clip bg-cream text-forest">
+    <section ref={scope} className="relative overflow-clip bg-white text-forest">
       <div className="wrap grid gap-6 pt-sec lg:grid-cols-[minmax(0,1fr)_minmax(0,440px)] lg:items-end lg:gap-16">
         <div>
           <p className={`${eyebrow} text-moss`}>{potassium.label}</p>

@@ -124,8 +124,8 @@ export function Hero({ variant = "a" }: { variant?: "a" | "b" }) {
   );
 
   return (
-    <div ref={scope} className="bg-cream">
-      <section className="relative flex h-[100svh] min-h-[600px] flex-col overflow-hidden bg-[#f3e1d1] text-ink">
+    <div ref={scope} className="bg-white">
+      <section className="relative flex h-[100svh] min-h-[600px] flex-col overflow-hidden bg-white text-ink">
         {/* Uma foto por formato, no mesmo corte e no mesmo recorte da LP B
             (as duas fotos do KMEP nascem no mesmo tamanho): pelo pé, e
             no notebook (861–1599px) a janela é mais larga que a foto, e o

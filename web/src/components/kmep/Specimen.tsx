@@ -98,7 +98,7 @@ const FOCUS: [number, number] = [-0.005, -0.16];
 
 /* As cores da cena. Os destaques moram aqui, e não no CSS, porque o shader e
    a legenda do painel precisam ser o mesmo número. */
-const PAPER = "#F4F2EC";
+const PAPER = "#FFFFFF";
 /* Lima escurecido: o `lime` do tema some sobre o papel. O cobre é o `kmep`. */
 const TONES: Record<number, string> = { 1: "#7F9A12", 2: "#CB351B" };
 

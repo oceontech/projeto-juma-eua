@@ -32,7 +32,7 @@ export function Fit() {
   );
 
   return (
-    <section ref={scope} className="bg-cream pb-sec text-forest">
+    <section ref={scope} className="bg-white pb-sec text-forest">
       <div className="wrap">
         <div className="relative isolate overflow-hidden rounded-[clamp(20px,2vw,36px)] bg-night px-[clamp(20px,3.6vw,64px)] py-[clamp(32px,4.2vw,68px)] text-offwhite ring-1 ring-offwhite/10">
           <div aria-hidden className="pointer-events-none absolute -top-[16%] -right-[10%] z-0 size-[clamp(240px,30vw,460px)] opacity-90">

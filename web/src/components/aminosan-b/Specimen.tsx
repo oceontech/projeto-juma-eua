@@ -98,7 +98,7 @@ const FOCUS: [number, number] = [-0.005, -0.16];
 
 /* As cores da cena. Os destaques moram aqui, e não no CSS, porque o shader e
    a legenda do painel precisam ser o mesmo número. */
-const PAPER = "#F4F2EC";
+const PAPER = "#FFFFFF";
 const TONES: Record<number, string> = { 1: "#4F8A1F", 2: "#C9731E" };
 
 const rgb = (hex: string): [number, number, number] => [

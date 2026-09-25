@@ -176,7 +176,7 @@ export function Assembly() {
           still: "(prefers-reduced-motion: reduce)",
         },
         (ctx) => {
-          const { desktop, tablet, still } = ctx.conditions as { desktop: boolean; tablet: boolean; still: boolean };
+          const { desktop, tablet, phone, still } = ctx.conditions as { desktop: boolean; tablet: boolean; phone: boolean; still: boolean };
           if (still) {
             build(gsap.timeline({ paused: true }), window.matchMedia("(min-width: 768px)").matches ? "scaleX" : "scaleY").progress(1);
             return;
@@ -186,11 +186,13 @@ export function Assembly() {
               defaults: { ease: "power2.out" },
               scrollTrigger: desktop
                 ? { trigger: ".as-stage", start: "top top", end: "+=110%", scrub: 0.6, pin: true, anticipatePin: 1 }
-                : { trigger: ".as-routes", start: "top 80%", end: "bottom 55%", scrub: 0.6 },
+                : phone
+                  ? { trigger: ".as-stage", start: "top top", end: "+=180%", scrub: 0.8, pin: true, anticipatePin: 1 }
+                  : { trigger: ".as-routes", start: "top 80%", end: "bottom 55%", scrub: 0.6 },
             }),
             desktop || tablet ? "scaleX" : "scaleY",
           );
-          if (desktop) {
+          if (desktop || phone) {
             timeline.fromTo(".as-product", { scale: 0.6, rotate: -6 }, { scale: 1, rotate: 0, duration: timeline.duration(), ease: "none" }, 0);
           } else {
             gsap.fromTo(".as-product", { scale: 0.6 }, {
@@ -338,7 +340,7 @@ export function Assembly() {
   };
 
   return (
-    <section id="assembly" ref={scope} className="relative overflow-clip bg-cream text-forest">
+    <section id="assembly" ref={scope} className="relative overflow-clip bg-white text-forest">
       <div className="wrap grid gap-6 pt-sec lg:grid-cols-[minmax(0,1fr)_minmax(0,440px)] lg:items-end lg:gap-16">
         <div>
           <p className={`${eyebrow} text-moss`}>{assembly.label}</p>
@@ -353,14 +355,14 @@ export function Assembly() {
           conversão por cartão. É fisiologia da planta, não efeito do produto. */}
       <div className="wrap mt-[clamp(40px,5vw,80px)]">
         <p className={`${eyebrow} text-moss`}>{steps.label}</p>
-        <ol className="as-steps mt-5 grid gap-3 md:grid-cols-3 md:gap-4">
+        <ol className="as-steps mt-5 grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-4">
           {steps.items.map((item, i) => (
             <li
               key={item.title}
-              className="as-step relative flex flex-col overflow-hidden rounded-[clamp(12px,1.05vw,20px)] border border-forest/12 bg-forest/[0.035] p-[clamp(18px,1.8vw,28px)]"
+              className="as-step relative flex flex-col overflow-hidden rounded-[clamp(12px,1.05vw,20px)] border border-forest/12 bg-forest/[0.035] p-[clamp(14px,1.8vw,28px)] max-md:first:col-span-2"
             >
               <p className={`${microCaps} text-[10px] text-moss`}>{String(i + 1).padStart(2, "0")}</p>
-              <p className="as-formula mt-[clamp(20px,2.4vw,40px)] font-display text-[clamp(24px,2.2vw,38px)] leading-none tracking-[-0.03em] whitespace-nowrap">
+              <p className="as-formula mt-[clamp(20px,2.4vw,40px)] font-display text-[clamp(20px,2.2vw,38px)] leading-[1.1] tracking-[-0.03em] md:whitespace-nowrap">
                 <Formula text={item.formula} />
               </p>
               <h3 className="mt-[clamp(20px,2.4vw,40px)] border-t border-forest/12 pt-4 text-[clamp(21px,1.6vw,27px)] leading-[1.1] tracking-[-0.02em]">

@@ -3108,7 +3108,7 @@ html[data-proof-overlap] .expertise-layer--dark .expertise-bg {
   margin-inline-start: calc(var(--side) * 76px);
   /* Um fundo de papel: a etiqueta pousa sobre os pontos do desenho e, sem ele,
      o texto se mistura com eles. */
-  background: color-mix(in srgb, #F4F2EC 88%, transparent);
+  background: #fff;
   border-radius: 3px;
   translate: calc((var(--side) - 1) * 50%) 0;
   opacity: var(--depth);
@@ -3214,9 +3214,17 @@ html[data-proof-overlap] .expertise-layer--dark .expertise-bg {
     height: auto;
     min-height: 0;
     align-items: start;
-    padding: 18px 20px 20px;
+    padding: calc(18px + clamp(96px, 24vw, 150px) * 0.39 + 14px) 20px 20px;
     border-radius: 16px;
     background: var(--color-forest);
+  }
+
+  /* A logo mora dentro do card: fica no topo dele, acima do kicker. */
+  .fd-layout .fd-product,
+  .fd-curtain .fd-logo {
+    top: calc(clamp(170px, 25svh, 230px) + 18px);
+    left: calc(var(--spacing-gut) + 20px);
+    z-index: 1;
   }
 
   .fd-card,

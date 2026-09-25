@@ -38,7 +38,7 @@ export function Label() {
   );
 
   return (
-    <section ref={scope} className="bg-cream pt-sec pb-[clamp(56px,7vw,120px)] text-forest">
+    <section ref={scope} className="bg-white pt-sec pb-[clamp(56px,7vw,120px)] text-forest">
       <div className="wrap">
         <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,440px)] lg:items-end lg:gap-16">
           <div>

@@ -13,15 +13,23 @@ const ICONS = new Set([
   "corn",
   "soybean",
   "cotton",
+  "tree-fruit",
+  "tomato-pepper",
+  "potato",
+  "onion-garlic",
+  "carrot-beet",
+  "beans",
 ]);
 
 /** Studio cutout; decorative because the crop name appears alongside it. */
 export function CropIcon({
   id,
   className,
+  loading = "lazy",
 }: {
   id: string;
   className?: string;
+  loading?: "eager" | "lazy";
 }) {
   if (!ICONS.has(id)) return null;
 
@@ -33,7 +41,7 @@ export function CropIcon({
       width={96}
       height={96}
       className={className}
-      loading="lazy"
+      loading={loading}
       decoding="async"
       // Already sized for the 48 px maximum display size at 2x density.
       unoptimized

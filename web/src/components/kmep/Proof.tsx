@@ -98,7 +98,7 @@ export function Proof() {
   const pct = (v: number) => `${(v / scale.max) * 100}%`;
 
   return (
-    <section id="proof" ref={scope} className="bg-cream py-sec text-night">
+    <section id="proof" ref={scope} className="bg-white py-sec text-night">
       <div className="wrap">
         <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,460px)] lg:items-end lg:gap-16">
           <div>
@@ -147,7 +147,7 @@ export function Proof() {
 
               <dl className="absolute inset-0 grid grid-cols-2 items-end gap-[clamp(10px,3vw,48px)] px-[clamp(6px,2vw,32px)] lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,0.8fr)]">
                 {/* Testemunha. */}
-                <div className="pr-bar relative flex flex-col bg-[#DAD5C6]" style={{ height: pct(pair.check.value) }}>
+                <div className="pr-bar relative flex flex-col border border-night/20 bg-white" style={{ height: pct(pair.check.value) }}>
                   <div className="p-[clamp(10px,1.4vw,24px)]">
                     <dt className={`${microCaps} text-[10px] text-night/75`}>{pair.check.label}</dt>
                     <dd className="mt-3 font-display text-[clamp(32px,5.6vw,104px)] leading-[0.85] tracking-[-0.05em]">
@@ -228,7 +228,7 @@ export function Proof() {
 
           <dl className="mt-6 grid grid-cols-2 gap-px overflow-hidden border border-night/15 bg-night/15 lg:grid-cols-4">
             {table.facts.map((fact) => (
-              <div key={fact.k} className="pr-tile relative flex flex-col gap-5 bg-cream p-[clamp(16px,2vw,28px)]">
+              <div key={fact.k} className="pr-tile relative flex flex-col gap-5 bg-white p-[clamp(16px,2vw,28px)]">
                 <span className="absolute top-[clamp(16px,2vw,28px)] right-[clamp(16px,2vw,28px)] grid size-10 place-items-center rounded-full bg-night text-kmep-light">
                   <FactIcon name={fact.icon} />
                 </span>
@@ -259,7 +259,7 @@ export function Proof() {
               {table.original.rows.map((row, i) => (
                 <div
                   key={row.k}
-                  className={`pr-tile flex items-center justify-between gap-3 px-4 py-3 ${i === 0 ? "bg-night text-cream" : i === 2 ? "bg-kmep text-cream" : "bg-[#E4E0D3]"}`}
+                  className={`pr-tile flex items-center justify-between gap-3 px-4 py-3 ${i === 0 ? "bg-night text-cream" : i === 2 ? "bg-kmep text-cream" : "bg-white"}`}
                 >
                   <dt className={`${microCaps} text-[10px] text-night/65`}>{row.k}</dt>
                   <dd className="flex items-center gap-2 font-display text-[clamp(14px,1.1vw,17px)] tracking-[-0.01em] whitespace-nowrap">

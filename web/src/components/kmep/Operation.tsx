@@ -43,7 +43,7 @@ export function Operation() {
   );
 
   return (
-    <section ref={scope} className="bg-cream py-sec text-forest">
+    <section ref={scope} className="bg-white py-sec text-forest">
       <div className="wrap">
         <SplitLines className="max-w-[14ch] text-[clamp(34px,3.8vw,68px)] leading-[0.98] tracking-[-0.03em] text-balance">
           {operation.heading}

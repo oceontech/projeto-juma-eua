@@ -121,7 +121,7 @@ export function Hero() {
   return (
     <section
       ref={scope}
-      className="relative flex h-[100svh] min-h-[600px] flex-col overflow-hidden bg-[#f3ebdd] text-ink"
+      className="relative flex h-[100svh] min-h-[600px] flex-col overflow-hidden bg-white text-ink"
     >
       {/* Duas fotos por camada, uma por formato. No notebook (861–1599px) a
           janela é mais larga que a foto, e o corte pelo pé subia a bombona

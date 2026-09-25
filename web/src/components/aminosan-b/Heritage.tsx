@@ -58,11 +58,12 @@ export function Heritage() {
       mm.add(
         {
           desktop: "(min-width: 1024px) and (prefers-reduced-motion: no-preference)",
-          phone: "(max-width: 1023px) and (prefers-reduced-motion: no-preference)",
+          phone: "(max-width: 767px) and (prefers-reduced-motion: no-preference)",
+          tablet: "(min-width: 768px) and (max-width: 1023px) and (prefers-reduced-motion: no-preference)",
           still: "(prefers-reduced-motion: reduce)",
         },
         (ctx) => {
-          const { desktop, still } = ctx.conditions as { desktop: boolean; still: boolean };
+          const { desktop, phone, still } = ctx.conditions as { desktop: boolean; phone: boolean; still: boolean };
           if (still) {
             paint(1);
             return;
@@ -76,8 +77,8 @@ export function Heritage() {
               p: 1,
               ease: "none",
               onUpdate: () => paint(state.p),
-              scrollTrigger: desktop
-                ? { trigger: ".hr-stage", start: "top top", end: "+=170%", scrub: 0.5, pin: true, anticipatePin: 1 }
+              scrollTrigger: desktop || phone
+                ? { trigger: ".hr-stage", start: "top top", end: phone ? "+=200%" : "+=170%", scrub: 0.6, pin: true, anticipatePin: 1 }
                 : { trigger: ".hr-scene", start: "top 80%", end: "bottom 45%", scrub: 0.5 },
             },
           );
@@ -93,23 +94,23 @@ export function Heritage() {
   );
 
   return (
-    <section ref={scope} className="relative overflow-clip bg-cream text-forest">
+    <section ref={scope} className="relative overflow-clip bg-white text-forest">
       {/* O creme mora no palco, e não só na seção: o pin cria um contexto de
           empilhamento próprio, e o multiply do frasco só enxerga o fundo que
           estiver dentro dele. */}
-      <div className="hr-stage flex min-h-[100svh] flex-col justify-center bg-cream py-[clamp(72px,10svh,120px)]">
-        <div className="wrap grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.9fr)_minmax(0,0.85fr)] lg:items-center lg:gap-[clamp(24px,3vw,56px)]">
+      <div className="hr-stage flex min-h-[100svh] flex-col justify-center bg-white py-[clamp(72px,10svh,120px)] max-md:justify-start max-md:pt-[84px] max-md:pb-6">
+        <div className="wrap grid gap-10 max-md:grid-cols-[minmax(0,1fr)_auto] max-md:items-start max-md:gap-x-4 max-md:gap-y-7 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.9fr)_minmax(0,0.85fr)] lg:items-center lg:gap-[clamp(24px,3vw,56px)]">
           <div>
             <p className={`${eyebrow} text-moss`}>{heritage.label}</p>
-            <SplitLines className="mt-4 text-[clamp(36px,3.6vw,68px)] leading-[0.95] tracking-[-0.04em] text-balance">
+            <SplitLines className="mt-3 text-[clamp(28px,3.6vw,68px)] leading-[0.95] tracking-[-0.04em] text-balance">
               {heritage.heading.map((line) => (
                 <span key={line} className="block">
                   {line}
                 </span>
               ))}
             </SplitLines>
-            <p className="mt-6 max-w-[46ch] text-[15px] leading-[1.6] text-forest/75">{heritage.body}</p>
-            <div className="hr-founder mt-7 flex items-center gap-4">
+            <p className="mt-6 max-w-[46ch] max-md:hidden text-[15px] leading-[1.6] text-forest/75">{heritage.body}</p>
+            <div className="hr-founder mt-7 flex max-md:hidden items-center gap-4">
               <Image
                 src="/img/julio-matino.jpg"
                 alt={heritage.founder.alt}
@@ -125,25 +126,21 @@ export function Heritage() {
           </div>
 
           {/* O frasco e o ano. */}
-          <div className="hr-scene relative mx-auto w-full max-w-[420px]">
-            <span
-              aria-hidden
-              className="absolute top-1/2 left-1/2 size-[92%] -translate-1/2 rounded-full bg-[radial-gradient(closest-side,rgba(183,199,62,0.3),transparent)]"
-            />
+          <div className="hr-scene relative mx-auto w-full max-w-[420px] max-md:mx-0 max-md:mb-7 max-md:w-auto">
             <div
               role="img"
               aria-label={heritage.bottleAlt}
-              className="hr-bottle relative mx-auto aspect-[582/800] w-[min(72vw,340px)] bg-no-repeat mix-blend-multiply lg:w-[min(24vw,360px)]"
+              className="hr-bottle relative mx-auto aspect-[582/800] w-[min(30vw,130px)] bg-no-repeat md:w-[min(72vw,340px)] mix-blend-multiply lg:w-[min(24vw,360px)]"
               style={{ backgroundImage: `url(${SPRITE})`, backgroundSize: `100% ${FRAMES * 100}%`, backgroundPosition: "0 0%" }}
             />
-            <p className="absolute -bottom-6 left-1/2 flex -translate-x-1/2 items-baseline gap-3 lg:-bottom-10">
+            <p className="absolute -bottom-7 left-1/2 flex -translate-x-1/2 items-baseline gap-3 lg:-bottom-10">
               <span className={`${microCaps} text-[10px] text-moss`}>{heritage.yearLabel}</span>
-              <span className="hr-year font-display text-[clamp(44px,4.4vw,80px)] leading-none tracking-[-0.05em] tabular-nums">{FROM}</span>
+              <span className="hr-year font-display text-[clamp(30px,4.4vw,80px)] leading-none tracking-[-0.05em] tabular-nums">{FROM}</span>
             </p>
           </div>
 
           {/* A linha do tempo: o fio se enche com o scroll e cada marco acende. */}
-          <ol className="relative grid gap-[clamp(18px,3svh,32px)] pl-8">
+          <ol className="relative grid gap-[clamp(18px,3svh,32px)] pl-8 max-md:col-span-2 max-md:gap-3.5">
             <span aria-hidden className="absolute top-2 bottom-2 left-[5px] w-[2px] bg-forest/12">
               <span className="hr-fill absolute inset-0 origin-top scale-y-0 bg-lime" />
             </span>
@@ -154,17 +151,17 @@ export function Heritage() {
               >
                 <span
                   aria-hidden
-                  className="absolute top-[0.55em] -left-8 size-3 rounded-full border-2 border-forest/30 bg-cream transition-colors duration-500 group-[.is-on]:border-forest group-[.is-on]:bg-lime"
+                  className="absolute top-[0.55em] -left-8 size-3 rounded-full border-2 border-forest/30 bg-white transition-colors duration-500 group-[.is-on]:border-forest group-[.is-on]:bg-lime"
                 />
-                <p className="font-display text-[clamp(22px,1.9vw,32px)] leading-none tracking-[-0.03em]">{item.year}</p>
-                <p className={`${microCaps} mt-2 text-[10px] text-moss`}>{item.title}</p>
-                <p className="mt-1.5 max-w-[36ch] text-[14px] leading-[1.5] text-forest/75">{item.body}</p>
+                <p className="font-display text-[clamp(20px,1.9vw,32px)] leading-none tracking-[-0.03em]">{item.year}</p>
+                <p className={`${microCaps} mt-1.5 text-[10px] text-moss`}>{item.title}</p>
+                <p className="mt-1 max-w-[36ch] text-[12px] leading-[1.4] md:mt-1.5 md:text-[14px] md:leading-[1.5] text-forest/75">{item.body}</p>
               </li>
             ))}
           </ol>
         </div>
 
-        <div className="wrap mt-[clamp(40px,7svh,88px)]">
+        <div className="wrap mt-[clamp(40px,7svh,88px)] max-md:hidden">
           <p className="border-t border-forest/15 pt-5 font-display text-[clamp(20px,2vw,34px)] leading-[1.1] tracking-[-0.025em] text-forest/80">
             {heritage.tagline}
           </p>

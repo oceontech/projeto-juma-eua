@@ -130,11 +130,11 @@ export function Field() {
           </div>
         </div>
 
-        <div aria-hidden className="fd-curtain pointer-events-none absolute inset-0 z-[4] bg-cream text-forest" style={{ clipPath: "inset(0 0 0 100%)" }}>
+        <div aria-hidden className="fd-curtain pointer-events-none absolute inset-0 z-[4] bg-white text-forest" style={{ clipPath: "inset(0 0 0 100%)" }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={PLANT} alt="" width={1024} height={1536} loading="lazy" decoding="async" className="fd-curtain-plant absolute" />
           <div className="absolute inset-0 mx-auto grid max-w-[var(--container-wrap)] grid-cols-[minmax(0,0.72fr)_minmax(0,2.5fr)] items-center gap-[clamp(16px,2vw,42px)] px-[var(--spacing-gut)] max-[900px]:grid-cols-1">
-            <div className="flex justify-center max-[900px]:absolute max-[900px]:top-[clamp(28px,8svh,72px)] max-[900px]:left-[var(--spacing-gut)]">
+            <div className="fd-logo flex justify-center max-[900px]:absolute max-[900px]:top-[clamp(28px,8svh,72px)] max-[900px]:left-[var(--spacing-gut)]">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src="/img/aminosan-b/aminosan-logo.webp" alt="" width={1004} height={392} loading="lazy" decoding="async" className="h-auto w-[clamp(150px,15vw,250px)] object-contain max-[900px]:w-[clamp(96px,24vw,150px)]" />
             </div>

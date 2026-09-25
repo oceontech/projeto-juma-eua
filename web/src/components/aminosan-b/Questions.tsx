@@ -32,14 +32,15 @@ export function Questions() {
 
         gsap.to(el, {
           x: () => -distance(),
-          ease: "none",
+          /* Ease nas pontas: o trilho arranca e freia devagar, então a trava
+             do pin quase não se percebe. */
+          ease: "power1.inOut",
           scrollTrigger: {
             trigger: ".qs-stage",
             start: "top top",
             end: () => `+=${distance() + window.innerHeight * 0.4}`,
-            scrub: 0.6,
+            scrub: 1.2,
             pin: true,
-            anticipatePin: 1,
             invalidateOnRefresh: true,
           },
         });
@@ -88,7 +89,7 @@ export function Questions() {
                       className="object-cover"
                     />
                   </div>
-                  <div className="absolute right-0 bottom-0 flex h-[64%] w-[76%] flex-col rounded-[16px] bg-cream p-5 text-forest shadow-[0_18px_40px_-18px_rgba(22,38,27,0.28)]">
+                  <div className="absolute right-0 bottom-0 flex h-[64%] w-[76%] flex-col rounded-[16px] bg-white p-5 text-forest shadow-[0_18px_40px_-18px_rgba(22,38,27,0.28)]">
                     <span className="font-display text-[11px] tracking-[0.16em] text-moss">
                       {String(i + 1).padStart(2, "0")}
                     </span>

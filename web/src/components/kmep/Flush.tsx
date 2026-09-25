@@ -11,7 +11,7 @@
  * cartão do trabalho 2 em TwoJobs.tsx.
  */
 
-import { useRef } from "react";
+import { useRef, type CSSProperties } from "react";
 import { useContent } from "@/components/layout/LocaleProvider";
 import { SplitLines } from "@/components/motion/SplitLines";
 import { gsap, useGSAP } from "@/lib/gsap";
@@ -124,8 +124,8 @@ export function Flush() {
         {flush.stages.map((stage, i) => (
           <li
             key={stage.n}
-            className={`fl-panel flex flex-col rounded-[clamp(12px,1.05vw,20px)] bg-linear-[122.93deg,var(--color-night-warm)_2.4%,var(--color-night-deep)_60.23%] p-[clamp(16px,1.6vw,24px)] ${i === 2 ? "border border-kmep/50" : "border border-transparent"}`}
-            style={{ marginTop: `calc(${i} * clamp(0px, 4vw, 56px))` }}
+            className={`fl-panel flex flex-col md:mt-[calc(var(--i)*clamp(0px,4vw,56px))] rounded-[clamp(12px,1.05vw,20px)] bg-linear-[122.93deg,var(--color-night-warm)_2.4%,var(--color-night-deep)_60.23%] p-[clamp(16px,1.6vw,24px)] ${i === 2 ? "border border-kmep/50" : "border border-transparent"}`}
+            style={{ "--i": i } as CSSProperties}
           >
             <div className="fl-in flex flex-col">
               <svg viewBox="0 0 360 300" aria-hidden className="w-full">

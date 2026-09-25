@@ -201,10 +201,10 @@ export function Cell() {
     <section
       id="inside-leaf"
       ref={scope}
-      className="relative overflow-clip bg-[#E9EBCB] text-forest lg:bg-[linear-gradient(180deg,#EEF0D8_0%,#E3E5BC_55%,#D4D9A6_100%)]"
+      className="relative overflow-clip bg-white text-forest"
     >
-      <span aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-[clamp(120px,18vw,260px)] bg-gradient-to-b from-cream to-cream/0" />
-      <span aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-[clamp(120px,18vw,260px)] bg-gradient-to-t from-cream to-cream/0" />
+      <span aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-[clamp(120px,18vw,260px)] bg-gradient-to-b from-white to-white/0" />
+      <span aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-[clamp(120px,18vw,260px)] bg-gradient-to-t from-white to-white/0" />
       {BUBBLES.map((b, i) => (
         <span
           key={i}
@@ -222,12 +222,12 @@ export function Cell() {
             acima. Embaixo, um esmaecimento na mesma cor dissolve o texto
             antes que ele encoste na lente. Por isso o fundo da seção é liso
             no celular — um degradê mudaria de tom sob uma faixa parada. */}
-        <div className="sticky top-0 z-10 -mx-[var(--spacing-gut)] self-start bg-[#E9EBCB] pt-[clamp(40px,5svh,52px)] pb-3 lg:order-last lg:mx-0 lg:bg-transparent lg:p-0">
+        <div className="sticky top-0 z-10 -mx-[var(--spacing-gut)] self-start bg-white pt-[clamp(40px,5svh,52px)] pb-3 lg:order-last lg:mx-0 lg:bg-transparent lg:p-0">
           <span
             aria-hidden
-            className="pointer-events-none absolute inset-x-0 top-full h-[clamp(84px,12svh,120px)] bg-[linear-gradient(180deg,#E9EBCB_0%,rgba(233,235,203,0.92)_40%,rgba(233,235,203,0)_100%)] lg:hidden"
+            className="pointer-events-none absolute inset-x-0 top-full h-[clamp(84px,12svh,120px)] bg-[linear-gradient(180deg,#FFFFFF_0%,rgba(255,255,255,0.92)_40%,rgba(255,255,255,0)_100%)] lg:hidden"
           />
-          <div className="flex h-[min(44svh,88vw)] items-center justify-center lg:h-[100svh]">
+          <div className="flex h-[min(32svh,66vw)] items-center justify-center lg:h-[100svh]">
             <div className="cl-lens relative aspect-square h-full max-h-[min(560px,80svh)]">
               <canvas
                 ref={canvas}

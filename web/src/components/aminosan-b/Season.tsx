@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useRef } from "react";
+import { useRef, type CSSProperties } from "react";
 import { useContent } from "@/components/layout/LocaleProvider";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { SplitLines } from "@/components/motion/SplitLines";
@@ -48,7 +48,7 @@ export function Season() {
   );
 
   return (
-    <section id="season" ref={scope} className="overflow-hidden bg-cream pt-[clamp(72px,8vw,124px)] pb-[clamp(96px,12vw,200px)] text-forest">
+    <section id="season" ref={scope} className="overflow-hidden bg-white pt-[clamp(72px,8vw,124px)] pb-[clamp(96px,12vw,200px)] text-forest">
       <div className="wrap grid gap-6 lg:grid-cols-[1fr_380px] lg:items-end">
         <SplitLines className="text-[clamp(34px,3.8vw,68px)] leading-[0.98] tracking-[-0.03em] text-forest">
           {season.heading.map((line) => (
@@ -60,19 +60,19 @@ export function Season() {
         <p className={`${microCaps} text-forest/65`}>{season.intro}</p>
       </div>
 
-      <div className="wrap mt-[clamp(120px,14vw,200px)] grid gap-[clamp(120px,16vw,150px)] md:grid-cols-3 md:items-start md:gap-5">
+      <div className="wrap mt-[clamp(120px,14vw,200px)] grid gap-[112px] md:gap-[clamp(120px,16vw,150px)] md:grid-cols-3 md:items-start md:gap-5">
         {season.cards.map((card, i) => (
           <article
             key={card.tag}
-            className="ss-card group relative flex flex-col rounded-[clamp(12px,1.05vw,20px)] bg-linear-[122.93deg,var(--color-night-warm)_2.4%,var(--color-night-deep)_60.23%] px-5 pt-[clamp(150px,13vw,210px)] pb-6 text-cream"
-            style={{ marginTop: `calc(${i} * clamp(0px, 7vw, 110px))` }}
+            className="ss-card group relative flex flex-col md:mt-[calc(var(--i)*clamp(0px,7vw,110px))] rounded-[clamp(12px,1.05vw,20px)] bg-linear-[122.93deg,var(--color-night-warm)_2.4%,var(--color-night-deep)_60.23%] px-5 pt-[clamp(120px,13vw,210px)] pb-6 text-cream"
+            style={{ "--i": i } as CSSProperties}
           >
             {/* Vinheta verde no canto, recortada pelo arredondamento do card
                 (o card em si não corta, porque a imagem vaza pelo topo). */}
             <span aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden rounded-[inherit]">
               <span className="absolute -top-[14%] -left-[6%] h-[55%] w-[60%] bg-[radial-gradient(closest-side,rgba(183,199,62,0.16),transparent)]" />
             </span>
-            <div className="ss-cut pointer-events-none absolute -top-[clamp(120px,10vw,170px)] left-4 h-[clamp(260px,22vw,360px)] w-[70%]">
+            <div className="ss-cut pointer-events-none absolute -top-[clamp(100px,10vw,170px)] left-4 h-[clamp(220px,22vw,360px)] w-[70%]">
               <Image
                 src={card.image}
                 alt={card.alt}

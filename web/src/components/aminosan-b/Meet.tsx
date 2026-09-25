@@ -8,7 +8,7 @@ export function Meet() {
   const [pour, mix, drop, ready, leaf] = meet.stages;
 
   return (
-    <section id="meet" aria-labelledby="meet-heading" className="bg-cream py-[clamp(72px,8vw,124px)] text-forest xl:py-10">
+    <section id="meet" aria-labelledby="meet-heading" className="bg-white py-[clamp(72px,8vw,124px)] text-forest xl:py-10">
       <div className="wrap">
         <div className="mb-9 md:mb-12 xl:mb-6">
           <h2 id="meet-heading" className="max-w-[13ch] text-[clamp(42px,5.2vw,82px)] leading-[0.98] tracking-[-0.04em]">
