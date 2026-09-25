@@ -49,12 +49,13 @@ function Spec() {
     () => {
       const mm = gsap.matchMedia();
       mm.add("(prefers-reduced-motion: no-preference)", () => {
-        /* A bombona sobe endireitando, os anéis abrem e os fios das duas
+        /* A bombona sobe endireitando, os anéis surgem (só opacidade: escalar a
+           camada que gira a rasteriza pequena e serrilha as bordas) e os fios das duas
            notas se desenham até ela. */
         gsap
           .timeline({ scrollTrigger: { trigger: ".tm-spec", start: "top 85%", end: "center 55%", scrub: 0.8 } })
           .fromTo(".tm-jug", { y: 90, rotate: -8, scale: 0.86 }, { y: 0, rotate: 0, scale: 1, ease: "power2.out" }, 0)
-          .fromTo(".tm-orbit", { scale: 0.4, opacity: 0 }, { scale: 1, opacity: 1, stagger: 0.12, ease: "power2.out" }, 0)
+          .fromTo(".tm-orbit", { opacity: 0 }, { opacity: 1, stagger: 0.12, ease: "power2.out" }, 0)
           .fromTo(".tm-call", { opacity: 0, x: (i: number) => (i ? 48 : -48) }, { opacity: 1, x: 0, ease: "power2.out" }, 0.2)
           .fromTo(".tm-lead", { scaleX: 0 }, { scaleX: 1, ease: "power2.inOut" }, 0.45)
           .fromTo(".tm-dot", { scale: 0 }, { scale: 1, ease: "back.out(3)" }, 0.8);

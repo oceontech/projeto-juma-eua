@@ -470,13 +470,13 @@ export function SeasonDial({
           {/* O alternador: as culturas em corpo grande, a apagada só no contorno, centradas na tela. */}
           <div className="flex flex-col items-center text-center">
             <p className={`${eyebrow} text-[10px] text-moss`}>{timing.cropLabel}</p>
-            {/* Onze culturas: no desktop quebram em duas linhas centradas; no
-                celular correm numa faixa só, com rolagem lateral. */}
+            {/* Todas as culturas à vista, quebrando em linhas centradas, sem
+                rolagem lateral. */}
             <div
               ref={tablist}
               role="tablist"
               aria-label={timing.cropLabel}
-              className={`relative mt-3 flex w-full max-w-[1180px] items-center gap-x-[clamp(12px,1.5vw,24px)] gap-y-2 overflow-x-auto px-4 [scrollbar-width:none] ${bigTabs ? "justify-center" : "max-lg:[mask-image:linear-gradient(90deg,transparent,#000_8%,#000_92%,transparent)]"} lg:flex-wrap lg:justify-center lg:overflow-visible [&::-webkit-scrollbar]:hidden`}
+              className={`relative mt-3 flex w-full max-w-[1180px] items-center flex-wrap justify-center gap-x-[clamp(12px,1.5vw,24px)] gap-y-2 px-4`}
             >
               {timing.crops.map((c, i) => {
                 const on = i === active;
@@ -498,11 +498,11 @@ export function SeasonDial({
                       tabs.current[n]?.focus();
                       choose(n, tabs.current[n]);
                     }}
-                    className={`group relative inline-flex shrink-0 items-center ${bigTabs ? "gap-2.5 text-[clamp(30px,8.4vw,52px)] lg:text-[clamp(36px,3vw,56px)]" : "gap-1.5 text-[clamp(21px,1.9vw,32px)]"} pb-2 font-display leading-none tracking-[-0.03em] whitespace-nowrap transition-[color,opacity] duration-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest ${
+                    className={`group relative inline-flex shrink-0 items-center ${bigTabs ? "gap-2.5 text-[clamp(30px,8.4vw,52px)] lg:text-[clamp(36px,3vw,56px)]" : "gap-1.5 text-[clamp(17px,1.9vw,32px)]"} pb-2 font-display leading-none tracking-[-0.03em] whitespace-nowrap transition-[color,opacity] duration-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest ${
                       on ? "text-forest" : "text-transparent opacity-50 [-webkit-text-stroke:1px_var(--color-forest)] hover:opacity-100"
                     }`}
                   >
-                    <CropIcon id={CROP_ICONS[c.id]} className={`shrink-0 object-contain ${bigTabs ? "size-[1.05em] lg:size-11" : "size-7"}`} />
+                    <CropIcon id={CROP_ICONS[c.id]} className={`shrink-0 object-contain ${bigTabs ? "size-[1.05em] lg:size-11" : "size-5 lg:size-7"}`} />
                     <span>{c.label}</span>
                     <span
                       aria-hidden

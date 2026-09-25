@@ -49,15 +49,15 @@ export function Operation() {
           {operation.heading}
         </SplitLines>
 
-        <div className="op-cards mt-[clamp(36px,5vw,72px)] grid gap-3 sm:grid-cols-2 xl:grid-cols-12 xl:gap-4">
+        <div className="op-cards mt-[clamp(36px,5vw,72px)] grid grid-cols-2 gap-2.5 sm:gap-3 xl:grid-cols-12 xl:gap-4">
           {operation.cards.map((card, i) => {
             const wide = i === operation.cards.length - 1 && i > 0;
             return (
               <article
                 key={card.title}
-                className={`op-card flex min-h-[330px] flex-col overflow-hidden rounded-[clamp(12px,1.05vw,20px)] bg-linear-[122.93deg,var(--color-night-warm)_2.4%,var(--color-night-deep)_60.23%] p-5 text-offwhite md:p-[clamp(20px,1.8vw,28px)] ${
+                className={`op-card flex min-h-[300px] flex-col overflow-hidden rounded-[clamp(12px,1.05vw,20px)] bg-linear-[122.93deg,var(--color-night-warm)_2.4%,var(--color-night-deep)_60.23%] p-3.5 sm:min-h-[330px] sm:p-5 text-offwhite md:p-[clamp(20px,1.8vw,28px)] ${
                   wide
-                    ? "sm:col-span-2 xl:col-span-7 xl:col-start-1 xl:row-start-2 xl:grid xl:min-h-[260px] xl:grid-cols-[minmax(0,1fr)_minmax(180px,34%)] xl:grid-rows-[auto_1fr] xl:gap-x-5"
+                    ? "col-span-2 xl:col-span-7 xl:col-start-1 xl:row-start-2 xl:grid xl:min-h-[260px] xl:grid-cols-[minmax(0,1fr)_minmax(180px,34%)] xl:grid-rows-[auto_1fr] xl:gap-x-5"
                     : i === 0
                       ? "xl:col-span-4 xl:col-start-1 xl:row-start-1 xl:min-h-[380px]"
                       : "xl:col-span-3 xl:col-start-5 xl:row-start-1 xl:min-h-[380px]"
@@ -66,7 +66,7 @@ export function Operation() {
                 {/* w-fit: o fio só alcança a largura que o título ocupa. */}
                 <div className="w-fit max-w-full">
                   <span aria-hidden className="op-line block h-[2px] w-full origin-left rounded-full bg-lime" />
-                  <h3 className="mt-3 text-[clamp(21px,1.6vw,27px)] leading-[1.1] tracking-[-0.02em]">{card.title}</h3>
+                  <h3 className="mt-3 text-[clamp(17px,1.6vw,27px)] leading-[1.1] tracking-[-0.02em]">{card.title}</h3>
                 </div>
                 <div aria-hidden className={`relative flex min-h-[150px] flex-1 items-center justify-center py-3 ${wide ? "xl:col-start-2 xl:row-span-2 xl:row-start-1 xl:min-h-0 xl:py-0" : ""}`}>
                   <span className="pointer-events-none absolute size-[180px] rounded-full bg-[radial-gradient(circle,rgba(183,199,62,0.12),transparent_68%)]" />
@@ -86,7 +86,7 @@ export function Operation() {
             );
           })}
 
-          <article className="op-card relative flex flex-col overflow-hidden rounded-[clamp(12px,1.05vw,20px)] border border-lime/35 bg-forest p-5 text-offwhite sm:col-span-2 md:p-[clamp(20px,1.8vw,28px)] xl:col-span-5 xl:col-start-8 xl:row-span-2 xl:row-start-1 xl:p-9">
+          <article className="op-card relative flex flex-col overflow-hidden rounded-[clamp(12px,1.05vw,20px)] border border-lime/35 bg-forest p-5 text-offwhite col-span-2 md:p-[clamp(20px,1.8vw,28px)] xl:col-span-5 xl:col-start-8 xl:row-span-2 xl:row-start-1 xl:p-9">
             <span
               aria-hidden
               className="pointer-events-none absolute -top-[30%] -right-[20%] h-[80%] w-[80%] bg-[radial-gradient(closest-side,rgba(183,199,62,0.16),transparent)]"

@@ -172,21 +172,14 @@ export function Potassium() {
           const timeline = build(
             gsap.timeline({
               defaults: { ease: "power2.out" },
-              scrollTrigger: desktop
-                ? { trigger: ".kp-stage", start: "top top", end: "+=90%", scrub: 0.6, pin: true, anticipatePin: 1 }
-                : { trigger: ".kp-routes", start: "top 80%", end: "bottom 55%", scrub: 0.6 },
+              /* Pin em todas as telas: o celular também trava durante a rota. */
+              scrollTrigger: { trigger: ".kp-stage", /* Fora do desktop a cena é mais alta que a tela: prende quando a base
+                 (a legenda do freio) alcança o pé da tela, em vez de cortá-la. */
+              start: desktop ? "top top" : "bottom bottom", end: desktop ? "+=90%" : "+=120%", scrub: 0.6, pin: true, anticipatePin: 1 },
             }),
             desktop || tablet ? "scaleX" : "scaleY",
           );
-          if (desktop) {
-            timeline.fromTo(".kp-product", { scale: 0.6 }, { scale: 1, duration: timeline.duration(), ease: "none" }, 0);
-          } else {
-            gsap.fromTo(".kp-product", { scale: 0.6 }, {
-              scale: 1,
-              ease: "none",
-              scrollTrigger: { trigger: ".kp-product-frame", start: "top 85%", end: "bottom 40%", scrub: 0.6 },
-            });
-          }
+          timeline.fromTo(".kp-product", { scale: 0.6 }, { scale: 1, duration: timeline.duration(), ease: "none" }, 0);
         },
       );
     },
