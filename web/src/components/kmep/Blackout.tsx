@@ -6,7 +6,7 @@ import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
 import { microCaps } from "./ui";
 
 const CHAPTER = [0.36, 0.58, 0.78];
-const PLANT = "/img/kmep/blackout/corn-continuous.webp";
+const PLANT = "/img/kmep/blackout/ornamental-continuous.webp";
 
 export function Blackout({ variant = "a" }: { variant?: "a" | "b" }) {
   const content = useContent().kmep;
@@ -89,8 +89,8 @@ export function Blackout({ variant = "a" }: { variant?: "a" | "b" }) {
   }, { scope });
 
   const plantAlt = locale === "pt"
-    ? "Planta de milho com gotas nas folhas, espiga e raízes expostas"
-    : "Corn plant with droplets on its leaves, an ear, and exposed roots";
+    ? "Crisântemo ornamental com flores rosas, gotas nas folhas e raízes expostas"
+    : "Flowering chrysanthemum with pink blooms, droplets on its leaves, and exposed roots";
 
   return (
     <section ref={scope} aria-label={blackout.headline.join(" ")} className="fd relative z-[1] -mt-[180svh] text-cream">

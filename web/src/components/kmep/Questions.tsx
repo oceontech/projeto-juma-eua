@@ -73,18 +73,25 @@ export function Questions() {
               return (
                 <li
                   key={item.q}
-                  className={`flex min-h-[min(440px,58svh)] shrink-0 flex-col rounded-[clamp(14px,1.2vw,20px)] p-5 md:p-7 ${lead ? "w-[min(88vw,560px)] bg-forest text-offwhite" : "w-[min(88vw,400px)] bg-cream"}`}
+                  className={`flex min-h-[min(440px,58svh)] shrink-0 flex-col rounded-[clamp(14px,1.2vw,20px)] p-5 md:p-7 relative overflow-hidden text-offwhite ${lead ? "w-[min(88vw,560px)] bg-night" : "w-[min(88vw,400px)] bg-linear-[149.8deg,var(--color-night-warm)_2.4%,var(--color-night-deep)_60.23%]"}`}
                 >
-                  <span className={`font-display text-[11px] tracking-[0.16em] ${lead ? "text-lime" : "text-moss"}`}>
+                  {lead && (
+                    <>
+                      <span aria-hidden className="pointer-events-none absolute -top-[26%] -right-[22%] size-[46%] rounded-full border-[clamp(6px,0.7vw,10px)] border-offwhite/35" />
+                      <span aria-hidden className="pointer-events-none absolute -top-[19%] -right-[15%] size-[32%] rounded-full border-[clamp(6px,0.7vw,10px)] border-kmep/70" />
+                    </>
+                  )}
+                  {!lead && <span aria-hidden className="absolute top-7 left-0 h-8 w-[3px] bg-lime md:top-9" />}
+                  <span className={`relative font-display text-[11px] font-semibold tracking-[0.16em] tabular-nums ${lead ? "text-kmep-light" : "text-lime"}`}>
                     {String(i + 1).padStart(2, "0")}
                   </span>
-                  {lead && <span aria-hidden className="mt-4 block h-[2px] w-12 rounded-full bg-lime" />}
+                  {lead && <span aria-hidden className="relative mt-4 block h-[2px] w-12 rounded-full bg-kmep" />}
                   <h3
-                    className={`mt-3 font-display leading-[1.12] tracking-[-0.015em] ${lead ? "text-[clamp(24px,2.3vw,38px)]" : "text-[clamp(19px,1.5vw,24px)]"}`}
+                    className={`relative mt-3 font-display leading-[1.12] tracking-[-0.015em] ${lead ? "max-w-[80%] text-[clamp(24px,2.3vw,38px)]" : "text-[clamp(19px,1.5vw,24px)]"}`}
                   >
                     {item.q}
                   </h3>
-                  <p className={`${microCaps} mt-auto pt-6 ${lead ? "text-[12px] text-offwhite/80" : "text-forest/70"}`}>
+                  <p className={`${microCaps} mt-auto pt-6 relative ${lead ? "text-[12px] text-offwhite/62" : "text-offwhite/62"}`}>
                     {item.a}
                     {/* HOLD P2 — remover junto com Flush.tsx */}
                     {item.hold && <> {item.hold}</>}

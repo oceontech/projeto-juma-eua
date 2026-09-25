@@ -598,7 +598,7 @@ export const strip = {
   ],
   promise: ["No cost for the product on the strip.", "No obligation after harvest."],
   cta: { label: "Run a trial strip on your acres", href: "#trial-form" },
-  alt: "Aerial view of a row-crop field with a flagged check strip running through it",
+  alt: "Close aerial view of soybean rows with a lighter check strip running through them",
 };
 
 /* -------------------------------------------------------------------- K16 */

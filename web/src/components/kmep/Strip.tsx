@@ -12,7 +12,7 @@ import { Cta, eyebrow, microCaps } from "./ui";
  * não têm dado americano": transforma a ausência de dado local na oferta da
  * página. Precisa parecer generosa e concreta, não promocional.
  *
- * A aérea com a faixa bandeirada fica no fundo, escurecida no floresta, e os
+ * A aérea com a faixa testemunha fica no fundo, e os
  * três passos são cartões de vidro sobre ela, em escada. A entrada é a do
  * Season da LP B, presa ao scroll nos dois sentidos: cada cartão sobe de mais
  * baixo quanto mais à direita, e o número anda num compasso próprio,
@@ -29,16 +29,6 @@ export function Strip() {
         /* Empilhados no celular, cada cartão sobe de perto: com a escada do
            desktop, o terceiro passava por cima da linha de promessa. */
         const wide = window.matchMedia("(min-width: 768px)").matches;
-        gsap.fromTo(
-          ".st-photo",
-          { scale: 1.2 },
-          {
-            scale: 1,
-            ease: "none",
-            scrollTrigger: { trigger: scope.current, start: "top bottom", end: "bottom top", scrub: true },
-          },
-        );
-
         gsap.utils.toArray<HTMLElement>(".st-card").forEach((card, i) => {
           const trigger = { trigger: card, scrub: 0.6 };
           gsap.fromTo(
@@ -59,12 +49,13 @@ export function Strip() {
 
   return (
     <section ref={scope} data-nav-theme="dark" className="relative isolate overflow-hidden bg-forest text-offwhite">
-      <div className="st-photo absolute inset-0 -z-20">
-        <Image src="/img/aminosan-b/trial-strip.webp" alt={strip.alt} fill quality={90} sizes="100vw" className="object-cover" />
+      <div className="absolute inset-0 -z-20">
+        <Image src="/img/kmep/trial-strip-close-mobile.webp" alt={strip.alt} fill quality={90} sizes="100vw" className="object-cover md:hidden" />
+        <Image src="/img/kmep/trial-strip-close.webp" alt={strip.alt} fill quality={90} sizes="100vw" className="hidden object-cover md:block" />
       </div>
       <div
         aria-hidden
-        className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgba(22,38,27,0.86)_0%,rgba(22,38,27,0.55)_38%,rgba(22,38,27,0.7)_70%,rgba(22,38,27,0.95)_100%)]"
+        className="absolute inset-0 -z-10 bg-black/35 md:bg-[linear-gradient(90deg,rgba(0,0,0,0.5)_0%,rgba(0,0,0,0.2)_48%,transparent_100%)]"
       />
 
       <div className="wrap pt-sec pb-[clamp(88px,11vw,170px)]">
