@@ -6,13 +6,14 @@ import { SeasonDial, type StageArt } from "@/components/shared/SeasonDial";
 /* O desenho dos estágios, o mesmo da LP do KMEP: um sprite por cultura, com
    as plantas lado a lado, e as fotos do milho. É ilustração da régua, não do
    estágio exato. Ervilha e amendoim usam o feijão, e a uva usa as frutíferas.
-   Arroz, trigo e cevada ainda não têm desenho. */
+   Arroz, trigo e cevada usam o trigo como representante visual das duas fases. */
 const ART: Record<string, StageArt> = {
   cotton: { src: "/img/kmep/stages/cotton.png", width: 1974, height: 797, cuts: [0, 468, 952, 1473, 1974] },
   beans: { src: "/img/kmep/stages/beans.png", width: 1774, height: 887, cuts: [0, 552, 1142, 1774] },
   soy: { src: "/img/kmep/stages/soy.png", width: 1774, height: 887, cuts: [0, 537, 1171, 1774] },
   legumes: { src: "/img/kmep/stages/beans.png", width: 1774, height: 887, cuts: [0, 552, 1142, 1774] },
   corn: ["/img/kmep/corn-v6.webp"],
+  grains: ["/img/aminosan-b/stages/grains-pre-tillering.png", "/img/aminosan-b/stages/grains-boot.png"],
   potato: { src: "/img/kmep/stages/potato.png", width: 1881, height: 836, cuts: [0, 558, 1176, 1881] },
   tomato: { src: "/img/kmep/stages/tomato.png", width: 1942, height: 809, cuts: [0, 458, 916, 1432, 1942] },
   roots: { src: "/img/kmep/stages/roots.png", width: 1774, height: 887, cuts: [0, 473, 1064, 1774] },

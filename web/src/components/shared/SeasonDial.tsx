@@ -59,6 +59,7 @@ const CROP_ICONS: Record<string, string> = {
   soy: "soybean",
   cotton: "cotton",
   beans: "beans",
+  grains: "grains",
 };
 /* As gotas que saltam do estágio quando a passada chega nele. */
 const DROPS = Array.from({ length: 9 }, (_, k) => ({ deg: k * 40 + 12, dist: k % 2 ? 46 : 68 }));
@@ -478,7 +479,7 @@ export function SeasonDial({
               ref={tablist}
               role="tablist"
               aria-label={timing.cropLabel}
-              className={`relative mt-3 flex w-full max-w-[1180px] items-center flex-wrap justify-center gap-x-[clamp(12px,1.5vw,24px)] gap-y-2 px-4`}
+              className={`relative mt-3 flex w-full max-w-[1500px] items-center flex-wrap justify-center gap-x-[clamp(12px,1.5vw,24px)] gap-y-2 px-4`}
             >
               {timing.crops.map((c, i) => {
                 const on = i === active;
@@ -500,7 +501,7 @@ export function SeasonDial({
                       tabs.current[n]?.focus();
                       choose(n, tabs.current[n]);
                     }}
-                    className={`group relative inline-flex shrink-0 items-center ${bigTabs ? "gap-2.5 text-[clamp(30px,8.4vw,52px)] lg:text-[clamp(36px,3vw,56px)]" : "gap-1.5 text-[clamp(17px,1.9vw,32px)]"} pb-2 font-display leading-none tracking-[-0.03em] whitespace-nowrap transition-[color,opacity] duration-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest ${
+                    className={`group relative inline-flex shrink-0 items-center ${bigTabs ? "gap-2.5 text-[clamp(30px,8.4vw,52px)] lg:text-[clamp(36px,3vw,56px)]" : "gap-1.5 text-[clamp(17px,1.9vw,32px)] lg:text-[clamp(22px,1.75vw,30px)]"} pb-2 font-display leading-none tracking-[-0.03em] whitespace-nowrap transition-[color,opacity] duration-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest ${
                       on ? "text-forest" : "text-transparent opacity-50 [-webkit-text-stroke:1px_var(--color-forest)] hover:opacity-100"
                     }`}
                   >

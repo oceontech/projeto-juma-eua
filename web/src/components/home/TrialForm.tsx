@@ -10,8 +10,8 @@ import s from "./TrialForm.module.css";
 
 const INITIAL: TrialRequestState = { status: "idle", message: "", errors: {} };
 
-/* As fichas de cultura são as da seção de timing do KMEP (mesmos ids, mesmos
-   rótulos nos dois idiomas), cada uma com o seu recorte de estúdio. */
+/* As fichas de cultura seguem a seção de timing do KMEP; o Aminosan também
+   oferece arroz, trigo e cevada. Cada id tem seu recorte de estúdio. */
 const CROP_ICONS: Record<string, string> = {
   citrus: "citrus",
   fruit: "tree-fruit",
@@ -25,6 +25,7 @@ const CROP_ICONS: Record<string, string> = {
   soy: "soybean",
   cotton: "cotton",
   beans: "beans",
+  grains: "grains",
 };
 
 /**
@@ -37,7 +38,7 @@ const CROP_ICONS: Record<string, string> = {
  *
  * `compact` é a variante reduzida das LPs: nome, e-mail, estado e cultura.
  * Os campos que saem chegam vazios ao action, que já os trata como opcionais —
- * o contrato não muda. As culturas são as mesmas nas três páginas.
+ * o contrato não muda. O Aminosan acrescenta os cereais ao seletor.
  */
 export function TrialForm({
   source,
@@ -48,7 +49,9 @@ export function TrialForm({
 }) {
   const content = useContent();
   const { form } = content.home.usOperation;
-  const cropOptions = content.kmep.timing.crops;
+  const cropOptions = source === "aminosan"
+    ? [...content.kmep.timing.crops, ...content.aminosanB.timing.crops.filter((crop) => crop.id === "grains")]
+    : content.kmep.timing.crops;
   const [state, action, pending] = useActionState(submitTrialRequest, INITIAL);
   const id = useId();
   const formRef = useRef<HTMLFormElement>(null);

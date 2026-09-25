@@ -225,7 +225,7 @@ export function TwoJobs() {
               {twoJobs.heading}
             </SplitLines>
           </div>
-          <p className="max-w-[46ch] text-[16px] leading-[1.6] text-cream/70 lg:text-[17px]">{twoJobs.lead}</p>
+          <p className="max-w-[46ch] text-[16px] leading-[1.6] text-white lg:text-[17px]">{twoJobs.lead}</p>
         </div>
 
         <div className="tj-scene wrap">

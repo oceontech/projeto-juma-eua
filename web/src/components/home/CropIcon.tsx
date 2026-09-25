@@ -19,6 +19,7 @@ const ICONS = new Set([
   "onion-garlic",
   "carrot-beet",
   "beans",
+  "grains",
 ]);
 
 /** Studio cutout; decorative because the crop name appears alongside it. */
