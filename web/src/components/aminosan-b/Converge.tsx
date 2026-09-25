@@ -114,13 +114,13 @@ export function Converge() {
   );
 
   const jug = (className: string) => (
-    <div className={`cv-jug relative aspect-[376/235] ${className}`}>
+    <div className={`cv-jug relative aspect-[1004/392] ${className}`}>
       <Image
-        src="/img/pack-aminosan-us.webp"
-        alt={routes.with.jugAlt}
+        src="/img/aminosan-b/aminosan-logo.webp"
+        alt="Aminosan®"
         fill
-        sizes="300px"
-        className="origin-bottom scale-[1.45] object-contain drop-shadow-[0_18px_24px_rgba(22,38,27,0.18)]"
+        sizes="320px"
+        className="object-contain"
       />
     </div>
   );
@@ -161,8 +161,8 @@ export function Converge() {
                 />
               </svg>
               <div className="absolute bottom-[calc(100%-24px)] left-1/2 hidden lg:flex -translate-x-1/2 flex-col items-center text-center">
-                {jug("w-[240px]")}
-                <div className="cv-with -mt-5">{withLabel}</div>
+                {jug("w-[320px]")}
+                <div className="cv-with mt-3">{withLabel}</div>
               </div>
             </div>
 
@@ -197,7 +197,7 @@ export function Converge() {
           </div>
 
           <div className="mt-3 flex items-center gap-4 lg:hidden">
-            {jug("w-[130px] shrink-0")}
+            {jug("w-[170px] shrink-0")}
             <div className="cv-with">{withLabel}</div>
           </div>
 
