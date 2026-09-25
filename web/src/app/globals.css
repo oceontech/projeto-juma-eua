@@ -3182,8 +3182,7 @@ html[data-proof-overlap] .expertise-layer--dark .expertise-bg {
   opacity: 0;
 }
 
-.fd-plant,
-.fd-curtain-plant {
+.fd-plant {
   top: 25svh;
   left: 52%;
   width: auto;
@@ -3197,15 +3196,13 @@ html[data-proof-overlap] .expertise-layer--dark .expertise-bg {
 }
 
 @media (max-width: 900px) {
-  .fd-plant,
-  .fd-curtain-plant {
+  .fd-plant {
     top: 48svh;
     left: calc(50% - 66.6667vw);
     height: 200vw;
   }
 
-  .fd-main,
-  .fd-curtain .fd-main {
+  .fd-main {
     position: absolute;
     top: clamp(170px, 25svh, 230px);
     right: var(--spacing-gut);
@@ -3220,30 +3217,37 @@ html[data-proof-overlap] .expertise-layer--dark .expertise-bg {
   }
 
   /* A logo mora dentro do card: fica no topo dele, acima do kicker. */
-  .fd-layout .fd-product,
-  .fd-curtain .fd-logo {
+  .fd-layout .fd-product {
     top: calc(clamp(170px, 25svh, 230px) + 18px);
     left: calc(var(--spacing-gut) + 20px);
     z-index: 1;
   }
 
-  .fd-card,
-  .fd-curtain-card {
+  .fd-card {
     width: 100%;
     max-width: none;
   }
 
-  .fd-curtain-card,
-  .fd-curtain-card h3 {
-    color: var(--color-cream);
+  /* Variante de vidro (KMEP): o card sobe para o topo, logo abaixo do
+     cabeçalho, e vira vidro — translúcido, com o desfoque da planta que passa
+     por trás dele, borda clara e um brilho na aresta de cima. */
+  .fd-glass .fd-main {
+    top: calc(76px + env(safe-area-inset-top, 0px));
+    border: 1px solid rgb(255 255 255 / 0.14);
+    /* O brilho do vidro sobre uma base escura: o texto claro continua legível
+       quando o que passa por trás é folha clara. */
+    background:
+      linear-gradient(155deg, rgb(255 255 255 / 0.12), rgb(255 255 255 / 0.03) 60%),
+      rgb(6 6 6 / 0.28);
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.18),
+      0 24px 60px -24px rgb(0 0 0 / 0.7);
+    -webkit-backdrop-filter: blur(18px) saturate(150%);
+    backdrop-filter: blur(18px) saturate(150%);
   }
 
-  .fd-curtain-card p:first-child {
-    color: var(--color-sage);
-  }
-
-  .fd-curtain-card p:last-child {
-    color: color-mix(in srgb, var(--color-cream) 70%, transparent);
+  .fd-glass .fd-layout .fd-product {
+    top: calc(76px + env(safe-area-inset-top, 0px) + 18px);
   }
 }
 
@@ -3260,8 +3264,7 @@ html[data-proof-overlap] .expertise-layer--dark .expertise-bg {
   padding: 64px 0;
 }
 
-.fd-still .fd-ask,
-.fd-still .fd-curtain {
+.fd-still .fd-ask {
   display: none;
 }
 
@@ -3300,6 +3303,14 @@ html[data-proof-overlap] .expertise-layer--dark .expertise-bg {
   gap: 48px;
   padding: 0;
   background: none;
+}
+
+/* O vidro é do card animado; parado, cada resultado já tem o próprio fundo. */
+.fd-still.fd-glass .fd-main {
+  border: 0;
+  box-shadow: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
 }
 
 .fd-still .fd-card {

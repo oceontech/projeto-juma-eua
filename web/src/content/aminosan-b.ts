@@ -8,9 +8,10 @@
  * culturas de mercado, a ficha da bombona, para quem é, a faixa de teste, as
  * perguntas (A11) e o pedido. `origin` só serve o Origin.tsx, fora da página.
  *
- * O que a página afirma sai do rótulo (100% L-aminoácidos livres, não
- * hormonal, N-P-K) e da ficha do produto (origem vegetal, fermentação
- * enzimática, foliar, mistura de tanque, janelas de soja e milho). Nenhum
+ * O que a página afirma sai do rótulo americano (9-2-1, foliar, dose por
+ * acre, bombona de 2,5 gal) e da ficha BR (100% L-aminoácidos livres, não
+ * hormonal, origem vegetal, fermentação enzimática, mistura de tanque e a
+ * tabela de épocas por cultura). Nenhum
  * verbo de estímulo de crescimento e nenhum número de produtividade — ver
  * docs/02-MERCADO-USA.md, Achado 1.
  */
@@ -402,44 +403,214 @@ export const heritage = {
 };
 
 /**
- * A9 — a janela, no mesmo mostrador do KMEP (SeasonDial). Soja de V2–V3 a
- * R5 e milho de V2 a V8 (ficha BR, docs/03-SITE.md). A régua é ordinal e as
- * marcas são as bordas da janela, não passadas: por isso o rótulo do centro
- * é "Stage", e não "Pass". R1 entra na soja só como referência da régua.
- * TODO(P4): a dose em fl oz/acre. Até lá, "On the label".
+ * A9 — quando entra, no mesmo mostrador do KMEP (SeasonDial). As culturas e
+ * as épocas vêm da tabela de aplicação do Aminosan® (ficha BR), em
+ * nomenclatura americana; a dose vem do rótulo americano ("Directions for
+ * Use"): 14 a 20 Oz por acre nas commodities, a partir de 25 a 30 dias da
+ * germinação, e 14 Oz por acre nas hortaliças, repetindo a cada 1 a 2
+ * semanas. Café ficou de fora, como no KMEP: não é cultura dos EUA.
+ * `ends` troca as pontas do arco quando a safra não começa no plantio.
+ * TODO(P4): frutíferas, uva, citros e ornamentais não têm dose no rótulo
+ * americano. Até lá, "Ask us".
+ * TODO: a tabela BR pede citros "sempre em mistura com micronutrientes
+ * (REVIGO®)". O nome do produto fica fora até saber se o REVIGO® é vendido
+ * nos EUA.
  */
 export const timing = {
   label: "The window",
   heading: "When it goes in.",
-  body: "Foliar, alone or in the tank with a pass already on your calendar. On soybeans and corn, the window opens early in the season. Pick your crop.",
+  body: "In a foliar pass already on your calendar: 14 to 20 fl oz per acre on commodity crops, 14 fl oz on vegetables. Row crops, vegetables, fruit and ornamentals each have their own window. Pick your crop.",
   cropLabel: "Crop",
   rateLabel: "Rate",
   ends: ["Planting", "Harvest"],
   hint: "Scroll through the season",
-  pass: "Stage",
+  pass: "Pass",
   crops: [
     {
       id: "soy",
       label: "Soybeans",
-      rate: "On the label",
+      rate: "14–20 fl oz/ac",
       marks: [
-        { code: "V2–V3", at: 0.16 },
-        { code: "R1", at: 0.44 },
-        { code: "R5", at: 0.72 },
+        { code: "Day 25–30", at: 0.2 },
+        { code: "Pre-bloom", at: 0.4 },
       ],
-      spans: [{ from: 0, to: 2, note: "From early vegetative into seed fill" }],
-      summary: "Soybeans: from V2–V3 through R5, in passes you already make. Your agronomist sets the timing inside that window.",
+      spans: [{ from: 0, to: 1, note: "Two passes, both before bloom" }],
+      summary: "Soybeans: one pass 25 to 30 days after germination and one just before bloom.",
     },
     {
       id: "corn",
-      label: "Corn",
-      rate: "On the label",
+      label: "Corn & sorghum",
+      rate: "14–20 fl oz/ac",
+      marks: [{ code: "Before V8", at: 0.3 }],
+      spans: [{ from: 0, to: 0, note: "One pass, before the eighth leaf" }],
+      summary: "Corn and sorghum: one pass before the plants reach eight leaves (V8).",
+    },
+    {
+      id: "cotton",
+      label: "Cotton",
+      rate: "14–20 fl oz/ac",
       marks: [
-        { code: "V2", at: 0.14 },
-        { code: "V8", at: 0.4 },
+        { code: "First bloom", at: 0.4 },
+        { code: "", display: "+10–15 days", at: 0.5, minor: true },
+        { code: "", display: "+10–15 days", at: 0.6, minor: true },
+        { code: "", display: "+10–15 days", at: 0.7, minor: true },
       ],
-      spans: [{ from: 0, to: 1, note: "The early vegetative window" }],
-      summary: "Corn: from V2 through V8, riding with the early-season passes. Your agronomist sets the timing inside that window.",
+      spans: [{ from: 0, to: 3, note: "Then three to four more, 10 to 15 days apart" }],
+      summary: "Cotton: one pass at first bloom, then three to four more, 10 to 15 days apart.",
+    },
+    {
+      id: "grains",
+      label: "Rice, wheat & barley",
+      rate: "14–20 fl oz/ac",
+      marks: [
+        { code: "Pre-tillering", at: 0.2 },
+        { code: "Boot", at: 0.52 },
+      ],
+      spans: [{ from: 0, to: 1, note: "Just before tillering, and again at boot" }],
+      summary: "Rice, wheat and barley: one pass just before tillering and one at boot.",
+    },
+    {
+      id: "beans",
+      label: "Dry beans",
+      rate: "14–20 fl oz/ac",
+      marks: [
+        { code: "Day 25–30", at: 0.2 },
+        { code: "Pre-bloom", at: 0.38 },
+        { code: "Pod fill", at: 0.6 },
+      ],
+      spans: [{ from: 0, to: 2, note: "Three passes, from day 25 to pod fill" }],
+      summary: "Dry beans: 25 to 30 days after germination, just before bloom, and at pod fill.",
+    },
+    {
+      id: "legumes",
+      label: "Peas & peanuts",
+      rate: "14–20 fl oz/ac",
+      marks: [
+        { code: "Day 25–30", at: 0.2 },
+        { code: "Pre-bloom", at: 0.38 },
+        { code: "Pod fill", at: 0.6 },
+      ],
+      spans: [{ from: 0, to: 2, note: "Three passes, from day 25 to pod fill" }],
+      summary: "Peas and peanuts: 25 to 30 days after germination, just before bloom, and at pod fill.",
+    },
+    {
+      id: "potato",
+      label: "Potatoes",
+      rate: "14 fl oz/ac",
+      marks: [
+        { code: "Hilling", at: 0.3 },
+        { code: "", display: "+7–10 days", at: 0.44, minor: true },
+        { code: "", display: "+7–10 days", at: 0.58, minor: true },
+      ],
+      spans: [{ from: 0, to: 2, note: "Then two to three more, 7 to 10 days apart" }],
+      summary: "Potatoes: one pass after hilling, then two to three more, 7 to 10 days apart.",
+    },
+    {
+      id: "tomato",
+      label: "Tomatoes",
+      rate: "14 fl oz/ac",
+      ends: ["Transplant", "Harvest"],
+      marks: [
+        { code: "Transplant", at: 0.14 },
+        { code: "", display: "+7–10 days", at: 0.28, minor: true },
+        { code: "", display: "+7–10 days", at: 0.42, minor: true },
+        { code: "", display: "+7–10 days", at: 0.56, minor: true },
+      ],
+      spans: [{ from: 0, to: 3, note: "Weekly on staked, every 7 to 10 days on ground tomatoes" }],
+      summary: "Tomatoes: starting after transplant, weekly on staked tomatoes and every 7 to 10 days on ground tomatoes.",
+    },
+    {
+      id: "roots",
+      label: "Carrots & beets",
+      rate: "14 fl oz/ac",
+      marks: [
+        { code: "4–6 in tall", at: 0.26 },
+        { code: "", display: "+7–10 days", at: 0.42, minor: true },
+        { code: "", display: "+7–10 days", at: 0.58, minor: true },
+      ],
+      spans: [{ from: 0, to: 2, note: "Then four to five more, 7 to 10 days apart" }],
+      summary: "Carrots and beets: one pass at 4 to 6 inches tall, then four to five more, 7 to 10 days apart.",
+    },
+    {
+      id: "veg",
+      label: "Vegetables & berries",
+      rate: "14 fl oz/ac",
+      marks: [
+        { code: "First pass", at: 0.2 },
+        { code: "", display: "+7–10 days", at: 0.36, minor: true },
+        { code: "", display: "+7–10 days", at: 0.52, minor: true },
+      ],
+      spans: [{ from: 0, to: 2, note: "Five to six passes, 7 to 10 days apart" }],
+      summary: "Strawberries, cucumbers, snap beans and other vegetables: five to six passes, 7 to 10 days apart.",
+    },
+    {
+      id: "onion",
+      label: "Onions & garlic",
+      rate: "14 fl oz/ac",
+      marks: [
+        { code: "First pass", at: 0.24 },
+        { code: "", display: "+15 days", at: 0.42, minor: true },
+        { code: "", display: "+15 days", at: 0.6, minor: true },
+      ],
+      spans: [{ from: 0, to: 2, note: "Four to five passes, 15 days apart" }],
+      summary: "Onions and garlic: four to five passes, 15 days apart.",
+    },
+    {
+      id: "citrus",
+      label: "Citrus",
+      rate: "Ask us",
+      ends: ["Dormancy", "Harvest"],
+      marks: [
+        { code: "Pre-bloom", at: 0.18 },
+        { code: "Petal fall", at: 0.36 },
+        { code: "Marble size", at: 0.54 },
+        { code: "Ping-pong size", at: 0.72 },
+      ],
+      spans: [{ from: 0, to: 3, note: "Always in the tank with micronutrients" }],
+      summary: "Citrus: before bloom, after bloom, at marble size and at ping-pong-ball size. Always tank-mixed with micronutrients.",
+    },
+    {
+      id: "fruit",
+      label: "Tree fruit",
+      rate: "Ask us",
+      ends: ["Harvest", "Next harvest"],
+      marks: [
+        { code: "Post-harvest", at: 0.14 },
+        { code: "After bloom", at: 0.44 },
+        { code: "Fruit sizing", at: 0.66 },
+      ],
+      spans: [{ from: 0, to: 2, note: "One pass at each point of the season" }],
+      summary: "Peaches, apples, mangoes and other tree fruit: one pass after harvest, one after bloom and one while the fruit sizes.",
+    },
+    {
+      id: "grape",
+      label: "Grapes",
+      rate: "Ask us",
+      ends: ["Harvest", "Next harvest"],
+      marks: [
+        { code: "Post-harvest", at: 0.12 },
+        { code: "6-in shoots", at: 0.34 },
+        { code: "", display: "+15 days", at: 0.5, minor: true },
+        { code: "", display: "+15 days", at: 0.66, minor: true },
+      ],
+      spans: [
+        { from: 0, to: 0, note: "One pass after harvest" },
+        { from: 1, to: 3, note: "Then five to six more, 15 days apart" },
+      ],
+      summary: "Grapes: one pass after harvest, one when shoots reach 6 inches, then five to six more, 15 days apart.",
+    },
+    {
+      id: "ornamental",
+      label: "Ornamentals",
+      rate: "Ask us",
+      ends: ["Planting", "Bloom"],
+      marks: [
+        { code: "First spray", at: 0.2 },
+        { code: "", display: "+7–10 days", at: 0.38, minor: true },
+        { code: "", display: "+7–10 days", at: 0.56, minor: true },
+      ],
+      spans: [{ from: 0, to: 2, note: "Every 7 to 10 days until the flower buds form" }],
+      summary: "Roses, mums, carnations, gladiolus and other ornamentals: every 7 to 10 days until the flower buds form.",
     },
   ],
 };
@@ -448,7 +619,8 @@ export const timing = {
    (frutas e hortaliças da Flórida). Não há estágio, dose nem número aqui de
    propósito — o Aminosan® ainda não tem as culturas americanas confirmadas em
    rótulo, e o que se afirma é só o encaixe na passada que o produtor já faz,
-   com dose e época definidas com o agrônomo dele.
+   com dose e época definidas com o agrônomo dele. As épocas e as doses por
+   cultura estão no mostrador logo acima (`timing`).
    TODO(P6): confirmar com a Juma/regulatório em quais dessas culturas o
    Aminosan® pode ser posicionado nos EUA antes de publicar. */
 export const season = {
@@ -459,7 +631,10 @@ export const season = {
 /**
  * O que tem na bombona: a ficha com a bombona no centro, os anéis nas cores
  * do rótulo (o azul da faixa e o verde da marca) e os fatos presos por fios.
- * TODO(P3): o Guaranteed Analysis americano, com os percentuais.
+ * Tudo aqui sai do rótulo americano (9-2-1, bombona de 2,5 gal). O rótulo
+ * não traz percentual de aminoácidos nem cita origem vegetal, fermentação ou
+ * ausência de hormônio — isso vem da ficha BR e não entra nesta ficha, que
+ * diz "está impresso no rótulo".
  */
 export const label = {
   label: "The label",
@@ -467,14 +642,16 @@ export const label = {
   body: "Everything that matters is printed on the label. Here it is in plain words.",
   alt: "A jug of Aminosan®",
   facts: [
-    { k: "Amino acids", v: "100% free-form L-amino acids" },
-    { k: "Source", v: "Plant-derived" },
-    { k: "Process", v: "Enzymatic fermentation" },
-    { k: "Also on board", v: "Nitrogen, phosphate, potash" },
-    { k: "Hormones", v: "None" },
-    { k: "Use", v: "Foliar, alone or in tank mix" },
+    { k: "Grade", v: "9-2-1, liquid" },
+    { k: "Total nitrogen", v: "9.0%: 2.6% water-soluble, 6.4% urea" },
+    { k: "Phosphate (P₂O₅)", v: "2.0%, water-soluble" },
+    { k: "Potash (K₂O)", v: "1.0%, water-soluble" },
+    { k: "Derived from", v: "Phosphoric acid, potassium chloride, urea and amino acids" },
+    { k: "Use", v: "Foliar spray" },
+    { k: "Jug", v: "2.5 gal · 26.47 lb" },
+    { k: "Shelf life", v: "2 years, closed, cool, dry and out of the sun" },
   ],
-  note: "Full guaranteed analysis on the label.",
+  note: "Shake before using. Keep out of reach of children.",
 };
 
 /** Para quem é e para quem não é: qualifica o lead e responde de antemão à objeção de trocar o programa de nitrogênio. */
@@ -486,7 +663,7 @@ export const fit = {
     items: [
       "Already make foliar passes and want amino acids to ride along",
       "Want amino acids from a plant source",
-      "Grow soybeans, corn or high-value specialty crops",
+      "Grow row crops, vegetables, fruit or ornamentals",
       "Will leave an untreated check strip and compare",
     ],
   },
@@ -544,7 +721,7 @@ export const questions = {
     },
     {
       q: "When should I apply it?",
-      a: "Soybeans from V2–V3 through R5, corn from V2 through V8. Your agronomist can match the timing to your program.",
+      a: "It depends on the crop. Soybeans get a pass 25 to 30 days after germination and another before bloom, corn one before V8, vegetables one every 1 to 2 weeks. The window for each crop is on this page.",
       image: "/img/aminosan-b/season-corn.webp",
     },
     {
@@ -564,7 +741,7 @@ export const questions = {
     },
     {
       q: "How much do I need?",
-      a: "A small rate per acre, in a pass you're already making. The rate for your crop is on the label.",
+      a: "14 to 20 fl oz per acre on commodity crops and 14 fl oz per acre on vegetables, in a pass you're already making. For fruit, citrus and ornamentals, ask us.",
       image: "/img/aminosan-b/final-grower.webp",
     },
   ],

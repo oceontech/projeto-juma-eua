@@ -1,33 +1,19 @@
 "use client";
 
 import { useRef } from "react";
+import { BOTTLE, bottleCell } from "@/lib/bottle-sprite";
 import { ScrollTrigger, useGSAP } from "@/lib/gsap";
 
-/** Ano de fabricação do frasco — é o que aparece no primeiro quadro. */
-const FROM = 1988;
+/* O frasco de 1988 virando o de hoje: a sprite e como foi gerada estão em
+   lib/bottle-sprite.ts, a mesma da LP do Aminosan®. */
+const FROM = BOTTLE.from;
+const SPRITE = BOTTLE.src;
+const FRAMES = BOTTLE.frames;
+const FRAME_W = BOTTLE.w;
+const FRAME_H = BOTTLE.h;
 
-/**
- * Os 17 quadros do GIF original (`/img/aminosan-bottle-1988.gif`), empilhados
- * na vertical num único WebP estático de 582×13600. Gerado com o sharp em dois
- * passos — ler com `pages: -1` e gravar direto em WebP produz uma WebP
- * *animada* de 582×800, e aí só o primeiro recorte existe:
- *
- *   const { data, info } = await sharp(gif, { pages: -1 })
- *     .flatten({ background: "#fefefe" }).removeAlpha().raw()
- *     .toBuffer({ resolveWithObject: true });
- *   await sharp(data, { raw: { width: info.width, height: info.height, channels: 3 } })
- *     .webp({ quality: 82 }).toFile(sprite);
- *
- * Se o GIF mudar, a sprite precisa ser gerada de novo e estas constantes
- * acompanharem.
- */
-const SPRITE = "/img/aminosan-bottle-1988-frames.webp";
-const FRAMES = 17;
-const FRAME_W = 582;
-const FRAME_H = 800;
-
-/** Cadência do GIF original entre um quadro e outro. */
-const FRAME_MS = 100;
+/** Cadência do vídeo original entre um quadro e outro. */
+const FRAME_MS = BOTTLE.frameMs;
 /** Trava no primeiro e no último quadro, para dar tempo de ler os anos. */
 const HOLD_MS = 500;
 
@@ -78,9 +64,9 @@ type HistoryBottleProps = {
  * O frasco original de 1988 em loop, com uma badge que atravessa os anos junto
  * com a animação: o primeiro quadro mostra 1988 e o último o ano corrente.
  *
- * Por que não o GIF direto: o navegador não conta em que quadro um GIF está, e
- * os tempos de cada quadro ficam gravados no arquivo. Tocando os quadros num
- * canvas, quadro e ano saem do mesmo relógio — a sincronia é exata por
+ * Por que não o vídeo direto: o quadro em que um <video> está só se sabe de
+ * forma aproximada. Tocando os quadros num canvas, quadro e ano saem do mesmo
+ * relógio — a sincronia é exata por
  * construção, e as travas nas pontas são só números aqui em cima.
  *
  * A contagem fica parada em 1988 até a seção entrar em cena, e recomeça do
@@ -117,9 +103,10 @@ export function HistoryBottle({ alt, trigger, start }: HistoryBottleProps) {
       const show = (frame: number) => {
         if (frame === drawn || !sprite.complete) return;
         drawn = frame;
+        const { x, y } = bottleCell(frame);
         ctx.drawImage(
           sprite,
-          0, frame * FRAME_H, FRAME_W, FRAME_H,
+          x, y, FRAME_W, FRAME_H,
           0, 0, FRAME_W, FRAME_H,
         );
         label.textContent = String(yearOf(frame));
@@ -195,7 +182,7 @@ export function HistoryBottle({ alt, trigger, start }: HistoryBottleProps) {
     // No desktop ocupa a coluna direita do card, na altura do conteúdo. Abaixo
     // de 1100px desce para o pé do card num painel largo e baixo: o frasco
     // continua em pé no centro (`object-contain`), e as sobras laterais saem
-    // no mesmo branco do fundo dos quadros (#fefefe, conferido na sprite), o
+    // no mesmo branco do fundo dos quadros (#fff, conferido na sprite), o
     // que dá bordas brancas sem emenda em vez de um retrato alto na tela.
     <div
       ref={rootRef}
@@ -213,7 +200,7 @@ export function HistoryBottle({ alt, trigger, start }: HistoryBottleProps) {
       {/* Os quadros vêm com fundo branco, então são apresentados como uma foto
           num painel da mesma cor em vez de recortados sobre o escuro do card.
           `object-contain` vale no canvas como numa imagem. */}
-      <figure className="relative size-full overflow-hidden rounded-[clamp(10px,0.9vw,16px)] bg-[#fefefe] shadow-[0_0_40px_rgba(183,199,62,0.25)]">
+      <figure className="relative size-full overflow-hidden rounded-[clamp(10px,0.9vw,16px)] bg-white shadow-[0_0_40px_rgba(183,199,62,0.25)]">
         <canvas
           ref={canvasRef}
           width={FRAME_W}
