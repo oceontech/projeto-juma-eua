@@ -82,13 +82,14 @@ const linkClass = [
 ].join(" ");
 
 /* Os atalhos do estreito não levam o sublinhado do desktop: sem hover, um
-   traço que só aparece no toque é decoração invisível. A tipografia é a mesma
-   do pré-título do hero — corpo pequeno, peso normal e 0.26em de espaçamento —
-   e não a dos links da barra larga: no estreito eles convivem com o hero, não
-   com o menu. Espaçados assim, três rótulos ainda cabem ao lado do selo em
-   360px, que é a tela mais estreita que atendemos. */
+   traço que só aparece no toque é decoração invisível. A tipografia segue a
+   do pré-título do hero — peso normal e 0.26em de espaçamento —, um pouco
+   maior que ele para ler como navegação, e não a dos links da barra larga: no
+   estreito eles convivem com o hero, não com o menu. Espaçados assim, três
+   rótulos ainda cabem ao lado do selo em 360px, que é a tela mais estreita que
+   atendemos — com ~10px de folga até o botão do menu, em português. */
 const compactLinkClass = [
-  "font-display text-[clamp(8px,2.4vw,10px)] uppercase tracking-[0.26em] whitespace-nowrap",
+  "font-display text-[clamp(9px,2.8vw,12px)] uppercase tracking-[0.26em] whitespace-nowrap",
   "text-muted transition-colors duration-400 active:text-ink",
   "group-data-[theme=dark]:text-white/70",
   "group-data-[open]:text-offwhite/70",
@@ -406,10 +407,10 @@ export function SiteHeader() {
               `flex-1` centra os três no vão que sobra entre o selo e o botão
               do menu — não no meio da barra, que jogaria o primeiro rótulo por
               cima do selo — e o `pr` reserva a coluna do hambúrguer, que está
-              fora do fluxo. */}
+              fora do fluxo: 36px, a largura dele. */}
           <nav
             aria-label="Shortcuts"
-            className="flex flex-1 items-center justify-center gap-[clamp(13px,4.6vw,24px)] pr-7 nav:hidden"
+            className="flex flex-1 items-center justify-center gap-[clamp(11px,4vw,24px)] pr-9 nav:hidden"
           >
             {nav.compact.map((item) => (
               <SmartLink key={item.label} href={item.href} className={compactLinkClass} data-enter>
