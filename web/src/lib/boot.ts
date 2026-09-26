@@ -85,10 +85,26 @@ export function isBooted(): boolean {
   return current.opened;
 }
 
+/* Quem vive fora das páginas (o header, no layout) não remonta a cada troca
+   e não pode esperar o promise de uma vez só: precisa ouvir toda saída do
+   véu. */
+const listeners = new Set<() => void>();
+
+/** Chama `fn` a cada vez que um véu começa a sair. Devolve o cancelamento. */
+export function onBoot(fn: () => void): () => void {
+  listeners.add(fn);
+  return () => listeners.delete(fn);
+}
+
 /** Chamado pelo véu quando ele começa a sair. */
+let firstBooted = false;
+
 export function markBooted() {
+  firstBooted = true;
   covered.open();
+  if (current.opened) return;
   current.open();
+  listeners.forEach((fn) => fn());
 }
 
 /** Fecha o portão de novo, para a página que vai montar. Chamado pelo
@@ -103,5 +119,11 @@ export function holdBoot() {
    site sem entrada. Passado o teto, a primeira entrada segue sozinha (a
    troca de página tem o próprio teto, em PageTransition.tsx). */
 if (typeof window !== "undefined") {
-  window.setTimeout(markBooted, 8000);
+  /* Só vale enquanto a primeira entrada não aconteceu. Disparado depois, no
+     meio de uma troca de página (um clique nos primeiros segundos), abria o
+     portão da página nova com o véu ainda de pé: hero e barra entravam por
+     trás dele. A troca tem o próprio teto. */
+  window.setTimeout(() => {
+    if (!firstBooted) markBooted();
+  }, 8000);
 }

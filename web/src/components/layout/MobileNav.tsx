@@ -63,6 +63,7 @@ export function BurgerButton({
   return (
     <button
       type="button"
+      data-enter
       aria-expanded={open}
       aria-controls="mobile-menu"
       aria-label={open ? nav.closeMenu : nav.openMenu}

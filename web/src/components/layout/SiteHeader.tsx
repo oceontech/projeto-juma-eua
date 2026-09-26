@@ -6,6 +6,7 @@ import { SmartLink } from "@/components/ui/SmartLink";
 import { languages } from "@/content";
 import { switchLocale, useContent, useLocale } from "./LocaleProvider";
 import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
+import { onBoot } from "@/lib/boot";
 import { BurgerButton, MobileMenu } from "./MobileNav";
 
 /**
@@ -45,6 +46,27 @@ const HIDE_AFTER = 160;
  * pelo meio, ele acompanha o que de fato está atrás da tipografia.
  */
 const TONE_LINE = 0.5;
+
+/**
+ * A entrada da barra, a cada saída de véu (a primeira entrada e toda troca de
+ * página): o carimbo. A barra não chega de lugar nenhum — ela é impressa a
+ * partir da marca. O selo desce grande e girado e bate no lugar com um
+ * pequeno rebote, como um carimbo no papel; o impacto corre para os lados em
+ * onda, e cada item sobe de dentro de uma fenda (uma máscara que se abre de
+ * baixo para cima), na ordem da distância até o selo.
+ *
+ * O atraso vem da cortina: ela sobe em 0,9 s (`power4.inOut`, partindo de
+ * 0,1 s) e só descobre a faixa do topo lá pelos 0,8 s — medido, não
+ * estimado. Começando junto com ela, o carimbo bateria atrás do véu.
+ */
+const ENTER = {
+  delay: 0.7,
+  /* O selo: de quanto maior e quão girado ele parte, e o rebote da batida. */
+  seal: { scale: 1.9, rotation: -9, duration: 0.62, ease: "back.out(2.2)" },
+  /* A onda: começa quando o selo já bateu e leva `spread` do item mais perto
+     ao mais longe. */
+  wave: { after: 0.28, spread: 0.38, duration: 0.8, ease: "power4.out" },
+};
 
 /* Sublinhado que entra pela esquerda e sai pela direita — a origem troca no
    hover, então o traço nunca recua pelo mesmo lado por onde entrou. O lima
@@ -87,7 +109,7 @@ export function SiteHeader() {
   const close = useCallback(() => setOpen(false), []);
 
   useGSAP(
-    () => {
+    (_context, contextSafe) => {
       const element = header.current;
       if (!element) return;
 
@@ -179,7 +201,74 @@ export function SiteHeader() {
         },
       });
 
+      /* ------------------------------------------------------ a entrada */
+      const enter = contextSafe!(() => {
+        if (reduce) return;
+
+        /* Uma troca de página feita com a barra escondida pelo scroll não
+           pode trazê-la de volta deslizando por cima da entrada. */
+        hiddenRef.current = false;
+        slide.tween.kill();
+        gsap.set(element, { yPercent: 0 });
+
+        /* Só o que está na tela nesta largura: os atalhos do estreito e o
+           menu do largo moram no DOM ao mesmo tempo. */
+        const items = gsap.utils
+          .toArray<HTMLElement>("[data-enter]", element)
+          .filter((item) => item.getClientRects().length > 0);
+
+        gsap.killTweensOf(items);
+        gsap.set(items, { clearProps: "transform,opacity,clipPath" });
+
+        const seal = items.find((item) => item.dataset.enter === "seal");
+        const origin = seal
+          ? seal.getBoundingClientRect().left + seal.offsetWidth / 2
+          : window.innerWidth / 2;
+        const distance = items.map((item) => {
+          const box = item.getBoundingClientRect();
+          return Math.abs(box.left + box.width / 2 - origin);
+        });
+        const reach = Math.max(1, ...distance);
+
+        items.forEach((item, i) => {
+          if (item === seal) {
+            gsap.fromTo(
+              item,
+              { scale: ENTER.seal.scale, rotation: ENTER.seal.rotation, opacity: 0 },
+              {
+                scale: 1,
+                rotation: 0,
+                opacity: 1,
+                delay: ENTER.delay,
+                duration: ENTER.seal.duration,
+                ease: ENTER.seal.ease,
+                clearProps: "transform,opacity",
+              },
+            );
+            return;
+          }
+          /* A máscara termina abaixo da caixa (-40%): o sublinhado dos links
+             mora 5px fora dela e não pode sair cortado no último quadro. */
+          gsap.fromTo(
+            item,
+            { yPercent: 110, clipPath: "inset(0% 0% 100% 0%)" },
+            {
+              yPercent: 0,
+              clipPath: "inset(0% 0% -40% 0%)",
+              delay: ENTER.delay + ENTER.wave.after + (distance[i] / reach) * ENTER.wave.spread,
+              duration: ENTER.wave.duration,
+              ease: ENTER.wave.ease,
+              /* Nada sobrando: hover e sublinhado voltam a ser só do CSS. */
+              clearProps: "transform,clipPath",
+            },
+          );
+        });
+      });
+
+      const stopEnter = onBoot(enter);
+
       return () => {
+        stopEnter();
         watchHero.disconnect();
         ScrollTrigger.removeEventListener("refresh", measure);
       };
@@ -241,6 +330,7 @@ export function SiteHeader() {
         >
           <div className="hidden items-center gap-[clamp(14px,1.5vw,26px)] nav:flex">
             <div
+              data-enter
               role="group"
               aria-label="Language"
               className="flex items-center gap-0.5 rounded-full bg-ink/[0.05] p-[3px] transition-colors duration-400 group-data-[theme=dark]:bg-white/10"
@@ -271,7 +361,7 @@ export function SiteHeader() {
 
             <nav aria-label="Main" className="flex items-center gap-[clamp(14px,1.5vw,26px)]">
               {nav.left.map((item) => (
-                <SmartLink key={item.label} href={item.href} className={linkClass}>
+                <SmartLink key={item.label} href={item.href} className={linkClass} data-enter>
                   {item.label}
                 </SmartLink>
               ))}
@@ -298,6 +388,7 @@ export function SiteHeader() {
               centrado na própria caixa. */}
           <SmartLink
             href="/"
+            data-enter="seal"
             aria-label="Juma-Agro — homepage"
             className="relative z-10 h-[32px] w-[63px] shrink-0 nav:h-[clamp(36px,2.9vw,46px)] nav:w-[clamp(71px,5.7vw,90px)]"
           >
@@ -321,7 +412,7 @@ export function SiteHeader() {
             className="flex flex-1 items-center justify-center gap-[clamp(13px,4.6vw,24px)] pr-7 nav:hidden"
           >
             {nav.compact.map((item) => (
-              <SmartLink key={item.label} href={item.href} className={compactLinkClass}>
+              <SmartLink key={item.label} href={item.href} className={compactLinkClass} data-enter>
                 {item.label}
               </SmartLink>
             ))}
@@ -329,7 +420,7 @@ export function SiteHeader() {
 
           <div className="hidden items-center justify-end gap-[clamp(14px,1.5vw,26px)] nav:flex">
             {nav.right.map((item) => (
-              <SmartLink key={item.label} href={item.href} className={linkClass}>
+              <SmartLink key={item.label} href={item.href} className={linkClass} data-enter>
                 {item.label}
               </SmartLink>
             ))}
@@ -338,6 +429,7 @@ export function SiteHeader() {
                 é o par escuro do botão, o mesmo do painel mobile. */}
             <SmartLink
               href={nav.cta.href}
+              data-enter
               className={[
                 "group/cta inline-flex items-center gap-2 rounded-full py-[10px] pr-[14px] pl-[18px]",
                 "font-display text-[11px] font-semibold tracking-[0.13em] whitespace-nowrap uppercase",
