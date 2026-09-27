@@ -2,7 +2,7 @@ import { ImageStreamHero, type CorridorPath } from "@/components/ui/image-stream
 import { Reveal } from "@/components/motion/Reveal";
 import { CropRegions } from "@/components/home/CropRegions";
 import { CropPillars } from "@/components/home/CropPillars";
-import { Rule, SectionIntro } from "@/components/ui";
+import { Rule } from "@/components/ui";
 import { getContent } from "@/lib/locale";
 import { cropCorridorImages } from "@/content/crop-corridor";
 
@@ -40,15 +40,16 @@ export async function CropSelection() {
   return (
     <section id="crops" className="relative overflow-hidden bg-white pt-sec">
       <Reveal className="wrap relative z-2">
-        <SectionIntro aside={<p className="text-muted">{crops.body}</p>}>
+        <div className="mx-auto flex max-w-[900px] flex-col items-center pt-[clamp(24px,4vw,80px)] text-center">
           <Rule className="mb-[clamp(18px,1.8vw,33px)]" />
           <p className="mb-[0.9em] text-micro font-semibold tracking-[0.15em] text-green-brand uppercase">
             {crops.eyebrow}
           </p>
-          <h2 className="max-w-[560px] text-h2 leading-[0.967] text-ink">
+          <h2 className="max-w-[760px] text-[clamp(34px,4.2vw,80px)] leading-[0.967] text-ink">
             {crops.headline}
           </h2>
-        </SectionIntro>
+          <p className="mt-[clamp(16px,1.6vw,28px)] max-w-[600px] text-muted">{crops.body}</p>
+        </div>
       </Reveal>
 
       <ImageStreamHero
@@ -57,7 +58,7 @@ export async function CropSelection() {
         speed={22}
         axis={48}
         path={MOBILE_PATH}
-        className="mt-[clamp(20px,6vw,32px)] h-[clamp(340px,100vw,540px)] bg-white min-[861px]:hidden"
+        className="-mt-[clamp(8px,4vw,24px)] h-[clamp(340px,100vw,540px)] bg-white min-[861px]:hidden"
       >
         <CorridorOverlay />
       </ImageStreamHero>
@@ -65,7 +66,7 @@ export async function CropSelection() {
         images={cropCorridorImages}
         speed={20}
         axis={50}
-        className="mt-[clamp(24px,2vw,40px)] hidden h-[clamp(480px,40vw,720px)] bg-white min-[861px]:block"
+        className="-mt-[clamp(40px,7vw,140px)] hidden h-[clamp(480px,40vw,720px)] bg-white min-[861px]:block"
       >
         <CorridorOverlay />
       </ImageStreamHero>

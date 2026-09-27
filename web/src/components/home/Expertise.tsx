@@ -215,8 +215,23 @@ export function Expertise() {
                celular de verdade, onde a barra do navegador faz `lvh` ser
                maior que a área visível, a suposição quebra de vez. */
             const placeCopy = (self: { end: number; scroll: () => number }) => {
+              if (!wide) return;
               gsap.set(darkEnter, { y: -Math.max(0, self.end - self.scroll()) });
             };
+
+            /* No estreito a compensação acima não serve. A rolagem do dedo é
+               feita pelo compositor do navegador, e os eventos de scroll
+               chegam atrasados e em lote durante a inércia: entre um e outro a
+               frase subia junto com a janela e era corrigida depois — nascia
+               mais alta e trocava de lugar quando ficava inteira.
+
+               Ali ela é presa na tela (`[data-pinned]` em globals.css), numa
+               caixa com a mesma geometria da janela travada. Quem a segura é o
+               navegador, no mesmo quadro da rolagem, sem JS nenhum no
+               caminho: ela nasce onde a janela vai parar e não se move. No
+               largo isso não vale — o parallax escreve `transform` nas
+               cópias, e transform num ancestral desfaz o `fixed`. */
+            if (!wide) darkCopy.dataset.pinned = "on";
 
             gsap
               .timeline({
@@ -364,6 +379,7 @@ export function Expertise() {
           timeline.progress(0);
 
           return () => {
+            delete darkCopy.dataset.pinned;
             clearTone();
             setWillChange(false);
             scene.dataset.navTheme = "dark";

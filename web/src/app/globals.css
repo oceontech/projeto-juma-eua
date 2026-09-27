@@ -970,6 +970,24 @@
     transform-origin: center center;
   }
 
+  /* A frase escura presa na tela, no estreito (Expertise.tsx): ela aparece
+     enquanto a janela ainda está subindo, e é o navegador que a mantém
+     parada, e não o JS. A caixa repete a da janela travada — topo da tela,
+     `100lvh`, o mesmo padding e a mesma centralização de `.expertise-layer` —
+     então quando a janela trava as duas coincidem e a cópia clara, que a
+     cortina revela, cai exatamente sobre ela.
+
+     Nenhum ancestral pode ter transform, filter, contain ou will-change de
+     transform: qualquer um deles viraria o bloco de referência do `fixed`. */
+  .expertise-copy[data-pinned] {
+    position: fixed;
+    inset: 0 0 auto;
+    height: 100lvh;
+    display: grid;
+    place-items: center;
+    padding: var(--spacing-sec) var(--spacing-gut);
+  }
+
   /* ------------------------------------------------------------- hero */
   /* A cena vem do frame 2688 × 1614 do Figma, em seis camadas.
 
