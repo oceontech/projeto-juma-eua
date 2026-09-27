@@ -252,6 +252,7 @@ export function TrialStrip() {
         <div className="sticky top-0 h-[100svh] w-full overflow-clip min-[861px]:h-[100lvh]">
           <div
             data-frame
+            data-nav-theme="dark"
             className="absolute inset-0 overflow-hidden bg-green-deep will-change-[clip-path]"
             style={{ clipPath: FRAME_TO }}
           >

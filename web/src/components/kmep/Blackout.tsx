@@ -36,6 +36,7 @@ export function Blackout({ variant = "a" }: { variant?: "a" | "b" }) {
       gsap.set(plant, { yPercent: 20, autoAlpha: 0 });
       root.style.marginBottom = `-${RISE}svh`;
 
+      let ownTone = false;
       const tl = gsap.timeline({
         defaults: { ease: "none" },
         scrollTrigger: {
@@ -46,15 +47,28 @@ export function Blackout({ variant = "a" }: { variant?: "a" | "b" }) {
           pin: true,
           anticipatePin: 1,
           onUpdate: (self) => {
-            if (self.progress > 0.14) html.dataset.navTheme = "dark";
-            else delete html.dataset.navTheme;
+            /* Antes dos 14% o preto na tela ainda é o disco do Specimen, que
+               manda no tom e o reafirma a cada quadro. Apagar aqui a cada
+               evento de scroll disputava com ele, e a barra ficava clara
+               sobre o preto enquanto a rolagem corria: só se apaga o que
+               esta cena mesma escreveu. */
+            const dark = self.progress > 0.14;
+            if (dark) html.dataset.navTheme = "dark";
+            else if (ownTone) delete html.dataset.navTheme;
+            ownTone = dark;
             if (bg) bg.style.opacity = self.progress > 0.14 ? "1" : "0";
           },
           onRefresh: (self) => {
             if (bg) bg.style.opacity = self.progress > 0.14 ? "1" : "0";
           },
-          onLeave: () => delete html.dataset.navTheme,
-          onLeaveBack: () => delete html.dataset.navTheme,
+          onLeave: () => {
+            ownTone = false;
+            delete html.dataset.navTheme;
+          },
+          onLeaveBack: () => {
+            if (ownTone) delete html.dataset.navTheme;
+            ownTone = false;
+          },
         },
       });
 

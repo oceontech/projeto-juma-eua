@@ -171,6 +171,7 @@ export function CropRegions() {
     <>
       <ul
         ref={scope}
+        data-nav-theme="dark"
         className="mx-[calc(-1*var(--spacing-gut))] mt-[clamp(28px,3vw,56px)] flex min-[1100px]:-mt-[clamp(8px,2.4vw,46px)] snap-x snap-mandatory scroll-px-gut gap-3 overflow-x-auto px-gut pb-2 [scrollbar-width:none] min-[861px]:mx-0 min-[861px]:grid min-[861px]:grid-cols-2 min-[861px]:gap-[clamp(14px,1.2vw,22px)] min-[861px]:overflow-visible min-[861px]:px-0 min-[1100px]:grid-cols-4"
       >
         {crops.regions.map((region, index) => {

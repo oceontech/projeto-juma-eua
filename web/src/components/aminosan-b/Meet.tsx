@@ -16,7 +16,7 @@ export function Meet() {
           </h2>
         </div>
 
-        <ol className="grid grid-cols-2 gap-3 md:gap-4 lg:grid-cols-12 lg:auto-rows-[minmax(250px,auto)] lg:gap-5 xl:grid-rows-2 xl:auto-rows-auto">
+        <ol data-nav-theme="dark" className="grid grid-cols-2 gap-3 md:gap-4 lg:grid-cols-12 lg:auto-rows-[minmax(250px,auto)] lg:gap-5 xl:grid-rows-2 xl:auto-rows-auto">
           <li className="relative isolate flex min-h-[460px] flex-col justify-end overflow-hidden rounded-[24px] bg-[#123524] text-cream p-[clamp(20px,3vw,40px)] col-span-2 md:col-span-2 lg:col-span-7 lg:row-span-2 lg:min-h-[540px] xl:col-span-6 xl:min-h-[460px]" style={{ clipPath: "inset(0 round 24px)" }}>
             <video
               autoPlay

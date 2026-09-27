@@ -108,6 +108,7 @@ export function CropPillars({
       ref={scope}
       aria-label={title}
       onPointerMove={onPanelMove}
+      data-nav-theme="dark"
       className="group/panel relative mt-[clamp(28px,3vw,52px)] overflow-hidden rounded-[clamp(18px,1.55vw,30px)] bg-linear-[149.8deg,var(--color-night-warm)_2.4%,var(--color-night-deep)_60.23%] text-offwhite"
     >
       <span

@@ -149,7 +149,7 @@ export function Expertise() {
              dissolução — e então não pode haver nada por baixo dela. */
           html.dataset.expertiseOverlap = "on";
 
-          /* A barra do topo deduz o tom pela coordenada das seções marcadas
+          /* A barra do topo deduz o tom pela caixa das seções marcadas
              como escuras (SiteHeader.tsx). Esta deixou de ser escura na altura
              inteira: no fim ela está branca e depois transparente, com os
              produtos aparecendo por baixo. Enquanto o percurso corre é o

@@ -68,7 +68,7 @@ export function Questions() {
         </div>
 
         <div className="w-full overflow-hidden motion-reduce:overflow-x-auto">
-          <ol ref={track} className="flex gap-3 px-[var(--rail-gut)] will-change-transform md:gap-4">
+          <ol ref={track} data-nav-theme="dark" className="flex gap-3 px-[var(--rail-gut)] will-change-transform md:gap-4">
             {questions.items.map((item, i) => {
               const lead = i === 0;
               return (

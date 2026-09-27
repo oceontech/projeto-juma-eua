@@ -48,6 +48,13 @@ const HIDE_AFTER = 160;
 const TONE_LINE = 0.5;
 
 /**
+ * Quanto da largura da barra uma área marcada precisa cobrir para decidir o
+ * tom. O formulário branco dos cards de contato ocupa ~46% no largo, e é ele
+ * que está sob os links e o botão — por isso não mais que isso.
+ */
+const MARK_REACH = 0.4;
+
+/**
  * A entrada da barra, a cada saída de véu (a primeira entrada e toda troca de
  * página): o carimbo. A barra não chega de lugar nenhum — ela é impressa a
  * partir da marca. O selo desce grande e girado e bate no lugar com um
@@ -127,22 +134,80 @@ export function SiteHeader() {
         slide(hidden ? -130 : 0);
       };
 
-      /* As seções escuras da página, medidas em coordenadas do documento.
-         Uma lista só, consultada a cada scroll, em vez de um ScrollTrigger
-         por seção: com seções escuras vizinhas, o `leave` de uma e o `enter`
-         da outra disputam a mesma troca e o tom pisca. */
-      let darkRanges: Array<[number, number]> = [];
+      /* As áreas marcadas com `data-nav-theme`, numa lista só, consultada a
+         cada scroll, em vez de um ScrollTrigger por seção: com seções escuras
+         vizinhas, o `leave` de uma e o `enter` da outra disputam a mesma troca
+         e o tom pisca.
+
+         A caixa de cada uma é lida na hora, e não guardada em coordenadas do
+         documento: metade das áreas escuras mora em cena presa (pin, sticky),
+         e uma caixa medida no refresh não acompanha o que o pin segura na
+         tela. A lista em si só é refeita quando o DOM muda. */
+      let marked: HTMLElement[] = [];
+      let stale = true;
       let toneOffset = 0;
 
       const measure = () => {
         toneOffset = element.offsetHeight * TONE_LINE;
-        darkRanges = [...document.querySelectorAll("[data-nav-theme='dark']")].map(
-          (section) => {
-            const box = section.getBoundingClientRect();
-            const top = box.top + window.scrollY;
-            return [top, top + box.height];
-          },
-        );
+        stale = true;
+      };
+
+      const watchMarks = new MutationObserver(() => (stale = true));
+      watchMarks.observe(document.body, {
+        subtree: true,
+        childList: true,
+        attributes: true,
+        attributeFilter: ["data-nav-theme"],
+      });
+
+      /* O recorte de uma moldura que abre e fecha por `clip-path: inset()`
+         (o GSAP escreve no style): sem descontá-lo, a barra leria a caixa
+         inteira como escura com a faixa branca da moldura ainda por trás. */
+      const clipped = (box: DOMRect, clip: string): [number, number] => {
+        if (!clip.startsWith("inset(")) return [box.top, box.bottom];
+        /* Um a quatro valores, como a margem do CSS — e o GSAP escreve a
+           forma curta: `inset(7% 5% round 32px)`. */
+        const sides = clip.slice(6).split(/\s+round\s|\)/)[0].trim().split(/\s+/);
+        const edge = (value = "0") =>
+          value.endsWith("%") ? (box.height * parseFloat(value)) / 100 : parseFloat(value) || 0;
+        return [box.top + edge(sides[0]), box.bottom - edge(sides[2] ?? sides[0])];
+      };
+
+      /* O tom de quem está atrás da linha. Marcas aninhadas valem: um cartão
+         claro dentro de uma seção escura vem depois dela na ordem do
+         documento, então a última que contém a linha é a mais interna.
+
+         E só manda quem cobre boa parte da barra: um cartão que no celular
+         ocupa a largura toda vira, no largo, uma coluna estreita ao lado de
+         outra escura — ali quem está atrás dos links é o vizinho, não ele. */
+      const toneAt = (line: number) => {
+        if (stale) {
+          marked = [...document.querySelectorAll<HTMLElement>("body [data-nav-theme]")];
+          stale = false;
+        }
+        const reach = window.innerWidth * MARK_REACH;
+        let tone = "light";
+        for (const mark of marked) {
+          const box = mark.getBoundingClientRect();
+          if (box.width < reach) continue;
+          const [top, bottom] = clipped(box, mark.style.clipPath);
+          if (line > top && line < bottom) tone = mark.dataset.navTheme!;
+        }
+        return tone;
+      };
+
+      /* O tom é lido no quadro seguinte ao scroll, e não dentro dele: o
+         gatilho da barra roda antes dos pins da página, e lendo ali ele via a
+         cena ainda solta — um quadro antes de o pin segurá-la. Quando a
+         rolagem parava nesse quadro, a barra ficava com o tom de um lugar em
+         que a cena não estava mais. */
+      let toneFrame = 0;
+      const applyTone = () => {
+        if (toneFrame) return;
+        toneFrame = requestAnimationFrame(() => {
+          toneFrame = 0;
+          element.dataset.theme = root.dataset.navTheme ?? toneAt(toneOffset);
+        });
       };
 
       /* Seção travada (o hero) não muda de lugar enquanto a página rola,
@@ -167,9 +232,7 @@ export function SiteHeader() {
           applyHidden.current(heroNav === "on" && !openRef.current);
         }
 
-        const line = y + toneOffset;
-        const overDark = darkRanges.some(([top, bottom]) => line > top && line < bottom);
-        element.dataset.theme = root.dataset.navTheme ?? (overDark ? "dark" : "light");
+        applyTone();
       };
 
       /* Os avisos do hero chegam fora do scroll: a cena continua se desfazendo
@@ -271,6 +334,8 @@ export function SiteHeader() {
       return () => {
         stopEnter();
         watchHero.disconnect();
+        watchMarks.disconnect();
+        cancelAnimationFrame(toneFrame);
         ScrollTrigger.removeEventListener("refresh", measure);
       };
     },

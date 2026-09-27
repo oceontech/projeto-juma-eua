@@ -34,7 +34,7 @@ export function Fit() {
   return (
     <section ref={scope} className="bg-white pb-sec text-forest">
       <div className="wrap">
-        <div className="relative isolate overflow-hidden rounded-[clamp(20px,2vw,36px)] bg-night px-[clamp(20px,3.6vw,64px)] py-[clamp(32px,4.2vw,68px)] text-offwhite ring-1 ring-offwhite/10">
+        <div data-nav-theme="dark" className="relative isolate overflow-hidden rounded-[clamp(20px,2vw,36px)] bg-night px-[clamp(20px,3.6vw,64px)] py-[clamp(32px,4.2vw,68px)] text-offwhite ring-1 ring-offwhite/10">
           {/* O selo do produto: os mesmos anéis do bloco de dose (K13), incompletos
               e girando — aqui em cheio, branco por fora e vermelho por dentro, sobre
               o preto que o cartão herda da embalagem. */}

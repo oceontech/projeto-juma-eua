@@ -347,7 +347,7 @@ export function Proof() {
 
           <div className="flex flex-col gap-6">
             {/* O cartão de citação. */}
-            <div className="pr-cite relative overflow-hidden bg-night p-[clamp(22px,2.6vw,40px)] text-cream">
+            <div data-nav-theme="dark" className="pr-cite relative overflow-hidden bg-night p-[clamp(22px,2.6vw,40px)] text-cream">
               <span aria-hidden className="absolute inset-y-0 left-0 w-1.5 bg-kmep" />
               <p className={`${microCaps} text-[10px] text-kmep-light`}>{paper.citation.label}</p>
               <p className="mt-4 font-display text-[clamp(30px,3vw,52px)] leading-none tracking-[-0.035em]">{paper.citation.journal}</p>

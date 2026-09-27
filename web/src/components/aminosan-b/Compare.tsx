@@ -77,7 +77,7 @@ export function Compare() {
               </div>
             ))}
           </div>
-          <div className="cp-m rounded-[16px] border border-dashed border-cream/35 bg-forest px-4 py-4 text-cream">
+          <div data-nav-theme="dark" className="cp-m rounded-[16px] border border-dashed border-cream/35 bg-forest px-4 py-4 text-cream">
             <p className="font-display text-[16px] leading-[1.1] tracking-[-0.02em]">{compare.columns.theirs}</p>
             {compare.rows.map((row) => (
               <div key={row.k} className="mt-3 border-t border-dashed border-cream/30 pt-3">

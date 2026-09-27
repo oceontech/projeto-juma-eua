@@ -183,6 +183,9 @@ export function HistoryBottle({ alt, trigger, start }: HistoryBottleProps) {
     // que dá bordas brancas sem emenda em vez de um retrato alto na tela.
     <div
       ref={rootRef}
+      // O painel é branco: no celular ele cobre a largura toda e a barra
+      // clareia sobre ele; no largo é uma coluna estreita e não conta.
+      data-nav-theme="light"
       // A margem negativa avança o painel até metade do padding do card, para
       // ele ficar mais largo que a coluna de texto.
       className="relative -mx-[clamp(12px,1.3vw,25px)] aspect-[3/2] max-h-[340px] min-[1100px]:absolute min-[1100px]:inset-y-[clamp(24px,2.6vw,50px)] min-[1100px]:right-[clamp(24px,2.6vw,50px)] min-[1100px]:mx-0 min-[1100px]:aspect-auto min-[1100px]:max-h-none min-[1100px]:w-[36%]"

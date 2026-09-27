@@ -34,7 +34,7 @@ export function Fit() {
   return (
     <section ref={scope} className="bg-white pb-sec text-forest">
       <div className="wrap">
-        <div className="relative isolate overflow-hidden rounded-[clamp(20px,2vw,36px)] bg-night px-[clamp(20px,3.6vw,64px)] py-[clamp(32px,4.2vw,68px)] text-offwhite ring-1 ring-offwhite/10">
+        <div data-nav-theme="dark" className="relative isolate overflow-hidden rounded-[clamp(20px,2vw,36px)] bg-night px-[clamp(20px,3.6vw,64px)] py-[clamp(32px,4.2vw,68px)] text-offwhite ring-1 ring-offwhite/10">
           <div aria-hidden className="pointer-events-none absolute -top-[16%] -right-[10%] z-0 size-[clamp(240px,30vw,460px)] opacity-90">
             <svg viewBox="0 0 100 100" className="size-full origin-center animate-spin motion-reduce:animate-none [animation-duration:32s]">
               <circle cx="50" cy="50" r="46" fill="none" strokeWidth="3" strokeLinecap="round" strokeDasharray="205 285" stroke="#3E78AE" />

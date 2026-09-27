@@ -43,7 +43,7 @@ export function Final() {
   return (
     <section id="trial-form" ref={scope} className="bg-white py-[clamp(40px,6vw,96px)]">
       <div className="wrap">
-        <div className="relative isolate grid gap-[clamp(28px,4vw,72px)] grid-cols-[minmax(0,1fr)] overflow-hidden rounded-[clamp(24px,2.4vw,44px)] bg-forest p-[clamp(20px,3vw,48px)] max-md:px-0 text-cream lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
+        <div data-nav-theme="dark" className="relative isolate grid gap-[clamp(28px,4vw,72px)] grid-cols-[minmax(0,1fr)] overflow-hidden rounded-[clamp(24px,2.4vw,44px)] bg-forest p-[clamp(20px,3vw,48px)] max-md:px-0 text-cream lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
           <Image
             src="/img/aminosan-b/final-grower.webp"
             alt={final.alt}
@@ -65,7 +65,7 @@ export function Final() {
             <p className={`${microText} max-w-[50ch] text-cream/80`}>{final.body}</p>
           </div>
 
-          <div className="fn-card relative max-md:-mr-px max-md:w-[calc(100%+1px)] rounded-[clamp(18px,1.8vw,30px)] bg-white p-[clamp(20px,2.4vw,40px)] text-ink shadow-[0_30px_80px_-30px_rgba(0,0,0,0.55)]">
+          <div data-nav-theme="light" className="fn-card relative max-md:-mr-px max-md:w-[calc(100%+1px)] rounded-[clamp(18px,1.8vw,30px)] bg-white p-[clamp(20px,2.4vw,40px)] text-ink shadow-[0_30px_80px_-30px_rgba(0,0,0,0.55)]">
             <TrialForm source="aminosan" />
           </div>
         </div>

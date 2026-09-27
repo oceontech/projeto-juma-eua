@@ -201,6 +201,7 @@ export function Potassium() {
       : "border border-forest/12 bg-forest/[0.035]";
     return (
       <div
+        data-nav-theme={dark ? "dark" : undefined}
         className={`kp-${kind} relative grid grid-cols-1 items-start gap-y-5 rounded-[clamp(14px,1.4vw,24px)] px-[clamp(16px,2.4vw,40px)] py-[clamp(18px,2.4svh,32px)] md:grid-cols-[120px_minmax(0,1fr)] md:items-center md:gap-x-8 lg:grid-cols-[180px_minmax(0,1fr)] lg:gap-x-10 ${card}`}
       >
         {dark && (

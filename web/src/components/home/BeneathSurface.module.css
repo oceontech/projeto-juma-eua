@@ -13,6 +13,9 @@
 
 .camera, .image, .revealBand, .scrim, .entryFade { position: absolute; inset: 0; pointer-events: none; }
 .touchZone { display: none; }
+/* Medido: com a câmera no lugar, a média da faixa cruza do claro para o
+   escuro por volta de 240px abaixo do topo, no celular e no desktop. */
+.navDark { position: absolute; inset: clamp(230px, 16.5vw, 320px) 0 0; pointer-events: none; }
 .entryFade {
   bottom: auto;
   z-index: 2;

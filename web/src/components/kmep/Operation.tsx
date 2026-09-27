@@ -49,7 +49,7 @@ export function Operation() {
           {operation.heading}
         </SplitLines>
 
-        <div className="op-cards mt-[clamp(36px,5vw,72px)] grid grid-cols-2 gap-2.5 sm:gap-3 xl:grid-cols-12 xl:gap-4">
+        <div data-nav-theme="dark" className="op-cards mt-[clamp(36px,5vw,72px)] grid grid-cols-2 gap-2.5 sm:gap-3 xl:grid-cols-12 xl:gap-4">
           {operation.cards.map((card, i) => {
             const wide = i === operation.cards.length - 1 && i > 0;
             return (

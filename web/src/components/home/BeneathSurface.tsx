@@ -172,9 +172,12 @@ export function BeneathSurface() {
   return (
     <section
       ref={root} id="beneath-the-surface" className={styles.section}
-      data-nav-theme="dark" data-revealed={revealed}
+      data-revealed={revealed}
       aria-labelledby="surface-title"
     >
+      {/* A seção abre em branco (a entrada em degradê e o céu da foto): a
+          barra só escurece onde a folha começa de fato. */}
+      <div className={styles.navDark} data-nav-theme="dark" aria-hidden="true" />
       <div className={styles.camera} data-surface-camera aria-hidden="true">
         <div className={`${styles.image} ${styles.base}`} />
         <div className={styles.revealBand}>

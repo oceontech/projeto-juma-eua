@@ -16,7 +16,7 @@ export async function USOperation() {
 
   return (
     <section id="us-operation" className={s.section}>
-      <div className={s.card}>
+      <div className={s.card} data-nav-theme="dark">
         <Image
           src="/img/trial-v2/step-2-check.webp"
           alt=""
@@ -82,6 +82,10 @@ export async function USOperation() {
         </Reveal>
 
         <Reveal replay y={40} blur={10} delay={0.1} className={s.formCard}>
+          {/* O card verde é escuro, o formulário é branco: no celular um vem
+              embaixo do outro; no largo o branco fica à direita, sob os links
+              e o botão da barra — onde ele passa, a barra é clara. */}
+          <span aria-hidden data-nav-theme="light" className="pointer-events-none absolute inset-0" />
           <TrialForm />
         </Reveal>
       </div>

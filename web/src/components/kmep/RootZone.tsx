@@ -133,6 +133,7 @@ export function RootZone() {
         <div
           role="img"
           aria-label={zone.alt}
+          data-nav-theme="dark"
           className="relative aspect-[4/5] max-h-[60svh] w-full overflow-hidden rounded-[clamp(14px,1.4vw,24px)] bg-[#2A2A1E] lg:col-start-2 lg:row-start-1 lg:aspect-[16/8] lg:max-h-[66svh]"
         >
           <canvas ref={canvas} className="absolute inset-0 size-full" />

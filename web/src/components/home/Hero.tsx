@@ -527,6 +527,7 @@ export function Hero() {
           const tail = scene.querySelector<HTMLElement>(".hero-leaves-tail");
           const veil = scene.querySelector<HTMLElement>("[data-hero='blackout']");
           const bar = document.querySelector<HTMLElement>("header");
+          const after = scene.nextElementSibling;
           let tone = "";
 
           ScrollTrigger.create({
@@ -539,10 +540,17 @@ export function Hero() {
               const coberto =
                 (!!tail && tail.getBoundingClientRect().top <= line) ||
                 (!!veil && Number(getComputedStyle(veil).opacity) > 0.35);
-              const next = coberto ? "dark" : "light";
+              /* Com o bloco seguinte já passando sob a barra, quem manda é a
+                 marcação dele. No celular ele sobe por dentro do hero antes
+                 de a cena acabar, e traz um painel branco que este preto
+                 não enxerga. */
+              const handed =
+                coberto && !!after && after.getBoundingClientRect().top <= line;
+              const next = handed ? "" : coberto ? "dark" : "light";
               if (next === tone) return;
               tone = next;
-              html.dataset.navTheme = next;
+              if (next) html.dataset.navTheme = next;
+              else delete html.dataset.navTheme;
             },
             onLeave: () => {
               tone = "";
