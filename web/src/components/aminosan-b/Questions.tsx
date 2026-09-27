@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useRef } from "react";
 import { useContent } from "@/components/layout/LocaleProvider";
 import { gsap, useGSAP } from "@/lib/gsap";
@@ -8,16 +7,21 @@ import { SplitLines } from "@/components/motion/SplitLines";
 import { microText } from "./ui";
 
 /**
- * As perguntas como o "latest from the community" da referência: a cena
- * prende sobre o fundo branco e o trilho de cartões corre para a esquerda
- * conforme a página rola. Cada cartão é uma foto com a caixa creme
- * sobreposta. O título fica centralizado acima e o trilho corre de ponta
- * a ponta, só com o scroll — sem setas.
+ * As perguntas, no mesmo trilho horizontal pinado da LP do KMEP: a cena
+ * prende e o trilho corre para a esquerda conforme a página rola, sem setas.
+ * Cartões sem foto e todos no mesmo padrão — a caixa escura sozinha, o número,
+ * a pergunta e a resposta no pé.
+ *
+ * A primeira pergunta ("o que faz o aminoácido livre ser diferente") entra
+ * mais larga e no escuro liso, com os anéis no canto: é a pergunta da página
+ * inteira. As outras vão no gradiente, com o filete lima à esquerda.
+ *
+ * Sem movimento, o pin não existe e o trilho vira rolagem horizontal comum.
  */
 export function Questions() {
   const { questions } = useContent().aminosanB;
   const scope = useRef<HTMLElement>(null);
-  const track = useRef<HTMLDivElement>(null);
+  const track = useRef<HTMLOListElement>(null);
 
   useGSAP(
     () => {
@@ -52,58 +56,60 @@ export function Questions() {
   return (
     <section ref={scope} className="bg-white text-forest">
       <div
-        className="qs-stage relative h-[100svh] overflow-hidden"
+        className="qs-stage relative flex min-h-[100svh] flex-col justify-center gap-[clamp(20px,4svh,48px)] overflow-hidden pt-[clamp(72px,10svh,110px)] pb-[clamp(24px,5svh,56px)]"
         style={{
           ["--rail-gut" as string]:
             "max(var(--spacing-gut), calc((100vw - var(--container-wrap)) / 2))",
         }}
       >
-        <div className="relative flex h-full flex-col justify-center gap-[clamp(28px,5svh,56px)] pt-[clamp(72px,10svh,110px)] pb-[clamp(32px,6svh,64px)]">
-          <div className="px-[var(--spacing-gut)] text-center">
-            <SplitLines className="text-[clamp(34px,3.8vw,64px)] leading-[0.98] tracking-[-0.03em]">
-              {questions.heading.map((line) => (
-                <span key={line} className="block">
-                  {line}
-                </span>
-              ))}
-            </SplitLines>
-          </div>
+        <div className="px-[var(--rail-gut)]">
+          <SplitLines className="max-w-[14ch] text-[clamp(32px,3.8vw,68px)] leading-[0.98] tracking-[-0.03em]">
+            {questions.heading.map((line) => (
+              <span key={line} className="block">
+                {line}
+              </span>
+            ))}
+          </SplitLines>
+        </div>
 
-          {/* O trilho ocupa a largura toda: os cartões correm de ponta a ponta. */}
-          <div className="w-full overflow-hidden motion-reduce:overflow-x-auto">
-            <div
-              ref={track}
-              className="flex gap-4 px-[var(--rail-gut)] will-change-transform"
-            >
-              {questions.items.map((item, i) => (
-                <article
+        <div className="w-full overflow-hidden motion-reduce:overflow-x-auto">
+          <ol
+            ref={track}
+            data-nav-theme="dark"
+            className="flex gap-3 px-[var(--rail-gut)] will-change-transform md:gap-4"
+          >
+            {questions.items.map((item, i) => {
+              const lead = i === 0;
+              return (
+                <li
                   key={item.q}
-                  className="relative h-[min(540px,60svh)] w-[min(82vw,430px)] shrink-0"
+                  className={`relative flex min-h-[min(440px,58svh)] shrink-0 flex-col overflow-hidden rounded-[clamp(14px,1.2vw,20px)] p-5 text-offwhite md:p-7 ${lead ? "w-[min(88vw,560px)] bg-night" : "w-[min(88vw,400px)] bg-linear-[149.8deg,var(--color-night-warm)_2.4%,var(--color-night-deep)_60.23%]"}`}
                 >
-                  <div className="absolute top-0 left-0 h-[72%] w-[64%] overflow-hidden rounded-[16px]">
-                    <Image
-                      src={item.image}
-                      alt=""
-                      fill
-                      sizes="300px"
-                      className="object-cover"
-                    />
-                  </div>
-                  <div className="absolute right-0 bottom-0 flex h-[64%] w-[76%] flex-col rounded-[16px] bg-white p-5 text-forest shadow-[0_18px_40px_-18px_rgba(22,38,27,0.28)]">
-                    <span className="font-display text-[11px] tracking-[0.16em] text-moss">
-                      {String(i + 1).padStart(2, "0")}
-                    </span>
-                    <h3 className="mt-2 font-display text-[17px] leading-[1.2] font-medium tracking-[0.02em] uppercase">
-                      {item.q}
-                    </h3>
-                    <p className={`${microText} mt-auto text-forest/70`}>
-                      {item.a}
-                    </p>
-                  </div>
-                </article>
-              ))}
-            </div>
-          </div>
+                  {lead && (
+                    <>
+                      <span aria-hidden className="pointer-events-none absolute -top-[26%] -right-[22%] size-[46%] rounded-full border-[clamp(6px,0.7vw,10px)] border-offwhite/35" />
+                      <span aria-hidden className="pointer-events-none absolute -top-[19%] -right-[15%] size-[32%] rounded-full border-[clamp(6px,0.7vw,10px)] border-amino-light/70" />
+                    </>
+                  )}
+                  {!lead && <span aria-hidden className="absolute top-7 left-0 h-8 w-[3px] bg-lime md:top-9" />}
+                  <span
+                    className={`relative font-display text-[11px] font-semibold tracking-[0.16em] tabular-nums ${lead ? "text-amino-light" : "text-lime"}`}
+                  >
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  {lead && <span aria-hidden className="relative mt-4 block h-[2px] w-12 rounded-full bg-amino-light" />}
+                  <h3
+                    className={`relative mt-3 font-display leading-[1.12] tracking-[-0.015em] ${lead ? "max-w-[80%] text-[clamp(24px,2.3vw,38px)]" : "text-[clamp(19px,1.5vw,24px)]"}`}
+                  >
+                    {item.q}
+                  </h3>
+                  <p className={`${microText} relative mt-auto pt-6 text-offwhite/62`}>
+                    {item.a}
+                  </p>
+                </li>
+              );
+            })}
+          </ol>
         </div>
       </div>
     </section>

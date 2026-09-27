@@ -707,42 +707,34 @@ export const questions = {
     {
       q: "What makes free amino acids different?",
       a: "They're single amino acids, not peptide chains. The plant can put them to work without breaking anything down first.",
-      image: "/img/aminosan-b/meet-leaf.webp",
     },
     {
       q: "How is it different from a hydrolysate?",
       a: "Many amino acid products are hydrolysates, often from animal by-products and broken down with acid and heat. Aminosan® is plant-derived, made by enzymatic fermentation, and 100% free-form.",
-      image: "/img/aminosan-b/season-soy.webp",
     },
     {
       q: "Will it fit my spray program?",
       a: "Use it alone or in the tank with a pass you've already planned. Follow the mixing order on the label and jar-test new combinations.",
-      image: "/img/aminosan-b/season-sprayer.webp",
     },
     {
       q: "When should I apply it?",
       a: "It depends on the crop. Soybeans get a pass 25 to 30 days after germination and another before bloom, corn one before V8, vegetables one every 1 to 2 weeks. The window for each crop is on this page.",
-      image: "/img/aminosan-b/season-corn.webp",
     },
     {
       q: "Does it contain hormones?",
       a: "No. Aminosan® is non-hormonal: free-form amino acids plus nitrogen, phosphate and potash.",
-      image: "/img/aminosan-b/timing-hands.webp",
     },
     {
       q: "Decades in Brazil. Where's the U.S. data?",
       a: "Not in yet, and we won't pretend otherwise. That's why we offer a strip on your farm: your field, your check, your yield monitor.",
-      image: "/img/aminosan-b/trial-strip.webp",
     },
     {
       q: "What will it do for my crop?",
       a: "We describe what's in the jug, not a result we can't show you. What it does on your ground is what a strip with an untreated check is for. We supply the product.",
-      image: "/img/aminosan-b/proof-farmer.webp",
     },
     {
       q: "How much do I need?",
       a: "14 to 20 fl oz per acre on commodity crops and 14 fl oz per acre on vegetables, in a pass you're already making. For fruit, citrus and ornamentals, ask us.",
-      image: "/img/aminosan-b/final-grower.webp",
     },
   ],
 };

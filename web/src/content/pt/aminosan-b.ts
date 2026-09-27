@@ -579,42 +579,34 @@ export const questions: typeof en.questions = {
     {
       q: "O que os aminoácidos livres têm de diferente?",
       a: "São aminoácidos soltos, sem cadeias de peptídeos. A planta pode usá-los sem precisar quebrar nada antes.",
-      image: "/img/aminosan-b/meet-leaf.webp",
     },
     {
       q: "Qual a diferença para um hidrolisado?",
       a: "Muitos produtos de aminoácido são hidrolisados, muitas vezes de subprodutos animais e quebrados com ácido e calor. O Aminosan® é de origem vegetal, feito por fermentação enzimática e 100% livre.",
-      image: "/img/aminosan-b/season-soy.webp",
     },
     {
       q: "Entra no meu programa de pulverização?",
       a: "Use sozinho ou no tanque com uma passada que você já programou. Siga a ordem de mistura do rótulo e faça o teste de calda em combinações novas.",
-      image: "/img/aminosan-b/season-sprayer.webp",
     },
     {
       q: "Quando devo aplicar?",
       a: "Depende da cultura. A soja recebe uma passada aos 25 a 30 dias da germinação e outra antes da florada, o milho uma antes de V8, as hortaliças uma a cada 1 a 2 semanas. A janela de cada cultura está nesta página.",
-      image: "/img/aminosan-b/season-corn.webp",
     },
     {
       q: "Tem hormônio?",
       a: "Não. O Aminosan® é não hormonal: aminoácidos livres mais nitrogênio, fósforo e potássio.",
-      image: "/img/aminosan-b/timing-hands.webp",
     },
     {
       q: "Décadas no Brasil. Cadê o dado americano?",
       a: "Ainda não temos, e não vamos fingir que temos. É por isso que oferecemos uma faixa na sua fazenda: o seu talhão, a sua testemunha, o seu monitor de colheita.",
-      image: "/img/aminosan-b/trial-strip.webp",
     },
     {
       q: "O que ele vai fazer pela minha lavoura?",
       a: "Nós descrevemos o que tem na bombona, não um resultado que não podemos mostrar. O que ele faz no seu chão é para isso que serve uma faixa com testemunha. Nós fornecemos o produto.",
-      image: "/img/aminosan-b/proof-farmer.webp",
     },
     {
       q: "Quanto eu preciso?",
       a: "14 a 20 fl oz por acre nas commodities e 14 fl oz por acre nas hortaliças, numa passada que você já faz. Para frutas, citros e ornamentais, fale conosco.",
-      image: "/img/aminosan-b/final-grower.webp",
     },
   ],
 };

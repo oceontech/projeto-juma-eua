@@ -37,6 +37,7 @@
   --color-kmep: #CB351B;
   --color-kmep-light: #FF694E;
   --color-amino: #134777;
+  --color-amino-light: #5B9BDB;
 
   /* LP B do Aminosan (/aminosan-b) — oliva e creme da referência editorial,
      puxados para a família de verdes da marca. */
@@ -3286,32 +3287,46 @@ html[data-proof-overlap] .expertise-layer--dark .expertise-bg {
   border-radius: 50%;
 }
 
+/* Comprimento, ângulo e o lugar da etiqueta são escritos a cada quadro por
+   lib/scan/callouts.ts, que procura um lugar fora do desenho. */
 .sp-lead {
   position: absolute;
   top: 0;
   left: 0;
-  width: 76px;
+  width: 0;
   height: 1px;
   transform-origin: left center;
-  transform: scaleX(var(--side));
   background: color-mix(in srgb, var(--color-forest) calc(55% * var(--depth)), transparent);
 }
 
 .sp-tagbox {
   position: absolute;
-  top: -12px;
+  top: 0;
   left: 0;
   display: block;
   width: max-content;
   max-width: 210px;
-  padding: 4px 8px;
-  margin-inline-start: calc(var(--side) * 76px);
-  /* Um fundo de papel: a etiqueta pousa sobre os pontos do desenho e, sem ele,
-     o texto se mistura com eles. */
-  background: #fff;
-  border-radius: 3px;
-  translate: calc((var(--side) - 1) * 50%) 0;
+  isolation: isolate;
   opacity: var(--depth);
+}
+
+/* Sem caixa: a etiqueta pousa no papel, fora do desenho. Só quando não há
+   lugar livre (`is-over`) um halo branco desfocado aparece por trás, o
+   bastante para o texto ler sobre os pontos — sem borda, sem cartão. */
+.sp-tagbox::before {
+  content: "";
+  position: absolute;
+  inset: -10px -14px;
+  z-index: -1;
+  border-radius: 14px;
+  background: rgb(255 255 255 / 0.88);
+  filter: blur(10px);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.sp-tagbox.is-over::before {
+  opacity: 1;
 }
 
 .sp-call-label {

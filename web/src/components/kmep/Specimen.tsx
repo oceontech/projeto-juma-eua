@@ -7,11 +7,11 @@ import { gsap, ScrollTrigger, SplitText, useGSAP } from "@/lib/gsap";
 import {
   buildFromPoints,
   createScan,
-  project,
   type Scan as Field,
   type ScanUniforms,
 } from "@/lib/scan/field";
 import { KMEP_SCENES } from "@/lib/scan/kmep";
+import { createCallouts } from "@/lib/scan/callouts";
 import { FRAMES, stipplePhoto } from "@/lib/scan/stipple";
 import { microCaps } from "./ui";
 
@@ -236,6 +236,12 @@ export function Specimen({
           const shown = { stage: -1 };
 
           const calls = gsap.utils.toArray<HTMLElement>(".sp-call", root);
+          const callouts = createCallouts(
+            stage,
+            calls,
+            forms,
+            root.querySelector<HTMLElement>(".sp-panel"),
+          );
 
           /* Durante o fechamento em disco o canvas desenha em 1×: o preto não
              tem detalhe a perder, e cada partícula crescida pinta dezenas de
@@ -244,6 +250,7 @@ export function Specimen({
 
           const fit = () => {
             if (!field) return;
+            callouts.measure();
             const w = stage.clientWidth;
             const h = stage.clientHeight;
             field.resize(
@@ -368,19 +375,7 @@ export function Specimen({
 
             const i = shown.stage;
             if (i < 0) return;
-            const anchors = forms[i].anchors;
-            const w = stage.clientWidth / 2;
-            const h = stage.clientHeight / 2;
-            for (let k = 0; k < anchors.length; k++) {
-              const el = calls[i * 3 + k];
-              if (!el) continue;
-              const [x, y, depth] = project(anchors[k].at, u, time);
-              el.style.transform = `translate3d(${w + x}px, ${h + y}px, 0)`;
-              el.style.setProperty(
-                "--depth",
-                String(gsap.utils.clamp(0.45, 1, depth)),
-              );
-            }
+            callouts.place(i, u, time);
           };
 
           const io = new IntersectionObserver(
@@ -797,14 +792,11 @@ export function Specimen({
             celular o mesmo texto vira lista no painel. */}
         <div aria-hidden className="pointer-events-none absolute inset-0 z-[4]">
           {stages.map((s, i) =>
-            s.callouts.map((c, k) => (
+            s.callouts.map((c) => (
               <div
                 key={`${i}-${c.label}`}
                 data-i={i}
                 className="sp-call"
-                style={{
-                  ["--side" as string]: forms[i].anchors[k]?.side ?? 1,
-                }}
               >
                 <span className="sp-ring" />
                 <span className="sp-lead" />
