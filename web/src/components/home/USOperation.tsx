@@ -2,6 +2,7 @@ import Image from "next/image";
 import { Reveal } from "@/components/motion/Reveal";
 import { Pill } from "@/components/ui";
 import { TrialForm } from "./TrialForm";
+import { USOperationPhoto } from "./USOperationPhoto";
 import { getContent } from "@/lib/locale";
 import s from "./USOperation.module.css";
 
@@ -17,14 +18,7 @@ export async function USOperation() {
   return (
     <section id="us-operation" className={s.section}>
       <div className={s.card} data-nav-theme="dark">
-        <Image
-          src="/img/trial-v2/step-2-check.webp"
-          alt=""
-          aria-hidden
-          fill
-          sizes="(max-width: 860px) 100vw, 1400px"
-          className={s.photo}
-        />
+        <USOperationPhoto />
         <div className={s.shade} aria-hidden />
 
         <Reveal replay y={26} stagger={0.09} targetSelector="[data-us-item]" className={s.info}>

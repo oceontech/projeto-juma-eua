@@ -488,7 +488,7 @@ export const strip: typeof en.strip = {
   ],
   promise: ["Sem custo pelo produto da faixa.", "Sem compromisso depois da colheita."],
   cta: { label: "Faça uma faixa de teste na sua área", href: "#trial-form" },
-  alt: "Vista aérea próxima de fileiras de soja com uma faixa testemunha mais clara",
+  alt: "Vista aérea ilustrativa de faixas de teste demarcadas no milho, com produtor e agrônomo registrando observações",
 };
 
 export const questions: typeof en.questions = {

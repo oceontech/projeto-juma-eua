@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useRef, type CSSProperties } from "react";
 import { useContent } from "@/components/layout/LocaleProvider";
 import { SplitLines } from "@/components/motion/SplitLines";
@@ -9,6 +8,11 @@ import { gsap, useGSAP } from "@/lib/gsap";
 import { Cta, eyebrow, microText } from "./ui";
 
 export type StripData = typeof kmepContent.strip;
+
+const stripImages = {
+  kmep: "/img/kmep/trial-strip-corn-v2",
+  aminosan: "/img/aminosan/trial-strip-soy-v2",
+};
 
 /**
  * K15 — como funciona a faixa de teste. É a resposta operacional para "vocês
@@ -22,9 +26,10 @@ export type StripData = typeof kmepContent.strip;
  *
  * A LP do Aminosan® usa a mesma seção com a própria copy (`data`).
  */
-export function Strip({ data }: { data?: StripData }) {
+export function Strip({ data, product = "kmep" }: { data?: StripData; product?: keyof typeof stripImages }) {
   const { kmep } = useContent();
   const strip = data ?? kmep.strip;
+  const image = stripImages[product];
   const scope = useRef<HTMLElement>(null);
 
   useGSAP(
@@ -57,8 +62,12 @@ export function Strip({ data }: { data?: StripData }) {
   return (
     <section ref={scope} data-nav-theme="dark" className="relative isolate overflow-hidden bg-forest text-offwhite">
       <div className="st-bg absolute inset-x-0 -top-[12%] -bottom-[12%] -z-20 will-change-transform">
-        <Image src="/img/kmep/trial-strip-close-mobile.webp" alt={strip.alt} fill quality={90} sizes="100vw" className="object-cover md:hidden" />
-        <Image src="/img/kmep/trial-strip-close.webp" alt={strip.alt} fill quality={90} sizes="100vw" className="hidden object-cover md:block" />
+        <picture>
+          <source media="(max-width: 767px)" srcSet={`${image}-mobile.webp`} />
+          {/* Pre-optimized WebP; picture downloads only the matching composition. */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={`${image}.webp`} alt={strip.alt} width={2048} height={1152} loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-cover" />
+        </picture>
       </div>
       <div
         aria-hidden

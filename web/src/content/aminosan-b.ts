@@ -691,7 +691,7 @@ export const strip = {
   ],
   promise: ["No cost for the product on the strip.", "No obligation after harvest."],
   cta: { label: "Request a trial strip", href: "#trial-form" },
-  alt: "Aerial view of a soybean field with a flagged trial strip",
+  alt: "Illustrative aerial view of marked soybean trial strips, with a farmer and agronomist recording observations",
 };
 
 /**

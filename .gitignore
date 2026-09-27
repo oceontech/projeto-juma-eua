@@ -1,6 +1,7 @@
 ~$*
 .DS_Store
 Thumbs.db
+.firecrawl/
 
 /.video-tools/node_modules
 /.video-tools/originals/
