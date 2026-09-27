@@ -1,14 +1,17 @@
 "use client";
 
 import { useRef } from "react";
-import { gsap, useGSAP, START } from "@/lib/gsap";
+import { gsap, useGSAP, SplitText, START } from "@/lib/gsap";
 
 type Pillar = { title: string; detail: string };
 
 /**
- * A prova entra como uma sequência só: identificação, argumento, nota e,
- * por fim, os quatro pontos. Cada camada usa um gesto distinto para não
- * transformar o painel em mais uma entrada vertical genérica.
+ * Motivos para escolher a Juma. A entrada é curta e sobreposta — o título
+ * sobe linha a linha por trás de uma máscara, a régua do topo da lista se
+ * desenha e os quatro pontos entram quase juntos, sem esperar um pelo outro.
+ *
+ * Interação no desktop: um brilho lima acompanha o cursor pelo painel, e uma
+ * régua lima desliza pela borda de cima até o ponto sob o cursor, que acende.
  */
 export function CropPillars({
   title,
@@ -22,78 +25,153 @@ export function CropPillars({
   pillars: Pillar[];
 }) {
   const scope = useRef<HTMLElement>(null);
+  const rail = useRef<HTMLSpanElement>(null);
 
   useGSAP(
     () => {
       const panel = scope.current!;
-      const label = panel.querySelector<HTMLElement>("[data-pillars-label]")!;
-      const heading = panel.querySelector<HTMLElement>("[data-pillars-heading]")!;
-      const noteEl = panel.querySelector<HTMLElement>("[data-pillars-note]")!;
-      const items = Array.from(panel.querySelectorAll<HTMLElement>("[data-pillars-item]"));
-      const accents = Array.from(panel.querySelectorAll<HTMLElement>("[data-pillars-accent]"));
+      const q = gsap.utils.selector(panel);
+      const heading = q("[data-pillars-heading]")[0] as HTMLElement;
       const mm = gsap.matchMedia();
 
-      mm.add(
-        {
-          animate: "(prefers-reduced-motion: no-preference)",
-          still: "(prefers-reduced-motion: reduce)",
-        },
-        (context) => {
-          const { animate } = context.conditions as { animate: boolean };
+      mm.add("(prefers-reduced-motion: no-preference)", () => {
+        const trigger = { trigger: panel, start: START, once: true };
 
-          if (!animate) {
-            gsap.set([panel, label, heading, noteEl, ...items, ...accents], {
-              clearProps: "all",
-              opacity: 1,
-              x: 0,
-              y: 0,
-              scale: 1,
-              scaleX: 1,
-              filter: "none",
-            });
-            return;
-          }
+        const split = SplitText.create(heading, {
+          type: "lines",
+          mask: "lines",
+          autoSplit: true,
+          onSplit: (self) =>
+            gsap.fromTo(
+              self.lines,
+              { yPercent: 105 },
+              {
+                yPercent: 0,
+                duration: 0.9,
+                ease: "power4.out",
+                stagger: 0.08,
+                delay: 0.05,
+                scrollTrigger: trigger,
+              },
+            ),
+        });
 
-          const timeline = gsap.timeline({
-            scrollTrigger: { trigger: panel, start: START, once: true },
-          });
+        gsap
+          .timeline({ scrollTrigger: trigger })
+          .fromTo(q("[data-pillars-label]"), { opacity: 0, x: -14 }, { opacity: 1, x: 0, duration: 0.5 }, 0)
+          .fromTo(q("[data-pillars-note]"), { opacity: 0, x: 18 }, { opacity: 1, x: 0, duration: 0.7 }, 0.2)
+          .fromTo(
+            q("[data-pillars-rule]"),
+            { scaleX: 0 },
+            { scaleX: 1, duration: 1, ease: "power3.inOut", transformOrigin: "left center" },
+            0.15,
+          )
+          .fromTo(
+            q("[data-pillars-item]"),
+            { opacity: 0, y: 22 },
+            { opacity: 1, y: 0, duration: 0.7, stagger: 0.07 },
+            0.3,
+          )
+          .fromTo(
+            q("[data-pillars-accent]"),
+            { scaleY: 0 },
+            { scaleY: 1, duration: 0.45, stagger: 0.07, transformOrigin: "top center" },
+            0.45,
+          );
 
-          timeline
-            .fromTo(panel, { scale: 0.88, transformOrigin: "center center" }, { scale: 1, duration: 0.82, ease: "power3.out" })
-            .fromTo(label, { opacity: 0, scaleX: 0, transformOrigin: "left center" }, { opacity: 1, scaleX: 1, duration: 0.34, ease: "power3.out" }, "-=0.22")
-            .fromTo(heading, { opacity: 0, y: 30, filter: "blur(7px)" }, { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.62, ease: "power4.out" }, "-=0.12")
-            .fromTo(noteEl, { opacity: 0, x: 22 }, { opacity: 1, x: 0, duration: 0.48, ease: "power3.out" }, "-=0.34")
-            .fromTo(accents, { scaleY: 0, transformOrigin: "top center" }, { scaleY: 1, duration: 0.34, ease: "power3.out", stagger: 0.075 }, "-=0.18")
-            .fromTo(items, { opacity: 0, y: 24, scale: 0.96 }, { opacity: 1, y: 0, scale: 1, duration: 0.52, ease: "power3.out", stagger: 0.085 }, "-=0.26");
-        },
-      );
+        return () => split.revert();
+      });
     },
-    { scope, dependencies: [title, lead, note, pillars] },
+    { scope, dependencies: [lead] },
   );
+
+  // Brilho que segue o cursor: só duas variáveis CSS, sem re-render.
+  const onPanelMove = (e: React.PointerEvent<HTMLElement>) => {
+    if (e.pointerType !== "mouse") return;
+    const r = e.currentTarget.getBoundingClientRect();
+    e.currentTarget.style.setProperty("--mx", `${e.clientX - r.left}px`);
+    e.currentTarget.style.setProperty("--my", `${e.clientY - r.top}px`);
+  };
+
+  // A régua do topo desliza até o ponto sob o cursor.
+  const moveRail = (i: number) => {
+    const el = rail.current;
+    if (!el) return;
+    gsap.to(el, { xPercent: i * 100, opacity: 1, duration: 0.55, ease: "power3.out", overwrite: true });
+  };
+  const hideRail = () => {
+    if (rail.current) gsap.to(rail.current, { opacity: 0, duration: 0.35, overwrite: "auto" });
+  };
 
   return (
     <section
       ref={scope}
       aria-label={title}
-      className="mt-[clamp(28px,3vw,52px)] overflow-hidden rounded-[clamp(18px,1.55vw,30px)] bg-linear-[149.8deg,var(--color-night-warm)_2.4%,var(--color-night-deep)_60.23%] text-offwhite will-change-transform"
+      onPointerMove={onPanelMove}
+      className="group/panel relative mt-[clamp(28px,3vw,52px)] overflow-hidden rounded-[clamp(18px,1.55vw,30px)] bg-linear-[149.8deg,var(--color-night-warm)_2.4%,var(--color-night-deep)_60.23%] text-offwhite"
     >
-      <div className="grid gap-6 px-[clamp(22px,3vw,54px)] pt-[clamp(24px,2.8vw,48px)] pb-[clamp(22px,2.4vw,42px)] min-[861px]:grid-cols-[minmax(220px,0.78fr)_minmax(0,1.22fr)] min-[861px]:items-end min-[861px]:gap-[clamp(42px,6vw,112px)]">
+      <span
+        aria-hidden
+        className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover/panel:opacity-100 bg-[radial-gradient(520px_circle_at_var(--mx,50%)_var(--my,50%),rgb(183_199_62/0.13),transparent_65%)]"
+      />
+
+      <div className="relative grid gap-6 px-[clamp(22px,3vw,54px)] py-[clamp(26px,2.8vw,50px)] min-[861px]:grid-cols-[minmax(0,1fr)_minmax(0,0.8fr)] min-[861px]:items-center min-[861px]:gap-[clamp(42px,6vw,112px)]">
         <div>
-          <p data-pillars-label className="text-micro font-semibold tracking-[0.15em] text-lime uppercase">{title}</p>
-          <h3 data-pillars-heading className="mt-[0.65em] max-w-[440px] text-[clamp(26px,2.6vw,48px)] leading-[0.98] font-medium tracking-[-0.045em] text-offwhite">{lead}</h3>
+          <p
+            data-pillars-label
+            className="inline-flex items-center gap-[0.7em] text-micro leading-none font-semibold tracking-[0.15em] text-lime uppercase"
+          >
+            <span aria-hidden className="size-[6px] rounded-full bg-lime" />
+            {title}
+          </p>
+          <h3
+            data-pillars-heading
+            className="mt-[0.9em] max-w-[620px] text-[clamp(28px,2.8vw,52px)] leading-[1.02] font-medium tracking-[-0.015em] text-offwhite"
+          >
+            {lead}
+          </h3>
         </div>
-        <p data-pillars-note className="max-w-[390px] border-l border-lime/60 pl-4 text-small leading-relaxed text-offwhite/72 min-[861px]:mb-1">{note}</p>
+        <p
+          data-pillars-note
+          className="max-w-[420px] border-l-2 border-lime pl-5 text-small leading-relaxed text-offwhite/72 min-[861px]:justify-self-end"
+        >
+          {note}
+        </p>
       </div>
-      <ul className="grid border-t border-offwhite/15 min-[861px]:grid-cols-4">
-        {pillars.map((pillar, i) => (
-          <li key={pillar.title} data-pillars-item className="group relative min-h-[126px] border-b border-offwhite/15 px-[clamp(22px,2.3vw,42px)] py-[18px] last:border-b-0 min-[861px]:min-h-[172px] min-[861px]:py-[clamp(20px,2vw,34px)] min-[861px]:border-r min-[861px]:border-b-0 min-[861px]:last:border-r-0">
-            <span data-pillars-accent aria-hidden className="absolute left-0 top-[18px] h-7 w-[3px] bg-lime transition-all duration-300 group-hover:h-12 min-[861px]:top-[clamp(20px,2vw,34px)] min-[861px]:h-8" />
-            <span className="block text-micro font-semibold tracking-[0.16em] text-lime tabular-nums">{String(i + 1).padStart(2, "0")}</span>
-            <h4 className="mt-5 max-w-[220px] text-[clamp(16px,1.16vw,21px)] leading-[1.04] font-semibold tracking-[-0.025em] text-offwhite">{pillar.title}</h4>
-            <p className="mt-3 max-w-[230px] text-[clamp(12px,0.82vw,15px)] leading-[1.45] text-offwhite/62">{pillar.detail}</p>
-          </li>
-        ))}
-      </ul>
+
+      <div className="relative">
+        <span aria-hidden data-pillars-rule className="absolute inset-x-0 top-0 h-px bg-offwhite/15" />
+        <span
+          ref={rail}
+          aria-hidden
+          className="pointer-events-none absolute top-0 left-0 z-1 hidden h-[2px] w-1/4 bg-lime opacity-0 min-[861px]:block"
+        />
+        <ul className="grid min-[861px]:grid-cols-4" onPointerLeave={hideRail}>
+          {pillars.map((pillar, i) => (
+            <li
+              key={pillar.title}
+              data-pillars-item
+              onPointerEnter={(e) => e.pointerType === "mouse" && moveRail(i)}
+              className="group relative border-b border-offwhite/15 px-[clamp(22px,2.3vw,42px)] py-[clamp(20px,2vw,34px)] transition-colors duration-500 last:border-b-0 hover:bg-offwhite/[0.035] min-[861px]:min-h-[190px] min-[861px]:border-r min-[861px]:border-b-0 min-[861px]:last:border-r-0"
+            >
+              <span
+                data-pillars-accent
+                aria-hidden
+                className="absolute top-[clamp(20px,2vw,34px)] left-0 h-8 w-[3px] rounded-r-full bg-lime transition-[height] duration-500 ease-out group-hover:h-[calc(100%_-_2*clamp(20px,2vw,34px))]"
+              />
+              <span className="block text-micro font-semibold tracking-[0.16em] text-lime tabular-nums">
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              <h4 className="mt-5 max-w-[240px] text-[clamp(17px,1.2vw,22px)] leading-[1.08] font-semibold tracking-[-0.01em] text-offwhite transition-transform duration-500 group-hover:translate-x-1">
+                {pillar.title}
+              </h4>
+              <p className="mt-3 max-w-[250px] text-[clamp(13px,0.85vw,15px)] leading-[1.5] text-offwhite/60 transition-colors duration-500 group-hover:text-offwhite/85">
+                {pillar.detail}
+              </p>
+            </li>
+          ))}
+        </ul>
+      </div>
     </section>
   );
 }

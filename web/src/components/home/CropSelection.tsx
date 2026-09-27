@@ -22,7 +22,7 @@ async function CorridorOverlay() {
         aria-hidden
         className="pointer-events-none absolute inset-x-0 bottom-0 z-1 h-[22%] bg-linear-to-t from-white to-transparent"
       />
-      <div className="relative z-2 flex h-full items-end justify-center pb-[clamp(18px,3vw,48px)]">
+      <div className="relative z-2 flex h-full items-end justify-center pb-[clamp(18px,3vw,48px)] min-[1100px]:pb-[clamp(48px,5.8vw,112px)]">
         <p className="rounded-full bg-white/90 px-[1.3em] py-[0.8em] text-micro leading-none font-semibold tracking-[0.15em] text-[#0E0E0D] uppercase shadow-[0_8px_24px_rgba(0,0,0,0.08)] backdrop-blur">
           {crops.corridorLabel}
         </p>
