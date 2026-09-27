@@ -229,16 +229,18 @@ function FoliarBadge({ label }: { label: string }) {
       <defs>
         <mask id="kh-badge-vein">
           <rect width="120" height="112" fill="#fff" />
-          <path d="M20 104C44 76 72 44 110 12" fill="none" stroke="#000" strokeWidth="2.4" strokeLinecap="round" />
+          {/* A nervura é um crescente que abre na base da folha, entre o
+              lobo esquerdo e o cabo, e afina até sumir antes da ponta. */}
+          <path d="M20.5 85C26 65 46 47 84 35.4 59 44.5 40 61 26.5 89Z" fill="#000" />
         </mask>
         <path id="kh-badge-arc" d="M8 84C8 50 30 22 70 14" fill="none" />
       </defs>
       <path
         mask="url(#kh-badge-vein)"
         fill="currentColor"
-        d="M24 98C12 70 22 44 50 30 70 20 94 16 116 8 116 40 106 70 82 88 62 102 40 104 24 98Z"
+        d="M113 8C95 15 62 22 44 33 28 43 20 58 20 80 26 90 44 95 60 94 84 92 104 72 110 45 112 32 113 20 113 8Z"
       />
-      <path d="M26 96 12 110" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
+      <path d="M28.5 87C23.5 93 18.5 99.5 14.7 106.3" fill="none" stroke="currentColor" strokeWidth="4.3" strokeLinecap="round" />
       <text fill="currentColor" fontSize="12.5" letterSpacing="0.2" className="font-display">
         <textPath href="#kh-badge-arc">{label}</textPath>
       </text>
