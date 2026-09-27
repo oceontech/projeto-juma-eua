@@ -17,12 +17,6 @@ const FRAME_MS = BOTTLE.frameMs;
 /** Trava no primeiro e no último quadro, para dar tempo de ler os anos. */
 const HOLD_MS = 500;
 
-/**
- * Espera entre o gatilho da seção e o início da contagem: é o tempo do card
- * terminar a entrada (delay 0.12 s + 0.7 s do <Reveal>). Sem ela, a trava em
- * 1988 passaria com o card ainda desfocado.
- */
-const ENTER_DELAY_MS = 820;
 
 /** Duração de cada quadro: as duas pontas seguram, o miolo corre. */
 const DURATIONS = Array.from({ length: FRAMES }, (_, i) =>
@@ -136,7 +130,10 @@ export function HistoryBottle({ alt, trigger, start }: HistoryBottleProps) {
           pending = true;
           return;
         }
-        startAt = performance.now() + ENTER_DELAY_MS;
+        /* Começa andando no instante em que a seção entra, sem esperar o
+           card assentar nem a trava do primeiro quadro: a volta de entrada
+           pula a espera em 1988, que continua valendo nas seguintes. */
+        startAt = performance.now() - HOLD_MS;
         raf = requestAnimationFrame(tick);
       };
 

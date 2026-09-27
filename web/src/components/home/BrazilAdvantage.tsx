@@ -24,8 +24,12 @@ import { getContent } from "@/lib/locale";
  * ser a dos `delay`.
  *
  * `replay` porque quem sobe e desce a travessia passa por aqui muitas vezes.
+ *
+ * `top 14%` é o ponto de pouso: é onde o topo da seção está quando a lâmina
+ * fecha e ela aparece (LAND em Hero.tsx, margem em globals.css). O conteúdo
+ * entra no mesmo instante, no relógio — não sobra rolagem em tela preta.
  */
-const enter = { replay: true, trigger: "#brazil", start: "top 40%" } as const;
+const enter = { replay: true, trigger: "#brazil", start: "top 14%" } as const;
 
 export async function BrazilAdvantage() {
   const { brazil } = (await getContent()).home;

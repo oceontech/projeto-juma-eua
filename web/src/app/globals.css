@@ -1528,6 +1528,25 @@
     max-width: none;
   }
 
+  /* A camada que só a entrada move (Hero.tsx). Ocupa exatamente a caixa de
+     quem ela embrulha — o céu e a bandeira por dentro, o chão e as folhas por
+     fora, onde ela tem a caixa do palco —, então parada não muda nenhum pixel.
+     O scroll segue movendo o elemento de sempre; com os dois em nós
+     diferentes, os transforms se somam em vez de um apagar o outro. */
+  .hero-intro {
+    position: absolute;
+    inset: 0;
+  }
+
+  /* Chão e folhas deixam de ser filhos diretos do palco e perdem o
+     `.hero-stage>*`; a caixa deles continua medida contra a do palco, que é a
+     da camada da entrada. */
+  .hero-intro>.hero-ground,
+  .hero-intro>.hero-leaves {
+    position: absolute;
+    max-width: none;
+  }
+
   .hero-flag {
     opacity: .6;
   }
@@ -2002,15 +2021,18 @@
   /* O círculo é a única parte que captura o toque: no celular o resto da foto
      precisa continuar rolando a página. */
   .compare-handle::after {
+    --knob: clamp(44px, 5.8vw, 74px);
     content: "";
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
+    /* Centrado por margem, e não por `translate`: nada de transform no
+       círculo. Ver a nota do respiro logo abaixo. */
+    margin: calc(var(--knob) / -2) 0 0 calc(var(--knob) / -2);
     pointer-events: auto;
     touch-action: none;
     cursor: grab;
-    width: clamp(44px, 5.8vw, 74px);
+    width: var(--knob);
     aspect-ratio: 1;
     border-radius: 50%;
     background: #0E0E0D;
@@ -2022,14 +2044,24 @@
   }
 
   /* Enquanto ninguém arrastou, o punho respira. É a única pista de que a foto
-     é manipulável — e some no primeiro toque, quando já não é mais pista. */
+     é manipulável — e some no primeiro toque, quando já não é mais pista.
+
+     O respiro é um anel de brilho que se abre e some (`box-shadow`), e NÃO
+     uma escala. Animação de `transform` — mesmo pausada — põe o círculo numa
+     camada de GPU própria, e camada é posicionada em pixel inteiro. Quando o
+     card abre, a caixa muda de tamanho a cada quadro e o meio dela oscila
+     1/64 de pixel em volta de um inteiro (952,98 ↔ 953,00): a camada pulava
+     1px para um lado e para o outro, e o círculo tremia contra a linha.
+     Sombra é pintada junto com o resto, na posição fracionária — não há
+     camada para arredondar. Conferido pelo LayerTree do DevTools. */
   @keyframes compare-hint {
-    0%, 100% { transform: translate(-50%, -50%) scale(1); }
-    50%      { transform: translate(-50%, -50%) scale(1.09); }
+    0%   { box-shadow: 0 0 0 0 rgb(183 199 62 / 0.55); }
+    70%  { box-shadow: 0 0 0 14px rgb(183 199 62 / 0); }
+    100% { box-shadow: 0 0 0 14px rgb(183 199 62 / 0); }
   }
 
   .compare-handle::after {
-    animation: compare-hint 2.6s ease-in-out infinite;
+    animation: compare-hint 2.6s ease-out infinite;
   }
 
   .compare[data-touched] .compare-handle::after {
@@ -2306,11 +2338,22 @@
    deixa de existir: não há duas superfícies encostando, há uma cobrindo a
    outra — era essa borda que aparecia como linha.
 
-   Só com movimento: sem ele as seções voltam a se empilhar. */
+   Só com movimento: sem ele as seções voltam a se empilhar.
+
+   A margem é calculada para o bloco POUSAR: no ponto do percurso em que a
+   lâmina já fechou (76% do --run do .hero), o topo dele está a 14% da tela,
+   que é onde ele aparece — no relógio, não no scroll (ver Hero.tsx). Com os
+   -80svh de antes ele surgia a 60% da tela e o conteúdo esperava chegar a
+   40%, e o trecho entre um e outro era tela preta.
+
+     topo do bloco na tela = (100 + 168 − margem) − 0.76 × 168 = 14 (svh)
+
+   Os três números — 168 do --run, 0.76 e 14 — casam com LAND em Hero.tsx e
+   com o `start` de BrazilAdvantage.tsx. */
 html[data-hero-pin] #brazil {
   position: relative;
   z-index: 2;
-  margin-top: -80svh;
+  margin-top: calc(-100svh - 168svh * (1 - 0.76) + 14svh);
 }
 
 /* A mesma ideia na saída da cortina, invertida: aqui é a janela que fica por

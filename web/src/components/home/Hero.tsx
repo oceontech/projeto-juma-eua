@@ -5,6 +5,7 @@ import Image from "next/image";
 import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
 import { whenBooted } from "@/lib/boot";
 import { useContent } from "@/components/layout/LocaleProvider";
+import { scroller } from "@/components/motion/SmoothScroll";
 
 /**
  * Hero — a cena do Figma (frame 2688 × 1614) em seis camadas: céu, bandeira
@@ -49,12 +50,25 @@ import { useContent } from "@/components/layout/LocaleProvider";
 /** Atraso do `scrub`, em segundos. Também mede a espera da flutuação. */
 const SCRUB = 1;
 
+/** Aceleração da entrada quando alguém rola antes de ela terminar: rápido o
+    bastante para não arrastar a cena atrás do scroll, devagar o bastante
+    para ainda ler como o mesmo movimento, e não como um salto. */
+const INTRO_RUSH = 2.5;
+
 /** Queda mínima do chão no estreito, em px — a mesma do fallback em globals.css. */
 const MIN_DROP = 24;
 
 /** Onde a máquina começa dentro de hero-tractor-mobile.webp: as pontas dos
     escapamentos ficam a 0,8% da altura da foto. Arredondado para cima. */
 const TRACTOR_TOP = 0.01;
+
+/** Onde o topo do bloco seguinte pousa quando aparece. Casa com a margem de
+    `#brazil` em globals.css e com o `start` de BrazilAdvantage.tsx. */
+const LAND = "top 14%";
+
+/** Quanto tempo (ms) a rolagem fica segurada no pouso: o bastante para a
+    seção e os cards assentarem. */
+const HOLD_MS = 750;
 
 export function Hero() {
   const { hero } = useContent().home;
@@ -107,40 +121,30 @@ export function Hero() {
 
           /* ------------------------------------------------------ entrada */
           /* As camadas assentam de posições ligeiramente deslocadas — a cena
-             chega se acomodando, e não pronta. Mexe nos mesmos transforms que
-             o scroll dirige depois, e é por isso que a travessia é toda
-             `fromTo`: com os dois extremos declarados ela não herda um valor
-             colhido no meio desta entrada nem o perde num `invalidate()`. */
+             chega se acomodando, e não pronta.
+
+             A entrada NÃO mexe nos elementos que o scroll move: ela anima os
+             `[data-hero-intro]`, camadas aninhadas só dela (por dentro do céu
+             e das bandeiras, por fora do chão e das folhas). Quando os dois
+             escreviam o mesmo transform, o primeiro pixel de rolagem no meio
+             da entrada fazia a travessia impor os valores dela — a cena
+             montada — e tudo saltava para o fim num corte seco. Em camadas
+             separadas os dois movimentos se somam: rolar no meio da entrada
+             liga o parallax por cima, e a entrada termina o gesto (mais
+             depressa — ver `onUpdate` da travessia) em vez de ser cortada. */
+          const leavesEl = scene.querySelector<HTMLElement>("[data-hero='leaves']");
           const intro = gsap
             .timeline({ paused: true, defaults: { duration: 2.1, ease: "power2.out" } })
             /* O céu abre o quadro sozinho, um pouco mais devagar que o resto:
                é o fundo, e fundo que assenta junto com a frente achata a
                profundidade. */
-            .fromTo("[data-hero='sky']", { scale: 1.12 }, { scale: 1, duration: 2.4 }, 0)
+            .fromTo("[data-hero-intro='sky']", { scale: 1.12 }, { scale: 1, duration: 2.4 }, 0)
             /* As bandeiras entram de fora da tela, cada uma do seu lado, e
                caminham para o centro até o lugar. Os 125% são da largura delas
                mesmas — o bastante para começarem inteiras fora do quadro em
-               qualquer viewport, no largo e no estreito.
-
-               `x` e `y` vão escritos ao lado das porcentagens em TODA camada
-               desta cena, aqui e na travessia. O GSAP guarda os dois separados
-               e soma na matriz: com um deslocamento grande como este, a
-               travessia lia os -792px que a intro tinha acabado de escrever
-               como se fossem `x`, empilhava a porcentagem por cima e as
-               bandeiras terminavam a entrada fora da tela — some a cena e
-               ninguém vê de onde. */
-            .fromTo(
-              "[data-hero='flag-br']",
-              { x: 0, xPercent: -125, y: 0, yPercent: 0 },
-              { x: 0, xPercent: 0, y: 0, yPercent: 0 },
-              0.15,
-            )
-            .fromTo(
-              "[data-hero='flag-us']",
-              { x: 0, xPercent: 125, y: 0, yPercent: 0 },
-              { x: 0, xPercent: 0, y: 0, yPercent: 0 },
-              0.15,
-            )
+               qualquer viewport, no largo e no estreito. */
+            .fromTo("[data-hero-intro='flag-br']", { xPercent: -125 }, { xPercent: 0 }, 0.15)
+            .fromTo("[data-hero-intro='flag-us']", { xPercent: 125 }, { xPercent: 0 }, 0.15)
             /* O trator e as folhas sobem do pé da tela, nessa ordem: primeiro
                o solo assenta, depois a moldura de folhas fecha por cima dele.
                Invertido, as folhas chegariam a um campo vazio.
@@ -151,17 +155,20 @@ export function Hero() {
                (`.hero-underfill` e a rampa de `.hero-leaves-tail`): com o
                dobro disso o gesto ganhava pouco e a abertura passava um
                segundo com uma tarja preta no rodapé. O que dá tempo de ver não
-               é a distância, é a duração — daí os 2,3s e a curva mansa. */
+               é a distância, é a duração — daí os 2,3s e a curva mansa.
+
+               Em pixels, e não `yPercent`: a camada da entrada tem a altura
+               do palco, e o curso é medido na altura da própria camada. */
             .fromTo(
-              "[data-hero='ground']",
-              { y: 0, yPercent: 14 },
-              { y: 0, yPercent: 0, duration: 2.3 },
+              "[data-hero-intro='ground']",
+              { yPercent: 14 },
+              { yPercent: 0, duration: 2.3 },
               0.3,
             )
             .fromTo(
-              "[data-hero='leaves']",
-              { y: 0, yPercent: 18 },
-              { y: 0, yPercent: 0, duration: 2.3 },
+              "[data-hero-intro='leaves']",
+              { y: () => (leavesEl?.offsetHeight ?? 0) * 0.18 },
+              { y: 0, duration: 2.3 },
               0.45,
             )
             .fromTo(
@@ -281,22 +288,13 @@ export function Hero() {
                   else delete html.dataset.heroOver;
                 },
                 onUpdate: (self) => {
-                  /* Rolar durante a entrada não vira disputa: a entrada corre
-                     até o fim e o scroll assume. */
-                  if (self.progress > 0.01 && intro.progress() < 1) intro.timeScale(4).play();
+                  /* Rolar durante a entrada não vira disputa: ela continua de
+                     onde está, mais depressa, e termina somada ao parallax. */
+                  if (self.progress > 0.01 && intro.progress() < 1) intro.timeScale(INTRO_RUSH).play();
                   stir();
                 },
               },
             })
-            /* O bloco seguinte fica escondido desde o primeiro quadro.
-               O `fromTo` lá embaixo declara `autoAlpha: 0`, mas um `from`
-               posicionado no meio do timeline não vale para antes dele: até a
-               cabeça chegar aos 0.76 o bloco ficava opaco, e como ele é preto
-               chapado e sobe 80svh para dentro da cena, a borda de cima dele
-               atravessava a foto das folhas como uma aresta reta. Ficava mais
-               óbvio no estreito, onde a lâmina ainda está em 0.7 quando essa
-               borda entra em quadro. */
-            .set(next, { autoAlpha: 0 }, 0)
             .fromTo("[data-hero='scene']", { y: 0 }, { y: travel, ease: RIDE, duration: 0.8 }, 0)
             .fromTo(
               "[data-hero='sky']",
@@ -377,29 +375,14 @@ export function Hero() {
                  `in`: qualquer curva `in` guarda quase toda a mudança para o
                  fim — era daí que o apagar vinha "de uma vez", por mais longo
                  que fosse o trecho. Com `inOut` ela entra macia, corre parelha
-                 no miolo e encosta no preto sem bater. */
+                 no miolo e encosta no preto sem bater.
+
+                 Fecha em 0.7, um pouco antes do ponto de pouso do bloco
+                 seguinte (0.76, ver abaixo): o scrub atrasa a lâmina em
+                 relação ao scroll, e a folga é o que a deixa fechada quando
+                 ele aparece. */
               { opacity: 1, ease: "power1.inOut", duration: 0.4 },
-              0.36,
-            )
-
-            /* E o bloco seguinte entra DEPOIS que a lâmina fechou — 0.76
-               contra 0.76 do fecho. Sobrepor os dois faria o conteúdo aparecer
-               por cima da cena ainda visível, como dupla exposição; assim a
-               tela fica preta primeiro e o conteúdo nasce do preto.
-
-               O trecho é longo de propósito: o quarto final do curso, e como o
-               curso cresceu junto, são uns trezentos pixels de rolagem contra
-               os cento e oitenta de antes. Curto, a aparição lê como corte.
-               `inOut` tira o degrau dos dois extremos: ela não começa nem
-               termina de supetão.
-
-               Estar na mesma linha do tempo é o que garante a ordem: não há um
-               valor atrasando em relação ao outro, em nenhuma velocidade. */
-            .fromTo(
-              next,
-              { autoAlpha: 0 },
-              { autoAlpha: 1, ease: "power2.inOut", duration: 0.24 },
-              0.76,
+              0.3,
             )
 
             /* O texto fica parado e sai só por fade — subir junto com a cena
@@ -426,6 +409,103 @@ export function Hero() {
               { opacity: 0, ease: "power1.in", duration: 0.28 },
               0.66,
             );
+
+          /* ----------------------------------------------------- o pouso */
+          /* O bloco seguinte NÃO é scrubado. Ele foi posto (globals.css) de
+             modo que, quando a lâmina fecha, o topo dele já está no lugar
+             onde vai ser lido — a 14% da tela. Nesse ponto ele aparece de uma
+             vez, no relógio, e o conteúdo entra junto (o mesmo `start` em
+             BrazilAdvantage.tsx). Daí em diante é rolagem comum.
+
+             Scrubado, cada pixel do trecho era um quadro da entrada: quem
+             rolava devagar passava por uma faixa inteira de tela preta, com o
+             bloco a meio caminho de aparecer e o conteúdo ainda esperando o
+             próprio gatilho. Disparo único não tem quadro intermediário para
+             o scroll segurar.
+
+             Escondido desde o primeiro quadro: ele é preto chapado e sobe
+             para dentro da cena, e visível cortaria a foto das folhas com uma
+             aresta reta.
+
+             Depois de pousar, a janela do hero sai de cena. Ela é `sticky`
+             com z-index 1 e ainda cobre o resto do curso da seção — que agora
+             avança sobre o bloco de baixo também, mais alto que a sobreposição
+             do bloco 2. Nesse ponto ela é só preto sobre o preto do body, então
+             escondê-la não muda nenhum pixel; voltando, ela reaparece antes de
+             o bloco começar a sumir. */
+          let undoHold = () => {};
+          if (next) {
+            gsap.set(next, { autoAlpha: 0 });
+            const arrive = gsap
+              .timeline({ paused: true })
+              .fromTo(next, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.45, ease: "power1.out" })
+              .set(win, { visibility: "hidden" });
+            /* A rolagem atravessa o pouso: a entrada dura perto de um segundo,
+               e nesse tempo um impulso — rápido, ou um giro longo de roda,
+               mesmo devagar — leva a seção para cima antes de ela terminar de
+               aparecer. Então, em qualquer velocidade, a rolagem é segurada no
+               ponto de pouso enquanto a entrada roda.
+
+               O salto de volta ao pouso não se vê: no instante do gatilho a
+               seção ainda está invisível e a tela é a lâmina preta — que é
+               scrubada, então também não pula.
+
+               Só vale para rolagem da própria pessoa: um link de âncora que
+               passa por aqui a caminho de outra seção não pode ser parado. */
+            let lastInput = 0;
+            const touched = () => (lastInput = performance.now());
+            const inputs = ["wheel", "touchmove", "keydown"] as const;
+            inputs.forEach((type) => window.addEventListener(type, touched, { passive: true }));
+
+            let release = 0;
+            undoHold = () => {
+              inputs.forEach((type) => window.removeEventListener(type, touched));
+              if (!release) return;
+              clearTimeout(release);
+              scroller()?.start();
+              html.style.overflow = "";
+            };
+            const hold = (y: number) => {
+              const lenis = scroller();
+              clearTimeout(release);
+              if (lenis) {
+                lenis.scrollTo(y, { immediate: true, force: true });
+                lenis.stop();
+                release = window.setTimeout(() => {
+                  release = 0;
+                  lenis.start();
+                }, HOLD_MS);
+                return;
+              }
+              /* Rolagem nativa (celular): `overflow: hidden` corta o impulso
+                 do dedo, que continuaria depois de qualquer scrollTo. */
+              html.style.overflow = "hidden";
+              window.scrollTo({ top: y, behavior: "instant" });
+              release = window.setTimeout(() => {
+                release = 0;
+                html.style.overflow = "";
+              }, HOLD_MS);
+            };
+
+            ScrollTrigger.create({
+              trigger: next,
+              start: LAND,
+              onEnter: (self) => {
+                arrive.play();
+                /* Até o Lenis ainda estar amortecendo o último giro da roda. */
+                const byHand = performance.now() - lastInput < 1200;
+                /* +2: exatamente no `start` o gatilho conta como "antes" e o
+                   próprio salto dispararia o onLeaveBack, desfazendo a entrada. */
+                if (byHand) hold(self.start + 2);
+              },
+              onLeaveBack: () => arrive.reverse(),
+              /* Carga já rolada, ou refresh com a página noutra altura: o
+                 estado vem da posição, sem animar. */
+              onRefresh: (self) => {
+                if (self.scroll() >= self.start) arrive.progress(1);
+              },
+            });
+          }
 
           /* ----------------------------------------------------- a barra */
           /* Enquanto o hero ocupa a tela, a barra do topo fica sem lâmina de
@@ -475,6 +555,7 @@ export function Hero() {
           });
 
           return () => {
+            undoHold();
             clearTimeout(settling);
             delete scene.dataset.calm;
             delete html.dataset.navTheme;
@@ -589,87 +670,99 @@ export function Hero() {
     <section ref={root} className="hero">
       <div className="hero-window">
         <div data-hero="scene" className="hero-scene">
-        <Image
-          data-hero="sky"
-          className="hero-sky"
-          src="/img/hero-sky.webp"
-          alt=""
-          width={2688}
-          height={1152}
-          sizes="100vw"
-          priority
-        />
+        {/* `hero-intro`: a camada que só a entrada move. Ver "entrada" no
+            useGSAP — o scroll move o elemento de fora, a entrada o de dentro. */}
+        <div data-hero-intro="sky" className="hero-intro">
+          <Image
+            data-hero="sky"
+            className="hero-sky"
+            src="/img/hero-sky.webp"
+            alt=""
+            width={2688}
+            height={1152}
+            sizes="100vw"
+            priority
+          />
+        </div>
 
         <div className="hero-stage">
           <div data-hero="flag-br" className="hero-flag hero-flag--br">
-            <Image
-              className="hero-flag-media hero-flag-media--br"
-              src="/img/hero-flag-br.webp"
-              alt=""
-              width={1238}
-              height={810}
-              sizes="(max-width: 860px) 140vw, 50vw"
-              priority
-            />
+            <div data-hero-intro="flag-br" className="hero-intro">
+              <Image
+                className="hero-flag-media hero-flag-media--br"
+                src="/img/hero-flag-br.webp"
+                alt=""
+                width={1238}
+                height={810}
+                sizes="(max-width: 860px) 140vw, 50vw"
+                priority
+              />
+            </div>
           </div>
 
           <div data-hero="flag-us" className="hero-flag hero-flag--us">
-            <Image
-              className="hero-flag-media hero-flag-media--us"
-              src="/img/hero-flag-us-2026.webp"
-              alt=""
-              width={1238}
-              height={810}
-              sizes="(max-width: 860px) 140vw, 52vw"
-              priority
-            />
+            <div data-hero-intro="flag-us" className="hero-intro">
+              <Image
+                className="hero-flag-media hero-flag-media--us"
+                src="/img/hero-flag-us-2026.webp"
+                alt=""
+                width={1238}
+                height={810}
+                sizes="(max-width: 860px) 140vw, 52vw"
+                priority
+              />
+            </div>
           </div>
 
           {/* Véu do horizonte, trator e o preto que fecha embaixo andam como
               uma peça só: o véu segue o solo, e a faixa preta nunca se
               descola da linha onde a imagem do trator acaba. */}
-          <div data-hero="ground" className="hero-ground">
-            <span className="hero-flags-fade" aria-hidden />
+          <div data-hero-intro="ground" className="hero-intro">
+            <div data-hero="ground" className="hero-ground">
+              <span className="hero-flags-fade" aria-hidden />
 
-            {/* Duas fotos, uma por formato — o recorte do celular é vertical,
-                não é a de desktop reescalada. `<picture>` e não next/image
-                porque só ele escolhe pela largura da tela e baixa uma só; os
-                arquivos já vêm em webp no tamanho certo. */}
-            <picture className="hero-swap">
-              <source media="(max-width: 860px)" srcSet="/img/hero-tractor-mobile.webp" />
-              <img
-                className="hero-tractor"
-                src="/img/hero-tractor.webp"
-                alt={hero.tractorAlt}
-                width={2688}
-                height={1152}
-                fetchPriority="high"
-              />
-            </picture>
+              {/* Duas fotos, uma por formato — o recorte do celular é vertical,
+                  não é a de desktop reescalada. `<picture>` e não next/image
+                  porque só ele escolhe pela largura da tela e baixa uma só; os
+                  arquivos já vêm em webp no tamanho certo. */}
+              <picture className="hero-swap">
+                <source media="(max-width: 860px)" srcSet="/img/hero-tractor-mobile.webp" />
+                <img
+                  className="hero-tractor"
+                  src="/img/hero-tractor.webp"
+                  alt={hero.tractorAlt}
+                  width={2688}
+                  height={1152}
+                  fetchPriority="high"
+                />
+              </picture>
 
-            <span className="hero-underfill" aria-hidden />
+              <span className="hero-underfill" aria-hidden />
+            </div>
           </div>
 
-          <div data-hero="leaves" className="hero-leaves">
-            <picture className="hero-swap">
-              <source media="(max-width: 860px)" srcSet="/img/hero-leaves-mobile.webp" />
-              <img
-                data-hero="leaves-img"
-                src="/img/hero-leaves.webp"
-                alt=""
-                width={2688}
-                height={1152}
-                fetchPriority="high"
-              />
-            </picture>
+          <div data-hero-intro="leaves" className="hero-intro">
+            <div data-hero="leaves" className="hero-leaves">
+              <picture className="hero-swap">
+                <source media="(max-width: 860px)" srcSet="/img/hero-leaves-mobile.webp" />
+                <img
+                  data-hero="leaves-img"
+                  src="/img/hero-leaves.webp"
+                  alt=""
+                  width={2688}
+                  height={1152}
+                  fetchPriority="high"
+                />
+              </picture>
 
-            {/* Depois da foto, portanto na frente dela. Precisa estar na
-                frente: o cinza que aparecia no pé da folha não é o que está
-                atrás vazando, é o desfoque espalhando o céu para dentro da
-                própria folha — só dá para cobrir por cima. Por rampa longa, e
-                não por corte: preto chapado encostando em quase-preto desenha
-                um fio. */}
-            <span className="hero-leaves-tail" aria-hidden />
+              {/* Depois da foto, portanto na frente dela. Precisa estar na
+                  frente: o cinza que aparecia no pé da folha não é o que está
+                  atrás vazando, é o desfoque espalhando o céu para dentro da
+                  própria folha — só dá para cobrir por cima. Por rampa longa, e
+                  não por corte: preto chapado encostando em quase-preto desenha
+                  um fio. */}
+              <span className="hero-leaves-tail" aria-hidden />
+            </div>
           </div>
         </div>
 
