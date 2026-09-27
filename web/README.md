@@ -294,6 +294,25 @@ giram em arco à direita conforme o scroll. As fotos ilustrativas estão em
 **Risco aberto:** a imagem de raiz e a copy de resultado ainda precisam de revisão com a Juma
 antes da publicação, conforme `docs/02-MERCADO-USA.md`.
 
+### A flora dos produtos (home)
+
+Em volta das faixas do KMEP e do Aminosan, em `components/home/flora/`: o pontilhado de fundo e,
+por cima, um desenho em linha fina por produto, o mesmo nas duas bordas (a de baixo é o espelho da
+de cima). KMEP: gotas de calda, as maiores com K⁺, caindo até a faixa com uma onda ao tocar e saindo
+dela embaixo. Aminosan: aminoácidos livres à deriva. Nada ali mostra efeito na planta nem no inseto.
+
+- **Tamanho real, não `viewBox` esticado.** Cada borda mede a própria caixa (`useBox`) e gera o
+  desenho em pixels de CSS. O traço tem a mesma espessura em qualquer tela.
+- **Uma variável governa a entrada.** O timeline de `Products.tsx` escreve só `--flora-in` (0–1). Cada
+  peça traz `--o` (quando começa) e `--s` (quanto dura), e o CSS (`.fl`, `.fl-pop`, `.fl-fade` em
+  `globals.css`) resolve o resto. Não ponha tween por peça no timeline: ele estica a duração, e o
+  `scrub` encolhe todas as outras marcas.
+- **O movimento contínuo é CSS**, pausado até `syncFlora` pôr `data-flora-active`, ou seja, só roda
+  com a faixa na tela. Cada peça tem `--dur` e `--delay` próprios: com um só, tudo pulsa junto.
+- **Sorteio com semente** (`rng`), para servidor e cliente desenharem igual.
+- **Texto fica fora do espelho.** O K⁺ espelhado sairia ao contrário, e por isso a chuva de baixo é
+  gerada caindo (`edge="bottom"`), não espelhada.
+
 ### Plugins
 
 Todos os plugins do GSAP são gratuitos desde a 3.13, incluindo SplitText, MorphSVG e Flip. Para

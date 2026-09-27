@@ -536,110 +536,249 @@
       animation-play-state: paused;
     }
 
-    /* --------------------------------------------- o que cresce ali */
-    .product-slide__growth {
+    /* --------------------------------------------- o que vive ali */
+    /* Uma caixa por borda, do tamanho real da faixa em pixels: o desenho é
+       gerado para essa medida (ver flora/shared.tsx), sem `viewBox` esticado
+       nem cortado. */
+    .flora-band {
       position: absolute;
       left: 0;
-      width: 100%;
+      right: 0;
       height: var(--flora-h);
+    }
+
+    .flora-band--top {
+      bottom: calc(100% - 1px);
+    }
+
+    .flora-band--bottom {
+      top: calc(100% - 1px);
+    }
+
+    .flora-band > svg {
+      position: absolute;
+      inset: 0;
+      display: block;
+      overflow: visible;
+    }
+
+    /* O que nasce na faixa se apaga do lado de longe dela, como o
+       pontilhado, em vez de ser cortado pela borda da caixa. */
+    .flora-band--top[data-fade] {
+      -webkit-mask-image: linear-gradient(to top, #000 58%, transparent 100%);
+      mask-image: linear-gradient(to top, #000 58%, transparent 100%);
+    }
+
+    .flora-band--bottom[data-fade] {
+      -webkit-mask-image: linear-gradient(to bottom, #000 60%, transparent 100%);
+      mask-image: linear-gradient(to bottom, #000 60%, transparent 100%);
+    }
+
+    /* ------------------------------------------- a entrada de cada peça */
+    /* `--flora-in` (0–1) vem do timeline. Cada peça começa em `--o` e dura
+       `--s`; `--p` é o progresso dela, `--e` o mesmo com saída suave. */
+    .fl {
+      --p: clamp(0, calc((var(--flora-in, 1) - var(--o, 0)) / var(--s, .22)), 1);
+      --e: calc(var(--p) * (2 - var(--p)));
+    }
+
+    .fl-fade {
+      opacity: var(--p);
+    }
+
+    .fl-pop {
+      opacity: var(--p);
+      scale: calc(.35 + .65 * var(--e));
+      transform-box: fill-box;
+      transform-origin: center;
+    }
+
+    /* ------------------------------------------------------- tintas */
+    .fl-mist {
+      fill: rgb(var(--flora-lit) / .42);
+    }
+
+    .fl-drop {
+      fill: color-mix(in srgb, rgb(var(--flora-lit)) 14%, #fff);
+      stroke: rgb(var(--flora-lit) / .66);
+      stroke-width: .9;
+    }
+
+    .fl-shine {
       fill: none;
+      stroke: #fff;
+      stroke-width: 1.2;
+      stroke-linecap: round;
     }
 
-    .product-slide__growth--top {
-      bottom: calc(100% - 2px);
+    .fl-ion-k {
+      font-family: var(--font-tag);
+      font-weight: 600;
+      fill: rgb(var(--flora) / .78);
     }
 
-    /* Espelhado, e não uma segunda coleção de caminhos: o que desce é o mesmo
-       sistema de eixos lido de cabeça para baixo. */
-    .product-slide__growth--bottom {
-      top: calc(100% - 2px);
-      transform: scaleY(-1);
-    }
-
-    /* Traço: caule, raiz, rastro de gota. `non-scaling-stroke` porque o
-       `slice` amplia bastante em tela larga, e a espessura tem de ser a
-       mesma em qualquer viewport. */
-    .flora-line {
+    .fl-bond {
       fill: none;
       stroke: rgb(var(--flora) / .5);
-      stroke-width: 1.5;
+      stroke-width: 1.1;
       stroke-linecap: round;
-      vector-effect: non-scaling-stroke;
     }
 
-    .flora-root {
-      stroke: rgb(var(--flora) / .38);
-      stroke-width: 1.2;
-    }
-
-    .flora-root--fine {
-      stroke-width: 1;
-    }
-
-    .flora-trail {
-      stroke: rgb(var(--flora) / .3);
-      stroke-width: 1;
-    }
-
-    /* Peça cheia: gota, folha, bloco, inseto. */
-    .flora-fill {
-      fill: rgb(var(--flora) / .34);
+    .fl-atom {
+      fill: #fff;
       stroke: rgb(var(--flora) / .62);
-      stroke-width: 1;
-      vector-effect: non-scaling-stroke;
+      stroke-width: 1.1;
     }
 
-    .flora-node {
-      fill: rgb(var(--flora-lit) / .28);
+    .fl-atom--n {
+      fill: rgb(var(--flora-lit) / .72);
+      stroke: rgb(var(--flora));
+    }
+
+    .fl-atom--o {
+      fill: color-mix(in srgb, rgb(var(--flora-lit)) 18%, #fff);
+    }
+
+    /* A cadeia lateral é a parte que muda de um aminoácido para outro. */
+    .fl-atom--r {
+      stroke-dasharray: 2 2;
+    }
+
+    .fl-ripple {
+      fill: none;
       stroke: rgb(var(--flora-lit) / .7);
       stroke-width: 1;
-      vector-effect: non-scaling-stroke;
-    }
-
-    /* Fio fino: nervura da folha, antena e perna do inseto. */
-    .flora-hair {
-      fill: none;
-      stroke: rgb(var(--flora) / .55);
-      stroke-width: .9;
-      stroke-linecap: round;
-      vector-effect: non-scaling-stroke;
-    }
-
-    /* Sem isto a escala do GSAP tomaria a origem do sistema do SVG, e a peça
-       viajaria até o canto em vez de abrir onde está. */
-    .flora-motif {
       transform-box: fill-box;
-      transform-origin: 50% 50%;
+      transform-origin: center;
+      opacity: 0;
     }
 
-    /* --------------------------------------------------- o balanço */
-    /* Cada peça tem o seu tempo e o seu atraso, tirados do índice: com um só,
-       todas respiram em uníssono e o que se lê é a página inteira pulsando. */
-    .flora-sprig {
-      /* Profundidade: nem tudo está no mesmo plano. */
-      opacity: calc(.46 + var(--d, .5) * .54);
-      transform-box: fill-box;
-      transform-origin: 50% 100%;
-      animation: product-flora-sway calc(8s + var(--i) * 1.1s) ease-in-out infinite alternate;
-      animation-delay: calc(var(--i) * -2.1s);
+    /* ---------------------------------------------------- o que se move */
+    /* Cada peça traz o seu tempo e o seu atraso (`--dur`, `--delay`): com um
+       só, tudo respiraria em uníssono e o que se leria é a página pulsando. */
+    .fl-float {
+      transform-box: view-box;
+      animation: fl-float var(--dur, 7s) ease-in-out var(--delay, 0s) infinite alternate;
+    }
+
+    /* Deriva lateral, num período bem mais longo que o da flutuação: somadas,
+       as duas não fecham laço visível. Só translação, então não precisa de
+       origem. */
+    .fl-drift {
+      animation: fl-drift var(--dur, 15s) ease-in-out var(--delay, 0s) infinite alternate;
+    }
+
+    .fl-twinkle {
+      animation: fl-twinkle var(--dur, 4s) ease-in-out var(--delay, 0s) infinite alternate;
+    }
+
+    /* Queda acelerando, como gota de verdade. */
+    .fl-rain {
+      animation: fl-rain var(--dur, 3s) cubic-bezier(.5, 0, .9, .7) var(--delay, 0s) infinite;
+    }
+
+    .fl-ripple {
+      animation: fl-ripple var(--dur, 3s) linear var(--delay, 0s) infinite;
+    }
+
+    .fl-ripple--late {
+      animation-name: fl-ripple-late;
+    }
+
+    .fl-float,
+    .fl-drift,
+    .fl-twinkle,
+    .fl-rain,
+    .fl-ripple {
       animation-play-state: paused;
     }
 
     /* Só enquanto a faixa está na tela — ver `syncFlora` em Products.tsx. */
-    .product-slide__flora[data-flora-active] .flora-sprig,
+    .product-slide__flora[data-flora-active] :is(.fl-float, .fl-drift, .fl-twinkle, .fl-rain, .fl-ripple),
     .product-slide__flora[data-flora-active] .product-slide__stipple-dots {
       animation-play-state: running;
     }
   }
 
-  /* Balanço curto e lento: o caule pende de um lado para o outro a partir da
-     base, que é onde ele estaria preso. */
-  @keyframes product-flora-sway {
+  @keyframes fl-rain {
+    0% {
+      translate: 0 0;
+      opacity: 0;
+    }
+    12% {
+      opacity: 1;
+    }
+    88% {
+      translate: 0 var(--dy, 100px);
+      opacity: 1;
+    }
+    90%,
+    100% {
+      translate: 0 var(--dy, 100px);
+      opacity: 0;
+    }
+  }
+
+  /* A onda só existe no fim do ciclo da gota, quando ela toca a faixa. */
+  @keyframes fl-ripple {
+    0%,
+    87% {
+      scale: .15;
+      opacity: 0;
+    }
+    89% {
+      scale: .3;
+      opacity: .9;
+    }
+    100% {
+      scale: 1;
+      opacity: 0;
+    }
+  }
+
+  /* A segunda, menor, sai um instante depois da primeira. */
+  @keyframes fl-ripple-late {
+    0%,
+    91% {
+      scale: .2;
+      opacity: 0;
+    }
+    93% {
+      scale: .35;
+      opacity: .6;
+    }
+    100% {
+      scale: 1;
+      opacity: 0;
+    }
+  }
+
+  @keyframes fl-float {
     from {
-      transform: rotate(-2.6deg) scaleY(0.97);
+      translate: 0 calc(var(--fy, 4px) * -1);
+      rotate: calc(var(--fr, 3deg) * -1);
     }
     to {
-      transform: rotate(2.6deg) scaleY(1.03);
+      translate: 0 var(--fy, 4px);
+      rotate: var(--fr, 3deg);
+    }
+  }
+
+  @keyframes fl-drift {
+    from {
+      translate: calc(var(--dx, 10px) * -1) 0;
+    }
+    to {
+      translate: var(--dx, 10px) 0;
+    }
+  }
+
+  @keyframes fl-twinkle {
+    from {
+      opacity: .25;
+    }
+    to {
+      opacity: 1;
     }
   }
 
