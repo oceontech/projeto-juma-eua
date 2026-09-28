@@ -62,7 +62,7 @@ export default function KmepPage() {
       <Fit />
       <Strip />
       <Questions />
-      <Final />
+      <Final variant="a" />
     </>
   );
 }

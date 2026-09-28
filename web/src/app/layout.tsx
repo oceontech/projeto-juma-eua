@@ -5,6 +5,7 @@ import { LocaleProvider } from "@/components/layout/LocaleProvider";
 import { PageTransition } from "@/components/layout/PageTransition";
 import { Preloader } from "@/components/layout/Preloader";
 import { SiteHeader } from "@/components/layout/SiteHeader";
+import { TouchCapture } from "@/components/layout/TouchCapture";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { ScrollRefresh } from "@/components/motion/ScrollRefresh";
 import { SmoothAnchors } from "@/components/motion/SmoothAnchors";
@@ -93,6 +94,7 @@ export default async function RootLayout({
         <SmoothAnchors />
         <SmoothScroll />
         <LocaleProvider locale={locale}>
+          <TouchCapture />
           <SiteHeader />
           <main>{children}</main>
           <SiteFooter />

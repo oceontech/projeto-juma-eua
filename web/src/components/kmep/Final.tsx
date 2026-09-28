@@ -19,7 +19,7 @@ import { microText } from "./ui";
  *
  * A ressalva de rodapé é obrigatória e fica dentro da seção.
  */
-export function Final() {
+export function Final({ variant = "a" }: { variant?: "a" | "b" }) {
   const { final } = useContent().kmep;
   const scope = useRef<HTMLElement>(null);
 
@@ -70,7 +70,7 @@ export function Final() {
           </div>
 
           <div data-nav-theme="light" className="fn-card relative max-md:-mr-px max-md:w-[calc(100%+1px)] rounded-[clamp(18px,1.8vw,30px)] bg-white p-[clamp(20px,2.4vw,40px)] text-ink shadow-[0_30px_80px_-30px_rgba(0,0,0,0.55)]">
-            <TrialForm source="kmep" compact />
+            <TrialForm source="kmep" variant={variant} compact />
           </div>
         </div>
 

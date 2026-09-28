@@ -51,7 +51,7 @@ export default function KmepBPage() {
       <Fit />
       <Strip />
       <Questions />
-      <Final />
+      <Final variant="b" />
     </>
   );
 }

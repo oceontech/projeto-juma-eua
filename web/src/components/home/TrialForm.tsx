@@ -42,9 +42,12 @@ const CROP_ICONS: Record<string, string> = {
  */
 export function TrialForm({
   source,
+  variant,
   compact = false,
 }: {
   source?: string;
+  /** Versão do teste A/B da página (KMEP: "a" em /kmep, "b" em /kmep-b). */
+  variant?: "a" | "b";
   compact?: boolean;
 }) {
   const content = useContent();
@@ -55,14 +58,39 @@ export function TrialForm({
   const [state, action, pending] = useActionState(submitTrialRequest, INITIAL);
   const id = useId();
   const formRef = useRef<HTMLFormElement>(null);
+  /* Página e momento em que o formulário apareceu: o painel usa a página como
+     origem do lead, e um envio em menos de 1,5 s é tratado como robô. */
+  const pageRef = useRef<HTMLInputElement>(null);
+  const startedAtRef = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    if (pageRef.current) pageRef.current.value = window.location.pathname;
+    if (startedAtRef.current) startedAtRef.current.value = String(Date.now());
+  }, []);
 
   useEffect(() => {
-    if (state.status === "success") formRef.current?.reset();
+    if (state.status !== "success") return;
+    formRef.current?.reset();
+    // O reset zera os campos ocultos; a página e o relógio voltam a valer.
+    if (pageRef.current) pageRef.current.value = window.location.pathname;
+    if (startedAtRef.current) startedAtRef.current.value = String(Date.now());
   }, [state]);
 
   return (
     <form ref={formRef} action={action} noValidate className={s.form}>
       {source && <input type="hidden" name="source" value={source} />}
+      {variant && <input type="hidden" name="variant" value={variant} />}
+      {compact && <input type="hidden" name="compact" value="1" />}
+      <input ref={pageRef} type="hidden" name="page" defaultValue="" />
+      <input ref={startedAtRef} type="hidden" name="startedAt" defaultValue="" />
+      {/* Isca para robôs: fora da tela, fora do Tab e escondida de leitores de tela. */}
+      <input
+        type="text"
+        name="website"
+        tabIndex={-1}
+        autoComplete="off"
+        aria-hidden="true"
+        style={{ position: "absolute", left: "-9999px", width: 1, height: 1, opacity: 0 }}
+      />
       <div data-trial-item className={s.head}>
         <p className={s.heading}>{form.heading}</p>
         <p className={s.caption}>{form.caption}</p>

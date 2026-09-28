@@ -80,7 +80,7 @@ export async function USOperation() {
               embaixo do outro; no largo o branco fica à direita, sob os links
               e o botão da barra — onde ele passa, a barra é clara. */}
           <span aria-hidden data-nav-theme="light" className="pointer-events-none absolute inset-0" />
-          <TrialForm />
+          <TrialForm source="home" />
         </Reveal>
       </div>
     </section>
