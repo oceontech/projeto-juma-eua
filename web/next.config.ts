@@ -14,10 +14,14 @@ const nextConfig: NextConfig = {
        ele conferir a origem a cada pedido. */
     minimumCacheTTL: process.env.NODE_ENV === "development" ? 0 : 14400,
   },
-  /* A LP do KMEP mudou de /kmep-ultra para /kmep. Permanente, e antes do
-     sistema de arquivos: a rota antiga não chega a renderizar. */
+  /* A LP do KMEP mudou de /kmep-ultra para /kmep, e a LP antiga do Aminosan
+     (/aminosan-b) foi aposentada em favor de /aminosan. Permanentes, e antes
+     do sistema de arquivos: as rotas antigas não chegam a renderizar. */
   async redirects() {
-    return [{ source: "/kmep-ultra", destination: "/kmep", permanent: true }];
+    return [
+      { source: "/kmep-ultra", destination: "/kmep", permanent: true },
+      { source: "/aminosan-b", destination: "/aminosan", permanent: true },
+    ];
   },
   /**
    * O site não vai ao ar antes da liberação do responsável regulatório da

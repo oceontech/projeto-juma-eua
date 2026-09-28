@@ -222,26 +222,6 @@ export const proof: typeof en.proof = {
   footnote: "Resultados de ensaios de campo conduzidos no Brasil. O desempenho em campo varia com clima, solo e manejo.",
 };
 
-export const economics: typeof en.economics = {
-  heading: "Quanto valem nove bushels na sua área.",
-  body: "Com o milho a $4,30, 8,9 bushels são $38,27 por acre. O produto custa seis dólares por acre na dose do rótulo, para uma aplicação. Publicamos os dois números juntos, porque a distância entre eles é a decisão inteira.",
-  witness: "+8,9 bu/ac: 221,2 tratado vs 212,3 bu/ac na testemunha",
-  calc: {
-    gain: 8.9,
-    cost: 6,
-    price: { label: "Preço do milho", unit: "/bu", hint: "Arraste para definir o seu preço", min: 3.5, max: 5.5, step: 0.05, initial: 4.3, presets: [4, 4.3, 4.6] },
-    acres: { label: "Sua área", unit: "ac", presets: [160, 500, 1000, 2500], initial: 500 },
-    steps: { value: "Valor de +8,9 bu/ac", cost: "Custo do produto", net: "Líquido por acre" },
-    perAcre: "/ac",
-    ratio: { label: "Valor em grão por $1 de produto", suffix: "para $1" },
-    breakEven: { label: "Se paga com o milho acima de", unit: "/bu" },
-    farm: { label: "Líquido na sua área", note: "Uma aplicação, na dose do rótulo" },
-    scaleMax: 50,
-    scaleStep: 10,
-  },
-  footnote: "Resposta de produtividade do ensaio Rehagro no Brasil. Preços do milho mostrados como referência. O seu resultado vai variar com clima, solo e manejo.",
-};
-
 export const timing: typeof en.timing = {
   heading: "Quando ele entra.",
   body: "Numa aplicação que você já tem no calendário, na dose do rótulo: 16 fl oz por acre. Pomares, hortaliças, ornamentais e grandes culturas têm cada um a sua janela. Escolha a sua.",

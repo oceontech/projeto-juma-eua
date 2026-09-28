@@ -129,8 +129,9 @@ atropelaria a animação.
 
 ### A cena de partículas da LP B
 
-> **Rotas:** a LP dos componentes `aminosan-b/` é hoje a **principal**, em `/aminosan`; a versão
-> anterior (`components/aminosan/`) mudou para `/aminosan-b`. A LP C foi removida.
+> **Rotas:** a LP dos componentes `aminosan-b/` é hoje a **principal**, em `/aminosan`. A versão
+> anterior (`components/aminosan/`) foi aposentada em 28/09/2026 e `/aminosan-b` redireciona para
+> `/aminosan`. A LP C foi removida.
 >
 > **Hoje a LP B usa `components/aminosan-b/Specimen.tsx`**, a cena no mecanismo da antiga LP C (removida:
 > grade de pontos sobre a própria foto, cor lida da textura no vertex shader) com as cores da B: a foto do hero — fundo e folhas compostos num canvas — dá o zoom e

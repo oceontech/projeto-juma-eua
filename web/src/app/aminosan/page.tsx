@@ -24,7 +24,7 @@ export const metadata: Metadata = {
 
 /**
  * LP principal do Aminosan® (rota /aminosan). Nasceu como versão B do teste
- * A/B e trocou de lugar com a primeira, que foi para /aminosan-b.
+ * A/B e substituiu a primeira, aposentada em 28/09/2026 (/aminosan-b redireciona para cá).
  *
  * **Revisão de 25/09/2026**, para ficar à altura da LP do KMEP: a página
  * passou a seguir o arco do docs/03-SITE.md (A1–A11) com seções construídas

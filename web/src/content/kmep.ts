@@ -305,35 +305,6 @@ export const proof = {
   footnote: "Results from field trials conducted in Brazil. Field performance varies with climate, soil and management.",
 };
 
-/* -------------------------------------------------------------------- K11 */
-
-/* FORA DA PÁGINA desde 24/09/2026: o cliente decidiu não publicar preço.
-   Economics.tsx saiu de /kmep e /kmep-b; o conteúdo fica para quando o
-   preço voltar. */
-export const economics = {
-  heading: "What nine bushels is worth on your acres.",
-  body: "At $4.30 corn, 8.9 bushels is $38.27 an acre. The product costs six dollars an acre at the label rate for one spray. We publish both numbers together, because the gap between them is the whole decision.",
-  witness: "+8.9 bu/ac: 221.2 treated vs 212.3 bu/ac untreated check",
-  /* A calculadora. O ganho e o custo são os dois números com fonte (ensaio
-     Rehagro e dose do rótulo); preço do milho e área são do leitor.
-     TODO(P4): se a dose do rótulo americano mudar o custo, é aqui. */
-  calc: {
-    gain: 8.9,
-    cost: 6,
-    price: { label: "Corn price", unit: "/bu", hint: "Drag to set your price", min: 3.5, max: 5.5, step: 0.05, initial: 4.3, presets: [4, 4.3, 4.6] },
-    acres: { label: "Your acres", unit: "ac", presets: [160, 500, 1000, 2500], initial: 500 },
-    steps: { value: "Value of +8.9 bu/ac", cost: "Product cost", net: "Net per acre" },
-    perAcre: "/ac",
-    ratio: { label: "Grain value per $1 of product", suffix: "to $1" },
-    breakEven: { label: "Pays for itself with corn above", unit: "/bu" },
-    farm: { label: "Net on your acres", note: "One spray, at the label rate" },
-    /* Topo fixo do gráfico: cobre o preço máximo do controle (5.5 × 8.9). */
-    scaleMax: 50,
-    scaleStep: 10,
-  },
-  footnote: "Yield response from the Rehagro trial in Brazil. Corn prices shown for reference. Your result will vary with climate, soil and management.",
-};
-
 /* -------------------------------------------------------------------- K13 */
 
 export const timing = {
