@@ -16,6 +16,7 @@ export type NavLink = { label: string; href: string };
 export const nav = {
   left: [
     { label: "Homepage", href: "/" },
+    { label: "Blog", href: "/blog" },
     { label: "Contact us", href: "#us-operation" },
   ] satisfies NavLink[],
   right: [
@@ -379,6 +380,7 @@ export const footer = {
     {
       title: "Company",
       links: [
+        { label: "Blog", href: "/blog" },
         { label: "About", href: "#brazil" },
         { label: "Programs", href: "#programs" },
         { label: "Trials", href: "#method" },

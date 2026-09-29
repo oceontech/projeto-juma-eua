@@ -4,6 +4,7 @@ import { Pill } from "@/components/ui";
 import { TrialForm } from "./TrialForm";
 import { USOperationPhoto } from "./USOperationPhoto";
 import { getContent } from "@/lib/locale";
+import { addressLines, getUsSettings } from "@/lib/panel";
 import s from "./USOperation.module.css";
 
 /**
@@ -12,8 +13,11 @@ import s from "./USOperation.module.css";
  * formulário num card branco à direita.
  */
 export async function USOperation() {
-  const { usOperation } = (await getContent()).home;
+  const [{ usOperation }, settings] = await Promise.all([getContent().then((c) => c.home), getUsSettings()]);
   const { contact, alternatives } = usOperation;
+  // Endereço e contato vêm do painel (Site EUA › Configurações); sem eles, o texto fixo.
+  const address = addressLines(settings, contact.address);
+  const reach = [settings.phone, settings.email, settings.hours].filter(Boolean);
 
   return (
     <section id="us-operation" className={s.section}>
@@ -45,16 +49,34 @@ export async function USOperation() {
               </svg>
             </span>
             <div>
-              <p className={s.contactName}>{contact.name}</p>
+              <p className={s.contactName}>{settings.company || contact.name}</p>
               <p className={s.contactAddress}>
-                {contact.address.map((line, i) => (
+                {address.map((line, i) => (
                   <span key={line}>
                     {i > 0 && <br />}
                     {line}
                   </span>
                 ))}
               </p>
-              <p className={s.contactBody}>{contact.body}</p>
+              {reach.length ? (
+                <p className={s.contactBody}>
+                  {settings.phone && (
+                    <>
+                      <a href={`tel:${settings.phone.replace(/[^\d+]/g, "")}`}>{settings.phone}</a>
+                      <br />
+                    </>
+                  )}
+                  {settings.email && (
+                    <>
+                      <a href={`mailto:${settings.email}`}>{settings.email}</a>
+                      <br />
+                    </>
+                  )}
+                  {settings.hours}
+                </p>
+              ) : (
+                <p className={s.contactBody}>{contact.body}</p>
+              )}
             </div>
           </div>
 

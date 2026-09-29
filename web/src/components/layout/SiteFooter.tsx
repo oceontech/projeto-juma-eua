@@ -2,16 +2,22 @@ import Image from "next/image";
 import { SmartLink } from "@/components/ui/SmartLink";
 import { Reveal } from "@/components/motion/Reveal";
 import { getContent } from "@/lib/locale";
+import { addressLines, getUsSettings, socialLinks } from "@/lib/panel";
 import { BackToTop } from "./BackToTop";
 import s from "./SiteFooter.module.css";
+
+const SOCIAL_LABEL = { instagram: "Instagram", facebook: "Facebook", linkedin: "LinkedIn", youtube: "YouTube", x: "X" } as const;
 
 /**
  * Rodapé: um card escuro que sobe sobre o fim da última seção. Chamada para a
  * faixa de teste no alto, navegação enxuta no meio, avisos legais embaixo e a
- * marca grande assinando o pé.
+ * marca grande assinando o pé. Endereço, contato e redes vêm do painel
+ * (Site EUA › Configurações); o que estiver vazio lá não aparece.
  */
 export async function SiteFooter() {
-  const { footer } = (await getContent()).home;
+  const [{ footer }, settings] = await Promise.all([getContent().then((c) => c.home), getUsSettings()]);
+  const address = addressLines(settings, [footer.address]).join(" · ");
+  const socials = socialLinks(settings);
 
   return (
     <footer className={s.footer} data-nav-theme="dark">
@@ -45,8 +51,35 @@ export async function SiteFooter() {
               height={229}
               className={s.logo}
             />
-            <p className={s.address}>{footer.address}</p>
+            <p className={s.address}>{address}</p>
+            {(settings.phone || settings.email) && (
+              <p className={s.parent}>
+                {settings.phone && (
+                  <a href={`tel:${settings.phone.replace(/[^\d+]/g, "")}`} className={s.link}>
+                    {settings.phone}
+                  </a>
+                )}
+                {settings.phone && settings.email && " · "}
+                {settings.email && (
+                  <a href={`mailto:${settings.email}`} className={s.link}>
+                    {settings.email}
+                  </a>
+                )}
+              </p>
+            )}
             <p className={s.parent}>{footer.parent}</p>
+            {socials.length > 0 && (
+              <p className={s.parent}>
+                {socials.map((social, i) => (
+                  <span key={social.key}>
+                    {i > 0 && " · "}
+                    <a href={social.href} target="_blank" rel="noopener noreferrer" className={s.link}>
+                      {SOCIAL_LABEL[social.key]}
+                    </a>
+                  </span>
+                ))}
+              </p>
+            )}
           </div>
 
           {footer.columns.map((column) => (

@@ -8,6 +8,7 @@ import type * as en from "../home";
 export const nav: typeof en.nav = {
   left: [
     { label: "Início", href: "/" },
+    { label: "Blog", href: "/blog" },
     { label: "Fale conosco", href: "#us-operation" },
   ],
   right: [
@@ -321,6 +322,7 @@ export const footer: typeof en.footer = {
     {
       title: "Empresa",
       links: [
+        { label: "Blog", href: "/blog" },
         { label: "Sobre", href: "#brazil" },
         { label: "Programas", href: "#programs" },
         { label: "Ensaios", href: "#method" },

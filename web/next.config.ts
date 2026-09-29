@@ -13,6 +13,11 @@ const nextConfig: NextConfig = {
        navegador —, e o cache vive em .next/dev/cache/images. Zero aqui faz
        ele conferir a origem a cada pedido. */
     minimumCacheTTL: process.env.NODE_ENV === "development" ? 0 : 14400,
+    /* Capas do blog, enviadas pelo painel central (Vercel Blob). */
+    remotePatterns: [
+      { protocol: "https", hostname: "*.public.blob.vercel-storage.com" },
+      { protocol: "https", hostname: "juma-agro.com.br" },
+    ],
   },
   /* A LP do KMEP mudou de /kmep-ultra para /kmep, e a LP antiga do Aminosan
      (/aminosan-b) foi aposentada em favor de /aminosan. Permanentes, e antes
