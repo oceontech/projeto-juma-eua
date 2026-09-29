@@ -31,8 +31,13 @@ export type UsSettings = {
   social?: Partial<Record<SocialKey, string | null>> | null;
 };
 
+/** Contato (Site EUA › Contato) e redes (Site EUA › Redes sociais) juntos. */
 export async function getUsSettings(): Promise<UsSettings> {
-  return (await panel<UsSettings>("/api/globals/settings-us?depth=0", "settings")) ?? {};
+  const [contact, social] = await Promise.all([
+    panel<UsSettings>("/api/globals/settings-us?depth=0", "settings"),
+    panel<Partial<Record<SocialKey, string | null>>>("/api/globals/redes-us?depth=0", "settings"),
+  ]);
+  return { ...(contact ?? {}), social: social ?? {} };
 }
 
 export const addressLines = (s: UsSettings, fallback: string[]) => {
@@ -43,10 +48,10 @@ export const addressLines = (s: UsSettings, fallback: string[]) => {
   return lines.length ? lines : fallback;
 };
 
+const SOCIAL_KEYS: SocialKey[] = ["instagram", "facebook", "linkedin", "youtube", "x"];
+
 export const socialLinks = (s: UsSettings) =>
-  (Object.entries(s.social ?? {}) as [SocialKey, string | null | undefined][])
-    .filter(([, href]) => href && /^https?:\/\//.test(href))
-    .map(([key, href]) => ({ key, href: href! }));
+  SOCIAL_KEYS.map((key) => ({ key, href: s.social?.[key] ?? "" })).filter(({ href }) => /^https?:\/\//.test(href));
 
 type Media = { url?: string | null; alt?: string | null; width?: number | null; height?: number | null } | null;
 
