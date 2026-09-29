@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { preload } from "react-dom";
 import { Archivo, DM_Sans, Inter } from "next/font/google";
+import { Analytics } from "@/components/layout/Analytics";
 import { LocaleProvider } from "@/components/layout/LocaleProvider";
 import { PageTransition } from "@/components/layout/PageTransition";
 import { Preloader } from "@/components/layout/Preloader";
@@ -99,6 +100,7 @@ export default async function RootLayout({
           <main>{children}</main>
           <SiteFooter />
         </LocaleProvider>
+        <Analytics />
       </body>
     </html>
   );

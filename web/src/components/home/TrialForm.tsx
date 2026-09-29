@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useActionState, useEffect, useId, useRef, useState, type CSSProperties } from "react";
+import { track } from "@/components/layout/Analytics";
 import { submitTrialRequest, type TrialRequestState } from "@/lib/actions";
 import { useContent } from "@/components/layout/LocaleProvider";
 import { cx } from "@/components/ui";
@@ -69,11 +70,12 @@ export function TrialForm({
 
   useEffect(() => {
     if (state.status !== "success") return;
+    track("lead", { formulario: compact ? "trial-compact" : "trial", source, variant });
     formRef.current?.reset();
     // O reset zera os campos ocultos; a página e o relógio voltam a valer.
     if (pageRef.current) pageRef.current.value = window.location.pathname;
     if (startedAtRef.current) startedAtRef.current.value = String(Date.now());
-  }, [state]);
+  }, [state, compact, source, variant]);
 
   return (
     <form ref={formRef} action={action} noValidate className={s.form}>
