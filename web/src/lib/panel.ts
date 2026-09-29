@@ -62,19 +62,17 @@ export type Post = {
   excerpt?: string | null;
   date: string;
   author?: string | null;
-  category?: string | null;
+  /** Categoria do painel (Blog › Categoria), populada com depth=1. */
+  tema?: { nome?: string | null; slug?: string | null } | number | null;
+  readMinutes?: number | null;
   cover?: Media | number;
   bodyHtml?: string | null;
 };
 
-export const CATEGORY_LABEL: Record<string, string> = {
-  "field-notes": "Field notes",
-  "crop-nutrition": "Crop nutrition",
-  trials: "Trials",
-  company: "Company",
-};
+export const categoryName = (post: Pick<Post, "tema">) =>
+  typeof post.tema === "object" && post.tema ? (post.tema.nome ?? null) : null;
 
-const FIELDS = "select[title]=true&select[slug]=true&select[excerpt]=true&select[date]=true&select[author]=true&select[category]=true&select[cover]=true";
+const FIELDS = "select[title]=true&select[slug]=true&select[excerpt]=true&select[date]=true&select[author]=true&select[tema]=true&select[readMinutes]=true&select[cover]=true";
 
 export async function getPosts(): Promise<Post[]> {
   const data = await panel<{ docs: Post[] }>(

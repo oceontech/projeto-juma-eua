@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
-import Image from "next/image";
-import Link from "next/link";
 import { notFound } from "next/navigation";
-import { CATEGORY_LABEL, formatDate, getPost, getPosts, mediaUrl } from "@/lib/panel";
+import { categoryName, getPost, getPosts, mediaUrl } from "@/lib/panel";
+import { PostArticle } from "../PostArticle";
 import { PostCard } from "../PostCard";
 import s from "../blog.module.css";
 
@@ -25,29 +24,22 @@ export default async function PostPage({ params }: Props) {
   const post = await getPost(slug);
   if (!post) notFound();
 
-  const cover = mediaUrl(post.cover);
   const more = (await getPosts()).filter((p) => p.slug !== slug).slice(0, 3);
 
   return (
     <div className={s.page}>
-      <article className={s.article}>
-        <Link href="/blog" className={s.back}>
-          ← All notes
-        </Link>
-        {post.category && <p className={s.eyebrow}>{CATEGORY_LABEL[post.category] ?? post.category}</p>}
-        <h1 className={s.postTitle}>{post.title}</h1>
-        {post.excerpt && <p className={s.postLede}>{post.excerpt}</p>}
-        <p className={`${s.meta} ${s.postMeta}`}>
-          <time dateTime={post.date}>{formatDate(post.date)}</time>
-          {post.author && <span>By {post.author}</span>}
-        </p>
-        {cover && (
-          <div className={s.postCover}>
-            <Image src={cover} alt="" fill priority sizes="(min-width: 800px) 760px, 100vw" />
-          </div>
-        )}
-        {post.bodyHtml && <div className={s.body} dangerouslySetInnerHTML={{ __html: post.bodyHtml }} />}
-      </article>
+      <PostArticle
+        post={{
+          title: post.title,
+          excerpt: post.excerpt,
+          date: post.date,
+          author: post.author,
+          category: categoryName(post),
+          cover: mediaUrl(post.cover),
+          bodyHtml: post.bodyHtml,
+          readMinutes: post.readMinutes,
+        }}
+      />
 
       {more.length > 0 && (
         <section className={`${s.wrap} ${s.related}`}>

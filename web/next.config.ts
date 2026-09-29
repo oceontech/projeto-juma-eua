@@ -17,6 +17,8 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       { protocol: "https", hostname: "*.public.blob.vercel-storage.com" },
       { protocol: "https", hostname: "juma-agro.com.br" },
+      /* Prévia do painel rodando no computador (teste local). */
+      { protocol: "http", hostname: "localhost" },
     ],
   },
   /* A LP do KMEP mudou de /kmep-ultra para /kmep, e a LP antiga do Aminosan

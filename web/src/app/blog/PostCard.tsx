@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { CATEGORY_LABEL, formatDate, mediaUrl, type Post } from "@/lib/panel";
+import { categoryName, formatDate, mediaUrl, type Post } from "@/lib/panel";
 import s from "./blog.module.css";
 
 export function PostCard({ post }: { post: Post }) {
@@ -16,8 +16,9 @@ export function PostCard({ post }: { post: Post }) {
       </span>
       <span className={s.cardBody}>
         <span className={s.meta}>
-          {post.category && <b>{CATEGORY_LABEL[post.category] ?? post.category}</b>}
+          {categoryName(post) && <b>{categoryName(post)}</b>}
           <time dateTime={post.date}>{formatDate(post.date)}</time>
+          {post.readMinutes ? <span>{post.readMinutes} min read</span> : null}
         </span>
         <h2 className={s.cardTitle}>{post.title}</h2>
         {post.excerpt && <p className={s.excerpt}>{post.excerpt}</p>}
