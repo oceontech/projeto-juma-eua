@@ -1,5 +1,7 @@
 import Script from "next/script";
 
+import { Engagement } from "./Engagement";
+
 /**
  * Umami, o mesmo do site BR (juma-stats.vercel.app). Sem cookies. Só carrega
  * com as variáveis de ambiente definidas; `data-domains` ignora previews.
@@ -9,12 +11,15 @@ export function Analytics() {
   const id = process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID;
   if (!src || !id) return null;
   return (
-    <Script
-      src={src}
-      data-website-id={id}
-      data-domains={process.env.NEXT_PUBLIC_UMAMI_DOMAINS || undefined}
-      strategy="afterInteractive"
-    />
+    <>
+      <Script
+        src={src}
+        data-website-id={id}
+        data-domains={process.env.NEXT_PUBLIC_UMAMI_DOMAINS || undefined}
+        strategy="afterInteractive"
+      />
+      <Engagement />
+    </>
   );
 }
 

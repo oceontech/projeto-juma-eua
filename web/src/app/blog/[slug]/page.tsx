@@ -7,14 +7,21 @@ import s from "../blog.module.css";
 
 type Props = { params: Promise<{ slug: string }> };
 
+const snippet = (html: string, max = 155) => {
+  const text = html.replace(/<[^>]+>/g, " ").replace(/&nbsp;/g, " ").replace(/\s+/g, " ").trim();
+  return text.length <= max ? text : `${text.slice(0, text.lastIndexOf(" ", max))}…`;
+};
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const post = await getPost((await params).slug);
   if (!post) return { title: "Blog" };
   const cover = mediaUrl(post.cover);
+  // Google description: the excerpt; without it, the start of the post.
+  const description = post.excerpt || snippet(post.bodyHtml ?? "") || undefined;
   return {
     title: post.title,
-    description: post.excerpt ?? undefined,
-    openGraph: { type: "article", title: post.title, description: post.excerpt ?? undefined, images: cover ? [cover] : undefined },
+    description,
+    openGraph: { type: "article", title: post.title, description, images: cover ? [cover] : undefined },
   };
 }
 
