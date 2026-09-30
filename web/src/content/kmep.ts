@@ -867,3 +867,6 @@ export const blackoutB: Blackout = {
     },
   ],
 };
+
+/** O aviso das cenas presas, no celular (components/motion/ScrollCue.tsx). */
+export const scrollCue: string = "Keep scrolling";

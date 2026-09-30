@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ScrollCue } from "@/components/motion/ScrollCue";
 import { Hero } from "@/components/kmep/Hero";
 import { Specimen } from "@/components/kmep/Specimen";
 import { Blackout } from "@/components/kmep/Blackout";
@@ -52,6 +53,8 @@ export default function KmepBPage() {
       <Strip />
       <Questions />
       <Final variant="b" />
+      {/* No celular, "continue rolando" quando o dedo para numa cena presa. */}
+      <ScrollCue product="kmep" />
     </>
   );
 }

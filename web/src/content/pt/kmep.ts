@@ -687,3 +687,6 @@ export const blackoutB: typeof en.blackoutB = {
     },
   ],
 };
+
+/** O aviso das cenas presas, no celular (components/motion/ScrollCue.tsx). */
+export const scrollCue = "Continue rolando";

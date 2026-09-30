@@ -63,11 +63,17 @@ const CANVAS_IN = { at: 0.002, run: 0.012 };
 const HERO_OUT = { at: 0.008, run: 0.016 };
 const TONE = { at: 0.018, run: 0.028 };
 
-/** Onde cada troca começa e quanto dura, em fração da cena. Cada uma anda com
-    `power2.inOut`, como na primeira versão: a nuvem acelera ao se soltar e
-    desacelera ao assentar, e a forma se adensa sem estalo. */
-const MORPH = [0.03, 0.26, 0.5, 0.74];
-const RUN = [0.12, 0.2, 0.2, 0.2];
+/** Onde cada troca é disparada, em fração da cena. O scroll só **dispara** a
+    troca: a travessia corre no relógio (`PACE`), com o mesmo tempo quer o
+    dedo role devagar, quer role de uma vez. Presa ao scrub, a troca pedia
+    mais de uma tela e meia de rolagem e, num scroll rápido, passava num
+    átimo. Cada uma anda com `power2.inOut`, como na primeira versão: a nuvem
+    acelera ao se soltar e desacelera ao assentar. */
+const MORPH = [0.03, 0.27, 0.51, 0.75];
+/* A travessia no relógio, em segundos: a primeira troca e cada troca a mais
+   quando o scroll pula várias de uma vez — aí elas se encadeiam num gesto
+   só, sem voltar a parar em cada forma. */
+const PACE = { first: 2.1, extra: 0.9 };
 /* Quando a copy troca, em fração de cada morph. A regra é uma só nos dois
    sentidos: o texto de uma forma aparece quando **ela** está quase montada.
    Indo, isso é perto do fim do morph (0,62); voltando, o morph corre ao
@@ -215,7 +221,7 @@ export function Specimen({ children }: { children: React.ReactNode }) {
              sai (`hero`), cada um de 0 a 1. Quem aplica é o quadro: se a nuvem
              ainda não existe, a foto não sai — senão o scroll apagaria o hero
              e não poria nada no lugar. */
-          const handoff = { canvas: 0, hero: 0 };
+          const handoff = { canvas: 0, hero: 0, tone: 0 };
           /* A saída: quanto o círculo preto cresceu, e quanto já é sólido. */
           /* A saída em duas fases de um mesmo gesto: `fill` enche um círculo
              pequeno com as partículas; `grow` expande o sólido até a tela. */
@@ -348,7 +354,11 @@ export function Specimen({ children }: { children: React.ReactNode }) {
               zoomed = u.zoom;
               hero.style.transform = zoomed === 1 ? "" : `scale(${zoomed})`;
             }
-            const out = field ? handoff.hero : 0;
+            /* A travessia corre no relógio, e a abertura no scroll: voltando
+               depressa ao topo, a foto só reaparece quando a nuvem já voltou a
+               ser ela. Enquanto houver fase, o pontilhado fica e a foto não. */
+            const away = gsap.utils.clamp(0, 1, u.phase * 12);
+            const out = field ? Math.max(handoff.hero, away) : 0;
             hero.style.opacity = out > 0 ? String(1 - out) : "";
             if (!field) return;
             /* Troca de resolução só na borda do fechamento, uma vez para cada
@@ -361,7 +371,8 @@ export function Specimen({ children }: { children: React.ReactNode }) {
             /* Depois da troca para o elemento sólido, o canvas está escondido:
                não há por que desenhá-lo. */
             if (u.gather >= 0.999) return;
-            u.opacity = handoff.canvas;
+            u.opacity = Math.max(handoff.canvas, away);
+            u.tone = Math.max(handoff.tone, away);
             field.render(u, time);
 
             const i = shown.stage;
@@ -473,6 +484,32 @@ export function Specimen({ children }: { children: React.ReactNode }) {
             });
           };
 
+          /* Se a leitura `k`, o texto ou alguma chamada, ainda aparece. */
+          const lit = (k: number) =>
+            [texts[k], ...root.querySelectorAll(`.sp-call[data-i="${k}"]`)].some(
+              (el) => Number(gsap.getProperty(el, "opacity")) > 0.001,
+            );
+
+          /* A fase no relógio. O alvo é quantas trocas o scroll já passou; o
+             tween anda até lá no próprio tempo. Se o alvo muda no meio, o novo
+             tween sai da velocidade em que a nuvem está, sem freio. */
+          let aim = 0;
+          let travel: gsap.core.Tween | null = null;
+          const steer = (t: number) => {
+            const next = MORPH.filter((at) => t >= at).length;
+            if (next === aim) return;
+            aim = next;
+            const moving = travel?.isActive() ?? false;
+            travel?.kill();
+            const span = Math.abs(next - u.phase);
+            travel = gsap.to(u, {
+              phase: next,
+              duration: PACE.first + PACE.extra * Math.max(0, span - 1),
+              ease: moving ? "power2.out" : "power2.inOut",
+              onUpdate: syncRoute,
+            });
+          };
+
           const syncCopy = () => {
             const phase = u.phase;
             if (phase > lastPhase + 1e-4) heading = 1;
@@ -487,11 +524,32 @@ export function Specimen({ children }: { children: React.ReactNode }) {
             const target =
               u.gather > 0.03 || (heading < 0 && phase < HERO_BACK) ? -1 : next;
             if (target === current) return;
-            if (current >= 0) leave(current, heading);
+            /* Sai tudo o que não é a leitura nova, e não só a anterior: numa
+               rolagem brusca uma troca podia escapar, e as chamadas daquela
+               cena ficavam acesas por cima das outras até o fim da página. */
+            texts.forEach((_, k) => {
+              if (k !== target && (k === current || lit(k))) leave(k, heading);
+            });
             if (target >= 0) enter(target, heading, current >= 0 ? T.after : 0);
             current = target;
             /* As chamadas acompanham o giro só da forma em cena. */
             shown.stage = target;
+          };
+
+          /* O trilho acende pela fase: chega a k+1 quando a forma k assenta. */
+          const syncRoute = () => {
+            syncCopy();
+            const rail = root.querySelector<HTMLElement>(".sp-rail");
+            const pills = root.querySelectorAll(".og-pill");
+            const drawn = gsap.utils.clamp(
+              0,
+              1,
+              (u.phase - 1) / (pills.length - 1),
+            );
+            rail?.style.setProperty("--draw", String(1 - drawn));
+            pills.forEach((pill, k) =>
+              pill.classList.toggle("is-on", u.phase >= k + 0.98),
+            );
           };
 
           const build = (): gsap.core.Timeline => {
@@ -507,20 +565,16 @@ export function Specimen({ children }: { children: React.ReactNode }) {
                 }),
             );
             const rail = root.querySelector<HTMLElement>(".sp-rail");
-            const pills = gsap.utils.toArray<HTMLElement>(".og-pill", root);
-            const steps = pills.length;
-            /* Quantas etapas estão acesas: chega a k+1 no fim do morph k. */
-            const route = { lit: 0 };
 
             const tl = gsap.timeline({
               defaults: { ease: "none" },
               scrollTrigger: {
                 trigger: stage,
                 start: "top top",
-                /* 760% da cena, mais o fechamento em disco no fim (1,0 a
-                   1,22 da linha do tempo), no mesmo compasso por tela: 880% para 1,16
-                   era o compasso antes de o crescimento ganhar trecho próprio. */
-                end: "+=925%",
+                /* Cerca de uma tela de rolagem entre um disparo e o seguinte
+                   (0,24 da linha do tempo), mais o fechamento em disco no fim
+                   (1,0 a 1,22). Com as trocas no scrub eram 925%. */
+                end: "+=510%",
                 scrub: 0.7,
                 pin: true,
                 anticipatePin: 1,
@@ -528,19 +582,12 @@ export function Specimen({ children }: { children: React.ReactNode }) {
                    do véu e da textura. Sem prioridade o ScrollTrigger mede as
                    outras seções antes de existir o espaçador deste pin. */
                 refreshPriority: 1,
+                /* O disparo das trocas lê o scroll real, e não a linha do
+                   tempo amortecida: não precisa esperar o scrub alcançar. */
+                onUpdate: (self) =>
+                  steer(self.progress * (self.animation?.duration() ?? 1)),
               },
-              onUpdate: () => {
-                syncCopy();
-                const drawn = gsap.utils.clamp(
-                  0,
-                  1,
-                  (route.lit - 1) / (steps - 1),
-                );
-                rail?.style.setProperty("--draw", String(1 - drawn));
-                pills.forEach((pill, k) =>
-                  pill.classList.toggle("is-on", route.lit >= k + 0.98),
-                );
-              },
+              onUpdate: syncRoute,
             });
 
             /* 1. O texto do hero sai, e a foto aproxima de leve. */
@@ -565,7 +612,7 @@ export function Specimen({ children }: { children: React.ReactNode }) {
               )
               /* 3. A cor escorre para o grafite antes da partida. */
               .to(
-                u,
+                handoff,
                 { tone: 1, duration: TONE.run, ease: "power1.inOut" },
                 TONE.at,
               )
@@ -582,18 +629,6 @@ export function Specimen({ children }: { children: React.ReactNode }) {
                 0.1,
               );
 
-            MORPH.forEach((at, i) => {
-              tl.to(
-                u,
-                { phase: i + 1, duration: RUN[i], ease: "power2.inOut" },
-                at,
-              );
-              tl.to(
-                route,
-                { lit: i + 1, duration: RUN[i], ease: "power1.inOut" },
-                at,
-              );
-            });
 
             /* A saída, num movimento só. O texto, as chamadas e o trilho vão
                embora para a direita; ao mesmo tempo o círculo preto nasce no
@@ -724,6 +759,7 @@ export function Specimen({ children }: { children: React.ReactNode }) {
             ro.disconnect();
             timeline?.scrollTrigger?.kill();
             timeline?.kill();
+            travel?.kill();
             /* As entradas da copy correm no relógio, fora da linha do tempo. */
             gsap.killTweensOf([
               ...texts,

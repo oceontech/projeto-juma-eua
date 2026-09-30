@@ -352,21 +352,19 @@ export const cell = {
  */
 export const rule = {
   label: "The proof",
-  heading: ["Two trials.", "No numbers yet."],
-  body: "Aminosan® has yield results from two soybean trials in Brazil. Neither was published with the untreated check beside it, and a number without its check is a number you can't check. So they stay off this page until the check comes with them. That's the rule for every number on this site.",
+  heading: ["Two trials.", "Data pending."],
+  body: "Aminosan® was tested in two soybean trials in Brazil. The results go on this page once the full trial data, with the untreated check, is sent to us.",
   labels: {
     crop: "Crop",
     place: "Location",
     source: "Source",
-    results: "Yield results",
     check: "Untreated check",
     treated: "With Aminosan®",
-    requested: "Requested",
-    withheld: "Withheld",
+    pending: "Awaiting trial data",
   },
   trials: [
-    { crop: "Soybeans", place: "Taquarivaí, São Paulo", source: "DETEC", results: 2 },
-    { crop: "Soybeans", place: "Lavras, Minas Gerais", source: "Terras Gerais", results: 1 },
+    { crop: "Soybeans", place: "Taquarivaí, São Paulo", source: "DETEC" },
+    { crop: "Soybeans", place: "Lavras, Minas Gerais", source: "Terras Gerais" },
   ],
   why: {
     heading: "Why the check matters",
@@ -754,3 +752,6 @@ export const final = {
   sending: "Sending…",
   privacy: "We use your information to answer this request and nothing else.",
 };
+
+/** O aviso das cenas presas, no celular (components/motion/ScrollCue.tsx). */
+export const scrollCue: string = "Keep scrolling";

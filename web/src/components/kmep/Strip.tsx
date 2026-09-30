@@ -47,11 +47,13 @@ export function Strip({ data, product = "kmep" }: { data?: StripData; product?: 
           { yPercent: 9, ease: "none", scrollTrigger: { trigger: scope.current, scrub: true, start: "top bottom", end: "bottom top" } },
         );
         gsap.utils.toArray<HTMLElement>(".st-card").forEach((card, i) => {
-          const trigger = { trigger: card, scrub: 0.6 };
+          /* Curto e cedo: o cartão já está no lugar quando chega a um quarto
+             da tela, sem o leitor ter de rolar esperando. */
+          const trigger = { trigger: card, scrub: 0.3 };
           gsap.fromTo(
             card,
-            { y: wide ? 220 + i * 90 : 90, opacity: 0 },
-            { y: 0, opacity: 1, ease: "power2.out", scrollTrigger: { ...trigger, start: "top bottom", end: "top 55%" } },
+            { y: wide ? 110 + i * 45 : 60, opacity: 0 },
+            { y: 0, opacity: 1, ease: "power2.out", scrollTrigger: { ...trigger, start: "top bottom", end: "top 80%" } },
           );
         });
       });

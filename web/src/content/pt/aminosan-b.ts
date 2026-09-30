@@ -270,21 +270,19 @@ export const cell: typeof en.cell = {
 
 export const rule: typeof en.rule = {
   label: "A prova",
-  heading: ["Dois ensaios.", "Nenhum número, ainda."],
-  body: "O Aminosan® tem resultados de produtividade de dois ensaios de soja no Brasil. Nenhum foi publicado com a testemunha ao lado, e um número sem a testemunha é um número que você não consegue conferir. Por isso eles ficam fora desta página até a testemunha chegar com eles. É a regra para todo número deste site.",
+  heading: ["Dois ensaios.", "Dados pendentes."],
+  body: "O Aminosan® passou por dois ensaios de soja no Brasil. Os resultados entram nesta página assim que os dados completos do ensaio, com a testemunha, forem enviados.",
   labels: {
     crop: "Cultura",
     place: "Local",
     source: "Fonte",
-    results: "Resultados de produtividade",
     check: "Testemunha",
     treated: "Com Aminosan®",
-    requested: "Solicitada",
-    withheld: "Retido",
+    pending: "Falta envio de dados",
   },
   trials: [
-    { crop: "Soja", place: "Taquarivaí, São Paulo", source: "DETEC", results: 2 },
-    { crop: "Soja", place: "Lavras, Minas Gerais", source: "Terras Gerais", results: 1 },
+    { crop: "Soja", place: "Taquarivaí, São Paulo", source: "DETEC" },
+    { crop: "Soja", place: "Lavras, Minas Gerais", source: "Terras Gerais" },
   ],
   why: {
     heading: "Por que a testemunha importa",
@@ -626,3 +624,6 @@ export const final: typeof en.final = {
   sending: "Enviando…",
   privacy: "Usamos seus dados só para responder a este pedido.",
 };
+
+/** O aviso das cenas presas, no celular (components/motion/ScrollCue.tsx). */
+export const scrollCue = "Continue rolando";
