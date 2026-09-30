@@ -24,6 +24,28 @@ export function PreviewFrame() {
     return () => window.removeEventListener("message", onMessage);
   }, []);
 
+  /* Prévia travada: dá para rolar e ver o post, mas não sair dele nem abrir nada. */
+  useEffect(() => {
+    const block = (e: Event) => {
+      const t = e.target as HTMLElement | null;
+      if (t?.closest("a, button, form, input, select, textarea, label, [role='button']")) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+    };
+    const style = document.createElement("style");
+    style.textContent =
+      "a, button, input, select, textarea, label, [role='button'] { pointer-events: none !important; cursor: default !important; }";
+    document.head.appendChild(style);
+    document.addEventListener("click", block, true);
+    document.addEventListener("submit", block, true);
+    return () => {
+      document.removeEventListener("click", block, true);
+      document.removeEventListener("submit", block, true);
+      style.remove();
+    };
+  }, []);
+
   return (
     <div className={s.page}>
       {post ? <PostArticle post={post} /> : <p className={s.empty}>Loading preview…</p>}
