@@ -47,7 +47,7 @@ export function TrialForm({
   compact = false,
 }: {
   source?: string;
-  /** Versão do teste A/B da página (KMEP: "a" em /kmep, "b" em /kmep-b). */
+  /** Versão de um teste A/B da página, quando houver (o do KMEP saiu em 30/09/2026). */
   variant?: "a" | "b";
   compact?: boolean;
 }) {

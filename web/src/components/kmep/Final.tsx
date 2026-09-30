@@ -13,13 +13,13 @@ import { microText } from "./ui";
  * sobre o branco, a colheita ao fundo bem escurecida (é onde a faixa de teste
  * termina: no monitor, com a gente ao lado), e o formulário num card branco.
  *
- * O formulário é o mesmo da home e da LP B, na variante reduzida de quatro
+ * O formulário é o mesmo da home e do Aminosan, na variante reduzida de quatro
  * campos — mesma Server Action, então o lead cai no mesmo lugar e o campo
  * `source` separa a origem.
  *
  * A ressalva de rodapé é obrigatória e fica dentro da seção.
  */
-export function Final({ variant = "a" }: { variant?: "a" | "b" }) {
+export function Final() {
   const { final } = useContent().kmep;
   const scope = useRef<HTMLElement>(null);
 
@@ -70,7 +70,7 @@ export function Final({ variant = "a" }: { variant?: "a" | "b" }) {
           </div>
 
           <div data-nav-theme="light" className="fn-card relative max-md:-mr-px max-md:w-[calc(100%+1px)] rounded-[clamp(18px,1.8vw,30px)] bg-white p-[clamp(20px,2.4vw,40px)] text-ink shadow-[0_30px_80px_-30px_rgba(0,0,0,0.55)]">
-            <TrialForm source="kmep" variant={variant} compact />
+            <TrialForm source="kmep" compact />
           </div>
         </div>
 

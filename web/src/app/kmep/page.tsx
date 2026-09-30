@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { ScrollCue } from "@/components/motion/ScrollCue";
 import { Hero } from "@/components/kmep/Hero";
 import { Specimen } from "@/components/kmep/Specimen";
 import { Blackout } from "@/components/kmep/Blackout";
@@ -21,8 +20,8 @@ export const metadata: Metadata = {
 };
 
 /**
- * LP do KMEP Ultra®, versão A (a versão B, que entra pelo produto, está em
- * /kmep-b).
+ * LP do KMEP Ultra®. A versão B do teste A/B, que entrava pelo produto, saiu
+ * em 30/09/2026 e /kmep-b redireciona para cá.
  *
  * **Nutrição primeiro (revisão de 24/09/2026).** A página conta o potássio
  * foliar como o motivo de compra e a ação desalojante como o segundo trabalho
@@ -48,11 +47,11 @@ export default function KmepPage() {
     <>
       {/* O hero mora dentro da cena: os dois travam juntos enquanto a foto
           se fragmenta em partículas e a nuvem passa pelas quatro leituras. */}
-      <Specimen variant="a">
+      <Specimen>
         <Hero />
       </Specimen>
       {/* O preto abre do disco da cena: o que a falta custa, e o ensaio. */}
-      <Blackout variant="a" />
+      <Blackout />
       <TwoJobs />
       <Potassium />
       {/* HOLD P2 — remover junto com Flush.tsx */}
@@ -63,9 +62,7 @@ export default function KmepPage() {
       <Fit />
       <Strip />
       <Questions />
-      <Final variant="a" />
-      {/* No celular, "continue rolando" quando o dedo para numa cena presa. */}
-      <ScrollCue product="kmep" />
+      <Final />
     </>
   );
 }

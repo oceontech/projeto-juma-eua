@@ -12,13 +12,10 @@
  * (tag 2) é o potássio que não chega à raiz a tempo. As duas nunca aparecem
  * na mesma leitura.
  *
- * Duas cenas, quatro leituras cada, com os mesmos quatro desenhos:
- *
- *   A — entra pela necessidade (rota /kmep): onde a demanda chega ao pico (a
- *       espiga), onde o solo trava (a raiz), o potássio pela folha, e a
- *       passada que o produtor já faz;
- *   B — entra pelo produto (rota /kmep-b): a passada, o potássio pela folha,
- *       por que a folha (a raiz), e a espiga no enchimento.
+ * Quatro leituras, que entram pela necessidade: onde a demanda chega ao pico
+ * (a espiga), onde o solo trava (a raiz), o potássio pela folha, e a passada
+ * que o produtor já faz. (A versão B do teste A/B, que entrava pelo produto,
+ * saiu em 30/09/2026.)
  *
  * Nenhum desenho compara duas plantas nem mostra planta maior. As âncoras das
  * chamadas saem da mesma geometria que os pontos.
@@ -445,8 +442,5 @@ export const ear: Form = {
   })(),
 };
 
-/** As quatro leituras de cada cena, na ordem em que o scroll as visita. */
-export const KMEP_SCENES: Record<"a" | "b", Form[]> = {
-  a: [ear, roots, uptake, pass],
-  b: [pass, uptake, roots, ear],
-};
+/** As quatro leituras da cena, na ordem em que o scroll as visita. */
+export const KMEP_SCENE: Form[] = [ear, roots, uptake, pass];

@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { ScrollCue } from "@/components/motion/ScrollCue";
 import { Hero } from "@/components/aminosan-b/Hero";
 import { Specimen } from "@/components/aminosan-b/Specimen";
 import { Field } from "@/components/aminosan-b/Field";
@@ -66,8 +65,6 @@ export default function AminosanPage() {
       <Strip />
       <Questions />
       <Final />
-      {/* No celular, "continue rolando" quando o dedo para numa cena presa. */}
-      <ScrollCue product="aminosanB" />
     </>
   );
 }

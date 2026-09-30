@@ -45,7 +45,7 @@ export const hero = {
      entra, sem prometer nada sobre o defensivo. */
   eyebrow: ["Foliar potassium", "Tank-mix partner"],
   heading: "Potassium when the crop needs it most.",
-  /* O título curto do pé é a headline da versão B, partida na frase. */
+  /* O título curto do pé, partido na frase. */
   aside: { heading: ["One pass.", "Two jobs."] },
   body: "KMEP Ultra® is a 1-1-15 liquid potassium that rides in the spray you already run, and puts potassium on the leaf in the weeks that set yield and quality.",
   /** HOLD P2 — sai sem tocar no resto do hero. */
@@ -643,17 +643,17 @@ export const final = {
 };
 
 /* ======================================================================
-   As cenas de partículas e a virada para o preto — versões A e B
+   A cena de partículas e a virada para o preto
    ======================================================================
 
    O mesmo mecanismo da LP do Aminosan: a foto do hero se desfaz em
    partículas, a nuvem passa por quatro leituras (desenhos em
    `lib/scan/kmep.ts`) e fecha num disco preto que abre a seção seguinte.
 
-   Desde 24/09/2026 as duas cenas contam a nutrição. A (rota /kmep) entra
-   pela necessidade — onde a demanda de potássio chega ao pico, onde o solo
-   trava — e fecha no produto. B (rota /kmep-b) entra pelo produto, com a
-   headline da versão 2 do teste A/B, e a necessidade vem depois.
+   Desde 24/09/2026 a cena conta a nutrição: entra pela necessidade — onde
+   a demanda de potássio chega ao pico, onde o solo trava — e fecha no
+   produto. A versão B do teste A/B, que entrava pelo produto (rota
+   /kmep-b), saiu em 30/09/2026; a rota redireciona para /kmep.
 
    Nenhuma leitura fala de inseto nem de desempenho do inseticida: a ação
    desalojante mora no K8, removível pela P2. As cores da legenda são as do
@@ -758,14 +758,14 @@ const readPass: SceneStage = {
   ],
 };
 
-/** Versão A — entra pela necessidade: a espiga, a raiz, a folha, a passada. */
-export const sceneA: Scene = {
+/** A cena de partículas — entra pela necessidade: a espiga, a raiz, a folha, a passada. */
+export const scene: Scene = {
   steps: ["Demand peaks", "Soil stalls", "Through the leaf", "In your pass"],
   stages: [readEar, readRoots, readLeaf, readPass],
 };
 
-/** Versão A — o preto: o que a falta de potássio custa, e onde aparece. */
-export const blackoutA: Blackout = {
+/** O preto: o que a falta de potássio custa, e onde aparece. */
+export const blackout: Blackout = {
   headline: ["Small shortfalls you never see", "add up to a number you do."],
   body: "Potassium that arrives late leaves no symptom you can photograph. It shows up in three places.",
   chapters: [
@@ -793,80 +793,3 @@ export const blackoutA: Blackout = {
     },
   ],
 };
-
-/** Versão B — a headline da versão 2 do teste A/B no hero (K1). */
-export const heroB = {
-  heading: "One pass. Two jobs.",
-  /* O título curto do pé é a headline da versão A, que aqui desce para lá. */
-  aside: { heading: ["Potassium when", "the crop needs it most."] },
-  body: "KMEP Ultra® goes in the tank you already fill. It puts potassium on the leaf for the weeks that set yield and quality.",
-  /** HOLD P2 — sai sem tocar no resto do hero. */
-  hold: "And in the same tank, it helps the insecticide reach the pests hiding from it." as string | undefined,
-};
-
-/** Versão B — entra pelo produto: a passada, a folha, a raiz, a espiga. */
-export const sceneB: Scene = {
-  steps: ["One pass", "Job 1", "Why the leaf", "Filling"],
-  stages: [
-    {
-      ...readPass,
-      kicker: "One pass",
-      heading: "One pass. Two jobs.",
-      body: "KMEP Ultra® goes in the tank with the insecticide you already chose, on the pass you already scheduled. No separate trip across the field.",
-    },
-    {
-      ...readLeaf,
-      kicker: "Job 1 · Foliar potassium",
-      heading: "Potassium, in through the leaf.",
-      body: "KMEP Ultra® is a 1-1-15 liquid potassium. It lands on the leaf and moves into the tissue from there, without waiting on soil moisture or the root.",
-    },
-    {
-      ...readRoots,
-      kicker: "Why the leaf",
-    },
-    {
-      ...readEar,
-      kicker: "Filling",
-      heading: "Potassium in the weeks that set the yield.",
-      body: "Potassium demand peaks late, while the grain, the tuber or the fruit is filling. The late passes on the label put it on the leaf in that window.",
-      readout: [
-        { k: "Passes", v: "By crop" },
-        { k: "Demand", v: "Peaks late" },
-        { k: "Extra trips", v: "0" },
-      ],
-    },
-  ],
-};
-
-/** Versão B — o preto: a falta, que aqui vem depois do produto. */
-export const blackoutB: Blackout = {
-  headline: ["You won't see the shortfall", "until you harvest."],
-  body: "Part of the potassium the crop needs never arrives in time.",
-  chapters: [
-    {
-      kicker: "In the soil",
-      heading: "In the ground is not in the plant.",
-      body: "The potassium is in the ground. Your soil test says so. That is not the same as having it in the plant during the weeks that set the yield.",
-      image: "/img/kmep/blackout/dryroots.webp",
-      alt: "Brace roots of a corn plant gripping dry, cracked soil in late summer",
-    },
-    {
-      kicker: "In the fill",
-      heading: "It shows up in size, quality and shelf life.",
-      body: "Potassium is what carries sugar into the grain, the tuber and the fruit. When it runs short in the fill, the harvest carries the difference.",
-      image: "/img/kmep/potassium-pods.webp",
-      alt: "Soybean pods filling on the plant in late summer",
-    },
-    {
-      kicker: "At harvest",
-      heading: "Nine bushels, same pass.",
-      body: "One trial, published whole, with the check strip beside it. The product went in with a spray that was already on the schedule.",
-      image: "/img/kmep/blackout/monitor.webp",
-      alt: "A yield map glowing on the in-cab monitor of a combine at dusk during corn harvest",
-      proof: true,
-    },
-  ],
-};
-
-/** O aviso das cenas presas, no celular (components/motion/ScrollCue.tsx). */
-export const scrollCue: string = "Keep scrolling";

@@ -115,12 +115,14 @@ Já traz o ScrollTrigger, o `fromTo` e o ramo de reduced-motion. Escreva animaç
 a entrada padrão não der conta — como no hero (parallax com `scrub`) ou na cortina do bloco
 "Two products. One job each.".
 
-### Duas peças de infraestrutura no layout
+### Peças de infraestrutura no layout
 
 | Componente | O que resolve |
 |---|---|
 | `ScrollRefresh` | Recalcula os gatilhos quando fontes e imagens terminam de carregar. Sem ele, tudo é medido no primeiro paint, quando a página ainda não tem a altura final |
 | `SmoothAnchors` | Rolagem suave dos links `#âncora`, via ScrollToPlugin |
+| `SmoothScroll` | Dono da rolagem: Lenis no desktop; no toque, a inércia do `normalizeScroll` do GSAP, com teto de ~1 tela por arremesso. Sem isso o celular somava a velocidade de roladas seguidas dentro das cenas presas e, quando a cena soltava, a página disparava |
+| `ScrollCue` | "Keep scrolling" no celular, fixo enquanto uma cena prende a tela. Acha sozinho as cenas com `pin` e as janelas `sticky` da altura da tela — uma cena nova ganha o aviso sem tocar nele |
 
 **Não** ponha `scroll-behavior: smooth` no CSS. A rolagem nativa suave roda por fora do frame do
 GSAP e faz o parallax do hero trepidar. Por isso as âncoras passam pelo ScrollToPlugin — e por isso
@@ -156,6 +158,13 @@ atropelaria a animação.
 > contrai** na forma seguinte, que só fica nítida quando ela chega. Casar vizinho com vizinho, ou partir em ordem, faz a forma se montar de um
 > lado para o outro como uma varredura — já tentado, e pior. Sem a interação com o cursor da
 > primeira versão.
+>
+> **As trocas não são scrub.** O scroll só dispara a troca (`MORPH`, cerca de uma tela entre um
+> disparo e o seguinte); a travessia corre no relógio (`PACE`, 1,9 s), uma por vez, e a rolagem
+> fica presa no ponto do disparo até a forma assentar (`lib/scroll-lock.ts` mais `stop()` do
+> Lenis). Presa ao scrub, cada troca pedia quase duas telas de rolagem, passava num átimo quando
+> o scroll era rápido, e um scroll comprido pulava duas ou três leituras de uma vez. Vale para o
+> Aminosan e para o KMEP (A e B).
 >
 > A copy de cada etapa troca quando **a forma dela** está quase montada, nos dois sentidos: indo, a
 > 62% do morph; voltando, a 38% (`SWITCH`). Uma linha do tempo em scrub não faz isso — corre igual

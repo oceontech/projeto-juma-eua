@@ -30,6 +30,8 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       { source: "/kmep-ultra", destination: "/kmep", permanent: true },
+      /* A versão B do teste A/B saiu em 30/09/2026. */
+      { source: "/kmep-b", destination: "/kmep", permanent: true },
       { source: "/aminosan-b", destination: "/aminosan", permanent: true },
     ];
   },

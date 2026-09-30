@@ -3,6 +3,8 @@
 import { useRef } from "react";
 import { useContent } from "@/components/layout/LocaleProvider";
 import { prepare, whenCovered } from "@/lib/boot";
+import { scroller } from "@/components/motion/SmoothScroll";
+import { lockScroll, type ScrollLock } from "@/lib/scroll-lock";
 import { gsap, ScrollTrigger, SplitText, useGSAP } from "@/lib/gsap";
 import {
   buildFromPoints,
@@ -10,7 +12,7 @@ import {
   type Scan as Field,
   type ScanUniforms,
 } from "@/lib/scan/field";
-import { KMEP_SCENES } from "@/lib/scan/kmep";
+import { KMEP_SCENE } from "@/lib/scan/kmep";
 import { createCallouts } from "@/lib/scan/callouts";
 import { FRAMES, stipplePhoto } from "@/lib/scan/stipple";
 import { microCaps } from "./ui";
@@ -25,13 +27,9 @@ import { microCaps } from "./ui";
  * `lib/scan/kmep.ts` —, cada uma com três chamadas penduradas no desenho, e
  * fecha num disco preto que a seção seguinte (`Blackout.tsx`) abre.
  *
- * Duas versões, a mesma engrenagem (`variant`):
- *
- *   a — entra pela necessidade: onde a demanda de potássio chega ao pico (a
- *       espiga), onde o solo trava (a raiz), o potássio pela folha, e a
- *       passada que o produtor já faz;
- *   b — entra pelo produto: a passada, o potássio pela folha, por que a
- *       folha (a raiz), a espiga no enchimento.
+ * A cena entra pela necessidade: onde a demanda de potássio chega ao pico
+ * (a espiga), onde o solo trava (a raiz), o potássio pela folha, e a passada
+ * que o produtor já faz.
  *
  * O que muda em relação ao Aminosan é o registro das cores: cobre marca o
  * potássio que não chega à raiz a tempo, lima o que chega e trabalha, e os
@@ -67,12 +65,16 @@ const TONE = { at: 0.018, run: 0.028 };
     dedo role devagar, quer role de uma vez. Presa ao scrub, a troca pedia
     mais de uma tela e meia de rolagem e, num scroll rápido, passava num
     átimo. Cada uma anda com `power2.inOut`, como na primeira versão: a nuvem
-    acelera ao se soltar e desacelera ao assentar. */
+    acelera ao se soltar e desacelera ao assentar.
+
+    Uma troca por vez, e a rolagem fica presa no ponto do disparo até a
+    forma assentar: o que o dedo rolar nesse meio-tempo é descartado. Sem a
+    trava, um scroll comprido passava por duas ou três leituras de uma vez e
+    o leitor pulava cenas sem querer. */
 const MORPH = [0.03, 0.27, 0.51, 0.75];
-/* A travessia no relógio, em segundos: a primeira troca e cada troca a mais
-   quando o scroll pula várias de uma vez — aí elas se encadeiam num gesto
-   só, sem voltar a parar em cada forma. */
-const PACE = { first: 2.1, extra: 0.9 };
+/* A travessia no relógio, em segundos — e o tempo em que a rolagem fica
+   presa. */
+const PACE = 1.9;
 /* Quando a copy troca, em fração de cada morph. A regra é uma só nos dois
    sentidos: o texto de uma forma aparece quando **ela** está quase montada.
    Indo, isso é perto do fim do morph (0,62); voltando, o morph corre ao
@@ -169,16 +171,9 @@ function cover(imgW: number, imgH: number, w: number, h: number, posY: number) {
   };
 }
 
-export function Specimen({
-  children,
-  variant = "a",
-}: {
-  children: React.ReactNode;
-  variant?: "a" | "b";
-}) {
-  const content = useContent().kmep;
-  const scene = variant === "b" ? content.sceneB : content.sceneA;
-  const forms = KMEP_SCENES[variant];
+export function Specimen({ children }: { children: React.ReactNode }) {
+  const { scene } = useContent().kmep;
+  const forms = KMEP_SCENE;
   const scope = useRef<HTMLElement>(null);
   const canvas = useRef<HTMLCanvasElement>(null);
 
@@ -504,18 +499,49 @@ export function Specimen({
              tween sai da velocidade em que a nuvem está, sem freio. */
           let aim = 0;
           let travel: gsap.core.Tween | null = null;
-          const steer = (t: number) => {
-            const next = MORPH.filter((at) => t >= at).length;
-            if (next === aim) return;
-            aim = next;
-            const moving = travel?.isActive() ?? false;
-            travel?.kill();
-            const span = Math.abs(next - u.phase);
+          let held: ScrollLock | null = null;
+
+          /* Prende a rolagem em `y`: a entrada (roda, toque, teclado) é
+             cancelada e o Lenis, no desktop, para no lugar — senão a inércia
+             dele seguiria rolando por baixo da trava. */
+          const hold = (y: number) => {
+            const lenis = scroller();
+            if (lenis) {
+              lenis.scrollTo(y, { immediate: true, force: true });
+              lenis.stop();
+            } else window.scrollTo(0, y);
+            held = lockScroll();
+            held.pin(y);
+          };
+          const letGo = () => {
+            if (!held) return;
+            held.release();
+            held = null;
+            scroller()?.start();
+          };
+
+          const steer = (self: ScrollTrigger) => {
+            if (travel?.isActive()) return;
+            const span = self.animation?.duration() ?? 1;
+            const t = self.progress * span;
+            const want = MORPH.filter((at) => t >= at).length;
+            if (want === aim) return;
+            /* Um passo só, para o lado em que o scroll foi, por mais que ele
+               tenha andado; a rolagem volta ao ponto do disparo. */
+            const dir = want > aim ? 1 : -1;
+            const at = MORPH[dir > 0 ? aim : aim - 1];
+            aim += dir;
+            hold(
+              Math.round(
+                self.start + (at / span) * (self.end - self.start) + 2 * dir,
+              ),
+            );
             travel = gsap.to(u, {
-              phase: next,
-              duration: PACE.first + PACE.extra * Math.max(0, span - 1),
-              ease: moving ? "power2.out" : "power2.inOut",
+              phase: aim,
+              duration: PACE,
+              ease: "power2.inOut",
               onUpdate: syncRoute,
+              onComplete: letGo,
             });
           };
 
@@ -593,8 +619,7 @@ export function Specimen({
                 refreshPriority: 1,
                 /* O disparo das trocas lê o scroll real, e não a linha do
                    tempo amortecida: não precisa esperar o scrub alcançar. */
-                onUpdate: (self) =>
-                  steer(self.progress * (self.animation?.duration() ?? 1)),
+                onUpdate: steer,
               },
               onUpdate: syncRoute,
             });
@@ -768,6 +793,7 @@ export function Specimen({
             timeline?.scrollTrigger?.kill();
             timeline?.kill();
             travel?.kill();
+            letGo();
             /* As entradas da copy correm no relógio, fora da linha do tempo. */
             gsap.killTweensOf([
               ...texts,

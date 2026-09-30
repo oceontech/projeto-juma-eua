@@ -405,3 +405,7 @@ export const footer = {
   },
   backToTop: "Back to top",
 };
+
+/** O aviso "continue rolando" das cenas presas, no celular — vale para o site
+    inteiro, e por isso mora aqui (components/motion/ScrollCue.tsx). */
+export const scrollCue: string = "Keep scrolling";

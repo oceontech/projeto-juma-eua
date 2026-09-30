@@ -347,3 +347,6 @@ export const footer: typeof en.footer = {
   },
   backToTop: "Voltar ao topo",
 };
+
+/** O aviso das cenas presas, no celular — ver ../home.ts. */
+export const scrollCue = "Continue rolando";

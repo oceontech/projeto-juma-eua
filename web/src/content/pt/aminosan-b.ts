@@ -624,6 +624,3 @@ export const final: typeof en.final = {
   sending: "Enviando…",
   privacy: "Usamos seus dados só para responder a este pedido.",
 };
-
-/** O aviso das cenas presas, no celular (components/motion/ScrollCue.tsx). */
-export const scrollCue = "Continue rolando";

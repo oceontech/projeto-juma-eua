@@ -11,6 +11,7 @@ import { SiteFooter } from "@/components/layout/SiteFooter";
 import { ScrollRefresh } from "@/components/motion/ScrollRefresh";
 import { SmoothAnchors } from "@/components/motion/SmoothAnchors";
 import { SmoothScroll } from "@/components/motion/SmoothScroll";
+import { ScrollCue } from "@/components/motion/ScrollCue";
 import { getLocale } from "@/lib/locale";
 import "./globals.css";
 
@@ -99,6 +100,8 @@ export default async function RootLayout({
           <SiteHeader />
           <main>{children}</main>
           <SiteFooter />
+          {/* No celular, "continue rolando" enquanto uma cena prende a tela. */}
+          <ScrollCue />
         </LocaleProvider>
         <Analytics />
       </body>

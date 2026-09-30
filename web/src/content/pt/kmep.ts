@@ -512,9 +512,9 @@ export const final: typeof en.final = {
   alt: "Colheita de milho ao pôr do sol, com o grão sendo descarregado na carreta ao lado da colheitadeira",
 };
 
-/* As cenas de partículas e o preto, versões A e B — ver ../kmep.ts. */
+/* A cena de partículas e o preto — ver ../kmep.ts. */
 
-type Stage = (typeof en.sceneA)["stages"][number];
+type Stage = (typeof en.scene)["stages"][number];
 
 const readEar: Stage = {
   kicker: "Onde a demanda chega ao pico",
@@ -584,12 +584,12 @@ const readPass: Stage = {
   ],
 };
 
-export const sceneA: typeof en.sceneA = {
+export const scene: typeof en.scene = {
   steps: ["Pico da demanda", "O solo trava", "Pela folha", "Na sua passada"],
   stages: [readEar, readRoots, readLeaf, readPass],
 };
 
-export const blackoutA: typeof en.blackoutA = {
+export const blackout: typeof en.blackout = {
   headline: ["Pequenas faltas que você não vê", "somam um número que você vê."],
   body: "Potássio que chega tarde não deixa sintoma que dê para fotografar. Ele aparece em três lugares.",
   chapters: [
@@ -617,76 +617,3 @@ export const blackoutA: typeof en.blackoutA = {
     },
   ],
 };
-
-export const heroB: typeof en.heroB = {
-  heading: "Uma passada. Dois trabalhos.",
-  aside: { heading: ["Potássio quando", "a lavoura mais precisa."] },
-  body: "O KMEP Ultra® vai no tanque que você já enche. Ele coloca potássio na folha para as semanas que definem produtividade e qualidade.",
-  /* HOLD P2 */
-  hold: "E, no mesmo tanque, ajuda o inseticida a alcançar as pragas que se escondem dele.",
-};
-
-export const sceneB: typeof en.sceneB = {
-  steps: ["Uma passada", "Trabalho 1", "Por que a folha", "Enchimento"],
-  stages: [
-    {
-      ...readPass,
-      kicker: "Uma passada",
-      heading: "Uma passada. Dois trabalhos.",
-      body: "O KMEP Ultra® vai no tanque com o inseticida que você já escolheu, na aplicação que você já agendou. Nenhuma viagem a mais pelo talhão.",
-    },
-    {
-      ...readLeaf,
-      kicker: "Trabalho 1 · Potássio foliar",
-      heading: "Potássio, entrando pela folha.",
-      body: "O KMEP Ultra® é um potássio líquido 1-1-15. Ele pousa na folha e entra no tecido a partir dali, sem esperar a umidade do solo nem a raiz.",
-    },
-    {
-      ...readRoots,
-      kicker: "Por que a folha",
-    },
-    {
-      ...readEar,
-      kicker: "Enchimento",
-      heading: "Potássio nas semanas que definem a produtividade.",
-      body: "A demanda de potássio chega ao pico tarde, enquanto o grão, o tubérculo ou o fruto enche. As aplicações tardias do rótulo colocam o potássio na folha nessa janela.",
-      readout: [
-        { k: "Aplicações", v: "Por cultura" },
-        { k: "Demanda", v: "Pico tardio" },
-        { k: "Viagens a mais", v: "0" },
-      ],
-    },
-  ],
-};
-
-export const blackoutB: typeof en.blackoutB = {
-  headline: ["Você não vai ver a falta", "até colher."],
-  body: "Parte do potássio de que a lavoura precisa nunca chega a tempo.",
-  chapters: [
-    {
-      kicker: "No solo",
-      heading: "No solo não é na planta.",
-      body: "O potássio está no solo. A sua análise diz isso. Não é o mesmo que tê-lo na planta durante as semanas que definem a produtividade.",
-      image: "/img/kmep/blackout/dryroots.webp",
-      alt: "Raízes de suporte de um milho presas em solo seco e rachado no fim do verão",
-    },
-    {
-      kicker: "No enchimento",
-      heading: "Aparece no tamanho, na qualidade e na vida de prateleira.",
-      body: "O potássio é o que carrega o açúcar para o grão, o tubérculo e o fruto. Quando ele falta no enchimento, é a colheita que carrega a diferença.",
-      image: "/img/kmep/potassium-pods.webp",
-      alt: "Vagens de soja enchendo na planta no fim do verão",
-    },
-    {
-      kicker: "Na colheita",
-      heading: "Nove bushels, mesma passada.",
-      body: "Um ensaio, publicado inteiro, com a faixa testemunha ao lado. O produto entrou numa aplicação que já estava no calendário.",
-      image: "/img/kmep/blackout/monitor.webp",
-      alt: "Mapa de produtividade aceso no monitor da cabine de uma colheitadeira ao entardecer, na colheita do milho",
-      proof: true,
-    },
-  ],
-};
-
-/** O aviso das cenas presas, no celular (components/motion/ScrollCue.tsx). */
-export const scrollCue = "Continue rolando";

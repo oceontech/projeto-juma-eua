@@ -13,10 +13,9 @@ const PIN = 660;
 const RISE = 100;
 const PLANT = "/img/kmep/blackout/ornamental-continuous.webp";
 
-export function Blackout({ variant = "a" }: { variant?: "a" | "b" }) {
-  const content = useContent().kmep;
+export function Blackout() {
+  const { blackout } = useContent().kmep;
   const locale = useLocale();
-  const blackout = variant === "b" ? content.blackoutB : content.blackoutA;
   const scope = useRef<HTMLElement>(null);
 
   useGSAP(() => {

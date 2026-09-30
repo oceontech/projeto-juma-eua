@@ -32,6 +32,41 @@ import { whenBooted } from "@/lib/boot";
 
 let instance: Lenis | null = null;
 
+/**
+ * O toque, no celular: a rolagem continua nativa no gesto, mas a **inércia**
+ * passa a ser do GSAP (`normalizeScroll`), e cada arremesso vale por si.
+ *
+ * O problema que isto resolve: nas cenas presas a tela não anda, então o
+ * leitor rola várias vezes seguidas — e o iOS e o Android **somam** a
+ * velocidade de arremessos seguidos. Quando a cena soltava, a velocidade
+ * acumulada levava a página longe e rápido com um toque leve. Aqui a inércia
+ * nasce só da velocidade do último gesto, e o alcance tem teto de cerca de
+ * uma tela (`REACH`), que é o que um leitor espera de um arremesso.
+ *
+ * De brinde, o JS passa a escrever a rolagem no mesmo quadro em que o
+ * ScrollTrigger lê: os pins param de tremer no toque.
+ */
+const REACH = 1.1;
+
+function startTouch() {
+  if (!ScrollTrigger.isTouch || ScrollTrigger.normalizeScroll()) return;
+  ScrollTrigger.normalizeScroll({
+    type: "touch",
+    allowNestedScroll: true,
+    /* A duração da inércia, em segundos. O GSAP anda 0,22 × velocidade ×
+       duração; a conta abaixo é essa, invertida, para o alcance parar em
+       REACH telas — e nunca passar de 1,1 s. */
+    momentum: (self: { velocityY: number }) => {
+      const v = Math.abs(self.velocityY);
+      return v ? Math.min(1.1, (window.innerHeight * REACH) / (0.22 * v)) : 0;
+    },
+  });
+}
+
+function stopTouch() {
+  if (ScrollTrigger.normalizeScroll()) ScrollTrigger.normalizeScroll(false);
+}
+
 /** O dono da rolagem, ou `null` quando ela é nativa (mobile ou menos movimento). */
 export function scroller(): Lenis | null {
   return instance;
@@ -107,8 +142,13 @@ export function SmoothScroll() {
     const startLenis = () => {
       if (isMobileOrTouch()) {
         stopLenis();
+        /* Só com a página liberada: durante o véu a trava de entrada manda. */
+        whenBooted().then(() => {
+          if (alive && isMobileOrTouch()) startTouch();
+        });
         return;
       }
+      stopTouch();
       if (lenis) return; // já ativo
 
       lenis = new Lenis({
@@ -142,7 +182,9 @@ export function SmoothScroll() {
     const onResize = () => {
       if (isMobileOrTouch()) {
         stopLenis();
+        startTouch();
       } else {
+        stopTouch();
         startLenis();
       }
     };
@@ -153,6 +195,7 @@ export function SmoothScroll() {
       alive = false;
       window.removeEventListener("resize", onResize);
       stopLenis();
+      stopTouch();
     };
   }, []);
 

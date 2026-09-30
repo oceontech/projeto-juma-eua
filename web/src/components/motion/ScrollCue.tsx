@@ -1,67 +1,114 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useContent } from "@/components/layout/LocaleProvider";
 import { ScrollTrigger } from "@/lib/gsap";
 
 /**
- * O aviso de "continue rolando", só no celular.
+ * O aviso de "continue rolando", só no celular, no site inteiro.
  *
- * As cenas presas (pin) trocam de tela com o scroll, e no celular nada diz
- * isso: a tela para, o leitor acha que a página acabou ali e sai. O aviso
- * aparece quando o dedo **para** dentro de uma cena presa que ainda tem o que
- * mostrar, e some no primeiro movimento.
+ * Nas cenas presas a tela não anda quando o dedo rola: quem muda é o que está
+ * dentro dela. No celular nada diz isso, e o leitor acha que a página travou.
+ * O aviso fica na tela **o tempo todo** em que se está numa dessas cenas, e
+ * sai só quando ela solta. Entre duas cenas seguidas ele não pisca: a saída
+ * espera um instante (`LINGER`) para ver se a próxima já começou.
  *
- * Não há lista de cenas: ele pergunta ao ScrollTrigger qual gatilho com pin
- * está ativo. Uma seção presa nova ganha o aviso sem tocar aqui. Pins curtos
- * (menos de meia tela) ficam de fora — ali a troca vem antes de o leitor
- * hesitar.
+ * Não há lista de cenas. São duas as formas de prender a tela no site, e as
+ * duas são achadas sozinhas:
+ *
+ *   pin     — os ScrollTriggers com `pin` (as partículas, o Field, o
+ *             Blackout, o TwoJobs…);
+ *   sticky  — uma janela `position: sticky` da altura da tela dentro de uma
+ *             caixa bem mais alta, que dá o curso (as cenas da home).
+ *
+ * Cenas com menos de meia tela de curso ficam de fora: ali a troca vem antes
+ * de o leitor hesitar.
  */
 
 const NARROW = "(max-width: 860px)";
 
-/* Quanto o dedo precisa ficar parado para o aviso aparecer, em ms. */
-const IDLE = 1100;
-
-/* O aviso não aparece no fim da cena, quando rolar já solta o pin. */
+/* O aviso sai um pouco antes do fim do curso, quando rolar já solta a cena. */
 const TAIL = 0.94;
 
-function pinnedAhead() {
-  const tall = window.innerHeight * 0.5;
-  return ScrollTrigger.getAll().some(
-    (st) =>
-      !!st.pin &&
-      st.isActive &&
-      st.end - st.start > tall &&
-      st.progress < TAIL,
-  );
+/* Quanto a saída espera, em ms: cobre o vão entre duas cenas seguidas. */
+const LINGER = 450;
+
+type Course = { box: HTMLElement; held: number };
+
+/* As janelas sticky, medidas no refresh: a caixa que dá o curso e a altura
+   que a janela ocupa dentro dela. */
+function stickyCourses(): Course[] {
+  const vh = window.innerHeight;
+  const found: Course[] = [];
+  document
+    .querySelectorAll<HTMLElement>('main .sticky, main [class*="window"]')
+    .forEach((el) => {
+      const box = el.parentElement;
+      if (!box || getComputedStyle(el).position !== "sticky") return;
+      const held = el.offsetHeight;
+      if (held < vh * 0.8 || box.offsetHeight - held < vh * 0.5) return;
+      found.push({ box, held });
+    });
+  return found;
 }
 
-export function ScrollCue({ product }: { product: "kmep" | "aminosanB" }) {
-  const label = useContent()[product].scrollCue;
+function holding(courses: Course[]) {
+  const vh = window.innerHeight;
+  const y = window.scrollY;
+  const pinned = ScrollTrigger.getAll().some((st) => {
+    if (!st.pin) return false;
+    const span = st.end - st.start;
+    return span > vh * 0.5 && y >= st.start - 1 && y < st.start + span * TAIL;
+  });
+  if (pinned) return true;
+  return courses.some(({ box, held }) => {
+    const rect = box.getBoundingClientRect();
+    const span = rect.height - held;
+    return rect.top <= 1 && -rect.top < span * TAIL;
+  });
+}
+
+export function ScrollCue() {
+  const label = useContent().home.scrollCue;
   const [shown, setShown] = useState(false);
-  const timer = useRef<number | undefined>(undefined);
 
   useEffect(() => {
     const narrow = window.matchMedia(NARROW);
     const still = window.matchMedia("(prefers-reduced-motion: reduce)");
+    let courses: Course[] = [];
+    let frame = 0;
+    let off: number | undefined;
 
     const check = () => {
-      timer.current = undefined;
-      if (!narrow.matches || still.matches) return;
-      setShown(pinnedAhead());
+      frame = 0;
+      const on = narrow.matches && !still.matches && holding(courses);
+      if (on) {
+        window.clearTimeout(off);
+        off = undefined;
+        setShown(true);
+      } else if (off === undefined) {
+        off = window.setTimeout(() => {
+          off = undefined;
+          setShown(false);
+        }, LINGER);
+      }
     };
-
     const onScroll = () => {
-      setShown(false);
-      window.clearTimeout(timer.current);
-      timer.current = window.setTimeout(check, IDLE);
+      if (!frame) frame = requestAnimationFrame(check);
+    };
+    const measure = () => {
+      courses = stickyCourses();
+      onScroll();
     };
 
+    measure();
     window.addEventListener("scroll", onScroll, { passive: true });
+    ScrollTrigger.addEventListener("refresh", measure);
     return () => {
       window.removeEventListener("scroll", onScroll);
-      window.clearTimeout(timer.current);
+      ScrollTrigger.removeEventListener("refresh", measure);
+      cancelAnimationFrame(frame);
+      window.clearTimeout(off);
     };
   }, []);
 

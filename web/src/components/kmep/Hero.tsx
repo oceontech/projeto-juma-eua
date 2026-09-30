@@ -23,14 +23,8 @@ import { gsap, useGSAP } from "@/lib/gsap";
 /* O mesmo corte da home para trocar a foto do celular. */
 const NARROW = "(max-width: 860px)";
 
-/**
- * `variant="b"` troca só as frases: a headline da versão 2 do teste A/B no
- * alto e a da versão 1 no pé (`heroB` em content/kmep.ts). A foto, o
- * movimento e o selo são os mesmos.
- */
-export function Hero({ variant = "a" }: { variant?: "a" | "b" }) {
-  const content = useContent().kmep;
-  const hero = variant === "b" ? { ...content.hero, ...content.heroB } : content.hero;
+export function Hero() {
+  const { hero } = useContent().kmep;
   const scope = useRef<HTMLDivElement>(null);
 
   useGSAP(

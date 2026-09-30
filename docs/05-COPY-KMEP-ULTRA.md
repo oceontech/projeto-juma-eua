@@ -29,7 +29,7 @@ produtor já faz (conveniência operacional, não tecnologia de aplicação).
 população, **nunca** menos inseticida. A ressalva do K8 virou *"More out of the insecticide, never
 less of it. Same rate, same label, same tank."*
 
-**Nova ordem da página** (`/kmep` e `/kmep-b`, copy em `web/src/content/kmep.ts`):
+**Nova ordem da página** (`/kmep`, copy em `web/src/content/kmep.ts`; a versão B, `/kmep-b`, saiu em 30/09/2026):
 
 | # | Seção | O que mudou |
 |---|---|---|

@@ -752,6 +752,3 @@ export const final = {
   sending: "Sending…",
   privacy: "We use your information to answer this request and nothing else.",
 };
-
-/** O aviso das cenas presas, no celular (components/motion/ScrollCue.tsx). */
-export const scrollCue: string = "Keep scrolling";

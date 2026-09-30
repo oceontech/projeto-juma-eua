@@ -2960,8 +2960,8 @@ html[data-proof-overlap] .expertise-layer--dark .expertise-bg {
 }
 
 /* O aviso de "continue rolando" das cenas presas, no celular
-   (components/motion/ScrollCue.tsx). Sobe do pé e se acende quando o dedo
-   para; some no primeiro movimento, mais depressa do que entrou. */
+   (components/motion/ScrollCue.tsx). Sobe do pé quando a cena prende a tela
+   e fica até ela soltar; sai mais depressa do que entrou. */
 .scroll-cue {
   bottom: calc(env(safe-area-inset-bottom, 0px) + 10px);
   opacity: 0;

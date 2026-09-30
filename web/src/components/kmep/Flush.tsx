@@ -5,8 +5,8 @@
  * Desde 24/09/2026 vem logo depois do potássio (K7), como o segundo trabalho
  * da mesma passada.
  * Se a validação regulatória vier restritiva, apague este arquivo e a linha
- * de import e a de JSX em app/kmep/page.tsx e app/kmep-b/page.tsx; tire o
- * card 3 de `operation`, os `hold` de `hero`, `heroB` e `questions`, e o
+ * de import e a de JSX em app/kmep/page.tsx; tire o
+ * card 3 de `operation`, os `hold` de `hero` e `questions`, e o
  * cartão `flush` do `twoJobs` (em content/kmep.ts e no espelho pt/), e o
  * cartão do trabalho 2 em TwoJobs.tsx.
  */
