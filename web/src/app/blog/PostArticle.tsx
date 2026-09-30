@@ -15,7 +15,7 @@ export type PostView = {
 };
 
 export function formatPostDate(iso: string) {
-  return new Date(iso).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric", timeZone: "UTC" });
+  return new Date(iso).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric", timeZone: "America/New_York" });
 }
 
 export function PostArticle({ post }: { post: PostView }) {

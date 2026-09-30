@@ -74,12 +74,15 @@ export const categoryName = (post: Pick<Post, "tema">) =>
 
 const FIELDS = "select[title]=true&select[slug]=true&select[excerpt]=true&select[date]=true&select[author]=true&select[tema]=true&select[readMinutes]=true&select[cover]=true";
 
+/** Publicação agendada no painel: o post só aparece quando a data dele chega. */
+const isLive = (post: Pick<Post, "date">) => !post.date || new Date(post.date).getTime() <= Date.now();
+
 export async function getPosts(): Promise<Post[]> {
   const data = await panel<{ docs: Post[] }>(
     `/api/posts-us?where[_status][equals]=published&sort=-date&limit=100&depth=1&${FIELDS}`,
     "blog",
   );
-  return data?.docs ?? [];
+  return (data?.docs ?? []).filter(isLive);
 }
 
 export async function getPost(slug: string): Promise<Post | null> {
@@ -87,7 +90,8 @@ export async function getPost(slug: string): Promise<Post | null> {
     `/api/posts-us?where[slug][equals]=${encodeURIComponent(slug)}&where[_status][equals]=published&limit=1&depth=1`,
     "blog",
   );
-  return data?.docs?.[0] ?? null;
+  const post = data?.docs?.[0] ?? null;
+  return post && isLive(post) ? post : null;
 }
 
 /** URL absoluta de uma mídia do painel (o Blob já vem absoluto). */
@@ -97,5 +101,5 @@ export function mediaUrl(media: Post["cover"]): string | null {
 }
 
 export function formatDate(iso: string) {
-  return new Date(iso).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric", timeZone: "UTC" });
+  return new Date(iso).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric", timeZone: "America/New_York" });
 }
