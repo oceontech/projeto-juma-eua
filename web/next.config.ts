@@ -13,6 +13,9 @@ const nextConfig: NextConfig = {
        navegador —, e o cache vive em .next/dev/cache/images. Zero aqui faz
        ele conferir a origem a cada pedido. */
     minimumCacheTTL: process.env.NODE_ENV === "development" ? 0 : 14400,
+    /* O Next 16 recusa otimizar imagem de endereço local; só em desenvolvimento
+       liberamos, para a mídia do painel rodando no computador aparecer. */
+    dangerouslyAllowLocalIP: process.env.NODE_ENV === "development",
     /* Capas do blog, enviadas pelo painel central (Vercel Blob). */
     remotePatterns: [
       { protocol: "https", hostname: "*.public.blob.vercel-storage.com" },
