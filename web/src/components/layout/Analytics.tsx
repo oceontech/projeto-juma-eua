@@ -1,6 +1,4 @@
-import Script from "next/script";
-
-import { Engagement } from "./Engagement";
+import { Tracker } from "./Tracker";
 
 /**
  * Umami, o mesmo do site BR (juma-stats.vercel.app). Sem cookies. Só carrega
@@ -10,31 +8,8 @@ export function Analytics() {
   const src = process.env.NEXT_PUBLIC_UMAMI_SRC;
   const id = process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID;
   if (!src || !id) return null;
-  return (
-    <>
-      <Script
-        src={src}
-        data-website-id={id}
-        data-domains={process.env.NEXT_PUBLIC_UMAMI_DOMAINS || undefined}
-        strategy="afterInteractive"
-      />
-      <Engagement />
-    </>
-  );
+  return <Tracker src={src} id={id} domains={process.env.NEXT_PUBLIC_UMAMI_DOMAINS} />;
 }
 
-type Umami = { track: (event: string, data?: Record<string, string>) => void };
-
-/** Evento no Umami; não faz nada se o script não carregou. */
-export function track(event: string, data?: Record<string, string | undefined>) {
-  const umami = (window as unknown as { umami?: Umami }).umami;
-  if (!umami) return;
-  const clean = Object.fromEntries(
-    Object.entries(data ?? {}).filter(([, v]) => v),
-  ) as Record<string, string>;
-  try {
-    umami.track(event, clean);
-  } catch {
-    /* Métrica nunca derruba a página. */
-  }
-}
+/** Mantido aqui por compatibilidade: quem importava `track` daqui continua funcionando. */
+export { track } from "./track";

@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 
-import { track } from "./Analytics";
+import { track } from "./track";
 
 /**
  * Tempo de permanência. O Umami só sabe quanto a pessoa ficou pela hora do
