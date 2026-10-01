@@ -10,6 +10,11 @@ const CHAPTER = [0.36, 0.58, 0.78];
    sobe por cima da raiz: a margem de baixo negativa puxa a seção seguinte
    para dentro do pin. A linha do tempo ganha esse trecho parado no fim. */
 const PIN = 660;
+/* No celular, menos curso parado: com 6,6 telas sem a tela andar o leitor
+   arremessava várias vezes seguidas, e o celular soma a velocidade de cada
+   arremesso — a página disparava ao soltar. A mesma linha do tempo, mais
+   curta. */
+const PIN_PHONE = 440;
 const RISE = 100;
 const PLANT = "/img/aminosan-b/compare/soybean-continuous.webp";
 
@@ -31,6 +36,7 @@ export function Field() {
       if (!plant) return;
 
       const narrow = window.matchMedia("(max-width: 900px)").matches;
+      const pin = narrow ? PIN_PHONE : PIN;
       const stemY = narrow ? -15 : -18;
       const rootsY = narrow ? -65 : -55;
       gsap.set(plant, { yPercent: 20, autoAlpha: 0 });
@@ -42,7 +48,7 @@ export function Field() {
         scrollTrigger: {
           trigger: stage,
           start: "top top",
-          end: `+=${PIN}%`,
+          end: `+=${pin}%`,
           scrub: 0.7,
           pin: true,
           anticipatePin: 1,
@@ -92,7 +98,7 @@ export function Field() {
       tl.to(plant, { yPercent: 0, autoAlpha: 1, duration: 0.12, ease: "power2.out" }, CHAPTER[0])
         .to(plant, { yPercent: stemY, duration: 0.15, ease: "power2.inOut" }, CHAPTER[1])
         .to(plant, { yPercent: rootsY, duration: 0.06, ease: "power2.inOut" }, CHAPTER[2])
-        .to({}, { duration: RISE / (PIN - RISE) }, 1);
+        .to({}, { duration: RISE / (pin - RISE) }, 1);
 
       ScrollTrigger.refresh();
       return () => {

@@ -121,7 +121,7 @@ a entrada padrão não der conta — como no hero (parallax com `scrub`) ou na c
 |---|---|
 | `ScrollRefresh` | Recalcula os gatilhos quando fontes e imagens terminam de carregar. Sem ele, tudo é medido no primeiro paint, quando a página ainda não tem a altura final |
 | `SmoothAnchors` | Rolagem suave dos links `#âncora`, via ScrollToPlugin |
-| `SmoothScroll` | Dono da rolagem: Lenis no desktop; no toque e com menos movimento, rolagem 100% nativa. **Não** use `normalizeScroll` nem freio de inércia no toque: já tentados, e o celular ficou pior (lagado ou com trancos) |
+| `SmoothScroll` | Dono da rolagem: Lenis no desktop; no toque, rolagem 100% nativa. **Não** use `normalizeScroll` nem `syncTouch` do Lenis: rolagem por JS no toque disputa a thread com o WebGL e o celular trava (já tentado). A carga das cenas presas (o celular soma a velocidade de arremessos seguidos) é tratada em dois pontos: a trava das partículas (`lib/scroll-lock.ts`) usa `overflow: hidden` + `touch-action: none` no toque e solta com velocidade zero; e, na saída de uma cena presa acima de 4,5 telas/s, a inércia é parada e a página desacelera meia tela em vez de disparar. No toque, nada de `backdrop-filter` em elemento fixo |
 | `ScrollCue` | "Keep scrolling" no celular, fixo enquanto uma cena prende a tela. Acha sozinho as cenas com `pin` e as janelas `sticky` da altura da tela — uma cena nova ganha o aviso sem tocar nele |
 
 **Não** ponha `scroll-behavior: smooth` no CSS. A rolagem nativa suave roda por fora do frame do

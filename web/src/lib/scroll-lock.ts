@@ -9,6 +9,16 @@
  * roda, toque e teclado são cancelados, e arrastar o polegar da barra é
  * desfeito no mesmo quadro. Rolagem por código (`scrollTo`) segue livre —
  * `pin` diz para onde a página deve voltar quando o código a move.
+ *
+ * No toque isso não basta. A inércia do iOS e do Android não passa por
+ * `touchmove`, e um toque dado com a página ainda deslizando nem é
+ * cancelável: ele **soma** velocidade à inércia que corria. A página seguia
+ * rolando por baixo da trava, o `hold` a puxava de volta, e quando a trava
+ * soltava a carga acumulada levava a página longe de uma vez. Ali a trava é
+ * `overflow: hidden` mais `touch-action: none` no <html>: o primeiro para a
+ * inércia no ato, o segundo recusa gesto novo, e a trava solta com
+ * velocidade zero. No celular a barra é sobreposta, então nada muda de
+ * largura.
  */
 
 const SCROLL_KEYS = new Set([" ", "PageUp", "PageDown", "Home", "End", "ArrowUp", "ArrowDown"]);
@@ -20,8 +30,22 @@ export type ScrollLock = {
   release: () => void;
 };
 
+let touchLocks = 0;
+
+const isTouch = () =>
+  window.matchMedia("(pointer: coarse)").matches || navigator.maxTouchPoints > 0;
+
 export function lockScroll(): ScrollLock {
   let y = window.scrollY;
+  const html = document.documentElement;
+  const touch = isTouch();
+  let open = true;
+  if (touch) {
+    touchLocks += 1;
+    html.style.overflow = "hidden";
+    html.style.touchAction = "none";
+    window.scrollTo(0, y);
+  }
 
   const cancel = (e: Event) => {
     if (e.cancelable) e.preventDefault();
@@ -44,12 +68,20 @@ export function lockScroll(): ScrollLock {
   return {
     pin: (next) => {
       y = next;
+      if (window.scrollY !== y) window.scrollTo(0, y);
     },
     release: () => {
+      if (!open) return;
+      open = false;
       window.removeEventListener("wheel", cancel);
       window.removeEventListener("touchmove", cancel);
       window.removeEventListener("keydown", onKey);
       window.removeEventListener("scroll", hold);
+      /* Solta só com a última trava: o véu e a cena podem se sobrepor. */
+      if (touch && --touchLocks === 0) {
+        html.style.overflow = "";
+        html.style.touchAction = "";
+      }
     },
   };
 }

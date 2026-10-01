@@ -380,6 +380,12 @@ export function SiteHeader() {
             "group-data-[theme=dark]:shadow-[inset_0_1px_0_0_rgba(255,255,255,0.13),0_1px_24px_-20px_rgba(0,0,0,0.8)]",
             /* Sobre o painel escuro do mobile o vidro não faz sentido. */
             "group-data-[open]:opacity-0",
+            /* No toque, sem desfoque: um `backdrop-filter` fixo é refeito a
+               cada quadro da rolagem, sobre tudo o que passa por baixo —
+               inclusive o canvas das partículas —, e é o que mais pesa na
+               rolagem do celular. O tom quase opaco segura a leitura. */
+            "pointer-coarse:backdrop-filter-none",
+            "pointer-coarse:bg-white/92 pointer-coarse:group-data-[theme=dark]:bg-night/90",
 
           ].join(" ")}
         />

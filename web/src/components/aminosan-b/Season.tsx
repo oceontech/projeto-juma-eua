@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import type { CSSProperties } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { useContent } from "@/components/layout/LocaleProvider";
 import { SplitLines } from "@/components/motion/SplitLines";
 import { microText } from "./ui";
@@ -25,9 +25,39 @@ export function Season() {
   const content = useContent();
   const { season } = content.aminosanB;
   const crops = content.kmep.timing.crops;
+  const scope = useRef<HTMLElement>(null);
+  /* As fotos pedem carga a duas telas e meia de distância, e não no
+     `loading="lazy"` do navegador: num carrossel 3D o navegador mede mal o
+     que está perto (os cartões de trás estão girados e recuados), e o
+     Safari só começa quando o cartão já quase aparece — o leitor via os
+     cartões vazios. */
+  const [near, setNear] = useState(false);
+  /* O giro só roda com a seção na tela: fora dela são doze camadas 3D com
+     máscara sendo recompostas a cada quadro, à toa, durante a rolagem. */
+  const [spinning, setSpinning] = useState(false);
+
+  useEffect(() => {
+    const el = scope.current;
+    if (!el) return;
+    const early = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        setNear(true);
+        early.disconnect();
+      },
+      { rootMargin: "250% 0px" },
+    );
+    const view = new IntersectionObserver(([entry]) => setSpinning(entry.isIntersecting));
+    early.observe(el);
+    view.observe(el);
+    return () => {
+      early.disconnect();
+      view.disconnect();
+    };
+  }, []);
 
   return (
-    <section id="season" className="overflow-hidden bg-white pt-[clamp(72px,8vw,124px)] pb-[clamp(56px,8vw,120px)] text-forest">
+    <section ref={scope} id="season" className="overflow-hidden bg-white pt-[clamp(72px,8vw,124px)] pb-[clamp(56px,8vw,120px)] text-forest">
       <div className="wrap grid gap-6 lg:grid-cols-[1fr_380px] lg:items-end">
         <SplitLines className="text-[clamp(34px,3.8vw,68px)] leading-[0.98] tracking-[-0.03em] text-forest">
           {season.heading.map((line) => (
@@ -56,6 +86,7 @@ export function Season() {
               "--card-width": "clamp(190px, 24vw, 300px)",
               "--radius": "calc((0.5 * var(--card-width) + 0.5em) / tan(0.5 * var(--step)))",
               animation: "season-carousel-spin 32s linear infinite",
+              animationPlayState: spinning ? "running" : "paused",
             } as CSSProperties}
           >
             <style>{`
@@ -113,6 +144,11 @@ export function Season() {
                   src={CROP_IMAGES[crop.id]}
                   alt=""
                   fill
+                  /* Já saem do tamanho certo (576×800, webp): servidas como
+                     estão, direto do CDN, sem esperar o otimizador gerar
+                     cada variante no primeiro acesso. */
+                  unoptimized
+                  loading={near ? "eager" : "lazy"}
                   sizes="(min-width: 1280px) 300px, (min-width: 768px) 24vw, 190px"
                   className="object-cover"
                 />

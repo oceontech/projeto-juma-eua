@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import Lenis from "lenis";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { whenBooted } from "@/lib/boot";
+import { holding, stickyCourses, type Course } from "@/lib/scroll-hold";
 
 /**
  * Rolagem suave do site inteiro.
@@ -31,6 +32,101 @@ import { whenBooted } from "@/lib/boot";
  */
 
 let instance: Lenis | null = null;
+
+/**
+ * O toque, no celular: a rolagem é 100% nativa — rolagem por JS no toque
+ * (`normalizeScroll`, `syncTouch` do Lenis) disputa a thread com a cena de
+ * WebGL e o celular inteiro trava; já tentado.
+ *
+ * O que se corrige é a carga das cenas presas. Nelas a tela não anda, o
+ * leitor arremessa várias vezes seguidas, e o iOS e o Android **somam** a
+ * velocidade de arremessos dados com a página ainda deslizando. Quando a
+ * cena soltava, a carga levava a página longe e rápido. Aqui, no quadro em
+ * que uma cena solta (ver `lib/scroll-hold.ts`) e só se a página sai acima
+ * de FAST telas por segundo — velocidade de carga, não de arremesso comum —,
+ * a inércia nativa é parada e a página **desacelera** por GLIDE de tela em
+ * vez de parar seca. A trava das partículas cuida da própria carga (ver
+ * `lib/scroll-lock.ts`).
+ */
+const FAST = 4.5;
+const GLIDE = 0.45;
+
+function watchTouch(): () => void {
+  if (!ScrollTrigger.isTouch) return () => {};
+  const html = document.documentElement;
+  let courses: Course[] = [];
+  let was = false;
+  let lastY = window.scrollY;
+  let lastT = performance.now();
+  let speed = 0;
+  let frame = 0;
+  let glide: gsap.core.Tween | null = null;
+
+  const settle = (y: number, dir: number) => {
+    /* Uma trava de pé (véu, partículas) já segura a página. */
+    if (html.style.touchAction === "none") return;
+    html.style.overflow = "hidden";
+    window.scrollTo(0, y);
+    requestAnimationFrame(() => {
+      if (html.style.touchAction !== "none") html.style.overflow = "";
+    });
+    const max = html.scrollHeight - window.innerHeight;
+    glide = gsap.to(window, {
+      scrollTo: {
+        y: gsap.utils.clamp(0, max, y + dir * window.innerHeight * GLIDE),
+        autoKill: true,
+      },
+      duration: 0.6,
+      ease: "power3.out",
+      onComplete: () => {
+        glide = null;
+      },
+    });
+  };
+
+  const check = () => {
+    frame = 0;
+    const now = performance.now();
+    const y = window.scrollY;
+    const dt = Math.max(now - lastT, 1);
+    /* Média curta: um quadro atrasado não vira pico de velocidade. */
+    speed = speed * 0.4 + ((y - lastY) / dt) * 1000 * 0.6;
+    lastY = y;
+    lastT = now;
+    const held = holding(courses);
+    if (
+      was &&
+      !held &&
+      !glide &&
+      Math.abs(speed) > window.innerHeight * FAST
+    )
+      settle(y, Math.sign(speed));
+    was = held;
+  };
+  const onScroll = () => {
+    if (!frame) frame = requestAnimationFrame(check);
+  };
+  const onTouch = () => {
+    glide?.kill();
+    glide = null;
+  };
+  const measure = () => {
+    courses = stickyCourses();
+    was = holding(courses);
+  };
+
+  measure();
+  window.addEventListener("scroll", onScroll, { passive: true });
+  window.addEventListener("touchstart", onTouch, { passive: true });
+  ScrollTrigger.addEventListener("refresh", measure);
+  return () => {
+    glide?.kill();
+    window.removeEventListener("scroll", onScroll);
+    window.removeEventListener("touchstart", onTouch);
+    ScrollTrigger.removeEventListener("refresh", measure);
+    cancelAnimationFrame(frame);
+  };
+}
 
 /** O dono da rolagem, ou `null` quando ela é nativa (mobile ou menos movimento). */
 export function scroller(): Lenis | null {
@@ -148,11 +244,13 @@ export function SmoothScroll() {
     };
 
     window.addEventListener("resize", onResize, { passive: true });
+    const unwatch = watchTouch();
 
     return () => {
       alive = false;
       window.removeEventListener("resize", onResize);
       stopLenis();
+      unwatch();
     };
   }, []);
 

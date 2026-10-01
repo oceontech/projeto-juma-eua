@@ -221,7 +221,7 @@ export function Assembly() {
        coluna, e o aminoácido do Aminosan® cai na segunda. */
     const card = product
       ? "overflow-hidden border border-amino/15 bg-white text-forest shadow-[0_30px_60px_-34px_rgba(0,0,0,0.6)]"
-      : "border border-cream/12 bg-night/50 backdrop-blur-md";
+      : "border border-cream/12 bg-night/50 backdrop-blur-md pointer-coarse:bg-night/85 pointer-coarse:backdrop-filter-none";
     /* O traço do mostrador: escuro no rótulo branco, claro no cartão escuro. */
     const ink = product ? "#16261B" : "#EEEBE0";
     return (
@@ -365,7 +365,7 @@ export function Assembly() {
           {steps.items.map((item, i) => (
             <li
               key={item.title}
-              className="as-step relative flex flex-col overflow-hidden rounded-[clamp(12px,1.05vw,20px)] border border-cream/15 bg-night/45 p-[clamp(14px,1.8vw,28px)] backdrop-blur-md max-md:first:col-span-2"
+              className="as-step relative flex flex-col overflow-hidden rounded-[clamp(12px,1.05vw,20px)] border border-cream/15 bg-night/45 p-[clamp(14px,1.8vw,28px)] backdrop-blur-md pointer-coarse:bg-night/85 pointer-coarse:backdrop-filter-none max-md:first:col-span-2"
             >
               <p className={`${microCaps} text-[10px] text-lime`}>{String(i + 1).padStart(2, "0")}</p>
               <p className="as-formula mt-[clamp(20px,2.4vw,40px)] font-display text-[clamp(20px,2.2vw,38px)] leading-[1.1] tracking-[-0.03em] md:whitespace-nowrap">
