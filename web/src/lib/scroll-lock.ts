@@ -9,6 +9,13 @@
  * roda, toque e teclado são cancelados, e arrastar o polegar da barra é
  * desfeito no mesmo quadro. Rolagem por código (`scrollTo`) segue livre —
  * `pin` diz para onde a página deve voltar quando o código a move.
+ *
+ * No toque isso não basta: a inércia do iOS e do Android não passa por
+ * `touchmove`, e um toque dado durante a inércia nem é cancelável. A página
+ * seguia rolando por baixo da trava e o `hold` a puxava de volta a cada
+ * quadro — a tela tremia e dava tranco. Ali a trava é `overflow: hidden` no
+ * <html>, que interrompe a inércia na hora; no celular a barra é sobreposta,
+ * então não há largura que mude.
  */
 
 const SCROLL_KEYS = new Set([" ", "PageUp", "PageDown", "Home", "End", "ArrowUp", "ArrowDown"]);
@@ -20,8 +27,18 @@ export type ScrollLock = {
   release: () => void;
 };
 
+const isTouch = () =>
+  window.matchMedia("(pointer: coarse)").matches || navigator.maxTouchPoints > 0;
+
 export function lockScroll(): ScrollLock {
   let y = window.scrollY;
+  const html = document.documentElement;
+  const touch = isTouch();
+  const overflow = html.style.overflow;
+  if (touch) {
+    html.style.overflow = "hidden";
+    window.scrollTo(0, y);
+  }
 
   const cancel = (e: Event) => {
     if (e.cancelable) e.preventDefault();
@@ -44,12 +61,14 @@ export function lockScroll(): ScrollLock {
   return {
     pin: (next) => {
       y = next;
+      if (window.scrollY !== y) window.scrollTo(0, y);
     },
     release: () => {
       window.removeEventListener("wheel", cancel);
       window.removeEventListener("touchmove", cancel);
       window.removeEventListener("keydown", onKey);
       window.removeEventListener("scroll", hold);
+      if (touch) html.style.overflow = overflow;
     },
   };
 }
