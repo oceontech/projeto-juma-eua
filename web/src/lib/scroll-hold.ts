@@ -14,8 +14,7 @@ import { ScrollTrigger } from "@/lib/gsap";
  *             caixa bem mais alta, que dá o curso (as cenas da home).
  *
  * Cenas com menos de meia tela de curso ficam de fora: ali a troca vem antes
- * de o leitor hesitar. Quem usa: o aviso de "continue rolando"
- * (`ScrollCue.tsx`) e o freio da inércia no toque (`SmoothScroll.tsx`).
+ * de o leitor hesitar. Quem usa: o aviso de "continue rolando" (`ScrollCue.tsx`).
  */
 
 export type Course = { box: HTMLElement; held: number };

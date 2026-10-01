@@ -27,6 +27,11 @@ export type ScrollLock = {
   release: () => void;
 };
 
+let locks = 0;
+
+/** Se alguma trava está de pé — o deslize do toque (SmoothScroll) para. */
+export const isLocked = () => locks > 0;
+
 const isTouch = () =>
   window.matchMedia("(pointer: coarse)").matches || navigator.maxTouchPoints > 0;
 
@@ -34,7 +39,8 @@ export function lockScroll(): ScrollLock {
   let y = window.scrollY;
   const html = document.documentElement;
   const touch = isTouch();
-  const overflow = html.style.overflow;
+  let open = true;
+  locks += 1;
   if (touch) {
     html.style.overflow = "hidden";
     window.scrollTo(0, y);
@@ -64,11 +70,15 @@ export function lockScroll(): ScrollLock {
       if (window.scrollY !== y) window.scrollTo(0, y);
     },
     release: () => {
+      if (!open) return;
+      open = false;
+      locks -= 1;
       window.removeEventListener("wheel", cancel);
       window.removeEventListener("touchmove", cancel);
       window.removeEventListener("keydown", onKey);
       window.removeEventListener("scroll", hold);
-      if (touch) html.style.overflow = overflow;
+      /* Solta só com a última trava: o véu e a cena podem se sobrepor. */
+      if (touch && locks === 0) html.style.overflow = "";
     },
   };
 }

@@ -56,9 +56,14 @@ const COUNT = { wide: 80_000, narrow: 40_000 };
    e o que fica é o desenho de pontos da própria imagem; a cor escorre para o
    grafite (TONE), e só então os pontos partem para o aminoácido. Tudo mais
    curto que lá: a travessia é o espetáculo, não a espera. */
-const CANVAS_IN = { at: 0.002, run: 0.012 };
-const HERO_OUT = { at: 0.008, run: 0.016 };
-const TONE = { at: 0.018, run: 0.028 };
+const CANVAS_IN = { at: 0.01, run: 0.025 };
+const HERO_OUT = { at: 0.025, run: 0.035 };
+const TONE = { at: 0.05, run: 0.04 };
+/* A abertura inteira — texto saindo, zoom, foto virando pontilhado — corre
+   no dedo até OPEN, e só então vem a primeira troca. Com ela em 0,03 (uns
+   40px no celular), qualquer toque no hero disparava tudo de uma vez e a
+   rolagem já travava, com o zoom ainda pela metade. */
+const OPEN = 0.09;
 
 /** Onde cada troca é disparada, em fração da cena. O scroll só **dispara** a
     troca: a travessia corre no relógio (`PACE`), com o mesmo tempo quer o
@@ -71,7 +76,7 @@ const TONE = { at: 0.018, run: 0.028 };
     forma assentar: o que o dedo rolar nesse meio-tempo é descartado. Sem a
     trava, um scroll comprido passava por duas ou três leituras de uma vez e
     o leitor pulava cenas sem querer. */
-const MORPH = [0.03, 0.27, 0.51, 0.75];
+const MORPH = [OPEN + 0.01, 0.32, 0.54, 0.76];
 /* A travessia no relógio, em segundos — e o tempo em que a rolagem fica
    presa. */
 const PACE = 1.7;
@@ -606,7 +611,7 @@ export function Specimen({ children }: { children: React.ReactNode }) {
               scrollTrigger: {
                 trigger: stage,
                 start: "top top",
-                /* Cerca de 40% de tela entre um disparo e o seguinte (0,24 da
+                /* Cerca de 37% de tela entre um disparo e o seguinte (0,22 da
                    linha do tempo), mais o fechamento em disco no fim (1,0 a
                    1,22). Pode ser curto porque a trava faz uma troca por vez:
                    rolar a mais não pula leitura. Com as trocas no scrub eram
@@ -629,10 +634,10 @@ export function Specimen({ children }: { children: React.ReactNode }) {
             /* 1. O texto do hero sai, e a foto aproxima de leve. */
             tl.to(
               root.querySelectorAll("[data-hb-copy]"),
-              { opacity: 0, y: -18, duration: 0.014, stagger: 0.003 },
+              { opacity: 0, y: -18, duration: 0.025, stagger: 0.004 },
               0,
             )
-              .to(u, { zoom: 1.1, duration: 0.1, ease: "power1.inOut" }, 0)
+              .to(u, { zoom: 1.1, duration: OPEN, ease: "power1.inOut" }, 0)
               /* 2. O pontilhado da foto aparece por cima dela, e a foto sai por
                     baixo: o que fica é o desenho de pontos da própria imagem,
                     na cor dela — os pontos que em seguida viram o aminoácido. */

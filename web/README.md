@@ -121,7 +121,7 @@ a entrada padrão não der conta — como no hero (parallax com `scrub`) ou na c
 |---|---|
 | `ScrollRefresh` | Recalcula os gatilhos quando fontes e imagens terminam de carregar. Sem ele, tudo é medido no primeiro paint, quando a página ainda não tem a altura final |
 | `SmoothAnchors` | Rolagem suave dos links `#âncora`, via ScrollToPlugin |
-| `SmoothScroll` | Dono da rolagem: Lenis no desktop; no toque, rolagem nativa, com um freio no quadro em que uma cena presa solta e a página sai rápido demais. Sem isso o celular somava a velocidade de roladas seguidas dentro da cena e, quando ela soltava, a página disparava. **Não** use `normalizeScroll`: já tentado, e o celular inteiro ficou lagado |
+| `SmoothScroll` | Dono da rolagem: Lenis no desktop; no toque, arrasto nativo e arremesso com teto: no fim de um arremesso forte (ou somado a um deslize que ainda corria) a inércia nativa é parada e o GSAP desliza no máximo uma tela. Sem isso a inércia do celular passava várias telas e se somava a cada rolada. **Não** use `normalizeScroll`: já tentado, e o celular inteiro ficou lagado |
 | `ScrollCue` | "Keep scrolling" no celular, fixo enquanto uma cena prende a tela. Acha sozinho as cenas com `pin` e as janelas `sticky` da altura da tela — uma cena nova ganha o aviso sem tocar nele |
 
 **Não** ponha `scroll-behavior: smooth` no CSS. A rolagem nativa suave roda por fora do frame do
