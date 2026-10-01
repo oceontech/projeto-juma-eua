@@ -9,13 +9,7 @@
  * roda, toque e teclado são cancelados, e arrastar o polegar da barra é
  * desfeito no mesmo quadro. Rolagem por código (`scrollTo`) segue livre —
  * `pin` diz para onde a página deve voltar quando o código a move.
- *
- * No celular o toque passa pelo `normalizeScroll` do GSAP (ver
- * SmoothScroll.tsx), que rola por código e escaparia da trava: ele fica
- * desligado enquanto ela durar.
  */
-
-import { ScrollTrigger } from "@/lib/gsap";
 
 const SCROLL_KEYS = new Set([" ", "PageUp", "PageDown", "Home", "End", "ArrowUp", "ArrowDown"]);
 const FIELD = "input, textarea, select, [contenteditable]";
@@ -28,9 +22,6 @@ export type ScrollLock = {
 
 export function lockScroll(): ScrollLock {
   let y = window.scrollY;
-  const touch = ScrollTrigger.normalizeScroll();
-  const paused = !!touch?.isEnabled;
-  if (paused) touch?.disable();
 
   const cancel = (e: Event) => {
     if (e.cancelable) e.preventDefault();
@@ -59,8 +50,6 @@ export function lockScroll(): ScrollLock {
       window.removeEventListener("touchmove", cancel);
       window.removeEventListener("keydown", onKey);
       window.removeEventListener("scroll", hold);
-      /* Religa o toque só se ninguém o trocou enquanto a trava durava. */
-      if (paused && ScrollTrigger.normalizeScroll() === touch) touch?.enable();
     },
   };
 }

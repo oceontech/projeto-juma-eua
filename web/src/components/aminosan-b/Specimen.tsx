@@ -79,7 +79,7 @@ const TONE = { at: 0.018, run: 0.028 };
 const MORPH = [0.03, 0.27, 0.51, 0.75];
 /* A travessia no relógio, em segundos — e o tempo em que a rolagem fica
    presa. */
-const PACE = 1.9;
+const PACE = 1.7;
 /* Quando a copy troca, em fração de cada morph. A regra é uma só nos dois
    sentidos: o texto de uma forma aparece quando **ela** está quase montada.
    Indo, isso é perto do fim do morph (0,62); voltando, o morph corre ao
@@ -608,10 +608,12 @@ export function Specimen({ children }: { children: React.ReactNode }) {
               scrollTrigger: {
                 trigger: stage,
                 start: "top top",
-                /* Cerca de uma tela de rolagem entre um disparo e o seguinte
-                   (0,24 da linha do tempo), mais o fechamento em disco no fim
-                   (1,0 a 1,22). Com as trocas no scrub eram 925%. */
-                end: "+=510%",
+                /* Cerca de 40% de tela entre um disparo e o seguinte (0,24 da
+                   linha do tempo), mais o fechamento em disco no fim (1,0 a
+                   1,22). Pode ser curto porque a trava faz uma troca por vez:
+                   rolar a mais não pula leitura. Com as trocas no scrub eram
+                   925%; com uma tela por troca (510%), rolava-se demais. */
+                end: "+=205%",
                 scrub: 0.7,
                 pin: true,
                 anticipatePin: 1,

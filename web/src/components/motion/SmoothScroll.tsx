@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import Lenis from "lenis";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { whenBooted } from "@/lib/boot";
+import { holding, stickyCourses, type Course } from "@/lib/scroll-hold";
 
 /**
  * Rolagem suave do site inteiro.
@@ -33,38 +34,68 @@ import { whenBooted } from "@/lib/boot";
 let instance: Lenis | null = null;
 
 /**
- * O toque, no celular: a rolagem continua nativa no gesto, mas a **inércia**
- * passa a ser do GSAP (`normalizeScroll`), e cada arremesso vale por si.
+ * O toque, no celular: a rolagem é 100% nativa, e só a inércia que sobra na
+ * saída das cenas presas é cortada.
  *
- * O problema que isto resolve: nas cenas presas a tela não anda, então o
- * leitor rola várias vezes seguidas — e o iOS e o Android **somam** a
- * velocidade de arremessos seguidos. Quando a cena soltava, a velocidade
- * acumulada levava a página longe e rápido com um toque leve. Aqui a inércia
- * nasce só da velocidade do último gesto, e o alcance tem teto de cerca de
- * uma tela (`REACH`), que é o que um leitor espera de um arremesso.
+ * O problema: nas cenas presas a tela não anda, então o leitor rola várias
+ * vezes seguidas — e o iOS e o Android **somam** a velocidade de arremessos
+ * seguidos. Quando a cena soltava, a velocidade acumulada levava a página
+ * longe e rápido com um toque leve. Aqui, no quadro em que uma cena solta
+ * (ver `lib/scroll-hold.ts`), se a página sai acima de FAST telas por
+ * segundo, a inércia é parada: um quadro de `overflow: hidden` interrompe o
+ * arremesso no iOS e no Android, e a página pousa logo depois da cena.
  *
- * De brinde, o JS passa a escrever a rolagem no mesmo quadro em que o
- * ScrollTrigger lê: os pins param de tremer no toque.
+ * Já tentamos o `normalizeScroll` do GSAP, que passa toda a inércia do toque
+ * para o JS: resolvia o arremesso, mas a rolagem disputava a thread com a
+ * cena de WebGL e o celular inteiro ficava lagado.
  */
-const REACH = 1.1;
+const FAST = 2.2;
 
-function startTouch() {
-  if (!ScrollTrigger.isTouch || ScrollTrigger.normalizeScroll()) return;
-  ScrollTrigger.normalizeScroll({
-    type: "touch",
-    allowNestedScroll: true,
-    /* A duração da inércia, em segundos. O GSAP anda 0,22 × velocidade ×
-       duração; a conta abaixo é essa, invertida, para o alcance parar em
-       REACH telas — e nunca passar de 1,1 s. */
-    momentum: (self: { velocityY: number }) => {
-      const v = Math.abs(self.velocityY);
-      return v ? Math.min(1.1, (window.innerHeight * REACH) / (0.22 * v)) : 0;
-    },
+function brake() {
+  const html = document.documentElement;
+  const y = window.scrollY;
+  html.style.overflow = "hidden";
+  window.scrollTo(0, y);
+  requestAnimationFrame(() => {
+    html.style.overflow = "";
   });
 }
 
-function stopTouch() {
-  if (ScrollTrigger.normalizeScroll()) ScrollTrigger.normalizeScroll(false);
+function watchTouch(): () => void {
+  if (!ScrollTrigger.isTouch) return () => {};
+  let courses: Course[] = [];
+  let was = false;
+  let lastY = window.scrollY;
+  let lastT = performance.now();
+  let frame = 0;
+
+  const check = () => {
+    frame = 0;
+    const now = performance.now();
+    const y = window.scrollY;
+    const speed = (Math.abs(y - lastY) / Math.max(now - lastT, 1)) * 1000;
+    lastY = y;
+    lastT = now;
+    const held = holding(courses);
+    if (was && !held && speed > window.innerHeight * FAST) brake();
+    was = held;
+  };
+  const onScroll = () => {
+    if (!frame) frame = requestAnimationFrame(check);
+  };
+  const measure = () => {
+    courses = stickyCourses();
+    was = holding(courses);
+  };
+
+  measure();
+  window.addEventListener("scroll", onScroll, { passive: true });
+  ScrollTrigger.addEventListener("refresh", measure);
+  return () => {
+    window.removeEventListener("scroll", onScroll);
+    ScrollTrigger.removeEventListener("refresh", measure);
+    cancelAnimationFrame(frame);
+  };
 }
 
 /** O dono da rolagem, ou `null` quando ela é nativa (mobile ou menos movimento). */
@@ -142,13 +173,8 @@ export function SmoothScroll() {
     const startLenis = () => {
       if (isMobileOrTouch()) {
         stopLenis();
-        /* Só com a página liberada: durante o véu a trava de entrada manda. */
-        whenBooted().then(() => {
-          if (alive && isMobileOrTouch()) startTouch();
-        });
         return;
       }
-      stopTouch();
       if (lenis) return; // já ativo
 
       lenis = new Lenis({
@@ -177,14 +203,13 @@ export function SmoothScroll() {
 
     // Inicializa conforme o dispositivo
     startLenis();
+    const unwatch = watchTouch();
 
     // Reavalia dinamicamente caso o desenvolvedor alterne entre desktop e mobile no DevTools ou rotacione a tela
     const onResize = () => {
       if (isMobileOrTouch()) {
         stopLenis();
-        startTouch();
       } else {
-        stopTouch();
         startLenis();
       }
     };
@@ -195,7 +220,7 @@ export function SmoothScroll() {
       alive = false;
       window.removeEventListener("resize", onResize);
       stopLenis();
-      stopTouch();
+      unwatch();
     };
   }, []);
 
