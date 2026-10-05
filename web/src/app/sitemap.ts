@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 
-const BASE = "https://juma-agro-eua.vercel.app";
+const BASE = "https://juma-agro.com";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return ["", "/kmep", "/aminosan"].map((path) => ({

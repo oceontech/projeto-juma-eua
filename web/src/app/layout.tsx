@@ -41,7 +41,7 @@ const dmSans = DM_Sans({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://juma-agro-eua.vercel.app"),
+  metadataBase: new URL("https://juma-agro.com"),
   title: {
     default: "Juma-Agro Fertilizer LLC — Proven where the harvest never stops.",
     template: "%s — Juma-Agro Fertilizer LLC",
