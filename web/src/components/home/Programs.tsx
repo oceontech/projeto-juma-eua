@@ -1,16 +1,103 @@
 "use client";
 
-import { Fragment, useRef } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { gsap, ScrollTrigger, SplitText, useGSAP, START } from "@/lib/gsap";
 import { useContent } from "@/components/layout/LocaleProvider";
 import s from "./Programs.module.css";
 
-const PHOTOS = [
-  { src: "/img/programs/bullseye.webp", position: "62% 50%" },
-  { src: "/img/programs/experience.webp", position: "50% 50%" },
-  { src: "/img/programs/juma360.webp", position: "50% 42%" },
-] as const;
+type Media =
+  | { kind: "photo"; src: string; position: string }
+  | { kind: "slides"; srcs: readonly string[]; position: string }
+  | { kind: "video"; src: string; poster: string; position: string };
+
+/* Na ordem dos cards: alvo (foto fixa), Juma Experience (fotos do dia trocando
+   a cada segundo) e Juma 360 (vídeo da convenção em loop). */
+const MEDIA: readonly Media[] = [
+  { kind: "photo", src: "/img/programs/bullseye.webp", position: "62% 50%" },
+  {
+    kind: "slides",
+    srcs: [
+      "/img/programs/experience/galpao-grupo.webp",
+      "/img/programs/experience/casa-vegetacao.webp",
+      "/img/programs/experience/bate-papo.webp",
+      "/img/programs/experience/ensaio-planta.webp",
+    ],
+    position: "50% 50%",
+  },
+  { kind: "video", src: "/video/programs/juma360.mp4", poster: "/video/programs/juma360-poster.webp", position: "50% 50%" },
+];
+
+const SLIDE_MS = 1000;
+const IMAGE_SIZES = "(max-width: 1100px) 90vw, 46vw";
+
+const reducedMotion = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/** Fotos empilhadas; a da vez aparece por cima. Com movimento reduzido fica na primeira. */
+function Slides({ srcs, position }: { srcs: readonly string[]; position: string }) {
+  const [active, setActive] = useState(0);
+
+  useEffect(() => {
+    if (reducedMotion()) return;
+    const id = window.setInterval(() => setActive((i) => (i + 1) % srcs.length), SLIDE_MS);
+    return () => window.clearInterval(id);
+  }, [srcs.length]);
+
+  return srcs.map((src, i) => (
+    <Image
+      key={src}
+      src={src}
+      alt=""
+      fill
+      sizes={IMAGE_SIZES}
+      quality={90}
+      className={`${s.image} ${s.slide}`}
+      style={{ objectPosition: position, opacity: i === active ? 1 : 0 }}
+    />
+  ));
+}
+
+/** Vídeo mudo em loop. Com movimento reduzido fica parado no primeiro quadro. */
+function LoopVideo({ src, poster, position }: { src: string; poster: string; position: string }) {
+  const video = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    const el = video.current;
+    if (!el || reducedMotion()) return;
+    el.play().catch(() => {});
+  }, []);
+
+  return (
+    <video
+      ref={video}
+      src={src}
+      poster={poster}
+      muted
+      loop
+      playsInline
+      preload="metadata"
+      aria-hidden
+      className={s.image}
+      style={{ objectPosition: position, width: "100%", height: "100%" }}
+    />
+  );
+}
+
+function ProgramMedia({ media }: { media: Media }) {
+  if (media.kind === "slides") return <Slides srcs={media.srcs} position={media.position} />;
+  if (media.kind === "video") return <LoopVideo src={media.src} poster={media.poster} position={media.position} />;
+  return (
+    <Image
+      src={media.src}
+      alt=""
+      fill
+      sizes={IMAGE_SIZES}
+      quality={90}
+      className={s.image}
+      style={{ objectPosition: media.position }}
+    />
+  );
+}
 
 /** Lê uma inclinação declarada no CSS (`--tilt-photo: -4.6deg`) como número. */
 const tiltOf = (node: Element, prop: string) =>
@@ -280,15 +367,7 @@ export function Programs() {
               <div data-front-photo className={s.photoSlot}>
                 <div data-front-photo-inner className={s.photoFrame}>
                   <div data-front-img className={s.photo}>
-                    <Image
-                      src={PHOTOS[i].src}
-                      alt=""
-                      fill
-                      sizes="(max-width: 1100px) 90vw, 46vw"
-                      quality={90}
-                      className={s.image}
-                      style={{ objectPosition: PHOTOS[i].position }}
-                    />
+                    <ProgramMedia media={MEDIA[i]} />
                   </div>
                   <div className={s.photoShade} aria-hidden />
                 </div>

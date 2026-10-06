@@ -42,6 +42,8 @@
 /* Folga vertical para o parallax correr sem descobrir a borda. */
 .photo { position: absolute; inset: -6% 0; }
 .image { position: absolute; inset: 0; object-fit: cover; }
+/* Troca curta entre as fotos do Juma Experience: corte seco a cada segundo pisca demais. */
+.slide { transition: opacity .35s ease; }
 .photoShade { position: absolute; inset: 0; background: linear-gradient(150deg, rgb(4 10 6 / .06) 34%, rgb(4 10 6 / .58)); pointer-events: none; }
 
 .card { position: relative; grid-area: 1 / 1; display: flex; box-sizing: border-box; flex-direction: column; justify-content: center; overflow: hidden; border-radius: inherit; background: linear-gradient(145deg, #28291e 0%, #121310 54%, #090a09 100%); }
