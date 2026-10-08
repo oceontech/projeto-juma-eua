@@ -10,3 +10,8 @@ Thumbs.db
 .agents/
 .claude/
 skills-lock.json
+
+# contas e CLIs: tokens e links locais nunca vão para o git
+.env*
+.vercel
+!.env.example
