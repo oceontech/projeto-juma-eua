@@ -79,12 +79,11 @@ const TONE = { at: 0.018, run: 0.028 };
 const MORPH = [0.03, 0.27, 0.51, 0.75];
 /* A travessia no relógio, em segundos — e o tempo em que a rolagem fica
    presa. */
-const PACE = 1.7;
-/* O respiro depois de a forma assentar, ainda com a rolagem presa: é o tempo
-   de a copy terminar de entrar. Sem ele, quem seguia rolando durante a
-   travessia disparava a troca seguinte no quadro em que a trava soltava, e a
-   leitura recém-chegada ia embora sem ser lida. */
-const REST = 0.35;
+const PACE = 1.5;
+/* Quem tem pressa passa: rolar com insistência no sentido da troca, com ela
+   em curso, acelera a travessia (`rate`) depois de `after` pixels de roda ou
+   de dedo. A trava continua valendo — uma leitura por vez —, só dura menos. */
+const HURRY = { after: 240, rate: 2.2 };
 /* Quando a copy troca, em fração de cada morph. A regra é uma só nos dois
    sentidos: o texto de uma forma aparece quando **ela** está quase montada.
    Indo, isso é perto do fim do morph (0,62); voltando, o morph corre ao
@@ -100,24 +99,23 @@ const SWITCH = 0.62;
    volta na foto. Ela sai assim que a molécula começa a se desmanchar. */
 const HERO_BACK = 0.94;
 
-/* O fechamento em disco, no relógio como as trocas: o scroll só o dispara
-   (`CLOSE.at`), a rolagem fica presa e o gesto corre inteiro em `CLOSE.pace`
-   segundos — voltando, ao contrário. Preso ao scrub, um scroll rápido levava
-   a tela ao preto de uma vez, e a copy ainda estava saindo por cima dele. */
-const CLOSE = { at: 1.0, pace: 1.9 };
-/* Os disparos da cena, em ordem: as quatro trocas e o fechamento. */
-const STEPS = [...MORPH, CLOSE.at];
-/* O comprimento da linha do tempo. O pouco que sobra depois do último
-   disparo é a tela já preta, antes de o pin soltar. */
-const SPAN = 1.06;
-
-/* Dentro do fechamento, de 0 a 1: as partículas fecham um disco pequeno
-   (`FILL`) e ele cresce daí até cobrir a tela (`GROW`). O crescimento
+/* O disco preto: as partículas fecham um disco pequeno (1,0 a 1,08) e ele
+   cresce daí até cobrir a tela, em fração da linha do tempo. O crescimento
    começa quase no fim do fechamento — antes disso as partículas se
    espalhariam num disco grande demais e sumiriam, e o sólido surgiria já
-   com meia tela — e é suave nas duas pontas. */
-const FILL = 0.36;
-const GROW = { at: 0.32, run: 0.68, ease: "sine.inOut" };
+   com meia tela. Ele tem trecho próprio no fim da cena, longo e suave nas
+   duas pontas: com `power2.in` em 0,09 terminava na velocidade máxima, e o
+   fim do scroll levava o círculo de meia tela à tela cheia de uma vez. */
+const GROW = { at: 1.07, run: 0.15, ease: "sine.inOut" };
+
+/* O fechamento segue o scroll — a pergunta da seção seguinte entra junto com
+   ele, na mesma rolagem —, mas não pode entrar de uma vez. Duas coisas o
+   seguram: uma porta em `CLOSE.at`, onde a rolagem para por `gate` segundos
+   e perde o embalo que trazia das trocas; e, no desktop, a roda rendendo
+   menos dali até o fim do pin (`SLOW`: o Lenis anda `wheel` do normal e
+   leva `duration` segundos para assentar). */
+const CLOSE = { at: 1.0, gate: 0.25 };
+const SLOW = { from: 0.94, wheel: 0.5, duration: 1.6 };
 
 /* O rótulo da bombona, em fração da foto a partir do centro (y para cima).
    É para lá que o zoom anda. */
@@ -247,9 +245,6 @@ export function Specimen({ children }: { children: React.ReactNode }) {
           /* A saída em duas fases de um mesmo gesto: `fill` enche um círculo
              pequeno com as partículas; `grow` expande o sólido até a tela. */
           const ending = { fill: 0, grow: 0 };
-          /* O fechamento inteiro, de 0 a 1, no relógio — ver `CLOSE`. */
-          const closure = { t: 0 };
-          const growEase = gsap.parseEase(GROW.ease);
           let count = 1;
           let darkHeader = false;
           let zoomed = 1;
@@ -257,7 +252,6 @@ export function Specimen({ children }: { children: React.ReactNode }) {
           const shown = { stage: -1 };
 
           const rail = root.querySelector<HTMLElement>(".sp-rail");
-          const scrim = root.querySelector<HTMLElement>(".sp-scrim");
           const calls = gsap.utils.toArray<HTMLElement>(".sp-call", root);
           const callouts = createCallouts(
             stage,
@@ -315,14 +309,41 @@ export function Specimen({ children }: { children: React.ReactNode }) {
                duas descolariam no quadro da troca. */
             /* O círculo da saída: raio e opacidade lidos do mesmo número que
                manda as partículas para dentro dele. */
-            if (closure.t > 0 || black.style.opacity) {
+            if (
+              ending.fill > 0 ||
+              black.style.opacity ||
+              (timeline?.scrollTrigger?.progress ?? 0) *
+                (timeline?.duration() || 1.22) >=
+                1.0
+            ) {
               const w = stage.clientWidth;
               const h = stage.clientHeight;
               /* As partículas só enchem um círculo pequeno (SMALL do menor
                  lado): o grão fica pequeno, a conta é leve e o disco fecha
                  depressa. Daí em diante quem cresce é o sólido. */
               const small = Math.min(w, h) * 0.06;
-              const { fill, grow } = ending;
+              /* O preto final segue o scroll **real**, não a linha do tempo
+                 amortecida: num scroll rápido o pin solta antes de o scrub
+                 alcançar, e a cena subia com o círculo ainda pela metade,
+                 mostrando uma faixa por baixo. Passado o ponto em que a tela
+                 fica toda preta, ela está toda preta — com ou sem atraso. */
+              const real = timeline?.scrollTrigger?.progress ?? 0;
+              /* Mesmas curvas da linha do tempo, mas lidas do scroll real:
+                 o raio nunca fica atrás do que o dedo já rolou. É contínuo —
+                 chega a 1 exatamente no fim do pin —, então não há salto de
+                 um círculo pela metade para a tela cheia. */
+              const tReal = real * (timeline?.duration() || 1.22);
+              const fill = Math.max(
+                ending.fill,
+                gsap.utils.clamp(0, 1, (tReal - 1.0) / 0.08),
+              );
+              const grow = Math.max(
+                ending.grow,
+                gsap.parseEase(GROW.ease)(
+                  gsap.utils.clamp(0, 1, (tReal - GROW.at) / GROW.run),
+                ),
+              );
+              const full = grow >= 1 ? 1 : 0;
               const r =
                 gsap.utils.interpolate(Math.min(w, h) * 0.01, small, fill) +
                 (Math.hypot(w, h) / 2 + 8 - small) * grow;
@@ -334,7 +355,7 @@ export function Specimen({ children }: { children: React.ReactNode }) {
               /* Preenchido — a última partícula chegou —, a nuvem dá lugar a
                  um elemento sólido, do mesmo raio e no mesmo lugar. Os dois
                  são o mesmo preto, então a troca não se vê. */
-              const solid = u.gather >= 0.999;
+              const solid = u.gather >= 0.999 || full === 1 || tReal >= 1.08;
               black.style.clipPath = `circle(${r}px at 50% 50%)`;
               black.style.opacity = solid ? "1" : "";
               surface.style.visibility = solid ? "hidden" : "";
@@ -492,17 +513,21 @@ export function Specimen({ children }: { children: React.ReactNode }) {
               (el) => Number(gsap.getProperty(el, "opacity")) > 0.001,
             );
 
-          /* A fase no relógio. O alvo é quantos disparos o scroll já passou —
-             as quatro trocas e, por último, o fechamento em disco; o tween
-             anda até lá no próprio tempo. */
+          /* A fase no relógio. O alvo é quantas trocas o scroll já passou; o
+             tween anda até lá no próprio tempo. */
           let aim = 0;
           let travel: gsap.core.Tween | null = null;
           let rest: gsap.core.Tween | null = null;
           let held: ScrollLock | null = null;
-          /* Um passo em curso, da partida ao fim do respiro. É uma flag, e não
-             `travel.isActive()`: um tween recém-criado só conta como ativo
-             depois do primeiro quadro, e nesse vão um segundo passo entrava. */
+          /* Um passo em curso. É uma flag, e não `travel.isActive()`: um tween
+             recém-criado só conta como ativo depois do primeiro quadro, e
+             nesse vão um segundo passo entrava. */
           let busy = false;
+          /* Se a porta do fechamento já segurou esta descida. */
+          let gated = false;
+          /* O sentido do passo em curso e o quanto se rolou a favor dele. */
+          let going = 1;
+          let push = 0;
 
           /* Prende a rolagem em `y`: a entrada (roda, toque, teclado) é
              cancelada e o Lenis, no desktop, para no lugar — senão a inércia
@@ -524,57 +549,108 @@ export function Specimen({ children }: { children: React.ReactNode }) {
           };
           const arrive = () => {
             rest = null;
+            travel = null;
             busy = false;
             letGo();
           };
 
+          /* A pressa: o que se rola a favor da troca em curso a acelera. A
+             trava cancela a rolagem, não o evento, então ele chega aqui. */
+          const hurry = (delta: number) => {
+            if (!travel || Math.sign(delta) !== going) return;
+            push += Math.abs(delta);
+            if (push > HURRY.after) travel.timeScale(HURRY.rate);
+          };
+          const onWheel = (e: WheelEvent) =>
+            hurry(e.deltaMode === 1 ? e.deltaY * 40 : e.deltaY);
+          let fingerY = 0;
+          const onTouchStart = (e: TouchEvent) => {
+            fingerY = e.touches[0]?.clientY ?? 0;
+          };
+          const onTouchMove = (e: TouchEvent) => {
+            const y = e.touches[0]?.clientY ?? fingerY;
+            hurry(fingerY - y);
+            fingerY = y;
+          };
+          window.addEventListener("wheel", onWheel, { passive: true });
+          window.addEventListener("touchstart", onTouchStart, { passive: true });
+          window.addEventListener("touchmove", onTouchMove, { passive: true });
+
+          /* A roda rende menos no fechamento — ver `SLOW`. Só no desktop: no
+             toque a rolagem é nativa e não há o que regular. */
+          let normal: { wheel: number; duration: number | undefined } | null =
+            null;
+          const pace = (slow: boolean) => {
+            const lenis = scroller();
+            if (!lenis || slow === (normal !== null)) return;
+            if (slow) {
+              normal = {
+                wheel: lenis.options.wheelMultiplier,
+                duration: lenis.options.duration,
+              };
+              lenis.options.wheelMultiplier = normal.wheel * SLOW.wheel;
+              lenis.options.duration = SLOW.duration;
+            } else if (normal) {
+              lenis.options.wheelMultiplier = normal.wheel;
+              lenis.options.duration = normal.duration;
+              normal = null;
+            }
+          };
+
           const steer = (self: ScrollTrigger) => {
+            const span = self.animation?.duration() ?? 1;
+            const t = self.progress * span;
+            pace(t >= SLOW.from && self.progress < 1);
             /* Sem a nuvem não há o que trocar. Ela é montada atrás do véu, mas
                o véu tem teto de espera: em máquina ou rede lenta ele sai antes,
                e o scroll disparava a primeira leitura — copy e chamadas — por
                cima da foto do hero, sem partícula nenhuma. */
             if (busy || !field) return;
-            const span = self.animation?.duration() ?? SPAN;
-            const t = self.progress * span;
-            const want = STEPS.filter((at) => t >= at).length;
-            if (want === aim) return;
+            const want = MORPH.filter((at) => t >= at).length;
             /* Um salto por código (link de âncora) atravessa a cena: ela
                acompanha sem prender, senão a trava matava o salto. */
-            if (performance.now() < jump.until) {
-              snap(want);
+            const leaping = performance.now() < jump.until;
+            if (want !== aim) {
+              if (leaping) {
+                snap(want);
+                return;
+              }
+              /* Um passo só, para o lado em que o scroll foi, por mais que ele
+                 tenha andado; a rolagem volta ao ponto do disparo. */
+              const dir = want > aim ? 1 : -1;
+              const at = MORPH[dir > 0 ? aim : aim - 1];
+              aim += dir;
+              busy = true;
+              going = dir;
+              push = 0;
+              hold(
+                Math.round(
+                  self.start + (at / span) * (self.end - self.start) + 2 * dir,
+                ),
+              );
+              travel = gsap.to(u, {
+                phase: aim,
+                duration: PACE,
+                ease: "power2.inOut",
+                onUpdate: syncRoute,
+                onComplete: arrive,
+              });
               return;
             }
-            /* Um passo só, para o lado em que o scroll foi, por mais que ele
-               tenha andado; a rolagem volta ao ponto do disparo. */
-            const dir = want > aim ? 1 : -1;
-            const at = STEPS[dir > 0 ? aim : aim - 1];
-            aim += dir;
-            busy = true;
-            hold(
-              Math.round(
-                self.start + (at / span) * (self.end - self.start) + 2 * dir,
-              ),
-            );
-            const settle = () => {
-              rest = gsap.delayedCall(REST, arrive);
-            };
-            travel =
-              at === CLOSE.at
-                ? gsap.to(closure, {
-                    t: dir > 0 ? 1 : 0,
-                    duration: CLOSE.pace,
-                    ease: "power1.inOut",
-                    onUpdate: syncClose,
-                    /* Fechado, a tela é preta: não há o que esperar ler. */
-                    onComplete: dir > 0 ? arrive : settle,
-                  })
-                : gsap.to(u, {
-                    phase: aim,
-                    duration: PACE,
-                    ease: "power2.inOut",
-                    onUpdate: syncRoute,
-                    onComplete: settle,
-                  });
+            /* A porta do fechamento: descendo, a rolagem para um instante em
+               `CLOSE.at` e perde o embalo. Subindo de volta não há porta. */
+            if (t < CLOSE.at - 0.04) gated = false;
+            else if (t >= CLOSE.at && !gated) {
+              gated = true;
+              if (leaping || self.direction < 0) return;
+              busy = true;
+              hold(
+                Math.round(
+                  self.start + (CLOSE.at / span) * (self.end - self.start) + 2,
+                ),
+              );
+              rest = gsap.delayedCall(CLOSE.gate, arrive);
+            }
           };
 
           const syncCopy = () => {
@@ -618,37 +694,11 @@ export function Specimen({ children }: { children: React.ReactNode }) {
             );
           };
 
-          /* O fechamento, lido de `closure.t`: as partículas correm para o
-             disco, ele cresce, e o trilho e o véu do pé saem com a copy. */
-          const syncClose = () => {
-            const t = closure.t;
-            const fill = gsap.utils.clamp(0, 1, t / FILL);
-            ending.fill = fill;
-            u.gather = fill * fill;
-            ending.grow = growEase(
-              gsap.utils.clamp(0, 1, (t - GROW.at) / GROW.run),
-            );
-            const out = gsap.utils.clamp(0, 1, t / 0.14);
-            if (rail)
-              gsap.set(rail, {
-                opacity: 1 - out,
-                x: 18 * out,
-                filter: out > 0 ? `blur(${6 * out}px)` : "none",
-              });
-            if (scrim) gsap.set(scrim, { opacity: 1 - out });
-            syncCopy();
-          };
-
-          /* Põe a cena no passo `n` sem travessia: para o salto por código e
+          /* Põe a cena na troca `n` sem travessia: para o salto por código e
              para a nuvem que chega com a página já rolada além da cena. */
           const snap = (n: number) => {
             aim = n;
-            u.phase = Math.min(n, MORPH.length);
-            const t = n > MORPH.length ? 1 : 0;
-            if (t !== closure.t) {
-              closure.t = t;
-              syncClose();
-            }
+            u.phase = n;
             syncRoute();
           };
 
@@ -671,11 +721,14 @@ export function Specimen({ children }: { children: React.ReactNode }) {
                 trigger: stage,
                 start: "top top",
                 /* Cerca de 40% de tela entre um disparo e o seguinte (0,24 da
-                   linha do tempo). Pode ser curto porque a trava faz um passo
-                   por vez: rolar a mais não pula leitura. Com as trocas no
-                   scrub eram 925%; com uma tela por troca (510%), rolava-se
-                   demais. */
-                end: "+=178%",
+                   linha do tempo), mais o fechamento em disco no fim (1,0 a
+                   1,22). Pode ser curto porque a trava faz uma troca por vez:
+                   rolar a mais não pula leitura. Com as trocas no scrub eram
+                   925%; com uma tela por troca (510%), rolava-se demais. A
+                   seção seguinte entra por cima desta cena (`-mt-[180svh]`) e
+                   a pergunta dela é medida contra este número: mudar aqui
+                   descasa a pergunta do círculo. */
+                end: "+=205%",
                 scrub: 0.7,
                 pin: true,
                 anticipatePin: 1,
@@ -730,20 +783,49 @@ export function Specimen({ children }: { children: React.ReactNode }) {
               );
 
 
-            /* A saída não está nesta linha do tempo: o fechamento em disco
-               corre no relógio (`syncClose`), disparado pelo scroll como as
-               trocas. O texto, as chamadas e o trilho vão embora para a
-               direita; ao mesmo tempo o círculo preto nasce no centro,
-               pequeno, e cresce sem parar até cobrir a tela. As partículas da
-               folha correm para dentro dele enquanto ele cresce (o alvo delas
-               é o raio do círculo naquele quadro), e ele fica sólido quando
-               chegam as últimas: cada uma cresce ao chegar até fechar o
-               disco, recortada na borda exata. O disco das partículas é bem
-               pequeno — 6% do menor lado —, e com `u.gather` em 1 a nuvem dá
-               lugar a um elemento sólido, que segue crescendo até cobrir a
-               tela. A seção seguinte já começa toda preta: a emenda é preto
-               sobre preto. Aqui só se reserva o comprimento da cena. */
-            tl.to({}, { duration: SPAN }, 0);
+            /* A saída, num movimento só. O texto, as chamadas e o trilho vão
+               embora para a direita; ao mesmo tempo o círculo preto nasce no
+               centro, pequeno, e cresce sem parar até cobrir a tela. As
+               partículas da folha correm para dentro dele enquanto ele cresce
+               (o alvo delas é o raio do círculo naquele quadro), e ele fica
+               sólido quando chegam as últimas: cada uma cresce ao chegar até
+               fechar o disco, recortada na borda exata. O disco das
+               partículas é bem pequeno — 6% do menor lado —, e com
+               `u.gather` em 1 (1,08) a nuvem dá lugar a um elemento sólido,
+               que segue crescendo até cobrir a tela em 1,22, o fim da cena. A seção
+               seguinte já começa toda preta: a emenda é preto sobre preto. */
+            tl.fromTo(
+              u,
+              { gather: 0 },
+              { gather: 1, duration: 0.08, ease: "power1.in" },
+              1.0,
+            )
+              .fromTo(
+                ending,
+                { fill: 0 },
+                { fill: 1, duration: 0.08, ease: "none" },
+                1.0,
+              )
+              .fromTo(
+                ending,
+                { grow: 0 },
+                { grow: 1, duration: GROW.run, ease: GROW.ease },
+                /* A expansão começa antes de o disco fechar: as duas curvas
+                   se somam, e não há parada entre encher e crescer. */
+                GROW.at,
+              )
+              .to(
+                rail,
+                {
+                  opacity: 0,
+                  x: 18,
+                  filter: "blur(6px)",
+                  duration: 0.03,
+                  ease: "power2.in",
+                },
+                1.0,
+              )
+              .to(".sp-scrim", { opacity: 0, duration: 0.03 }, 1.0);
 
             ScrollTrigger.refresh();
             return tl;
@@ -808,7 +890,7 @@ export function Specimen({ children }: { children: React.ReactNode }) {
                 /* A nuvem chegou com o scroll já andado (o véu saiu antes):
                    a cena alcança agora o ponto em que a página está. */
                 const st = timeline?.scrollTrigger;
-                if (st && st.progress >= 1) snap(STEPS.length);
+                if (st && st.progress >= 1) snap(MORPH.length);
                 else if (st) steer(st);
               } catch {
                 if (alive) goStill();
@@ -836,6 +918,10 @@ export function Specimen({ children }: { children: React.ReactNode }) {
             timeline?.kill();
             travel?.kill();
             rest?.kill();
+            pace(false);
+            window.removeEventListener("wheel", onWheel);
+            window.removeEventListener("touchstart", onTouchStart);
+            window.removeEventListener("touchmove", onTouchMove);
             letGo();
             /* As entradas da copy correm no relógio, fora da linha do tempo. */
             gsap.killTweensOf([

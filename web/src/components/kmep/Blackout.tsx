@@ -71,9 +71,15 @@ export function Blackout() {
         },
       });
 
+      const askAt = 71 / (PIN - RISE);
       tl.set(".fd-ask", { opacity: 1 }, 0.1)
-        .fromTo(".fd-ask-in", { opacity: 0, scale: 0.88, filter: "blur(14px)" },
-          { opacity: 1, scale: 1, filter: "blur(0px)", duration: 0.17, ease: "power2.out" }, 0.1)
+        /* A pergunta entra só por opacidade, do zero, e só quando o círculo
+           do Specimen já cobre a área dela: 71svh depois de este pin começar
+           é perto de 70% do crescimento do círculo (o pin de lá tem 205svh e
+           esta seção entra 180svh por cima dele). Antes saía de um desfoque,
+           com o círculo ainda pequeno: lia-se um borrão parado sobre a cena. */
+        .fromTo(".fd-ask-in", { opacity: 0, scale: 0.97 },
+          { opacity: 1, scale: 1, duration: Math.min(0.14, 0.29 - askAt), ease: "power1.out" }, askAt)
         .to(".fd-ask-in", { opacity: 0, scale: 1.04, filter: "blur(16px)", duration: 0.07 }, 0.3)
         .fromTo(".fd-layout", { opacity: 0 }, { opacity: 1, duration: 0.06 }, CHAPTER[0]);
 

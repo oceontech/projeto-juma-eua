@@ -166,12 +166,15 @@ atropelaria a animação.
 > o scroll era rápido, e um scroll comprido pulava duas ou três leituras de uma vez. Vale para o
 > Aminosan e para o KMEP.
 >
-> **O fechamento em disco é o quinto disparo** (`CLOSE`, `STEPS`): também corre no relógio, com a
-> rolagem presa, e `syncClose()` escreve `u.gather`, o raio e a saída do trilho a partir de
-> `closure.t`. No scrub, um scroll rápido levava a tela ao preto de uma vez. Depois de cada troca a
-> trava ainda segura `REST` (0,35 s), para a copy terminar de entrar antes de o scroll poder
-> disparar a seguinte. O círculo sólido (`.sp-black`) fica **por cima** da copy e das chamadas: o que
-> ainda estiver saindo some atrás dele.
+> **O fechamento em disco continua no scrub** — a pergunta da seção seguinte (`Field`/`Blackout`,
+> que entram por cima da cena com `-mt-[180svh]`) aparece na mesma rolagem, só por opacidade e só
+> com o círculo já cobrindo a área dela; por isso o `end` do pin e o início da pergunta são números
+> casados. Para ele não entrar de uma vez há uma porta em `CLOSE.at` (a rolagem para 0,25 s e perde
+> o embalo) e, no desktop, a roda rende a metade dali até o fim do pin (`SLOW`, escrito nas opções
+> do Lenis e devolvido na saída). Tentado e desfeito em 13/10/2026: fechar no relógio, com a
+> rolagem presa — a pergunta ficava parada, meio acesa, enquanto o círculo crescia sozinho. O
+> círculo sólido (`.sp-black`) fica **por cima** da copy e das chamadas: o que ainda estiver saindo
+> some atrás dele. Quem rola com insistência durante uma troca a acelera (`HURRY`).
 >
 > **Sem a nuvem, nenhum disparo.** O véu espera a cena no máximo 4 s (`whenPrepared`); se ela chega
 > depois, o scroll não troca nada até ela existir — antes, a primeira leitura entrava por cima da
