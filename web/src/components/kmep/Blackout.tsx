@@ -11,6 +11,9 @@ const CHAPTER = [0.36, 0.58, 0.78];
    seguinte para dentro do pin. A linha do tempo ganha esse trecho parado. */
 const PIN = 660;
 const RISE = 100;
+/* Quanto esta seção entra por cima da cena de partículas, em svh — o mesmo
+   número do `-mt-[180svh]` do JSX. */
+const OVERLAP = 180;
 const PLANT = "/img/kmep/blackout/ornamental-continuous.webp";
 
 export function Blackout() {
@@ -35,6 +38,12 @@ export function Blackout() {
       gsap.set(plant, { yPercent: 20, autoAlpha: 0 });
       root.style.marginBottom = `-${RISE}svh`;
 
+      /* Onde o pin do Specimen acaba, em progresso deste: esta seção entra
+         OVERLAP svh por cima dele, e o palco de lá tem 100svh. É ali, e não
+         antes nem depois, que o preto daqui assume: antes o círculo de lá
+         ainda está crescendo; depois o palco de lá já subiu, e o pé da tela
+         mostrava o fundo da página — uma faixa de outro preto. */
+      const cover = (OVERLAP - 100) / PIN;
       let ownTone = false;
       const tl = gsap.timeline({
         defaults: { ease: "none" },
@@ -46,19 +55,19 @@ export function Blackout() {
           pin: true,
           anticipatePin: 1,
           onUpdate: (self) => {
-            /* Antes dos 14% o preto na tela ainda é o disco do Specimen, que
+            /* Antes de `cover` o preto na tela ainda é o disco do Specimen, que
                manda no tom e o reafirma a cada quadro. Apagar aqui a cada
                evento de scroll disputava com ele, e a barra ficava clara
                sobre o preto enquanto a rolagem corria: só se apaga o que
                esta cena mesma escreveu. */
-            const dark = self.progress > 0.14;
+            const dark = self.progress >= cover;
             if (dark) html.dataset.navTheme = "dark";
             else if (ownTone) delete html.dataset.navTheme;
             ownTone = dark;
-            if (bg) bg.style.opacity = self.progress > 0.14 ? "1" : "0";
+            if (bg) bg.style.opacity = self.progress >= cover ? "1" : "0";
           },
           onRefresh: (self) => {
-            if (bg) bg.style.opacity = self.progress > 0.14 ? "1" : "0";
+            if (bg) bg.style.opacity = self.progress >= cover ? "1" : "0";
           },
           onLeave: () => {
             ownTone = false;

@@ -170,8 +170,12 @@ atropelaria a animação.
 > que entram por cima da cena com `-mt-[180svh]`) aparece na mesma rolagem, só por opacidade e só
 > com o círculo já cobrindo a área dela; por isso o `end` do pin e o início da pergunta são números
 > casados. Para ele não entrar de uma vez há uma porta em `CLOSE.at` (a rolagem para 0,25 s e perde
-> o embalo) e, no desktop, a roda rende a metade dali até o fim do pin (`SLOW`, escrito nas opções
-> do Lenis e devolvido na saída). Tentado e desfeito em 13/10/2026: fechar no relógio, com a
+> o embalo) e, no desktop, um teto de velocidade dali até o fim do pin (`SLOW`: o destino do Lenis
+> não passa de 6% de tela à frente da página; escrito nas opções do Lenis e devolvido na saída) —
+> o círculo leva cerca de um segundo e meio para cobrir a tela, por mais que se gire a roda. O
+> preto da seção seguinte (`.fd-black`) assume **exatamente** onde o pin daqui acaba (`cover`, em
+> `Field`/`Blackout`): depois disso o palco daqui sobe e o pé da tela mostrava o fundo da página,
+> uma faixa de outro preto. Tentado e desfeito em 13/10/2026: fechar no relógio, com a
 > rolagem presa — a pergunta ficava parada, meio acesa, enquanto o círculo crescia sozinho. O
 > círculo sólido (`.sp-black`) fica **por cima** da copy e das chamadas: o que ainda estiver saindo
 > some atrás dele. Quem rola com insistência durante uma troca a acelera (`HURRY`).

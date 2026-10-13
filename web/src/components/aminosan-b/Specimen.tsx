@@ -3,6 +3,7 @@
 import { useRef } from "react";
 import { useContent } from "@/components/layout/LocaleProvider";
 import { prepare, whenCovered } from "@/lib/boot";
+import type Lenis from "lenis";
 import { scroller } from "@/components/motion/SmoothScroll";
 import { jump, lockScroll, type ScrollLock } from "@/lib/scroll-lock";
 import { gsap, ScrollTrigger, SplitText, useGSAP } from "@/lib/gsap";
@@ -79,11 +80,11 @@ const TONE = { at: 0.018, run: 0.028 };
 const MORPH = [0.03, 0.27, 0.51, 0.75];
 /* A travessia no relógio, em segundos — e o tempo em que a rolagem fica
    presa. */
-const PACE = 1.5;
+const PACE = 1.6;
 /* Quem tem pressa passa: rolar com insistência no sentido da troca, com ela
    em curso, acelera a travessia (`rate`) depois de `after` pixels de roda ou
    de dedo. A trava continua valendo — uma leitura por vez —, só dura menos. */
-const HURRY = { after: 240, rate: 2.2 };
+const HURRY = { after: 700, rate: 1.6 };
 /* Quando a copy troca, em fração de cada morph. A regra é uma só nos dois
    sentidos: o texto de uma forma aparece quando **ela** está quase montada.
    Indo, isso é perto do fim do morph (0,62); voltando, o morph corre ao
@@ -111,11 +112,15 @@ const GROW = { at: 1.07, run: 0.15, ease: "sine.inOut" };
 /* O fechamento segue o scroll — a pergunta da seção seguinte entra junto com
    ele, na mesma rolagem —, mas não pode entrar de uma vez. Duas coisas o
    seguram: uma porta em `CLOSE.at`, onde a rolagem para por `gate` segundos
-   e perde o embalo que trazia das trocas; e, no desktop, a roda rendendo
-   menos dali até o fim do pin (`SLOW`: o Lenis anda `wheel` do normal e
-   leva `duration` segundos para assentar). */
+   e perde o embalo que trazia das trocas; e, no desktop, um teto de
+   velocidade dali até o fim do pin (`SLOW`): o destino do Lenis não pode
+   ficar mais de `lead` telas à frente de onde a página está, e ele leva
+   `duration` segundos para chegar. Com isso o círculo leva pelo menos um
+   segundo e meio para cobrir a tela, por mais que se gire a roda. Só reduzir
+   o rendimento da roda (já tentado) não bastava: girando depressa, o círculo
+   ainda ia de pequeno a tela cheia em menos de meio segundo. */
 const CLOSE = { at: 1.0, gate: 0.25 };
-const SLOW = { from: 0.94, wheel: 0.5, duration: 1.6 };
+const SLOW = { from: 0.94, lead: 0.06, duration: 1.2 };
 
 /* O rótulo da bombona, em fração da foto a partir do centro (y para cima).
    É para lá que o zoom anda. */
@@ -576,23 +581,39 @@ export function Specimen({ children }: { children: React.ReactNode }) {
           window.addEventListener("touchstart", onTouchStart, { passive: true });
           window.addEventListener("touchmove", onTouchMove, { passive: true });
 
-          /* A roda rende menos no fechamento — ver `SLOW`. Só no desktop: no
-             toque a rolagem é nativa e não há o que regular. */
-          let normal: { wheel: number; duration: number | undefined } | null =
-            null;
+          /* O teto de velocidade do fechamento — ver `SLOW`. Só no desktop:
+             no toque a rolagem é nativa e não há o que regular. Só descendo:
+             voltar para as leituras não tem o que segurar. */
+          let normal: {
+            duration: number | undefined;
+            virtualScroll: Lenis["options"]["virtualScroll"];
+          } | null = null;
           const pace = (slow: boolean) => {
             const lenis = scroller();
             if (!lenis || slow === (normal !== null)) return;
             if (slow) {
               normal = {
-                wheel: lenis.options.wheelMultiplier,
                 duration: lenis.options.duration,
+                virtualScroll: lenis.options.virtualScroll,
               };
-              lenis.options.wheelMultiplier = normal.wheel * SLOW.wheel;
               lenis.options.duration = SLOW.duration;
+              lenis.options.virtualScroll = (data) => {
+                if (data.deltaY <= 0) return true;
+                const room =
+                  window.innerHeight * SLOW.lead -
+                  (lenis.targetScroll - lenis.animatedScroll);
+                if (room <= 0) {
+                  /* Devolver `false` sai antes de o Lenis cancelar o evento:
+                     sem isto a roda rolaria a página por conta própria. */
+                  if (data.event.cancelable) data.event.preventDefault();
+                  return false;
+                }
+                data.deltaY = Math.min(data.deltaY, room);
+                return true;
+              };
             } else if (normal) {
-              lenis.options.wheelMultiplier = normal.wheel;
               lenis.options.duration = normal.duration;
+              lenis.options.virtualScroll = normal.virtualScroll;
               normal = null;
             }
           };
