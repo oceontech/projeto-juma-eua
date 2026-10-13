@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { gsap, HEADER_OFFSET } from "@/lib/gsap";
 import { scroller } from "@/components/motion/SmoothScroll";
+import { jump } from "@/lib/scroll-lock";
 
 /**
  * Rolagem suave dos links de âncora, pelo GSAP.
@@ -51,6 +52,9 @@ export function SmoothAnchors() {
          SmoothScroll existe para não repetir. */
       const lenis = scroller();
       if (lenis) {
+        /* Avisa as cenas que prendem a rolagem (as partículas das LPs): o
+           salto atravessa sem ser segurado no primeiro disparo. */
+        jump.until = performance.now() + 1100;
         lenis.scrollTo(y, {
           duration: 0.9,
           easing: (t: number) => 1 - Math.pow(1 - t, 3),
@@ -61,6 +65,7 @@ export function SmoothAnchors() {
 
       /* No mobile (onde o Lenis está desligado), usamos o scroll nativo direto
          para nunca interferir com o compositor ou a física de toque do aparelho */
+      jump.until = performance.now() + 300;
       window.scrollTo(0, y);
       history.pushState(null, "", href);
     };

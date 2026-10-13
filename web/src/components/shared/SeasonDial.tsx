@@ -44,6 +44,9 @@ export type StageArt = { src: string; width: number; height: number; cuts: numbe
 const ARC = { cx: 500, cy: 520, r: 420 };
 const VIEW = { w: 1000, h: 560 };
 const TICKS = Array.from({ length: 41 }, (_, i) => i / 40);
+/* O lado do brilho que segue a passada, em fração da caixa do mostrador — o
+   mesmo número do `size-[42%]` do JSX. */
+const GLOW = 0.42;
 const CROP_ICONS: Record<string, string> = {
   citrus: "citrus",
   fruit: "tree-fruit",
@@ -87,23 +90,40 @@ function arcPath(t0: number, t1: number, r = ARC.r) {
 
 /**
  * Scroll → posição na safra. A régua é ordinal, então o scroll não anda em
- * escala de dias: cada estágio recebe a mesma fatia de rolagem e uma parada
- * curta em cima dele (`HOLD`), para a leitura. Sem isso o milho passava por
- * V4 e V6 num átimo e gastava meia cena no vazio até a formação da espiga.
+ * escala de dias: a passada para em cima de cada estágio (`HOLD`), para a
+ * leitura, e viaja entre um e outro.
+ *
+ * Cada viagem recebe rolagem metade por igual, metade pela distância que
+ * percorre no arco. Só por igual, o trecho final da soja (do pré-florescimento
+ * à colheita, dois terços do arco) passava em um quarto da cena, nove vezes
+ * mais depressa que o trecho entre os dois estágios; só pela distância, o
+ * milho passava por V4 e V6 num átimo e gastava meia cena no vazio. A chegada
+ * ao primeiro estágio leva menos, porque ali ainda não há o que ler.
+ *
+ * E cada viagem acelera e freia (`ease`): em linha reta a passada trocava de
+ * velocidade de uma vez em cada parada, e é isso que se lia como tranco.
  */
-const HOLD = 0.08;
+const HOLD = 0.06;
+const ease = (k: number) => k * k * (3 - 2 * k);
 function warp(p: number, ats: number[]) {
   const n = ats.length;
-  const knots: [number, number][] = [[0, 0]];
-  ats.forEach((at, i) => {
-    const s = 0.08 + (n > 1 ? (i * 0.6) / (n - 1) : 0.3);
-    knots.push([s, at], [s + HOLD, at]);
+  if (!n) return p;
+  const stops = [0, ...ats, 1];
+  const hold = Math.min(HOLD, 0.4 / n);
+  const weights = stops.slice(1).map((to, k) => {
+    const w = 0.5 / (n + 1) + 0.5 * (to - stops[k]);
+    return k === 0 ? w * 0.6 : w;
   });
-  knots.push([1, 1]);
-  for (let k = 1; k < knots.length; k++) {
-    const [p0, t0] = knots[k - 1];
-    const [p1, t1] = knots[k];
-    if (p <= p1) return p1 === p0 ? t1 : t0 + ((p - p0) / (p1 - p0)) * (t1 - t0);
+  const total = weights.reduce((a, b) => a + b, 0);
+  const room = 1 - n * hold;
+  let at = 0;
+  for (let k = 0; k <= n; k++) {
+    const run = (weights[k] / total) * room;
+    if (p <= at + run) return stops[k] + ease(run > 0 ? clamp01((p - at) / run) : 1) * (stops[k + 1] - stops[k]);
+    at += run;
+    if (k === n) break;
+    if (p <= at + hold) return stops[k + 1];
+    at += hold;
   }
   return 1;
 }
@@ -232,8 +252,10 @@ function draw(root: HTMLElement, live: Live, dir: number, instant: boolean) {
   }
   const glow = root.querySelector<HTMLElement>(".tm-glow");
   if (glow) {
-    glow.style.left = `${(x / VIEW.w) * 100}%`;
-    glow.style.top = `${(y / VIEW.h) * 100}%`;
+    /* Por transform, e não por left/top: mexer na posição refazia o layout
+       a cada quadro. As porcentagens do translate são do próprio brilho, que
+       tem GLOW da caixa do mostrador. */
+    glow.style.transform = `translate(${(x / VIEW.w / GLOW) * 100 - 50}%, ${(y / VIEW.h / GLOW) * 100 - 50}%)`;
   }
   root.querySelectorAll<SVGPathElement>(".tm-rows path").forEach((el, k) => {
     el.setAttribute("stroke-dashoffset", String(-t * (k ? 140 : 90)));
@@ -273,8 +295,8 @@ function Roll({ text }: { text: string }) {
  * formação da espiga) ganha o anel que pulsa.
  *
  * A troca de cultura passa por uma íris: o verde abre a partir do botão, a
- * cena troca por baixo e a íris se fecha dentro da passada — que continua no
- * mesmo ponto da safra.
+ * cena troca por baixo e a íris se fecha dentro da passada — que volta ao
+ * plantio: toda cultura começa do início do arco.
  *
  * A régua é ordinal: marca os estágios do rótulo, sem fingir escala de dias.
  * O mostrador é desenho; a leitura acessível é a frase de resumo embaixo dele.
@@ -354,7 +376,10 @@ export function SeasonDial({
                 live.current.p = state.p;
                 draw(root, live.current, dir, false);
               },
-              scrollTrigger: { trigger: ".tm-stage", start: "top top", end: "+=260%", scrub: 1.2, pin: true },
+              /* Scrub curto: com 1,2 s a passada ficava mais de um segundo
+                 atrás do dedo, e num scroll rápido o pin soltava com ela ainda
+                 no meio do arco, correndo para alcançar. */
+              scrollTrigger: { trigger: ".tm-stage", start: "top top", end: "+=260%", scrub: 0.8, pin: true },
             },
           );
           pin.current = scene.scrollTrigger ?? null;
@@ -366,8 +391,9 @@ export function SeasonDial({
     { scope },
   );
 
-  /* A cultura trocou: a cena se redesenha no mesmo ponto da safra e, se a
-     íris estiver fechada, ela se abre de volta para dentro da passada. */
+  /* A cultura trocou: a cena se redesenha — do plantio, se a troca passou
+     pela íris (ver `intoScene`) — e, se a íris estiver fechada, ela se abre
+     de volta para dentro da passada. */
   useLayoutEffect(() => {
     const root = scope.current;
     if (!root) return;
@@ -435,15 +461,15 @@ export function SeasonDial({
     gsap.fromTo(veilWord.current, { opacity: 0, scale: 0.86 }, { opacity: 1, scale: 1, duration: 0.6, delay: 0.2, ease: "expo.out" });
   }
 
-  /* Com a tela coberta, leva a página para dentro da cena presa: quem clicou
-     com a seção pela metade reabre a íris já com o mostrador inteiro na tela.
-     Dentro do pin nada muda — a passada segue no mesmo ponto da safra. */
+  /* Com a tela coberta, leva a página para o começo da cena presa: a
+     cultura nova abre com a passada no plantio, e não no estágio em que a
+     anterior estava — os estágios não são os mesmos de uma para a outra. E
+     quem clicou com a seção pela metade reabre a íris já com o mostrador
+     inteiro na tela. */
   function intoScene() {
     const st = pin.current;
     if (!st) return;
-    const y = window.scrollY;
-    const to = y < st.start ? st.start + 1 : y > st.end ? st.end - 1 : null;
-    if (to === null) return;
+    const to = st.start + 1;
     const lenis = scroller();
     if (lenis) lenis.scrollTo(to, { immediate: true, force: true });
     else window.scrollTo({ top: to, behavior: "instant" });
@@ -523,7 +549,7 @@ export function SeasonDial({
             <div className="relative mx-auto w-full max-w-[calc(56svh*1.786)]">
               {/* O mostrador. É desenho: a leitura acessível é o resumo abaixo. */}
               <div aria-hidden className="relative aspect-[1000/560]">
-                <span className="tm-glow pointer-events-none absolute size-[42%] -translate-1/2 rounded-full bg-[radial-gradient(closest-side,rgba(183,199,62,0.38),rgba(183,199,62,0.1)_55%,transparent)]" />
+                <span className="tm-glow pointer-events-none absolute top-0 left-0 size-[42%] rounded-full will-change-transform bg-[radial-gradient(closest-side,rgba(183,199,62,0.38),rgba(183,199,62,0.1)_55%,transparent)]" />
 
                 <svg viewBox={`0 0 ${VIEW.w} ${VIEW.h}`} className="absolute inset-0 size-full overflow-visible" fill="none">
                   {/* As fileiras de dentro, que correm com a safra. */}

@@ -30,6 +30,14 @@ export type ScrollLock = {
   release: () => void;
 };
 
+/**
+ * Um salto por código em curso — um link de âncora levando a página de um
+ * ponto a outro. Quem dá o salto escreve até quando ele dura (`until`, no
+ * relógio de `performance.now()`); as cenas que prendem a rolagem leem isto
+ * para deixar o salto passar em vez de segurá-lo no meio.
+ */
+export const jump = { until: 0 };
+
 let touchLocks = 0;
 
 const isTouch = () =>

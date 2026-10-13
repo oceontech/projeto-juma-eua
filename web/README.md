@@ -164,7 +164,19 @@ atropelaria a animação.
 > fica presa no ponto do disparo até a forma assentar (`lib/scroll-lock.ts` mais `stop()` do
 > Lenis). Presa ao scrub, cada troca pedia quase duas telas de rolagem, passava num átimo quando
 > o scroll era rápido, e um scroll comprido pulava duas ou três leituras de uma vez. Vale para o
-> Aminosan e para o KMEP (A e B).
+> Aminosan e para o KMEP.
+>
+> **O fechamento em disco é o quinto disparo** (`CLOSE`, `STEPS`): também corre no relógio, com a
+> rolagem presa, e `syncClose()` escreve `u.gather`, o raio e a saída do trilho a partir de
+> `closure.t`. No scrub, um scroll rápido levava a tela ao preto de uma vez. Depois de cada troca a
+> trava ainda segura `REST` (0,35 s), para a copy terminar de entrar antes de o scroll poder
+> disparar a seguinte. O círculo sólido (`.sp-black`) fica **por cima** da copy e das chamadas: o que
+> ainda estiver saindo some atrás dele.
+>
+> **Sem a nuvem, nenhum disparo.** O véu espera a cena no máximo 4 s (`whenPrepared`); se ela chega
+> depois, o scroll não troca nada até ela existir — antes, a primeira leitura entrava por cima da
+> foto do hero. Ao chegar, a cena alcança o ponto em que a página está (`snap`/`steer`). E um link
+> de âncora que atravessa a cena avisa por `jump` (`lib/scroll-lock.ts`): ela acompanha sem prender.
 >
 > A copy de cada etapa troca quando **a forma dela** está quase montada, nos dois sentidos: indo, a
 > 62% do morph; voltando, a 38% (`SWITCH`). Uma linha do tempo em scrub não faz isso — corre igual

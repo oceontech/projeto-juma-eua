@@ -6,7 +6,6 @@ import { Assembly } from "@/components/aminosan-b/Assembly";
 import { Meet } from "@/components/aminosan-b/Meet";
 import { Cell } from "@/components/aminosan-b/Cell";
 import { Compare } from "@/components/aminosan-b/Compare";
-import { Rule } from "@/components/aminosan-b/Rule";
 import { Heritage } from "@/components/aminosan-b/Heritage";
 import { Timing } from "@/components/aminosan-b/Timing";
 import { Season } from "@/components/aminosan-b/Season";
@@ -35,7 +34,7 @@ export const metadata: Metadata = {
  * Assembly cobre ao subir por cima da raiz. Daí a linha de
  * montagem do nitrogênio e as duas rotas (Assembly, A3–A4), o produto em
  * bento (Meet), a lente dentro da folha (Cell), a tabela contra o hidrolisado
- * típico (Compare, A4), a prova pela regra da testemunha (Rule, A6), a
+ * típico (Compare, A4), a
  * história mais antiga que a empresa (Heritage, A8), as culturas de mercado
  * (Season) e a janela no mostrador da safra (Timing, A9), a ficha da
  * bombona (Label), para quem é (Fit), a faixa de teste (Strip), as perguntas
@@ -56,7 +55,10 @@ export default function AminosanPage() {
       <Meet />
       <Cell />
       <Compare />
-      <Rule />
+      {/* A prova (Rule, A6 — "Two trials. Data pending.") saiu em 13/10/2026:
+          sem os dados dos ensaios não há o que mostrar. O componente e a copy
+          (`rule`, em content/aminosan-b.ts) ficam no repositório; a seção
+          volta quando a P9 fechar. */}
       <Heritage />
       <Season />
       <Timing />
